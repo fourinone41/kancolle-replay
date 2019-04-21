@@ -1,0 +1,289 @@
+{
+	"2": {
+		"boss": 0, 
+		"name": "北方前衛警戒部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1554, 1527, 1542, 1521, 1575, 1575], 
+				"geth": 12, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1554, 1542, 1522, 1522, 1575, 1575], 
+				"geth": 14, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1554, 1542, 1522, 1522, 1575, 1575], 
+				"geth": 16, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1554, 1542, 1522, 1521, 1575, 1575], 
+				"geth": 18, 
+				"experience": 300, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "北方派遣任務部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1565, 1579, 1528, 1543, 1576, 1576], 
+				"geth": 4, 
+				"experience": 450, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1579, 1528, 1543, 1522, 1576, 1576], 
+				"geth": 5, 
+				"experience": 430, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1528, 1543, 1522, 1575, 1575], 
+				"geth": 6, 
+				"experience": 410, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1565, 1579, 1543, 1522, 1576, 1576], 
+				"geth": 5, 
+				"experience": 430, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1579, 1528, 1543, 1518, 1575, 1575], 
+				"geth": 7, 
+				"experience": 400, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "北方遊撃部隊", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1560, 1529, 1529, 1577, 1577, 1534], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1577, 1577, 1534, 1532], 
+				"geth": 6, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1577, 1575, 1575, 1534], 
+				"geth": 8, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1560, 1529, 1529, 1575, 1575, 1534], 
+				"geth": 6, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1575, 1575, 1575, 1532], 
+				"geth": 8, 
+				"experience": 400, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "北方増援部隊前衛A", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1527, 1521, 1521, 1576, 1576], 
+				"geth": 8, 
+				"experience": 360, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1555, 1522, 1521, 1521, 1576, 1575], 
+				"geth": 10, 
+				"experience": 340, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1522, 1521, 1508, 1575, 1575], 
+				"geth": 12, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1554, 1521, 1521, 1508, 1575, 1575], 
+				"geth": 12, 
+				"experience": 310, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"7": {
+		"boss": 0, 
+		"name": "北方増援部隊前衛B", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1560, 1527, 1522, 1577, 1575, 1575], 
+				"geth": 2, 
+				"experience": 420, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1527, 1522, 1522, 1520, 1575, 1575], 
+				"geth": 3, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1527, 1522, 1522, 1520, 1575, 1575], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1560, 1527, 1522, 1576, 1575, 1575], 
+				"geth": 2, 
+				"experience": 410, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1527, 1522, 1520, 1519, 1575, 1575], 
+				"geth": 5, 
+				"experience": 390, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "北方AL泊地", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1588, 1549, 1550, 1551, 1550, 1551], 
+				"geth": 0, 
+				"experience": 600, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1587, 1549, 1550, 1527, 1576, 1576], 
+				"geth": 1, 
+				"experience": 600, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1587, 1549, 1550, 1551, 1550, 1551], 
+				"geth": 2, 
+				"experience": 600, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1590, 1549, 1550, 1551, 1550, 1551], 
+				"geth": 2, 
+				"experience": 600, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1589, 1549, 1550, 1527, 1576, 1576], 
+				"geth": 3, 
+				"experience": 600, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1589, 1549, 1550, 1551, 1550, 1551], 
+				"geth": 4, 
+				"experience": 600, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 1, 
+		"name": "北方増援部隊主力", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1591, 1558, 1558, 1543, 1578, 1578], 
+				"geth": 0, 
+				"experience": 550, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1591, 1526, 1526, 1543, 1576, 1576], 
+				"geth": 1, 
+				"experience": 520, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1591, 1526, 1526, 1529, 1576, 1576], 
+				"geth": 2, 
+				"experience": 500, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1591, 1558, 1558, 1543, 1577, 1577], 
+				"geth": 1, 
+				"experience": 550, 
+				"choose_rate": 0, 
+				"final": 1
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1591, 1526, 1526, 1529, 1575, 1575], 
+				"geth": 2, 
+				"experience": 500, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

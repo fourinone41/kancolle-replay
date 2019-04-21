@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>KanColle Event Simulator</title>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<script src="js/jquery-1.11.3.min.js"></script>
+		<script src="js/util/jquery-ui/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="js/util/jquery-ui/jquery-ui.css">
+		<link rel="stylesheet" href="css/challenge.css">
+		<script src="js/kcSHIPDATA.js"></script>
+		<script src="js/kcEQDATA.js"></script>
+		<script src="js/chkcMAPDATA2.js"></script>
+		<script src="js/kcENEMYCOMP.js"></script>
+		<script src="js/shared.js"></script>
+		<script src="js/kcships.js"></script>
+		<script src="js/kcsim.js"></script>
+		<script src="js/kcsimcombined.js"></script>
+		<script src="js/pixi.min.js"></script>
+		<script src="js/howler.min.js"></script>
+	</head>
+	<body onunload="chSave()">
+		<div id="mainspace" style="display:none">
+		<span id="btnMenu" onclick="chOpenMenu(true)">Menu</span>
+		<br><br>
+		<div id="btnRepairAll" class="mainbutton" onclick="chRepairAll()" onmouseover="chPreviewRepair();chShowHoverBox('hbRepair',this)" onmouseout="chHideHoverBox('hbRepair')"><div><img src="assets/stats/bucket.png"/> <span>Repair All</span></div></div>
+		<div id="btnResupplyAll" class="mainbutton" onclick="chResupplyAll()"  onmouseover="chPreviewResupply();chShowHoverBox('hbResupply',this)" onmouseout="chHideHoverBox('hbResupply')"><div><img src="assets/stats/ammo.png"/> <span>Resupply All</span></div></div>
+		<div id="resourcespace" style="float:left;margin-left:500px" title="Resources Used">
+			<table style="width:240px">
+				<tr><td><img src="assets/stats/fuel.png" /><span id="resfuel">0</span></td><td><img src="assets/stats/steel.png" /><span id="ressteel">0</span></td><td><img src="assets/stats/bucket.png" /><span id="resbucket">0</span></td></tr>
+				<tr><td><img src="assets/stats/ammo.png" /><span id="resammo">0</span></td><td><img src="assets/stats/baux.png" /><span id="resbaux">0</span></td></tr>
+			</table>
+		</div>
+		<br style="clear:both">
+		<br>
+		<div id="fleetspace">
+		<div id="tabspace" style="width:1000px;height:40px">
+			<table><tr>
+			<td><div id="tabmain" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/maps/ship.png" /><span>Main</span></div></td>
+			<td><div id="tabsupportN" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/maps/nodeR.png" /><span>Support</span></div></td>
+			<td><div id="tabsupportB" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/maps/nodeBoss.png" /><span>Support</span></div></td>
+			<td><div id="tabLBAS" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/plane13.png" /><span>LBAS</span></div></td>
+			</tr></table>
+		</div>
+		<div id="mainfleetspacewrap">
+			<div id="mainfleetspace"></div>
+			<br style="clear:both">
+			<div id="combinespace" class="combinespacec" style="height:40px">
+				<div id="combineBG" style="display:none;position:absolute;background-color:#DDEEFF;margin-top:-10px;width:1024px;height:100px;z-index:-2"></div>
+				<img id="btncombine1" src="assets/stats/combine1.png" title="Carrier Task Force" style="opacity:.5;border:3px solid transparent;border-radius:8px;margin-top:5px;margin-left:20px;cursor:pointer" onclick="chClickedCombine(1)"/>
+				<img id="btncombine2" src="assets/stats/combine2.png" title="Surface Task Force" style="opacity:.5;border:3px solid transparent;border-radius:8px;margin-top:5px;margin-left:20px;cursor:pointer" onclick="chClickedCombine(2)"/>
+				<img id="btncombine3" src="assets/stats/combine3.png" title="Transport Task Force" style="opacity:.5;border:3px solid transparent;border-radius:8px;margin-top:5px;margin-left:20px;cursor:pointer" onclick="chClickedCombine(3)"/>
+				<img id="btncombineSF" src="assets/maps/shipIconSF.png" title="Striking Force" style="opacity:.5;border:3px solid transparent;border-radius:8px;margin-top:5px;margin-left:20px;cursor:pointer" onclick="chClickedMakeSF()"/>
+			</div>
+			<div id="escortfleetspace" style="display:none"></div>
+		</div>
+		<div id="supportfleetspace1wrap" style="display:none">
+			<div id="supportfleetspace1"></div>
+			<br style="clear:both"><div class="combinespacec" style="height:40px"></div>
+		</div>
+		<div id="supportfleetspace2wrap" style="display:none">
+			<div id="supportfleetspace2"></div>
+			<br style="clear:both"><div class="combinespacec" style="height:40px"></div>
+		</div>
+		<div id="lbasspacewrap" style="display:none">
+			<div id="lbasspace"></div>
+			<br style="clear:both"><div class="combinespacec" style="height:40px"></div>
+		</div>
+		</div>
+		
+		<br style="clear:both">
+		
+		<table><tr>
+		<td><div id="btnsupportN" class="btnsupport" title="Toggle Send Normal Support" onclick="chAddSupportN()">
+			<img src="assets/maps/nodeR.png" style="margin-top:15px;margin-left:15px" />
+			<img src="assets/stats/dark_support.png" style="position:absolute;margin-top:5px;margin-left:-24px" />
+		</div></td>
+		<td><div id="btnsupportB" class="btnsupport" title="Toggle Send Boss Support" onclick="chAddSupportB()">
+			<img src="assets/maps/nodeBoss.png" style="margin-top:6px;margin-left:5px" />
+			<img src="assets/stats/dark_support.png" style="position:absolute;margin-top:5px;margin-left:-32px" />
+		</div></td>
+		<td style="width:20px"></td>
+		<td><div id="btnLBAS1" class="btnsupport" title="Send LBAS 1 (deselected = Defend)" onclick="chAddLBAS(1)">
+			<img src="assets/plane13.png" style="width:50px;margin-top:8px;margin-left:2px" />
+		</div></td>
+		<td><div id="btnLBAS2" class="btnsupport" title="Send LBAS 2 (deselected = Defend)" onclick="chAddLBAS(2)">
+			<img src="assets/plane13.png" style="width:50px;margin-top:8px;margin-left:2px" />
+		</div></td>
+		<td><div id="btnLBAS3" class="btnsupport" title="Send LBAS 3 (deselected = Defend)" onclick="chAddLBAS(3)">
+			<img src="assets/plane13.png" style="width:50px;margin-top:8px;margin-left:2px" />
+		</div></td>
+		</tr></table>
+
+		<br>
+		<div id="separator"></div>
+		
+		<div style="margin-left:650px">
+			<table><tr>
+			<td><input type="button" value="&#128266;" style="width:30px;vertical-align:middle" onclick="if(!Howler._muted){Howler.mute(true);this.value='&#128263;'}else{Howler.mute(false);this.value='&#128266;';Howler.volume(parseFloat($('#rngvol').val()))}" /></td>
+			<td><input id="rngvol" type="range" value=".6" step=".01" min="0" max="1" style="width:100px;vertical-align:middle" oninput="if(!Howler._muted)Howler.volume(parseFloat(this.value))" /></td>
+			</tr></table>
+		</div>
+		<div style="margin-left:615px">
+			<table><tr>
+			<td><input type="checkbox" id="inpSoundBGM" checked /></td><td><label for="inpSoundBGM">BGM</label></td>
+			<td><input type="checkbox" id="inpSoundSFX" checked /></td><td><label for="inpSoundSFX">SE</label></td>
+			<td><input type="checkbox" id="inpSoundVoice" checked /></td><td><label for="inpSoundVoice">Voice</label></td>
+			</tr></table>
+		</div>
+		<br><br>
+		
+		<div id="sortiespace">
+			<div style="position:absolute;margin-top:300px">
+				<img id="srtLeft" src="assets/maps/maparrowleft.png" onclick="chClickedSortieLeft()" style="cursor:pointer"/>
+			</div>
+			<div style="position:absolute;margin-top:300px;margin-left:300px">
+				<img id="srtRight" src="assets/maps/maparrowright.png" onclick="chClickedSortieRight()" style="cursor:pointer"/>
+			</div>
+			<table><tr>
+			<td style="width:400px">
+				<div>
+					<img id="srtMapImg" style="width:400px;vertical-align:middle" />
+				</div>
+			</td>
+			<td>
+				<div style="height:40px">
+					<span id="srtTitle" style="color:white;position:absolute;width:750px;text-align:center;font-size:24px;margin-left:-400px"></span>
+				</div>
+				<div style="height:70px">
+					<div id="srtHPBar" style="background-color:red;position:absolute;margin-left:20px;margin-top:18px;height:8px;width:146px"></div>
+					<img id="srtHPBorder" src="assets/bossbar.png" style="position:absolute;z-index:2;margin-left:-60px"/>
+					<div style="font-weight:bold;font-size:20px;margin-left:210px;margin-top:8px;position:absolute"><span id="srtHPText"></span></div>
+					<div id="srtHPRegen" title="Warning: HP is regenerating!" style="position:absolute;display:none;margin-left:310px;margin-top:-5px;font-size:40px;font-weight:bold;color:#FF6666;animation:glow .5s linear 0s infinite alternate">+</div>
+				</div>
+				<div id="srtDiff" style="height:40px;margin-left:10px">
+					<span style="color:white">Difficulty:</span>
+					<span id="srtDiffTitle" style="font-size:18px;font-weight:bold;margin-left:10px"></span>
+					<input id="srtDiffChange" type="button" value="Change" style="margin-left:20px" onclick="chSortieStartChangeDiff()" />
+					<input id="srtDiffHard" type="button" value="HARD" style="background-color:#FF6666;display:none" onclick="chSortieChangeDiff(3);chSortieEndChangeDiff()"/>
+					<input id="srtDiffMed" type="button" value="NORMAL" style="background-color:#FFFF66;display:none" onclick="chSortieChangeDiff(2);chSortieEndChangeDiff()"/>
+					<input id="srtDiffEasy" type="button" value="EASY" style="background-color:#66FF66;display:none" onclick="chSortieChangeDiff(1);chSortieEndChangeDiff()"/>
+					<input id="srtDiffCasual" type="button" value="CASUAL" style="background-color:#6666FF;display:none;width:57px;padding-left:0" onclick="chSortieChangeDiff(4);chSortieEndChangeDiff()"/>
+					<input id="srtDiffBack" type="button" value="Back" style="margin-left:5px;display:none" onclick="chSortieEndChangeDiff()"/>
+				</div>
+				<div style="height:40px;margin-left:10px">
+					<span style="vertical-align:middle;color:white">Fleet: </span>
+					<img id="srtCombImg0" title="Single Fleet" src="assets/maps/ship.png" style="vertical-align:middle"/>
+					<img id="srtCombImg7" title="Striking Force or Single" src="assets/maps/shipIconSF.png" style="vertical-align:middle"/>
+					<img id="srtCombImg1" title="Carrier Task Force" src="assets/stats/combine1.png" style="vertical-align:middle"/>
+					<img id="srtCombImg2" title="Surface Task Force" src="assets/stats/combine2.png" style="vertical-align:middle"/>
+					<img id="srtCombImg3" title="Transport Task Force" src="assets/stats/combine3.png" style="vertical-align:middle"/>
+				</div>
+				<div style="height:40px;margin-left:10px">
+					<div id="srtLock">
+					<span style="vertical-align:middle;color:white">Lock: </span>
+					<div style="display:inline-block;width:40px"><img id="srtLockImg" style="height:40px;vertical-align:middle" src="assets/maps/lock1.png" /></div>
+					<span id="srtGiveLockMult" style="display:none"></span>
+					<span id="srtNoLock" style="margin-left:40px;text-decoration:line-through;color:red"></span>
+					</div>
+				</div>
+				<div style="height:90px">
+					<div id="srtErrors" style="color:#FF5555;height:80px;width:320px;overflow:auto;margin-left:10px"></div>
+				</div>
+				<div style="height:40px">
+					<input id="srtStart" type="button" value="Sortie!" style="font-size:35px;margin-left:100px" onclick="chStart()" />
+				</div>
+			</td>
+			</tr></table>
+		</div>
+		<div style="clear:both">
+		
+			<div id="battlespace" style="width:800px;height:480px" onclick="SCREENCLICKFUNCTION()"></div>
+		</div>
+		<div>
+			<span style="font-size:12px;margin-left:750px">FPS: <span id="FPS"></span></span><br>
+			
+		</div>
+		<br style="clear:both"><br>
+		
+		<hr>
+		<a href="https://fourinone41.github.io/kancolle-replay/index.html">&#8592; Index</a>
+		
+		<div id="shipselectdialog" style="background-color:#EDE6D8;display:none;font-size:14px">
+			<div style="height:25px">
+			<span class="shipfilter" onclick="chFillDialogShip(1)">By Level</span>
+			<span class="shipfilter" onclick="chFillDialogShip(3)">By Name</span>
+			<span class="shipfilter" onclick="chFillDialogShip(0)">By Date</span>
+			</div>
+			<div style="height:25px">
+			<span class="shipfilter" onclick="chFilterDialogShip(['DD'])">DD</span>
+			<span class="shipfilter" onclick="chFilterDialogShip(['CL','CLT'])">CL(T)</span>
+			<span class="shipfilter" onclick="chFilterDialogShip(['CA','CAV'])">CA</span>
+			<span class="shipfilter" onclick="chFilterDialogShip(['BB','FBB','BBV'])">BB</span>
+			<span class="shipfilter" onclick="chFilterDialogShip(['CVL'])">CVL</span>
+			<span class="shipfilter" onclick="chFilterDialogShip(['CV','CVB'])">CV</span>
+			<span class="shipfilter" onclick="chFilterDialogShip(['SS','SSV','AV','AS','AR','AO','CT','LHA','DE'])">Other</span>
+			</div>
+			<div id="ssremove" onclick="chTableRemoveShip(DIALOGFLEETSEL,DIALOGSLOTSEL);chDialogShipClose()"><span>Remove</span></div>
+			<table id="shipselecttable" class="dialog4"></table>
+		</div>
+		
+		<div id="dialogselequip" style="background-color:#EDE6D8;display:none">
+			<div id="equipfilters" style="width:320px"></div><br>
+			<div id="esremove" onclick="chSetEquip(-1)"><span>Remove</span></div>
+			<table id="equipselecttable" class="dialog3"></table>
+		</div>
+		
+		<div id="hbRepair" class="hoverbox">
+			<img src="assets/stats/fuel.png"/><span id="hbRFuel"></span><br>
+			<img src="assets/stats/steel.png"/><span id="hbRSteel"></span><br>
+			<img src="assets/stats/bucket.png"/><span id="hbRBucket"></span><br>
+		</div>
+		
+		<div id="hbResupply" class="hoverbox">
+			<img src="assets/stats/fuel.png"/><span id="hbSFuel"></span><br>
+			<img src="assets/stats/ammo.png"/><span id="hbSAmmo"></span><br>
+			<img src="assets/stats/baux.png"/><span id="hbSBaux"></span><br>
+		</div>
+		
+		<div id="noclick"></div>
+		</div>
+		
+		<div id="dialogmainmenu">
+			<span>KanColle Event Simulator</span><span style="margin-left:20px;color:red;font-size:12px"></span>
+			<br><br><br>
+			<div id="menufileselect">
+				<span style="font-size:10px;color:red"><span id="menustorage"></span>/<span id="menustoragemax"></span> MB used</span>
+				<span style="font-size:10px;color:red;margin-left:20px" id="menustoragewarn">Please delete a file or use a new browser profile.</span>
+				<table id="tfileselect">
+					<tr class="chfile" onclick="chMenuClickedNewFile()"><td>
+						<span style="margin-left:340px">New File</span>
+					</td></tr>
+				</table>
+				<div id="menufiledeleteprompt" style="display:none">
+					<div style="margin-top:20px">Delete file?</div>
+					<div><input type="button" value="Yes" onclick="chMenuDeleteFile()"/><input type="button" value="No" onclick="$('#menufiledeleteprompt').hide()"/></div>
+				</div>
+			</div>
+			<div id="menuevents">
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/yl66bLe.png)"><img src="http://i.imgur.com/qEAfodg.png" alt="Spring 2013" title="Spring 2013" onclick="chMenuSelectedEvent(22)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/N0VJyTd.png)"><img src="http://i.imgur.com/L3be5aR.png" alt="Summer 2013" title="Summer 2013" onclick="chMenuSelectedEvent(23)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/aPx281n.png)"><img src="http://i.imgur.com/6WjZOpE.png" alt="Fall 2013" title="Fall 2013" onclick="chMenuSelectedEvent(24)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/WGhBfSf.jpg)"><img src="http://i.imgur.com/HGuOC0q.jpg" alt="Winter 2013" title="Winter 2013" onclick="chMenuSelectedEvent(25)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/txZwlUB.png)"><img src="http://i.imgur.com/Xs9uKF7.png" alt="Spring 2014" title="Spring 2014" onclick="chMenuSelectedEvent(26)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/1rQiUHS.jpg)"><img src="http://i.imgur.com/TsVcRjn.jpg" alt="Summer 2014" title="Summer 2014" onclick="chMenuSelectedEvent(27)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/N9FDaqh.png)"><img src="http://i.imgur.com/JJYgFR8.png" alt="Fall 2014" title="Fall 2014" onclick="chMenuSelectedEvent(28)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/0Hva9QA.png)"><img src="http://i.imgur.com/eLlUiO1.png" alt="Winter 2015" title="Winter 2015" onclick="chMenuSelectedEvent(29)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/Hjh3Gbj.png)"><img src="http://i.imgur.com/3NvBtqp.png" alt="Spring 2015" title="Spring 2015" onclick="chMenuSelectedEvent(30)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/2qArUXu.png)"><img src="http://i.imgur.com/rB0Q7Z6.png" alt="Summer 2015" title="Summer 2015" onclick="chMenuSelectedEvent(31)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/46s7gmq.png)"><img src="http://i.imgur.com/JWmN8EI.png" alt="Fall 2015" title="Fall 2015" onclick="chMenuSelectedEvent(32)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/EOmqNW3.png)"><img src="http://i.imgur.com/6VkAYeA.png" alt="Winter 2016" title="Winter 2016" onclick="chMenuSelectedEvent(33)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/6zdOwyN.png)"><img src="http://i.imgur.com/8Di99lM.png" alt="Spring 2016" title="Spring 2016" onclick="chMenuSelectedEvent(34)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/CSkq7eN.png)"><img src="http://i.imgur.com/xjkzbxs.png" alt="Summer 2016" title="Summer 2016" onclick="chMenuSelectedEvent(35)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/7IvVhBr.png)"><img src="http://i.imgur.com/szScvvM.png" alt="Fall 2016" title="Fall 2016" onclick="chMenuSelectedEvent(36)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/hYXVnmU.png)"><img src="http://i.imgur.com/g4hutmU.png" alt="Winter 2017" title="Winter 2017" onclick="chMenuSelectedEvent(37)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/J9DVNwf.png)"><img src="http://i.imgur.com/ztzHSkE.png" alt="Spring 2017" title="Spring 2017" onclick="chMenuSelectedEvent(38)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/DVZX6RR.png)"><img src="http://i.imgur.com/nOkdjn2.png" alt="Summer 2017" title="Summer 2017" onclick="chMenuSelectedEvent(39)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/Kvt6ikS.png)"><img src="http://i.imgur.com/xWMGYCa.png" alt="Fall 2017" title="Fall 2017" onclick="chMenuSelectedEvent(40)"/></div>
+				<div class="eventbutton" style="background-image:url(http://i.imgur.com/Oj9Svb7.png)"><img src="http://i.imgur.com/fRKQ4tM.png" alt="Winter 2018" title="Winter 2018" onclick="chMenuSelectedEvent(41)"/></div>
+				<div class="eventbutton" style="background-image:url(assets/maps/20/banner1.png)"><img src="assets/maps/20/banner2.png" alt="Phase 1 Classic" title="Phase 1 Classic" onclick="chMenuSelectedEvent(20)"/></div>
+			</div>
+			<div id="menuloadfile">
+				<img src="" id="menucurbanner" /><br>
+				<div><input type="button" value="Back" onclick="chMenuBackEvent()" /></div>
+				<br>
+				<div id="menuImportKC3">
+					<label for="fileKC3" style="font-weight:bold">Import .kc3 file: </label><input type="file" id="fileKC3" accept=".kc3" onchange="chLoadKC3File()"/>
+					<input id="btnImportOther" type="button" style="margin-left:130px" value="Import Other Format" /><br>
+					<span style="font-size:10px">Strategy Room > Profile > Export Basic Profile (player info, fleets, ships, equipment, config)</span>
+				</div>
+				<div id="menuImportOther">
+					<span style="font-weight:bold">Import API/fleetanalysis Format:</span><input id="btnImportKC3" type="button" style="margin-left:320px" value="Import KC3 format" /><br>
+					<table>
+					<tr><td><label for="inpImportOtherShip">Ship: </label></td><td><textarea rows="1" id="inpImportOtherShip" style="resize:none"></textarea></td><td>    </td>
+					<td><label for="inpImportOtherEquip">Equipment: </label></td><td><textarea rows="1" id="inpImportOtherEquip" style="resize:none"></textarea></td></tr>
+					<tr><td><label for="inpImportOtherName">Name: </label></td><td><input id="inpImportOtherName" /></td><td>    </td>
+					<td><label for="inpImportOtherHQ">HQ Level: </label></td><td><input id="inpImportOtherHQ" type="number" min="1" max="120" style="width:50px" /></td></tr>
+					</table>
+					<input id="btnImportOtherSubmit" type="button" value="Import" /><span id="spanImportOtherError" style="margin-left:20px;color:red"></span><br>
+					<span style="font-size:10px">ElectronicObserver: View > Fleet > #1 > Right click header row > Copy Ship/Equip List (kancolle-fleetanalysis) > paste in Ship/Equipment</span><br>
+					<span style="font-size:10px">Chrome Only: <a href="https://kancolle-fleetanalysis.firebaseapp.com/#/">fleetanalysis</a> > 艦隊入力 > 艦隊情報反映 > 反映手順 (Chromeブラウザの使用を想定) > follow guide, paste result in Ship</span><br>
+					<span style="font-size:10px;margin-left:150px">装備入力 > 装備情報反映 > 反映手順 (Chromeブラウザの使用を想定) > follow guide, paste result in Equipment</span>
+				</div>
+				<div id="menufinfo" style="display:none"><br><span id="menufrank"></span> <span id="menufname"></span><span style="margin-left:20px">HQ </span><span id="menufhq"></span><span id="menufdate" style="margin-left:20px"></span></div>
+			</div>
+			<br>
+			<div id="menusettings">
+				<span style="font-weight:bold">Settings</span><br>
+				<input type="checkbox" id="menusships" /><label for="menusships">Disable unreleased ships?</label><br>
+				<input type="checkbox" id="menusequips" /><label for="menusequips">Disable unreleased equipment?</label><br>
+				<label for="menusmechanics">Mechanics: </label>
+				<select id="menusmechanics">
+					<option value="2013-04-23">2013-04-23: Initial</option>
+					<option value="2013-08-25">2013-08-25: Flagship Protection</option>
+					<option value="2014-02-26">2014-02-26: ASW Synergy</option>
+					<option value="2014-04-23">2014-04-23: Artillery Spotting</option>
+					<option value="2014-07-28">2014-07-28: Fit Gun</option>
+					<option value="2014-10-10">2014-10-10: AP Shell Bonus</option>
+					<option value="2014-10-24">2014-10-24: Improvement</option>
+					<option value="2014-11-14">2014-11-14: Anti-Air Cut-In</option>
+					<option value="2015-08-10">2015-08-10: Aircraft Proficiency</option>
+					<option value="2016-06-30">2016-06-30: Opening ASW</option>
+					<option value="2017-01-10">2017-01-10: Engine Synergy</option>
+					<option value="2017-03-17">2017-03-17: Shelling Soft-Cap = 180</option>
+					<option value="2017-09-12">2017-09-12: Carrier Cut-In</option>
+					<option value="2017-10-25">2017-10-25: Destroyer Night Cut-In</option>
+					<option value="2017-11-10">2017-11-10: ASW Soft-Cap = 150</option>
+					<option value="2017-11-17">2017-11-17: LBAS/Support Revamp</option>
+					<option value="2017-12-22">2017-12-22: Equipment Bonus</option>
+				</select><br>
+				<label for="menusdiff">Difficulty Selection: </label>
+				<select id="menusdiff">
+					<option value="1">Automatic By HQ Level</option>
+					<option value="2">By Choice</option>
+				</select><br>
+				<!--<label for="menustime">Enable Time-based Mechanics: </label>
+				<input type="checkbox" id="menustime" disabled />
+				<span style="font-size:9px">(Morale is instantly restored, sparkling is free, map HP regen and debuff reset are disabled.)</span>
+				<br><br>-->
+				<input type="checkbox" id="menuslock" /><label for="menuslock">Disable Ship Locking?</label><br>
+				<input type="checkbox" id="menusraidreq" /><label for="menusraidreq">Disable LBAS Raid Gimmick Requirements?</label><br>
+				<input type="checkbox" id="menusunlock" /><label for="menusunlock">Start with all maps unlocked?</label><br><br>
+				<input type="button" value="Restore Defaults" onclick="chMenuDefaultSettings()" />
+				<input type="button" value="Done" id="menusdone" onclick="chMenuDone()" disabled />
+			</div>
+		</div>
+		
+		<div id="dialogreward" style="display:none;width:380px;height:280px;background-image:url('assets/maps/rewardbox.png');overflow:hidden">
+			<img id="rewardshine" src="assets/maps/rewardshine.png" style="position:absolute;margin-left:-70px;margin-top:-95px" />
+			<img id="rewardship" src="" style="position:absolute;margin-left:90px;margin-top:105px" />
+			<img id="rewardget" src="assets/maps/rewardget.png" style="position:absolute;margin-left:180px;margin-top:-30px" />
+		</div>
+		
+		<script src="js/playersound.js"></script>
+		<script src="js/playersound2.js"></script>
+		<script src="js/player.js"></script>
+		<script src="js/challenge-ui.js"></script>
+		<script src="js/chplayer2.js"></script>
+		<script src="js/challenge-menu.js"></script>
+	</body>
+</html>

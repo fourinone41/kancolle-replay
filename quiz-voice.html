@@ -1,0 +1,125 @@
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="js/kcSHIPDATA.js"></script>
+	<script src="js/shared.js"></script>
+	<script src="js/howler.min.js"></script>
+	<script src="js/playersound.js"></script>
+	<script src="js/playersound2.js"></script>
+	<style>
+		div.outer {
+			margin-top:50px;
+		}
+		div.inner {
+			text-align: center;
+			padding:3px;
+		}
+		#divScore {
+			font-size:20px;
+		}
+		#spanTimer {
+			font-size:24px;
+		}
+	</style>
+</head>
+<body>
+	<div class="outer">
+		<div class="inner" id="divScore">Score: <span id="spanScore">0</span></div>
+		
+		<div class="inner"><span id="spanTimer"></span></div>
+		
+		<div class="inner"><input type="button" id="btnStart" value="Start" /></div>
+		
+		<div class="inner"><input type="button" id="btnQuestion" value="&#9658;" /></div>
+		
+		<div class="inner" id="divAnswer"><input id="txtAnswer" /><input type="button" id="btnSkip" value="Skip"/></div>
+	</div>
+	
+	<script>
+		var TIME = 120;
+		let d = new Date(TIME*1000);
+		$('#spanTimer').text(d.toTimeString().substr(4,4));
+		(function() {
+			function Quiz() {
+				this.time = 120;
+				this.currentId = 0;
+				this.currentType = '';
+				this.done = [];
+				this.score = 0;
+			}
+
+			var QUIZ = new Quiz();
+			var QUESTIONS = [];
+			var SM = new SoundManager();
+			for (let mid in VOICES) {
+				if (mid < 1000 && SHIPDATA[mid].prev == 0) {
+					QUESTIONS.push(mid);
+				}
+			}
+			
+			function startTimer() {
+				var itvTimer = setInterval(function() {
+					QUIZ.time--;
+					let d = new Date(QUIZ.time*1000);
+					$('#spanTimer').text(d.toTimeString().substr(4,4));
+					if (QUIZ.time <= 0) {
+						clearInterval(itvTimer);
+						endQuiz();
+					}
+				}, 1000);
+			}
+			
+			function endQuiz() {
+				$('#btnQuestion').hide();
+				$('#divAnswer').hide();
+			}
+			
+			function nextQuestion() {
+				for (let i=0; i<1000; i++) {
+					QUIZ.currentId = QUESTIONS[Math.floor(Math.random()*QUESTIONS.length)];
+					if (QUIZ.done.indexOf(QUIZ.currentId) == -1) break;
+				}
+				let keys = []; for (let key in VOICES[QUIZ.currentId]) keys.push(key);
+				QUIZ.currentType = keys[Math.floor(Math.random()*keys.length)];
+				SM.playVoice(QUIZ.currentId, QUIZ.currentType, 0);
+				$('#txtAnswer').val('');
+			}
+			
+			function clearQuestion() {
+				QUIZ.done.push(QUIZ.currentId);
+				QUIZ.score++;
+				$('#spanScore').text(QUIZ.score);
+				nextQuestion();
+			}
+			
+			function checkAnswer() {
+				let answer = $('#txtAnswer').val();
+				if (answer.toLowerCase().replace(' ','') == SHIPDATA[QUIZ.currentId].name.toLowerCase().replace(' ','')) clearQuestion();
+			}
+		
+			$('#btnQuestion').hide();
+			$('#divAnswer').hide();
+			
+			$('#btnStart').click(function() {
+				$('#btnQuestion').show();
+				$('#divAnswer').show();
+				$('#txtAnswer').focus();
+				$('#btnStart').hide();
+				startTimer();
+				nextQuestion();
+			});
+			
+			$('#btnQuestion').click(function() {
+				SM.playVoice(QUIZ.currentId, QUIZ.currentType, 0);
+			});
+			
+			$('#btnSkip').click(function() {
+				nextQuestion();
+			});
+			
+			$('#txtAnswer').on('keyup',checkAnswer);
+		})();
+	</script>
+</body>
+</html>

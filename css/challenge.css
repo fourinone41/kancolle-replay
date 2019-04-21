@@ -1,0 +1,515 @@
+.fleettable {
+	border: 1px solid black;
+	border-collapse: collapse;
+	font-size:12px;
+	table-layout:fixed;
+	width: 966px;
+}
+.fleettable td {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	width: 160px;
+}
+.fleettable td.fleeteq {
+	border-top: 1px solid #aaaaaa;
+	height: 30px;
+	width: 160px;
+	white-space: nowrap;
+	overflow:hidden;
+	cursor:pointer;
+}
+.fleettable td.fleeteq span{
+	vertical-align: middle;
+}
+.fleettable td.fleeteq img{
+	vertical-align: middle;
+	width: 30px;
+	height: 30px;
+}
+.fleettable div.hpouter {
+	width:65px;
+	height:5px;
+	border-radius:5px;
+	border:1px solid black;
+	overflow:hidden;
+	float:right;
+	margin-right:5px;
+	vertical-align:middle;
+}
+.fleettable div.hpinner {
+	height:5px
+}
+
+div.ftwrap {
+	padding: 2px;
+	border-radius: 12px;
+	background-color: #DDEEFF;
+	overflow: auto;
+	float:left;
+}
+div.ftinfo {
+	float:left;
+	height: 20px;
+	vertical-align: middle;
+	border-radius: 12px;
+	background-color: white;
+	font-weight: bold;
+	font-family: Arial;
+	padding: 3px 6px;
+	margin: 2px;
+}
+div.ftinfo img {
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
+table.t2 {
+	width: 160px;
+	border-radius: 12px;
+	background-color: #FFFFCC;
+	font-size: 10px;
+	font-family: Arial;
+	float: left;
+	margin: 2px;
+	border-collapse: collapse;
+}
+table.t2 td {
+	width: 40px;
+	padding: 2px;
+}
+table.t2 div.t2name {
+	color: white;
+	font-weight: bold;
+	border: 1px solid #336699;
+	background-color: #7799BB;
+	border-radius: 8px;
+	display: inline-block;
+	padding: 0 4px 0 4px;
+	font-size: 16px;
+}
+table.t2 div.t2name:hover {
+	border-color: red;
+	cursor: pointer;
+}
+table.t2 img.t2portrait {
+	width: 160px;
+	height: 40px;
+}
+table.t2 img.t2lock {
+	position: absolute;
+	margin-left: -130px;
+	margin-top: -3px;
+	pointer-events: none;
+}
+table.t2 div.t2hpouter {
+	border: 1px solid black;
+	background-color: white;
+	border-radius: 5px;
+	width: 65px;
+	height: 5px;
+}
+table.t2 div.t2hpinner {
+	background-color: limegreen;
+	border-radius: 5px;
+	width: 65px;
+	height: 5px;
+}
+table.t2 div.t2resouter {
+	position:absolute;
+	margin-left:24px;
+	margin-top:-16px;
+	width:48px;
+	height:6px;
+	background-color:white;
+	border:1px solid black;
+}
+table.t2 div.t2resinner {
+	position:absolute;
+	margin-left:25px;
+	margin-top:-15px;
+	width:48px;
+	height:6px;
+}
+table.t2 span.t2lvlnum {
+	font-weight:bold;
+	font-size: 14px;
+}
+table.t2 div.t2equip {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 160px;
+	height: 25px;
+	border: 1px solid transparent;
+	vertical-align: middle;
+	background-color: #F4F4BB;
+	background-position: 130px 0;
+	background-repeat: no-repeat;
+}
+table.t2 div.t2equip:hover {
+	border: 1px solid red;
+	cursor: pointer;
+}
+table.t2 div.t2equipno {
+	width: 160px;
+	height: 25px;
+	border: 1px solid transparent;
+}
+table.t2 div.t2equip img {
+	vertical-align: middle;
+	width: 25px;
+	height: 25px;
+}
+table.t2 div.t2equip span.t2slotnum {
+	position: absolute;
+	font-weight: bold;
+	margin-left: -25px;
+}
+table.t2 div.t2equip span.t2imprnum {
+	position: absolute;
+	font-weight: bold;
+	margin-left: 5px;
+	margin-top: 15px;
+	color: #45A9A5;
+}
+table.t2 div.t2equipex {
+	border-radius: 15px;
+}
+table.t2 div.t2stat {
+	margin: 1px 0 1px 0;
+}
+table.t2 div.t2stat span{
+	font-size: 12px;
+	font-weight: bold;
+	color: #0000aa;
+}
+table.t2 div.t2stat img{
+	vertical-align: middle;
+	width: 12px;
+	height: 12px;
+	padding-right:2px;
+}
+div.t2head {
+	width: 960px;
+	height: 30px;
+	border-radius: 12px;
+	background-color: #88ff88;
+	font-size: 16px;
+}
+tr.t2unequiprow div {
+	height: 15px;
+	width: 15px;
+	margin-left: 5px;
+	margin-top: 2px;
+	color: #1AACAF;
+	font-size: 14px;
+	margin-top: -7px;
+	cursor: pointer;
+}
+tr.t2unequiprow div:hover {
+	color: #7FE2DB;
+}
+tr.t2supplyrow {
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+tr.t2supplyrow:hover {
+	border: 1px solid red;
+}
+td.t2hpcell {
+	border: 1px solid transparent;
+	cursor: pointer;
+}
+td.t2hpcell:hover {
+	border-color: red;
+}
+div.t2morale {
+	border: 1px solid transparent;
+	border-radius: 5px;
+	height:20px;
+	width:25px;
+	font-size: 12px;
+	cursor: pointer;
+	margin-left: 5px;
+	background-color: yellow;
+}
+div.t2morale span {
+	margin: 5px 0 0 5px;
+}
+div.t2morale:hover {
+	border-color: red;
+}
+
+table.dialog3, table.dialog4 {
+	font-size:12px;
+	border-spacing: 0 2px;
+	width: 360px;
+}
+table.dialog3 tr, table.dialog4 tr {
+	background-color: #ffffff;
+}
+table.dialog3 tr:hover, table.dialog4 tr:hover {
+	background-color: #78BEB5;
+	cursor: pointer;
+}
+table.dialog3 td.left {
+	border: 1px solid black;
+	border-right: 0;
+	width: 10%;
+}
+table.dialog3 td {
+	border: 1px solid black;
+	border-left: 0;
+	height: 40px;
+}
+table.dialog3 img.imgstat {
+	vertical-align:middle;
+	margin-left: 12px;
+	margin-right: 2px;
+}
+table.dialog3 img.equipbgimg {
+	position: absolute;
+	left: 216px;
+	margin-top: -28px;
+	opacity:0.4;
+}
+
+table.dialog4 td.left {
+	border: 1px solid black;
+	border-right: 0;
+	padding-left: 8px;
+}
+table.dialog4 td.right {
+	border: 1px solid black;
+	border-left: 0;
+}
+table.dialog4 td {
+	border: 1px solid black;
+	border-left: 0;
+	border-right: 0;
+	height: 40px;
+}
+table.dialog4 img {
+	vertical-align: middle;
+}
+
+
+#esremove, #ssremove {
+	height: 40px;
+	width: 358px;
+	background-color: white;
+	border: 1px solid black;
+}
+
+#esremove:hover, #ssremove:hover {
+	background-color: #78BEB5;
+	cursor: pointer;
+}
+
+#esremove span, #ssremove span {
+	margin-left: 38px;
+	font-size: 14px;
+}
+
+.shipfilter {
+	border:1px solid transparent;
+	border-radius:5px;
+	margin-right: 10px;
+	padding:3px;
+}
+.shipfilter:hover {
+	border:1px solid #ff0000;
+	border-radius:5px;
+	cursor:pointer;
+}
+
+.itemfilter {
+	border:1px solid transparent;
+	border-radius:5px;
+}
+.itemfilter:hover {
+	border:1px solid #ff0000;
+	border-radius:5px;
+	cursor:pointer;
+}
+
+#sortiespace {
+	width:750px;
+	height:400px;
+	background-color:#375524;
+	border:8px solid #D3B47B;
+	padding:5px
+}
+
+.mainbutton {
+	height:40px;
+	width:120px;
+	border-radius:5px;
+	background-color:#D0D0D0;
+	cursor:pointer;
+	float:left;
+	margin-left:20px;
+	display:table-cell;
+	text-align:center;
+}
+.mainbutton div {
+	margin-top: 6px;
+}
+.mainbutton img, .mainbutton span {
+	vertical-align:middle;
+}
+.mainbutton:hover {
+	background-color:#A0A0A0;
+}
+
+.hoverbox {
+	display:none;
+	position:absolute;
+	width:100px;
+	height:70px;
+	border:2px solid black;
+	border-radius:5px;
+	background-color:white;
+	padding:5px;
+}
+
+.hoverbox img {
+	vertical-align:middle;
+	margin-right:10px;
+}
+
+#noclick {
+	background-color:lightblue;
+	opacity:.2;
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+}
+
+#dialogmainmenu {
+	width: 800px;
+	height: 600px;
+	display: none;
+}
+#menufileselect  td{
+	border: 1px solid black;
+	width: 760px;
+	height: 100px;
+}
+#menuloadfile {
+	font-size:14px;
+}
+#menusettings {
+	font-size: 14px;
+}
+#menusettings select {
+	margin: 5px 0;
+}
+.eventbutton {
+	background-repeat:no-repeat;
+}
+.eventbutton img {
+	visibility:hidden;
+}
+.eventbutton:hover img {
+	visibility:visible;
+	cursor:pointer;
+}
+
+.menufiledelete {
+	position:absolute;
+	margin-left:735px;
+	width:25px;
+	height:25px;
+	color:red;
+	opacity:.5;
+	text-align:center;
+}
+.menufiledelete:hover {
+	opacity:1;
+}
+#menufiledeleteprompt {
+	position:absolute;
+	width:762px;
+	height:102px;
+	border:1px solid black;
+	text-align:center;
+	background-color:#ffeeee;
+}
+
+#btnMenu{
+	color:blue;
+	font-size:24px;
+	cursor:pointer;
+}
+
+tr.chfile {
+	cursor:pointer;
+}
+tr.chfile:hover {
+	background-color: #BBBBBB;
+}
+
+.tabfleet {
+	width:150px;
+	height:100px;
+	border-radius:8px;
+	background-color:#DDEEFF;
+}
+.tabfleet[value^="1"] {
+	background-color:#C4D4E4;
+}
+.tabfleet[value^="1"]:hover {
+	cursor:pointer;
+}
+.tabfleet img {
+	margin:8px;
+	height:20px;
+	vertical-align:middle;
+}
+.tabfleet span {
+	margin-left:16px;
+	vertical-align:middle;
+	font-weight:bold;
+}
+
+.btnsupport {
+	cursor:pointer;
+	opacity:.5;
+	width:50px;
+	height:50px;
+	border-radius:5px;
+	background-color:#808080;
+}
+
+#resourcespace table {
+	width: 160px;
+}
+#resourcespace span {
+	color: red;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+#resourcespace img {
+	vertical-align: middle;
+}
+
+@keyframes fadein {
+	from {opacity:0}
+	to {opacity:1}
+}
+
+@keyframes spin {
+	100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }
+}
+
+@keyframes appear {
+	from {opacity:0; transform: scale(4); }
+	to {opacity:1; transfrom: scale(1); }
+}
+
+@keyframes glow {
+	from { color: #FF0000; }
+	to { color: #FFDDDD; }
+}

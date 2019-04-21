@@ -1,0 +1,290 @@
+{
+	"1": {
+		"boss": 0, 
+		"name": "敵北方遊撃任務部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1523, 1522, 1522, 1519, 1576, 1576], 
+				"geth": 5, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1523, 1522, 1522, 1518, 1576, 1576], 
+				"geth": 6, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1522, 1522, 1522, 1519, 1576, 1576], 
+				"geth": 7, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1522, 1522, 1519, 1518, 1576, 1576], 
+				"geth": 8, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1522, 1522, 1519, 1576, 1502, 1502], 
+				"geth": 9, 
+				"experience": 155, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1522, 1522, 1518, 1576, 1502, 1502], 
+				"geth": 10, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "敵水雷戦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1554, 1521, 1576, 1576, 1502, 1502], 
+				"geth": 8, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1554, 1521, 1576, 1576, 1502, 1502], 
+				"geth": 8, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1521, 1521, 1521, 1576, 1502, 1502], 
+				"geth": 9, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1521, 1521, 1521, 1576, 1502, 1502], 
+				"geth": 9, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1554, 1576, 1576, 1502, 1502], 
+				"geth": 10, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1554, 1576, 1576, 1502, 1502], 
+				"geth": 10, 
+				"experience": 160, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "敵北方水上打撃艦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1524, 1524, 1522, 1519, 1576, 1576], 
+				"geth": 2, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1524, 1524, 1522, 1519, 1576, 1576], 
+				"geth": 3, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1524, 1522, 1522, 1518, 1576, 1576], 
+				"geth": 4, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1524, 1522, 1522, 1518, 1576, 1576], 
+				"geth": 5, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1524, 1522, 1518, 1576, 1502, 1502], 
+				"geth": 6, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1524, 1522, 1518, 1576, 1502, 1502], 
+				"geth": 7, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 0, 
+		"name": "敵北方攻撃任務群 先遣護衛戦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1554, 1576, 1576, 1576], 
+				"geth": 8, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1554, 1576, 1576, 1576], 
+				"geth": 8, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1527, 1527, 1518, 1576, 1576, 1576], 
+				"geth": 9, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1518, 1576, 1576, 1576], 
+				"geth": 9, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1518, 1576, 1502, 1502], 
+				"geth": 10, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1555, 1518, 1518, 1576, 1502, 1502], 
+				"geth": 10, 
+				"experience": 170, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 0, 
+		"name": "敵北方攻撃任務群 機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1528, 1528, 1529, 1524, 1577, 1577], 
+				"geth": 0, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1528, 1528, 1529, 1524, 1576, 1576], 
+				"geth": 0, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1528, 1528, 1524, 1524, 1576, 1576], 
+				"geth": 0, 
+				"experience": 280, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1528, 1525, 1524, 1524, 1576, 1576], 
+				"geth": 1, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1528, 1525, 1524, 1576, 1502, 1502], 
+				"geth": 2, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1525, 1525, 1524, 1576, 1502, 1502], 
+				"geth": 3, 
+				"experience": 220, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"12": {
+		"boss": 1, 
+		"name": "敵キス島包囲艦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1519, 1577, 1577, 1577, 1526], 
+				"geth": 0, 
+				"experience": 390, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1555, 1519, 1577, 1577, 1577, 1526], 
+				"geth": 0, 
+				"experience": 390, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1518, 1577, 1577, 1513, 1513], 
+				"geth": 1, 
+				"experience": 360, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1555, 1518, 1577, 1577, 1513, 1513], 
+				"geth": 1, 
+				"experience": 360, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1554, 1518, 1576, 1576, 1513, 1513], 
+				"geth": 2, 
+				"experience": 340, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1554, 1518, 1576, 1576, 1513, 1513], 
+				"geth": 3, 
+				"experience": 340, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

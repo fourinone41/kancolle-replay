@@ -1,0 +1,205 @@
+{
+	"2": {
+		"boss": 0, 
+		"name": "敵攻略支援部隊A群", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1527, 1523, 1523, 1591, 1575, 1575], 
+				"geth": 14, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1527, 1523, 1523, 1591, 1575, 1575], 
+				"geth": 17, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1527, 1523, 1591, 1575, 1575, 1575], 
+				"geth": 20, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "敵攻略支援部隊B群", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1560, 1560, 1524, 1591, 1575, 1575], 
+				"geth": 12, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1560, 1529, 1522, 1591, 1575, 1575], 
+				"geth": 16, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1529, 1523, 1522, 1591, 1575, 1575], 
+				"geth": 16, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1529, 1522, 1522, 1523, 1575, 1575], 
+				"geth": 20, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "敵空母機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1579, 1592, 1576, 1575, 1575], 
+				"geth": 5, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1591, 1591, 1575, 1575], 
+				"geth": 10, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1591, 1591, 1575, 1575, 1575], 
+				"geth": 15, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1579, 1591, 1591, 1575, 1575, 1575], 
+				"geth": 15, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "敵高速水上打撃部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1543, 1527, 1522, 1592, 1577, 1577], 
+				"geth": 2, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1543, 1522, 1592, 1577, 1576, 1576], 
+				"geth": 3, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1543, 1522, 1592, 1577, 1576, 1576], 
+				"geth": 4, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "敵任務部隊B群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1560, 1591, 1577, 1576], 
+				"geth": 0, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1560, 1591, 1577, 1576], 
+				"geth": 1, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1591, 1591, 1576, 1576], 
+				"geth": 3, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 0, 
+		"name": "敵任務部隊A群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1567, 1524, 1524, 1592, 1577, 1577], 
+				"geth": 0, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1565, 1529, 1592, 1577, 1576, 1576], 
+				"geth": 1, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1566, 1529, 1523, 1591, 1577, 1577], 
+				"geth": 2, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 1, 
+		"name": "敵攻略部隊本体", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1558, 1579, 1567, 1592, 1578, 1578], 
+				"geth": 0, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1558, 1579, 1567, 1592, 1578, 1578], 
+				"geth": 1, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1558, 1567, 1592, 1592, 1578, 1578], 
+				"geth": 2, 
+				"experience": 420, 
+				"choose_rate": 0
+			}
+		}
+	}
+}
