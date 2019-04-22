@@ -4847,7 +4847,8 @@ var EQDATA = {
 		name: 'Abyssal Ambush Torpedo',
 		nameJP: '深海待伏魚雷',
 		added: '2017-11-19',
-		type: MIDGETSUB,
+		type: TORPEDO, //is actually midget sub, but doesn't allow opening torp
+		btype: 0,
 		TP: 19,
 		ACC: 9,
 		RNG: 1,
@@ -4973,7 +4974,8 @@ var EQDATA = {
 		name: 'Abyssal Target',
 		nameJP: '深海標的',
 		added: '2018-12-27',
-		type: MIDGETSUB,
+		type: TORPEDO, //is actually midget sub, but doesn't allow opening torp
+		btype: 0,
 		FP: 4,
 		TP: 18,
 		ACC: 9,
