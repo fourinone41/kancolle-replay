@@ -5337,6 +5337,13 @@ var EQUIPBONUSDATA = {
 		{ bonus: { FP: 3, EV: 3, LOS: 4, /*RNG: 3*/ }, shipClass: [87,91] },
 		{ bonus: { FP: 2, EV: 3, LOS: 4 }, shipClass: [65,69,83,84] },
 	],
+	314: [ //533mm quint init
+		{ bonus: { FP: 1, TP: 3 }, shipClass: [87,91] },
+	],
+	315: [ //SG init
+		{ bonus: { FP: 3, EV: 3, LOS: 4, /*RNG: 3*/ }, shipClass: [87,91] },
+		{ bonus: { FP: 2, EV: 3, LOS: 4 }, shipClass: [65,69,83,84] },
+	],
 };
 
 var EQUIPBONUSDATA2 = {

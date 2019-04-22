@@ -26,6 +26,8 @@ var MECHANICDATES = {
 	aswSoftCap: '2017-11-10',
 	LBASBuff: '2017-11-17',
 	equipBonus: '2017-12-22',
+	installRevamp: '2018-08-17',
+	specialAttacks: '2018-09-08',
 };
 
 var MECHANICDATESOTHER = {
@@ -738,6 +740,7 @@ function chProcessKC3File(reader){
 	$('#menufinfo').show();
 	$('#menusettings').show();
 }
+
 function chProcessKC3File2() {
 	var kcdata = CHDATA.kcdata;
 	delete CHDATA.kcdata;
@@ -1167,7 +1170,7 @@ function chDoStartChecksFleet(fleetnum,errors) {
 			first = false;
 		}
 		//ship lock
-		if (CHDATA.event.maps[MAPNUM].diff > 1 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
+		if (CHDATA.event.maps[MAPNUM].diff > 1 && CHDATA.event.maps[MAPNUM].diff < 4 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
 			errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
 		if (CHDATA.event.maps[MAPNUM].diff == 3 && mdata.checkLockHard && ship.lock && mdata.checkLockHard.indexOf(ship.lock) != -1)
 			errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
@@ -1867,7 +1870,6 @@ function chClickedSortieLeft() {
 	if (MAPNUM <= 1) return;
 	$('#srtHPBar').css('animation','');
 	chLoadSortieInfo(MAPNUM-1);
-	
 }
 
 function chClickedSortieRight() {

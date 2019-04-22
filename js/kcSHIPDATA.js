@@ -8945,6 +8945,7 @@ var SHIPDATA = {
 		ammo: 50,
 		next: 0,
 		prev: 491,
+		canTorp: function() { return false; },
 	},
 	373: {
 		name: 'Fujinami Kai',
@@ -11793,6 +11794,7 @@ var SHIPDATA = {
 		next: 372,
 		prev: 0,
 		nextlvl: 40,
+		canTorp: function() { return false; },
 	},
 	492: {
 		name: 'Richelieu',
@@ -20904,7 +20906,7 @@ var SHIPDATA = {
 		RNG: 1,
 		SPD: 5,
 		SLOTS: [52, 44, 0, 0],
-		EQUIPS: [586,582,553,553],
+		EQUIPS: [586,582,553,553]
 	},
 	1822: {
 		name: 'German Escort Princess 2',
@@ -20924,7 +20926,7 @@ var SHIPDATA = {
 		RNG: 1,
 		SPD: 5,
 		SLOTS: [72, 50, 0, 0],
-		EQUIPS: [586,582,553,553],
+		EQUIPS: [586,582,553,553]
 	},
 	1823: {
 		name: 'German Escort Princess 3',
@@ -20944,7 +20946,7 @@ var SHIPDATA = {
 		RNG: 1,
 		SPD: 5,
 		SLOTS: [92, 56, 0, 0],
-		EQUIPS: [586,582,553,553],
+		EQUIPS: [586,582,553,553]
 	},
 	1824: {
 		name: 'German Escort Princess - Damaged 1',
@@ -20963,8 +20965,8 @@ var SHIPDATA = {
 		unknownstats: true,
 		RNG: 1,
 		SPD: 5,
-		SLOTS: [0, 0, 0, 0],
-		EQUIPS: [586,582,553,553],
+		SLOTS: [72, 50, 0, 0],
+		EQUIPS: [586,582,553,553]
 	},
 	1825: {
 		name: 'German Escort Princess - Damaged 2',
@@ -20983,8 +20985,8 @@ var SHIPDATA = {
 		unknownstats: true,
 		RNG: 1,
 		SPD: 5,
-		SLOTS: [0, 0, 0, 0],
-		EQUIPS: [586,582,553,553],
+		SLOTS: [92, 56, 0, 0],
+		EQUIPS: [586,582,553,553]
 	},
 	1826: {
 		name: 'German Escort Princess - Damaged 3',
@@ -21003,8 +21005,8 @@ var SHIPDATA = {
 		unknownstats: true,
 		RNG: 1,
 		SPD: 5,
-		SLOTS: [0, 0, 0, 0],
-		EQUIPS: [586,582,553,553],
+		SLOTS: [98, 80, 0, 0],
+		EQUIPS: [586,582,553,553]
 	},
 	1827: {
 		name: 'Dock Princess 1',
@@ -21310,6 +21312,8 @@ var SHIPDATA = {
 		name: 'European Water Princess - Damaged 1',
 		nameJP: '欧州水姫-壊',
 		image: 'S1843.jpg',
+		imageBase: 'S1843.jpg',
+		imageBroken: 'S1843D.jpg',
 		type: 'BBV',
 		HP: 900,
 		FP: 330,
@@ -21330,6 +21334,8 @@ var SHIPDATA = {
 		name: 'European Water Princess - Damaged 2',
 		nameJP: '欧州水姫-壊',
 		image: 'S1843.jpg',
+		imageBase: 'S1843.jpg',
+		imageBroken: 'S1843D.jpg',
 		type: 'BBV',
 		HP: 900,
 		FP: 360,
@@ -21350,6 +21356,8 @@ var SHIPDATA = {
 		name: 'European Water Princess - Damaged 3',
 		nameJP: '欧州水姫-壊',
 		image: 'S1843.jpg',
+		imageBase: 'S1843.jpg',
+		imageBroken: 'S1843D.jpg',
 		type: 'BBV',
 		HP: 900,
 		FP: 390,
@@ -22277,6 +22285,7 @@ var SHIPDATAHISTORY = {
 		470: { FP: 59, AA: 80 },
 		476: { ASW: 64 },
 		487: { TP: 82, AA: 83, ASW: 85 },
+		541: { attackSpecial: null },
 		556: { TP: 76 },
 		557: { FP: 60, TP: 80 },
 		558: { TP: 81 },
@@ -22511,6 +22520,9 @@ var SHIPDATAHISTORY = {
 		556: { TP: 80 },
 		557: { FP: 61, TP: 82 },
 		558: { TP: 83 },
+	},
+	'2018-11-16': {
+		541: { attackSpecial: 101 },
 	},
 	'2018-12-07': {
 		188: { AA: 83, LUKmax: 70 },

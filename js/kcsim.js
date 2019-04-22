@@ -152,6 +152,8 @@ var MECHANICS = {
 	CVCI: true,
 	destroyerNBCI: true,
 	LBASBuff: false,
+	installRevamp: false,
+	specialAttacks: false
 };
 var NERFPTIMPS = false;
 var BREAKPTIMPS = false;
@@ -744,7 +746,7 @@ function shellPhaseAttack(ship,targetData,APIhou,attackSpecial) {
 }
 
 function canSpecialAttack(ship) {
-	return false; //disable
+	if (!MECHANICS.specialAttacks) return false;
 	if (ship.fleet.didSpecial) return false;
 	if (ship.attackSpecial == 100) {
 		if (ship.fleet.ships[0] != ship) return false;

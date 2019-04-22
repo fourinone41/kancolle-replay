@@ -993,6 +993,11 @@ function mapPhase(first) {
 	}
 
 	var curnode = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter];
+
+	if (MAPDATA[WORLD].maps[MAPNUM].transport && MAPDATA[WORLD].maps[MAPNUM].transport == curletter) {
+		CHDATA.sortie.reachedTransport = true;
+	}
+
 	if (curnode.end) {
 		if (curnode.dropoff) {
 			if (curnode.debuffGive) {
@@ -1024,10 +1029,6 @@ function mapPhase(first) {
 	}
 	
 	if (!curnode.routeS) mapPhase2(nextletter);
-	
-	if (MAPDATA[WORLD].maps[MAPNUM].transport && MAPDATA[WORLD].maps[MAPNUM].transport == curletter) {
-		CHDATA.sortie.reachedTransport = true;
-	}
 }
 
 function mapPhase2(nextletter) {
