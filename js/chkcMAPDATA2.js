@@ -28656,6 +28656,7 @@ var MAPDATA = {
 						setupSpecial: function(){
 							for (let ship of FLEETS1[0].ships.concat(FLEETS1[1] ? FLEETS1[1].ships : [])) {
 								if(MAPDATA[42].historical.italians.indexOf(getBaseId(ship.mid)) != -1) ship.bonusSpecial = { mod : 1.25};
+								else if (ship.type == 'DD') ship.bonusSpecial = { mod: 1.2 }; //guess
 							}
 						},
 						compDiff: {
