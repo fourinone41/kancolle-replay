@@ -28180,7 +28180,7 @@ var MAPDATA = {
 								return checkELoS33(getELoS33(1,1),{ 0: 'L', 3: 'M' });
 							}
 							this.showLoSPlane = 'K';
-							return checkELoS33(getELoS33(1,1),{ 0: 'L', 3: 'K' });
+							return checkELoS33(getELoS33(1,1,true),{ 0: 'L', 3: 'K' });
 						}
 					},
 					'K': {
@@ -29278,7 +29278,19 @@ var MAPDATA = {
 						debuffGive: function() {
 							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[5].debuff.I = 1;
 						},
-						routeL: { 3: 'J', 0: 'G' }
+						routeC: function(ships) {
+							this.showLoSPlane = 'J';
+							let result = checkELoS33(getELoS33(1,1,true),{ 3: 'J', 0: 'G' });
+							if (result == 'G') return 'G';
+							if (CHDATA.event.maps[5].routes && CHDATA.event.maps[5].routes.indexOf(1) != -1) {
+								if (CHDATA.fleets.combined == 2) return this.showLoSPlane = 'L';
+								if (ships.AO + ships.escort.AO) return this.showLoSPlane = 'L';
+								let ids = ships.ids.concat(ships.escort.ids);
+								let historicals = MAPDATA[42].historical.marinenationale.concat(MAPDATA[42].historical.kriegsmarine);
+								if (checkHistorical(historicals,ids,[2,2,2,2])) return this.showLoSPlane = 'L';
+							}
+							return 'J';
+						}
 					},
 					'J': {
 						type: 1,
