@@ -487,7 +487,7 @@ function chDialogItemFilter(category) {
 		case 5: types=[FIGHTER,INTERCEPTOR]; break;
 		case 6: types=[DIVEBOMBER,LANDBOMBER]; break;
 		case 7: types=[TORPBOMBER]; break;
-		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2]; break;
+		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
 		case 9: types=[RADARS,RADARL,RADARXL]; break;
 		case 10: types=[DEPTHCHARGE,SONARS,SONARL]; break;
 		case 11: types=[APSHELL,TYPE3SHELL]; break;
