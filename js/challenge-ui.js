@@ -681,6 +681,7 @@ function chLoadFleetData(){
 		ship.mod = ship_data.api_kyouka
 
 		var ship_base_data = SHIPDATA[ship.masterId];
+		if (!SHIPDATA[ship.masterId]) continue;
 
 		// HP = Base HP + Marriage HP + HP Mod
 		if(ship.level > 99){
