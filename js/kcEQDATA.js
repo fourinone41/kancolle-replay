@@ -4080,6 +4080,15 @@ var EQDATA = {
 		ASW: 13,
 		LOS: 4,
 	},
+	501: {
+		name: '5inch Single Cannon',
+		nameJP: '5inch単装砲',
+		type: MAINGUNS,
+		btype: B_MAINGUN,
+		atype: A_GUN,
+		FP: 1,
+		RNG: 1,
+	},
 	502: {
 		name: '5inch Twin Cannon',
 		nameJP: '5inch連装砲',
