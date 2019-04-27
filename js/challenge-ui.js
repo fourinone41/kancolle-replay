@@ -652,10 +652,10 @@ function chLoadFleetData(){
 		equip.stars = equipment.api_level;
 		equip.lock = 1;
 		
-		if(EQTDATA[EQDATA[equip.masterId].type].canAce && (EQDATA[equip.masterId].canAce === undefined || EQDATA[equip.masterId].canAce)){
+		if(EQDATA[equip.masterId] && EQTDATA[EQDATA[equip.masterId].type].canAce && (EQDATA[equip.masterId].canAce === undefined || EQDATA[equip.masterId].canAce)){
 			equip.ace = 7;
 		}
-
+		
 		CHDATA.kcdata.gears["x"+id++] = equip;
 	}
 
