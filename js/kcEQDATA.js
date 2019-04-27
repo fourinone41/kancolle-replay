@@ -117,7 +117,7 @@ EQTDATA[MAINGUNM] = {
 	atype: A_GUN,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['CL','CT','CLT','CA','CAV','BB','BBV'],
-	canequipS: [372, 491, 500]
+	canequipS: [372, 491, 500, 581, 690, 586]
 };
 EQTDATA[MAINGUNL] = {
 	name: 'Main Gun (L)',
@@ -205,7 +205,7 @@ EQTDATA[SONARS] = {
 	btype: B_SONAR,
 	improve: {Pshell:.75,Pasw:1,ACCasw:1.3,EVtorp:1.5},
 	canequip: ['DD','CL','CT','CLT','SS','SSV','DE'],
-	canequipS: [352, 372, 380, 450, 491, 500, 529, 546, 534, 381, 536],
+	canequipS: [352, 372, 380, 450, 491, 500, 529, 546, 534, 381, 536, 690, 586],
 };
 EQTDATA[SONARL] = {
 	name: 'Sonar',
@@ -213,7 +213,7 @@ EQTDATA[SONARL] = {
 	btype: B_SONAR,
 	canequip: ['CA','CAV','FBB','BB','BBV','CVL','CV','CVB','AS','AV','LHA'],
 	canequipS: [500],
-	cannotequipS: [380, 521, 526, 534, 381]
+	cannotequipS: [380, 521, 526, 534, 381, 586]
 };
 EQTDATA[DEPTHCHARGE] = {
 	name: 'Depth Charge',
@@ -222,16 +222,15 @@ EQTDATA[DEPTHCHARGE] = {
 	improve: {Pshell:.75,Pasw:1,ACCasw:1.3},
 	canequip: ['DD','CL','CT','CLT','AV','DE'],
 	canequipS: [380, 500, 529, 534, 381, 536],
-	cannotequipS: [372, 491]
+	cannotequipS: [372, 491, 581, 690, 586]
 };
 EQTDATA[FIGHTER] = {
 	name: 'Fighter',
 	image: 6,
 	canequip: ['CVL','CV','CVB','LHA','LandBase'],
-	canequipS: [553],
+	canequipS: [553,554],
 	isPlane: true,
 	isfighter: true,
-	canAce: true,
 };
 EQTDATA[TORPBOMBER] = {
 	name: 'Torpedo Bomber',
@@ -243,17 +242,15 @@ EQTDATA[TORPBOMBER] = {
 	canContact: true,
 	isfighter: true,
 	istorpbomber: true,
-	canAce: true,
 };
 EQTDATA[DIVEBOMBER] = {
 	name: 'Dive Bomber',
 	image: 7,
 	canequip: ['CVL','CV','CVB','LandBase'],
-	canequipS: [553],
+	canequipS: [553,554],
 	isPlane: true,
 	isfighter: true,
 	isdivebomber: true,
-	canAce: true,
 };
 EQTDATA[SEAPLANE] = {
 	name: 'Recon Seaplane',
@@ -264,7 +261,6 @@ EQTDATA[SEAPLANE] = {
 	cannotequipS: [477, 478],
 	isPlane: true,
 	canContact: true,
-	canAce: true,
 };
 EQTDATA[SEAPLANEBOMBER] = {
 	name: 'Seaplane Bomber',
@@ -275,17 +271,15 @@ EQTDATA[SEAPLANEBOMBER] = {
 	isPlane: true,
 	isfighter: true,
 	isdivebomber: true,
-	canAce: true,
 };
 EQTDATA[CARRIERSCOUT] = {
 	name: 'Scout Plane',
 	image: 9,
 	canequip: ['CVL','CV','CVB','LandBase'],
-	canequipS: [553],
+	canequipS: [553,554],
 	cannotequipS: [380, 521, 526, 534, 381],
 	isPlane: true,
 	canContact: true,
-	canAce: true,
 };
 EQTDATA[CARRIERSCOUT2] = {
 	name: 'Scout Plane',
@@ -294,13 +288,12 @@ EQTDATA[CARRIERSCOUT2] = {
 	canequip: ['CVB','LandBase'],
 	isPlane: true,
 	canContact: true,
-	canAce: true,
 };
 EQTDATA[AUTOGYRO] = {
 	name: 'Anti-Sub Plane',
 	image: 21,
 	canequip: ['CAV','BBV','CVL','AS','AO','AR','LHA'],
-	canequipS: [372, 477, 478, 491, 546, 547, 574],
+	canequipS: [372, 477, 478, 491, 546, 547, 574, 690, 586],
 	cannotequipS: [380, 521, 526, 534, 381],
 	isPlane: true,
 };
@@ -309,7 +302,7 @@ EQTDATA[ASWPLANE] = {
 	image: 22,
 	canequip: ['CVL','LHA'],
 	canequipS: [199, 418, 468],
-	canequipS: [553],
+	canequipS: [553,554],
 	cannotequipS: [521, 526, 534],
 	isPlane: true,
 };
@@ -343,6 +336,7 @@ EQTDATA[ENGINE] = {
 EQTDATA[TYPE3SHELL] = {
 	name: 'Anti-Air Shell',
 	image: 12,
+	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	atype: A_TYPE3SHELL,
 	canequip: ['CA','CAV','FBB','BB','BBV'],
 };
@@ -380,7 +374,7 @@ EQTDATA[SEARCHLIGHTL] = {
 	image: 24,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['FBB','BB','BBV'],
-	canequipS: [372, 477, 491, 496, 579]
+	canequipS: [372, 477, 491, 496, 579, 586]
 };
 EQTDATA[STARSHELL] = {
 	name: 'Night Equip',
@@ -423,7 +417,7 @@ EQTDATA[SCAMP] = {
 	name: 'Misc',
 	image: 29,
 	canequip: ['CAV','BBV','CVL','CV','CVB','AO'],
-	canequipS: [372, 450, 488, 491, 496, 547, 574, 579],
+	canequipS: [372, 450, 488, 491, 496, 547, 574, 579, 581, 690, 586],
 };
 EQTDATA[FLYINGBOAT] = {
 	name: 'Recon Seaplane',
@@ -433,7 +427,6 @@ EQTDATA[FLYINGBOAT] = {
 	canequipS: [445,450,500],
 	isPlane: true,
 	canContact: true,
-	canAce: true,
 };
 EQTDATA[REPAIR] = {
 	name: 'Misc',
@@ -452,7 +445,6 @@ EQTDATA[SEAPLANEFIGHTER] = {
 	canequipS: [136, 148, 275, 276, 358, 361, 446, 447, 488, 496, 541, 546, 547],
 	isPlane: true,
 	isfighter: true,
-	canAce: true,
 };
 EQTDATA[LANDINGTANK] = {
 	name: 'Misc',
@@ -461,7 +453,7 @@ EQTDATA[LANDINGTANK] = {
 	improve: {Pshell:1,Pnb:1},
 	canequip: ['SS','SSV','AV','LHA'],
 	canequipS: [147, 198, 199, 200, 352, 418, 464, 468, 470, 478, 487, 488, 489, 490, 497, 500, 541, 547, 548, 568],
-	cannotequipS: [445, 491]
+	cannotequipS: [445, 491, 581]
 };
 EQTDATA[OILDRUM] = {
 	name: 'Misc',
@@ -476,7 +468,6 @@ EQTDATA[LANDBOMBER] = {
 	isfighter: true,
 	isdivebomber: true,
 	istorpbomber: true,
-	canAce: true,
 };
 EQTDATA[INTERCEPTOR] = {
 	name: 'Misc',
@@ -484,7 +475,6 @@ EQTDATA[INTERCEPTOR] = {
 	canequip: ['LandBase'],
 	isPlane: true,
 	isfighter: true,
-	canAce: true,
 };
 EQTDATA[LANDSCOUT] = {
 	name: 'Misc',
@@ -492,7 +482,6 @@ EQTDATA[LANDSCOUT] = {
 	canequip: ['LandBase'],
 	isPlane: true,
 	canContact: true,
-	canAce: true,
 };
 EQTDATA[TRANSPORTITEM] = {
 	name: 'Transportation Material',
@@ -512,7 +501,6 @@ EQTDATA[JETBOMBER] = {
 	isPlane: true,
 	isfighter: true,
 	isdivebomber: true,
-	canAce: true,
 };
 EQTDATA[OTHER] = {
 	name: 'Misc',
@@ -528,35 +516,37 @@ var IMPROVESPECIAL = {
 
 //FITDATA[shipclass][eqclass]
 var FITDATA = {
-	// 35.6/38, 381,  41,    46P,   46,     16,    51,   30.5   38cm4
-	1: { 1: 7, 2: -2, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0 }, //Kongou
-	2: { 1: 4, 2:  1, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0 }, //Bismarck
-	3: { 1: 4, 2:  1, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0 }, //Littorio
-	4: { 1: 4, 2: -2, 3: -5, 4: -7, 5: -10, 6:  4, 7: 0, 8:  7, 9:  0 }, //Iowa
-	5: { 1: 4, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0 }, //Warspite
-	6: { 1: 4, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  0, 7: 0, 8:  4, 9: -2 }, //Ise/Fusou
-	7: { 1: 4, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  0, 7: 0, 8:  4, 9: -2 }, //Fusou Kai 2
-	8: { 1: 2, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0 }, //Nagato
-	9: { 1: 0, 2:  0, 3:  0, 4:  0, 5:   0, 6:  0, 7: 0, 8:  0, 9:  0 }, //Yamato
-   10: { 1: 4, 2:  1, 3: -7, 4: -7, 5: -16, 6: -7, 7: 0, 8:  7, 9:  0 }, //Gangut
-   11: { 1:-2, 2: -2, 3:  4, 4: -2, 5:  -4, 6:  0, 7: 0, 8:  4, 9:  0 }, //Nagato Kai 2
-   12: { 1: 4, 2: -2, 3: -5, 4: -7, 5: -10, 6: -7, 7: 0, 8:  4, 9:  5 }, //Richelieu
+	// 35.6/38, 381,  41,    46P,   46,     16,    51,   30.5   38cm4  46cmK    16N
+	1: { 1: 7, 2: -2, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0, 10: -10, 11:  -5 }, //Kongou
+	2: { 1: 4, 2:  1, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  4, 9:  0, 10: -10, 11:  -5 }, //Bismarck
+	3: { 1: 4, 2:  1, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  4, 9:  0, 10: -10, 11:  -5 }, //Littorio
+	4: { 1: 4, 2: -2, 3: -5, 4: -7, 5: -10, 6:  4, 7: 0, 8:  4, 9:  0, 10: -10, 11:  -5 }, //Iowa
+	5: { 1: 4, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0, 10: -10, 11:   5 }, //Warspite
+	6: { 1: 4, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  0, 7: 0, 8:  4, 9:  0, 10:  -7, 11:   3 }, //Ise/Fusou
+	7: { 1: 4, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  0, 7: 0, 8:  4, 9:  0, 10:  -7, 11:   3 }, //Fusou Kai 2
+	8: { 1: 2, 2:  2, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  2, 9:  0, 10:  -7, 11:   3 }, //Nagato
+	9: { 1: 0, 2:  0, 3:  0, 4:  0, 5:   0, 6:  0, 7: 0, 8:  0, 9:  0, 10:   7, 11:   0 }, //Yamato
+   10: { 1: 4, 2:  1, 3: -7, 4: -7, 5: -16, 6: -3, 7: 0, 8: 10, 9:  0, 10: -18, 11: -10 }, //Gangut
+   11: { 1: 2, 2:  2, 3:  5, 4: -2, 5:  -4, 6:  0, 7: 0, 8:  2, 9:  0, 10:  -4, 11:   4 }, //Nagato Kai 2
+   12: { 1: 4, 2: -2, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  4, 9:  5, 10: -10, 11:  -7 }, //Richelieu
+   13: { 1: 0, 2:  0, 3:  3, 4: -3, 5:  -7, 6:  0, 7: 0, 8:  0, 9:  0, 10:  -7, 11:   0 }, //Nelson
 }
 //night
 var FITDATAN = {
-	// 35.6/38, 381,  41,    46P,   46,     16,    51,  
-	1: { 1: 7, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0 }, //Kongou
-	2: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0 }, //Bismarck
-	3: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0 }, //Littorio
-	4: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6:  4, 7: 0, 8:  7, 9:  0 }, //Iowa
-	5: { 1: 4, 2:  0, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0 }, //Warspite
-	6: { 1: 4, 2:  0, 3:  0, 4: -5, 5:  -8, 6:  0, 7: 0, 8:  4, 9: -2 }, //Ise/Fusou
-	7: { 1: 4, 2:  0, 3:  2, 4: -5, 5:  -8, 6:  0, 7: 0, 8:  4, 9: -2 }, //Fusou Kai 2
-	8: { 1: 2, 2:  0, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0 }, //Nagato
-	9: { 1: 0, 2:  0, 3:  0, 4:  0, 5:   0, 6:  0, 7: 0, 8:  0, 9:  0 }, //Yamato
-   10: { 1: 7, 2:  0, 3: -7, 4: -7, 5: -16, 6: -3, 7: 0, 8: 10, 9:  0 }, //Gangut
-   11: { 1:-2, 2:  0, 3:  4, 4: -2, 5:  -4, 6:  0, 7: 0, 8:  4, 9:  0 }, //Nagato Kai 2
-   12: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6: -7, 7: 0, 8:  4, 9:  5 }, //Richelieu
+	// 35.6/38, 381,  41,    46P,   46,     16,    51,   30.5   38cm4  46cmK    16N
+	1: { 1: 7, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  7, 9:  0, 10: -10, 11:  -5 }, //Kongou
+	2: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  4, 9:  0, 10: -10, 11:  -5 }, //Bismarck
+	3: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  4, 9:  0, 10: -10, 11:  -5 }, //Littorio
+	4: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6:  4, 7: 0, 8:  4, 9:  0, 10: -10, 11:  -5 }, //Iowa
+	5: { 1: 4, 2:  0, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0, 10: -10, 11:   5 }, //Warspite
+	6: { 1: 4, 2:  0, 3:  0, 4: -5, 5:  -8, 6:  0, 7: 0, 8:  4, 9:  0, 10:  -7, 11:   3 }, //Ise/Fusou
+	7: { 1: 4, 2:  0, 3:  2, 4: -5, 5:  -8, 6:  0, 7: 0, 8:  4, 9:  0, 10:  -7, 11:   3 }, //Fusou Kai 2
+	8: { 1: 2, 2:  0, 3:  2, 4: -3, 5:  -7, 6:  2, 7: 0, 8:  4, 9:  0, 10:  -7, 11:   3 }, //Nagato
+	9: { 1: 0, 2:  0, 3:  0, 4:  0, 5:   0, 6:  0, 7: 0, 8:  0, 9:  0, 10:   7, 11:   0 }, //Yamato
+   10: { 1: 7, 2:  0, 3: -7, 4: -7, 5: -16, 6: -3, 7: 0, 8: 10, 9:  0, 10: -18, 11: -10 }, //Gangut
+   11: { 1: 2, 2:  0, 3:  5, 4: -2, 5:  -4, 6:  0, 7: 0, 8:  2, 9:  0, 10:  -4, 11:   4 }, //Nagato Kai 2
+   12: { 1: 4, 2:  0, 3: -5, 4: -7, 5: -10, 6: -5, 7: 0, 8:  4, 9:  5, 10: -10, 11:  -7 }, //Richelieu
+   13: { 1: 0, 2:  0, 3:  3, 4:  0, 5:   0, 6:  0, 7: 0, 8:  0, 9:  0, 10:  -7, 11:   0 }, //Nelson
 }
 
 var EQDATA = {
@@ -3543,6 +3533,7 @@ var EQDATA = {
 		nameJP: '46cm三連装砲改',
 		added: '2018-02-16',
 		type: MAINGUNL,
+		fitclass: 10,
 		FP: 27,
 		AA: 6,
 		AR: 2,
@@ -3682,6 +3673,7 @@ var EQDATA = {
 		nameJP: '35.6cm三連装砲改(ダズル迷彩仕様)',
 		added: '2018-07-17',
 		type: MAINGUNL,
+		fitclass: 1,
 		FP: 19,
 		AA: 5,
 		ACC: 3,
@@ -3693,6 +3685,7 @@ var EQDATA = {
 		nameJP: '41cm三連装砲改二',
 		added: '2018-07-17',
 		type: MAINGUNL,
+		fitclass: 3,
 		FP: 23,
 		AA: 6,
 		ACC: 5,
@@ -3779,6 +3772,7 @@ var EQDATA = {
 		nameJP: '16inch Mk.I三連装砲',
 		added: '2018-07-30',
 		type: MAINGUNL,
+		fitclass: 11,
 		FP: 21,
 		AR: 1,
 		ACC: 2,
@@ -3789,6 +3783,7 @@ var EQDATA = {
 		nameJP: '16inch Mk.I三連装砲+AFCT改',
 		added: '2018-07-30',
 		type: MAINGUNL,
+		fitclass: 11,
 		FP: 22,
 		AR: 1,
 		ACC: 4,
@@ -3799,6 +3794,7 @@ var EQDATA = {
 		nameJP: '16inch Mk.I三連装砲改+FCR type284',
 		added: '2018-07-30',
 		type: MAINGUNL,
+		fitclass: 11,
 		FP: 23,
 		AA: 7,
 		AR: 1,
@@ -3922,7 +3918,6 @@ var EQDATA = {
 		AA: 3,
 		ACC: 2,
 		LOS: 8,
-		canAce: false,
 	},
 	312: {
 		name: 'Type 2 Land-based Reconnaissance Aircraft (Skilled)',
@@ -5342,6 +5337,13 @@ var EQUIPBONUSDATA = {
 		{ bonus: { FP: 3, EV: 3, LOS: 4, /*RNG: 3*/ }, shipClass: [87,91] },
 		{ bonus: { FP: 2, EV: 3, LOS: 4 }, shipClass: [65,69,83,84] },
 	],
+	314: [ //533mm quint init
+		{ bonus: { FP: 1, TP: 3 }, shipClass: [87,91] },
+	],
+	315: [ //SG init
+		{ bonus: { FP: 3, EV: 3, LOS: 4, /*RNG: 3*/ }, shipClass: [87,91] },
+		{ bonus: { FP: 2, EV: 3, LOS: 4 }, shipClass: [65,69,83,84] },
+	],
 };
 
 var EQUIPBONUSDATA2 = {
@@ -5675,4 +5677,5 @@ var IMPROVEMENTHISTORY = {
 	'2018-11-16': [246],
 	'2018-12-07': [176,250],
 	'2019-02-08': [32,61,184],
+	'2019-02-27': [35],
 };

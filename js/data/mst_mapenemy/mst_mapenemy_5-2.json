@@ -1,0 +1,323 @@
+{
+	"3": {
+		"boss": 0, 
+		"name": "敵任務部隊 機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1579, 1527, 1555, 1576, 1576], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1579, 1528, 1527, 1555, 1576, 1576], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1555, 1576, 1576, 1576], 
+				"geth": 100, 
+				"experience": 140, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "敵任務部隊 随伴部隊", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1526, 1526, 1526, 1554, 1575, 1575], 
+				"geth": 20, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1526, 1526, 1526, 1554, 1575, 1575], 
+				"geth": 20, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1526, 1526, 1554, 1576, 1501, 1501], 
+				"geth": 20, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1526, 1526, 1554, 1576, 1501, 1501], 
+				"geth": 20, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1532, 1530, 1554, 1501, 1501, 1513], 
+				"geth": 20, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1554, 1501, 1501, 1513], 
+				"geth": 20, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "敵任務部隊 機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1543, 1555, 1592, 1576, 1576], 
+				"geth": 3, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1579, 1543, 1555, 1592, 1576, 1576], 
+				"geth": 4, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1543, 1519, 1592, 1576, 1576], 
+				"geth": 5, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1579, 1543, 1519, 1592, 1576, 1576], 
+				"geth": 6, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1579, 1542, 1519, 1592, 1576, 1576], 
+				"geth": 7, 
+				"experience": 280, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1579, 1542, 1519, 1592, 1576, 1576], 
+				"geth": 8, 
+				"experience": 280, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "敵任務部隊 機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1527, 1555, 1576, 1576], 
+				"geth": 0, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1579, 1527, 1527, 1555, 1576, 1576], 
+				"geth": 0, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1555, 1576, 1576, 1576], 
+				"geth": 0, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1579, 1527, 1555, 1576, 1576, 1576], 
+				"geth": 1, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1554, 1576, 1576, 1576], 
+				"geth": 2, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1579, 1527, 1554, 1576, 1576, 1576], 
+				"geth": 4, 
+				"experience": 300, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "敵任務部隊 機動部隊本隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1619, 1565, 1595, 1592, 1576, 1576], 
+				"geth": 100, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1619, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 100, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1565, 1565, 1594, 1591, 1576, 1576], 
+				"geth": 100, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 0, 
+		"name": "敵任務部隊 随伴護衛戦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1527, 1554, 1576, 1576, 1576], 
+				"geth": 3, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1527, 1527, 1554, 1576, 1576, 1576], 
+				"geth": 4, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1527, 1527, 1554, 1576, 1501, 1501], 
+				"geth": 5, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1527, 1527, 1554, 1576, 1501, 1501], 
+				"geth": 6, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1576, 1576, 1501, 1501], 
+				"geth": 7, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1527, 1554, 1576, 1576, 1501, 1501], 
+				"geth": 8, 
+				"experience": 220, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"12": {
+		"boss": 0, 
+		"name": "敵任務部隊 機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1579, 1527, 1555, 1576, 1576], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1579, 1528, 1527, 1555, 1576, 1576], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1555, 1576, 1576, 1576], 
+				"geth": 100, 
+				"experience": 140, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"15": {
+		"boss": 1, 
+		"name": "敵任務部隊 機動部隊本隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1619, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 0, 
+				"experience": 480, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1619, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 0, 
+				"experience": 480, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1565, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 1, 
+				"experience": 460, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1565, 1595, 1595, 1591, 1576, 1576], 
+				"geth": 2, 
+				"experience": 440, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1565, 1595, 1594, 1591, 1576, 1576], 
+				"geth": 3, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1565, 1594, 1594, 1591, 1576, 1576], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

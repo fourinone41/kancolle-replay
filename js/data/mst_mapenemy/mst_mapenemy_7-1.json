@@ -1,0 +1,366 @@
+{
+	"2": {
+		"boss": 0, 
+		"name": "敵通商破壊侵入艦隊", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1560, 1527, 1527, 1555, 1576, 1576], 
+				"geth": 12, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1560, 1527, 1527, 1555, 1576, 1576], 
+				"geth": 12, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1560, 1527, 1555, 1554, 1576, 1576], 
+				"geth": 13, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1560, 1527, 1555, 1554, 1576, 1576], 
+				"geth": 13, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1555, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 14, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1555, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 14, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "敵通商破壊侵入 高速機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1579, 1543, 1595, 1592, 1576, 1576], 
+				"geth": 0, 
+				"experience": 270, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1579, 1543, 1595, 1592, 1576, 1576], 
+				"geth": 0, 
+				"experience": 270, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1579, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 1, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1579, 1595, 1595, 1592, 1576, 1576], 
+				"geth": 1, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1579, 1595, 1592, 1576, 1576, 1576], 
+				"geth": 2, 
+				"experience": 230, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1579, 1595, 1592, 1576, 1576, 1576], 
+				"geth": 2, 
+				"experience": 230, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "深海潜水艦隊 II群", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1571, 1532, 1532, 1530, 1530], 
+				"geth": 100, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1571, 1532, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 5, 
+				"ship": [1571, 1532, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1571, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 5, 
+				"ship": [1571, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1571, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"7": {
+				"formation": 5, 
+				"ship": [1571, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "深海潜水艦隊 III群", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1531, 1531], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1533, 1531, 1531, 1531], 
+				"geth": 100, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 5, 
+				"ship": [1533, 1531, 1531, 1531], 
+				"geth": 100, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1533, 1531, 1531, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 5, 
+				"ship": [1533, 1531, 1531, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"7": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"8": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"9": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 120, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"7": {
+		"boss": 0, 
+		"name": "敵哨戒部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1554, 1576, 1576, 1576], 
+				"geth": 4, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1555, 1554, 1576, 1576, 1576], 
+				"geth": 4, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1576, 1576, 1501, 1501], 
+				"geth": 5, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1555, 1576, 1576, 1501, 1501], 
+				"geth": 5, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1555, 1576, 1501, 1501], 
+				"geth": 6, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1555, 1576, 1501, 1501], 
+				"geth": 6, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "深海潜水艦隊 I群", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1571, 1571, 1531, 1531], 
+				"geth": 100, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1571, 1533, 1531, 1531], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 5, 
+				"ship": [1571, 1533, 1531, 1531], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1571, 1533, 1531], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 5, 
+				"ship": [1571, 1533, 1531], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1531], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"7": {
+				"formation": 5, 
+				"ship": [1533, 1533, 1531], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"8": {
+				"formation": 4, 
+				"ship": [1533, 1531, 1530, 1530], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"9": {
+				"formation": 5, 
+				"ship": [1533, 1531, 1530, 1530], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 1, 
+		"name": "深海潜水艦隊集団 旗艦戦隊", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1572, 1533, 1533], 
+				"geth": 0, 
+				"experience": 390, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1572, 1532, 1532], 
+				"geth": 1, 
+				"experience": 360, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1572, 1530, 1530], 
+				"geth": 2, 
+				"experience": 330, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

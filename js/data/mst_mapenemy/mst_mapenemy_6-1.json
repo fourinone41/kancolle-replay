@@ -1,0 +1,219 @@
+{
+	"3": {
+		"boss": 0, 
+		"name": "中部海域　敵遊撃部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1529, 1560, 1527, 1591, 1576, 1576], 
+				"geth": 18, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1529, 1560, 1527, 1591, 1576, 1576], 
+				"geth": 24, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1529, 1560, 1522, 1591, 1575, 1575], 
+				"geth": 30, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "中部海域哨戒戦 A地点", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1554, 1516, 1516, 1575, 1575], 
+				"geth": 16, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1554, 1516, 1516, 1575, 1575], 
+				"geth": 18, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1554, 1516, 1516, 1575, 1575], 
+				"geth": 20, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1554, 1516, 1516, 1575, 1575], 
+				"geth": 20, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "中部海域哨戒戦 B地点", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1555, 1520, 1517, 1517, 1575, 1575], 
+				"geth": 12, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1555, 1517, 1517, 1575, 1575], 
+				"geth": 12, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1555, 1516, 1516, 1575, 1575], 
+				"geth": 14, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1555, 1526, 1526, 1575, 1575], 
+				"geth": 16, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "中部海域哨戒戦 D地点", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1527, 1555, 1516, 1516, 1576, 1576], 
+				"geth": 2, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1527, 1516, 1516, 1591, 1576, 1576], 
+				"geth": 3, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1527, 1522, 1521, 1591, 1575, 1575], 
+				"geth": 4, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "敵機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1585, 1579, 1527, 1591, 1576, 1576], 
+				"geth": 0, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1585, 1527, 1527, 1591, 1576, 1576], 
+				"geth": 1, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1579, 1527, 1591, 1576, 1576], 
+				"geth": 2, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 0, 
+		"name": "中部海域 敵輸送船団", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1558, 1558, 1555, 1592, 1577, 1577], 
+				"geth": 3, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1558, 1558, 1555, 1592, 1577, 1577], 
+				"geth": 3, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1558, 1558, 1555, 1555, 1577, 1577], 
+				"geth": 4, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1558, 1558, 1555, 1555, 1577, 1577], 
+				"geth": 5, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1558, 1558, 1555, 1555, 1577, 1577], 
+				"geth": 6, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 1, 
+		"name": "敵回航中空母", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1592, 1592, 1578, 1578], 
+				"geth": 0, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1579, 1527, 1592, 1592, 1578, 1578], 
+				"geth": 1, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1527, 1555, 1592, 1577, 1577], 
+				"geth": 3, 
+				"experience": 380, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

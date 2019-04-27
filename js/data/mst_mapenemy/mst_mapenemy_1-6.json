@@ -1,0 +1,442 @@
+{
+	"2": {
+		"boss": 0, 
+		"name": "任務部隊C群前衛部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1575, 1575, 1501, 1501], 
+				"geth": 0, 
+				"experience": 150, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1555, 1523, 1575, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1575, 1575, 1575, 1501, 1501], 
+				"geth": 4, 
+				"experience": 130, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1555, 1575, 1575, 1501, 1501, 1501], 
+				"geth": 6, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1555, 1575, 1501, 1501, 1501, 1501], 
+				"geth": 8, 
+				"experience": 100, 
+				"choose_rate": 0
+			},
+			"6": {
+				"formation": 2, 
+				"ship": [1555, 1575, 1501, 1501, 1501, 1501], 
+				"geth": 8, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "通商破壊潜水艦隊II群", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1532, 1532, 1530, 1530, 1530], 
+				"geth": 22, 
+				"experience": 50, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1532, 1532, 1530, 1530, 1530], 
+				"geth": 24, 
+				"experience": 40, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530, 1530, 1530], 
+				"geth": 26, 
+				"experience": 30, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530, 1530], 
+				"geth": 28, 
+				"experience": 30, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 5, 
+				"ship": [1532, 1530, 1530, 1530], 
+				"geth": 30, 
+				"experience": 20, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530], 
+				"geth": 30, 
+				"experience": 20, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "任務部隊A群機動部隊(第二波)", 
+		"airOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1523, 1523, 1592, 1575, 1575], 
+				"geth": 0, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1528, 1523, 1523, 1592, 1575, 1575], 
+				"geth": 1, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1560, 1523, 1523, 1592, 1575, 1575], 
+				"geth": 2, 
+				"experience": 130, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1560, 1523, 1592, 1575, 1575, 1575], 
+				"geth": 3, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1523, 1523, 1592, 1575, 1501, 1501], 
+				"geth": 5, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1523, 1523, 1592, 1501, 1501, 1501], 
+				"geth": 5, 
+				"experience": 110, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "通商破壊潜水艦隊III群", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1532, 1532, 1530, 1530, 1530], 
+				"geth": 20, 
+				"experience": 50, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530, 1530, 1530], 
+				"geth": 23, 
+				"experience": 40, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1530, 1530, 1530, 1530, 1530], 
+				"geth": 26, 
+				"experience": 30, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530, 1530], 
+				"geth": 28, 
+				"experience": 30, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530], 
+				"geth": 30, 
+				"experience": 20, 
+				"choose_rate": 0
+			},
+			"6": {
+				"formation": 4, 
+				"ship": [1530, 1530, 1530, 1530], 
+				"geth": 30, 
+				"experience": 20, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "任務部隊C群機動部隊", 
+		"airOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1528, 1525, 1592, 1501, 1501, 1501], 
+				"geth": 10, 
+				"experience": 80, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1528, 1523, 1522, 1501, 1501, 1501], 
+				"geth": 13, 
+				"experience": 70, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1560, 1523, 1522, 1501, 1501, 1501], 
+				"geth": 16, 
+				"experience": 60, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1528, 1522, 1501, 1501, 1501, 1501], 
+				"geth": 30, 
+				"experience": 60, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1523, 1523, 1522, 1501, 1501, 1501], 
+				"geth": 30, 
+				"experience": 50, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1525, 1522, 1501, 1501, 1501, 1501], 
+				"geth": 30, 
+				"experience": 50, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "通商破壊潜水艦隊I群", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1535, 1532, 1532, 1530, 1530], 
+				"geth": 20, 
+				"experience": 40, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1535, 1532, 1532, 1530, 1530], 
+				"geth": 23, 
+				"experience": 40, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1534, 1532, 1532, 1530, 1530], 
+				"geth": 26, 
+				"experience": 30, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1534, 1532, 1532, 1530, 1530], 
+				"geth": 28, 
+				"experience": 30, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1534, 1532, 1530, 1530], 
+				"geth": 30, 
+				"experience": 20, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1534, 1532, 1530, 1530], 
+				"geth": 30, 
+				"experience": 20, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 0, 
+		"name": "任務部隊A群機動部隊本隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1565, 1510, 1510, 1592, 1575, 1575], 
+				"geth": 0, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1579, 1510, 1510, 1592, 1575, 1575], 
+				"geth": 0, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1510, 1510, 1510, 1575, 1575], 
+				"geth": 1, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1528, 1510, 1510, 1510, 1575, 1575], 
+				"geth": 3, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1528, 1510, 1510, 1575, 1575, 1513], 
+				"geth": 5, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1528, 1519, 1575, 1575, 1501, 1501], 
+				"geth": 5, 
+				"experience": 170, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 0, 
+		"name": "任務部隊支援水上打撃部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1524, 1520, 1575, 1501, 1501], 
+				"geth": 10, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1527, 1524, 1520, 1575, 1501, 1501], 
+				"geth": 12, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1527, 1522, 1520, 1575, 1501, 1501], 
+				"geth": 14, 
+				"experience": 90, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1527, 1522, 1520, 1575, 1501, 1501], 
+				"geth": 16, 
+				"experience": 80, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1527, 1520, 1575, 1501, 1501, 1501], 
+				"geth": 18, 
+				"experience": 70, 
+				"choose_rate": 0
+			},
+			"6": {
+				"formation": 2, 
+				"ship": [1527, 1520, 1575, 1501, 1501, 1501], 
+				"geth": 18, 
+				"experience": 70, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"12": {
+		"boss": 0, 
+		"name": "任務部隊A群機動部隊(第一波)", 
+		"airOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1579, 1579, 1523, 1592, 1501, 1501], 
+				"geth": 6, 
+				"experience": 130, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1579, 1525, 1523, 1592, 1501, 1501], 
+				"geth": 8, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1579, 1523, 1523, 1592, 1501, 1501], 
+				"geth": 10, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1528, 1523, 1523, 1592, 1501, 1501], 
+				"geth": 12, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1560, 1523, 1523, 1592, 1501, 1501], 
+				"geth": 14, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1560, 1523, 1592, 1501, 1501, 1501], 
+				"geth": 14, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

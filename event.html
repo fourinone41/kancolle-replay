@@ -94,7 +94,7 @@
 		<br>
 		<div id="separator">
 			<button type="button" style="width:100px;vertical-align:middle" onclick="RATE = 0">Pause
-
+		
 			</button>
         
     		<button type="button" style="width:100px;vertical-align:middle" onclick="RATE = 1">x1
@@ -117,8 +117,15 @@
 			<td><input type="button" value="&#128266;" style="width:30px;vertical-align:middle" onclick="if(!Howler._muted){Howler.mute(true);this.value='&#128263;'}else{Howler.mute(false);this.value='&#128266;';Howler.volume(parseFloat($('#rngvol').val()))}" /></td>
 			<td><input id="rngvol" type="range" value=".6" step=".01" min="0" max="1" style="width:100px;vertical-align:middle" oninput="if(!Howler._muted)Howler.volume(parseFloat(this.value))" /></td>
 			</tr></table>
-			<br><br>
 		</div>
+		<div style="margin-left:615px">
+			<table><tr>
+			<td><input type="checkbox" id="inpSoundBGM" checked /></td><td><label for="inpSoundBGM">BGM</label></td>
+			<td><input type="checkbox" id="inpSoundSFX" checked /></td><td><label for="inpSoundSFX">SE</label></td>
+			<td><input type="checkbox" id="inpSoundVoice" checked /></td><td><label for="inpSoundVoice">Voice</label></td>
+			</tr></table>
+		</div>
+		<br><br>
 		
 		<div id="sortiespace">
 			<div style="position:absolute;margin-top:300px">
@@ -139,18 +146,18 @@
 				</div>
 				<div style="height:70px">
 					<div id="srtHPBar" style="background-color:red;position:absolute;margin-left:20px;margin-top:18px;height:8px;width:146px"></div>
-					<img src="assets/bossbar.png" style="position:absolute;z-index:2;margin-left:-60px"/>
+					<img id="srtHPBorder" src="assets/bossbar.png" style="position:absolute;z-index:2;margin-left:-60px"/>
 					<div style="font-weight:bold;font-size:20px;margin-left:210px;margin-top:8px;position:absolute"><span id="srtHPText"></span></div>
 					<div id="srtHPRegen" title="Warning: HP is regenerating!" style="position:absolute;display:none;margin-left:310px;margin-top:-5px;font-size:40px;font-weight:bold;color:#FF6666;animation:glow .5s linear 0s infinite alternate">+</div>
 				</div>
 				<div id="srtDiff" style="height:40px;margin-left:10px">
-					<span style="color:white">Difficulty: </span>
+					<span style="color:white">Difficulty:</span>
 					<span id="srtDiffTitle" style="font-size:18px;font-weight:bold;margin-left:10px"></span>
 					<input id="srtDiffChange" type="button" value="Change" style="margin-left:20px" onclick="chSortieStartChangeDiff()" />
 					<input id="srtDiffHard" type="button" value="HARD" style="background-color:#FF6666;display:none" onclick="chSortieChangeDiff(3);chSortieEndChangeDiff()"/>
 					<input id="srtDiffMed" type="button" value="NORMAL" style="background-color:#FFFF66;display:none" onclick="chSortieChangeDiff(2);chSortieEndChangeDiff()"/>
 					<input id="srtDiffEasy" type="button" value="EASY" style="background-color:#66FF66;display:none" onclick="chSortieChangeDiff(1);chSortieEndChangeDiff()"/>
-					<input id="srtDiffCasual" type="button" value="CASUAL" style="background-color:#6666FF;display:none;width:65px" onclick="chSortieChangeDiff(4);chSortieEndChangeDiff()"/>
+					<input id="srtDiffCasual" type="button" value="CASUAL" style="background-color:#6666FF;display:none;width:57px;padding-left:0" onclick="chSortieChangeDiff(4);chSortieEndChangeDiff()"/>
 					<input id="srtDiffBack" type="button" value="Back" style="margin-left:5px;display:none" onclick="chSortieEndChangeDiff()"/>
 				</div>
 				<div style="height:40px;margin-left:10px">
@@ -169,10 +176,7 @@
 					<span id="srtNoLock" style="margin-left:40px;text-decoration:line-through;color:red"></span>
 					</div>
 				</div>
-				<div style="height:40px">
-					<input id="srtStrategy" type="button" value="View Strategy" style="margin-left:20px" onclick="chSortieViewStrategy()" />
-				</div>
-				<div style="height:50px">
+				<div style="height:90px">
 					<div id="srtErrors" style="color:#FF5555;height:80px;width:320px;overflow:auto;margin-left:10px"></div>
 				</div>
 				<div style="height:40px">
@@ -190,6 +194,9 @@
 			
 		</div>
 		<br style="clear:both"><br>
+		
+		<hr>
+		<a href="https://fourinone41.github.io/kancolle-replay/index.html">&#8592; Index</a>
 		
 		<div id="shipselectdialog" style="background-color:#EDE6D8;display:none;font-size:14px">
 			<div style="height:25px">
@@ -254,29 +261,24 @@
 				<img src="" id="menucurbanner" /><br>
 				<div><input type="button" value="Back" onclick="chMenuBackEvent()" /></div>
 				<br>
-				<label for="fileKC3" style="font-weight:bold">Import .kc3 file: </label><input type="file" id="fileKC3" accept=".kc3" onchange="chLoadKC3File()"/><Br>
-				<span style="font-size:10px">Strategy Room > Profile > Export Basic Profile (player info, fleets, ships, equipment, config)</span><br>
-				<span style="font-weight:bold">Or import from any viewer (kancolle-fleetanalysis format) : </span><br>
-				<label for="shipData" style="font-weight:bold">Ship data : </label><input type="text" id="shipData"/><Br>
-				<label for="equipmentData" style="font-weight:bold">Equipment data : </label><input type="text" id="equipmentData"/><Br>
-				<label for="ttkName" style="font-weight:bold">Your name : </label><input type="text" id="ttkName"/><Br>
-				<label for="ttkLevel" style="font-weight:bold">Your level : </label><input type="number" min="1" max="120" step="1" id="ttkLevel" value="120"/><Br>
-				<label for="ttkRank" style="font-weight:bold">Your rank : </label>
-				<select id="ttkRank">
-					<option value="Marshal Admiral">Marshal Admiral</option>
-					<option value="Admiral">Admiral</option>
-					<option value="Vice-Admiral">Vice-Admiral</option>
-					<option value="Rear-Admiral">Rear-Admiral</option>
-					<option value="Captain">Captain</option>
-					<option value="Commander">Commander</option>
-					<option value="Commander (Novice)">Commander (Novice)</option>
-					<option value="Lieutenant-Commander">Lieutenant-Commander</option>
-					<option value="Vice Lieutenant-Commander">Vice Lieutenant-Commander</option>
-					<option value="Lieutenant-Commander (Novice)">Lieutenant-Commander (Novice)</option>
-				</select>
-				<Br>
-				<input value="Import" type="button" onclick="chLoadFleetData()"><br>
-				<br>
+				<div id="menuImportKC3">
+					<label for="fileKC3" style="font-weight:bold">Import .kc3 file: </label><input type="file" id="fileKC3" accept=".kc3" onchange="chLoadKC3File()"/>
+					<input id="btnImportOther" type="button" style="margin-left:130px" value="Import Other Format" /><br>
+					<span style="font-size:10px">Strategy Room > Profile > Export Basic Profile (player info, fleets, ships, equipment, config)</span>
+				</div>
+				<div id="menuImportOther">
+					<span style="font-weight:bold">Import API/fleetanalysis Format:</span><input id="btnImportKC3" type="button" style="margin-left:320px" value="Import KC3 format" /><br>
+					<table>
+					<tr><td><label for="inpImportOtherShip">Ship: </label></td><td><textarea rows="1" id="inpImportOtherShip" style="resize:none"></textarea></td><td>    </td>
+					<td><label for="inpImportOtherEquip">Equipment: </label></td><td><textarea rows="1" id="inpImportOtherEquip" style="resize:none"></textarea></td></tr>
+					<tr><td><label for="inpImportOtherName">Name: </label></td><td><input id="inpImportOtherName" /></td><td>    </td>
+					<td><label for="inpImportOtherHQ">HQ Level: </label></td><td><input id="inpImportOtherHQ" type="number" min="1" max="120" style="width:50px" /></td></tr>
+					</table>
+					<input id="btnImportOtherSubmit" type="button" value="Import" /><span id="spanImportOtherError" style="margin-left:20px;color:red"></span><br>
+					<span style="font-size:10px">ElectronicObserver: View > Fleet > #1 > Right click header row > Copy Ship/Equip List (kancolle-fleetanalysis) > paste in Ship/Equipment</span><br>
+					<span style="font-size:10px">Chrome Only: <a href="https://kancolle-fleetanalysis.firebaseapp.com/#/">fleetanalysis</a> > 艦隊入力 > 艦隊情報反映 > 反映手順 (Chromeブラウザの使用を想定) > follow guide, paste result in Ship</span><br>
+					<span style="font-size:10px;margin-left:150px">装備入力 > 装備情報反映 > 反映手順 (Chromeブラウザの使用を想定) > follow guide, paste result in Equipment</span>
+				</div>
 				<div id="menufinfo" style="display:none"><br><span id="menufrank"></span> <span id="menufname"></span><span style="margin-left:20px">HQ </span><span id="menufhq"></span><span id="menufdate" style="margin-left:20px"></span></div>
 			</div>
 			<br>

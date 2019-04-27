@@ -1,0 +1,569 @@
+{
+	"1": {
+		"boss": 0, 
+		"name": "中部海域哨戒水雷戦隊 A群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1559, 1577, 1576, 1576], 
+				"geth": 40, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1554, 1559, 1559, 1577, 1576, 1576], 
+				"geth": 42, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1554, 1559, 1559, 1576, 1576, 1576], 
+				"geth": 44, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1554, 1559, 1559, 1576, 1575, 1575], 
+				"geth": 46, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1554, 1559, 1559, 1575, 1575, 1575], 
+				"geth": 48, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1554, 1559, 1559, 1575, 1575, 1575], 
+				"geth": 50, 
+				"experience": 160, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"2": {
+		"boss": 0, 
+		"name": "中部海域哨戒水雷戦隊 B群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1554, 1577, 1577, 1576, 1576], 
+				"geth": 40, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1554, 1577, 1576, 1576, 1576], 
+				"geth": 42, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1554, 1576, 1576, 1575, 1575], 
+				"geth": 44, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1554, 1576, 1575, 1575, 1575], 
+				"geth": 46, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1554, 1575, 1575, 1575, 1575], 
+				"geth": 48, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1554, 1575, 1575, 1575, 1575], 
+				"geth": 49, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "離島防衛低速戦艦部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1578, 1578, 1523], 
+				"geth": 0, 
+				"experience": 280, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1577, 1577, 1523], 
+				"geth": 0, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1576, 1576, 1523], 
+				"geth": 1, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1576, 1576, 1510], 
+				"geth": 2, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1575, 1575, 1510], 
+				"geth": 3, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1555, 1575, 1575, 1510], 
+				"geth": 4, 
+				"experience": 220, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "離島陸上航空隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1669], 
+				"geth": 100, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1668], 
+				"geth": 100, 
+				"experience": 120, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "中部海域哨戒遊撃部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1577, 1577, 1532, 1532], 
+				"geth": 6, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1576, 1576, 1532, 1532], 
+				"geth": 7, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1575, 1575, 1532, 1532], 
+				"geth": 8, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1575, 1575, 1532, 1530], 
+				"geth": 9, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1527, 1554, 1575, 1575, 1530, 1530], 
+				"geth": 10, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1527, 1554, 1575, 1575, 1530, 1530], 
+				"geth": 11, 
+				"experience": 140, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "離島陸上航空隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1669], 
+				"geth": 100, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1671], 
+				"geth": 100, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1668], 
+				"geth": 100, 
+				"experience": 130, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"7": {
+		"boss": 0, 
+		"name": "離島陸上航空隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1669], 
+				"geth": 100, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1668], 
+				"geth": 100, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "離島防衛低速戦艦部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1578, 1578, 1560], 
+				"geth": 6, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1577, 1577, 1560], 
+				"geth": 7, 
+				"experience": 230, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1576, 1576, 1560], 
+				"geth": 8, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1576, 1576, 1523], 
+				"geth": 9, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1529, 1529, 1555, 1575, 1575, 1523], 
+				"geth": 10, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1529, 1529, 1555, 1575, 1575, 1523], 
+				"geth": 11, 
+				"experience": 180, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "離島混成航空隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1669, 1560, 1575, 1575, 1575], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1671, 1560, 1575, 1575, 1575], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 0, 
+		"name": "任務部隊 I群", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1620, 1567, 1595, 1592, 1577, 1577], 
+				"geth": 0, 
+				"experience": 350, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1620, 1567, 1595, 1592, 1576, 1576], 
+				"geth": 0, 
+				"experience": 330, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1618, 1567, 1595, 1592, 1576, 1576], 
+				"geth": 1, 
+				"experience": 290, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1617, 1543, 1595, 1592, 1576, 1576], 
+				"geth": 2, 
+				"experience": 280, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1616, 1543, 1595, 1591, 1576, 1576], 
+				"geth": 3, 
+				"experience": 270, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1616, 1543, 1595, 1591, 1575, 1575], 
+				"geth": 4, 
+				"experience": 350, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 0, 
+		"name": "任務部隊 II群", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1618, 1543, 1527, 1554, 1576, 1576], 
+				"geth": 26, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1617, 1543, 1527, 1554, 1576, 1576], 
+				"geth": 27, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1616, 1543, 1527, 1554, 1576, 1576], 
+				"geth": 28, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1615, 1542, 1527, 1554, 1576, 1576], 
+				"geth": 29, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1614, 1542, 1527, 1554, 1576, 1576], 
+				"geth": 30, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1614, 1542, 1527, 1554, 1575, 1575], 
+				"geth": 31, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"12": {
+		"boss": 0, 
+		"name": "増援護衛空母部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1560, 1560, 1527, 1554, 1576, 1576], 
+				"geth": 1, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1560, 1560, 1527, 1554, 1576, 1576], 
+				"geth": 1, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1560, 1560, 1527, 1554, 1575, 1575], 
+				"geth": 2, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1560, 1560, 1527, 1554, 1575, 1575], 
+				"geth": 3, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1560, 1560, 1527, 1575, 1575], 
+				"geth": 4, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1560, 1560, 1527, 1575, 1575], 
+				"geth": 5, 
+				"experience": 140, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"13": {
+		"boss": 0, 
+		"name": "中部海域潜水哨戒線", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1572, 1571, 1571, 1570, 1570], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1572, 1571, 1571, 1570, 1570], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1572, 1571, 1570, 1570, 1570], 
+				"geth": 100, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1572, 1571, 1570, 1570, 1570], 
+				"geth": 100, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1572, 1571, 1570, 1570], 
+				"geth": 100, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1572, 1571, 1570, 1570], 
+				"geth": 100, 
+				"experience": 120, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"14": {
+		"boss": 1, 
+		"name": "離島守備隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1672, 1667, 1666, 1665, 1656, 1555], 
+				"geth": 0, 
+				"experience": 740, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1672, 1667, 1666, 1665, 1656, 1558], 
+				"geth": 0, 
+				"experience": 720, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1672, 1667, 1666, 1665, 1656, 1554], 
+				"geth": 0, 
+				"experience": 680, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1671, 1667, 1666, 1665, 1653, 1558], 
+				"geth": 1, 
+				"experience": 660, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1672, 1666, 1665, 1653, 1554], 
+				"geth": 2, 
+				"experience": 640, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1671, 1666, 1665, 1575, 1575], 
+				"geth": 3, 
+				"experience": 600, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

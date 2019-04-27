@@ -1,0 +1,427 @@
+{
+	"1": {
+		"boss": 0, 
+		"name": "敵偵察潜水艦", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530], 
+				"geth": 20, 
+				"experience": 70, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1530, 1530, 1530], 
+				"geth": 22, 
+				"experience": 60, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1532, 1530], 
+				"geth": 24, 
+				"experience": 50, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1532], 
+				"geth": 26, 
+				"experience": 40, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1530, 1530], 
+				"geth": 26, 
+				"experience": 40, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1530], 
+				"geth": 28, 
+				"experience": 30, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "敵通商破壊高速水上艦群A群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1559, 1575, 1575, 1575], 
+				"geth": 0, 
+				"experience": 170, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1559, 1575, 1575], 
+				"geth": 0, 
+				"experience": 160, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1575, 1575, 1575], 
+				"geth": 0, 
+				"experience": 140, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 120, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1554, 1575, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1554, 1575, 1501, 1501, 1501], 
+				"geth": 2, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "敵潜水艦隊B群", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1531, 1531], 
+				"geth": 7, 
+				"experience": 90, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1533, 1533], 
+				"geth": 8, 
+				"experience": 80, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530], 
+				"geth": 9, 
+				"experience": 80, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1532, 1532], 
+				"geth": 10, 
+				"experience": 70, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530], 
+				"geth": 11, 
+				"experience": 60, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1530, 1530], 
+				"geth": 11, 
+				"experience": 40, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "敵潜水艦隊C群", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1532, 1532], 
+				"geth": 5, 
+				"experience": 100, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1532, 1532, 1532], 
+				"geth": 6, 
+				"experience": 90, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1532, 1532, 1530], 
+				"geth": 7, 
+				"experience": 80, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530], 
+				"geth": 8, 
+				"experience": 70, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1531, 1530, 1530], 
+				"geth": 9, 
+				"experience": 70, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1530, 1530, 1530], 
+				"geth": 10, 
+				"experience": 60, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "敵潜水艦隊A群", 
+		"subOnly": 1,
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1532, 1532, 1532], 
+				"geth": 4, 
+				"experience": 130, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1533, 1532, 1532, 1530], 
+				"geth": 5, 
+				"experience": 120, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1533, 1532, 1530, 1530], 
+				"geth": 6, 
+				"experience": 110, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1530], 
+				"geth": 7, 
+				"experience": 100, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530], 
+				"geth": 8, 
+				"experience": 80, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1531, 1530, 1530], 
+				"geth": 9, 
+				"experience": 70, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "敵通商破壊高速水上艦群B群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1559, 1575, 1575, 1575], 
+				"geth": 0, 
+				"experience": 170, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1559, 1575, 1575], 
+				"geth": 0, 
+				"experience": 160, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1575, 1575, 1575], 
+				"geth": 0, 
+				"experience": 140, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1555, 1559, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 120, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1554, 1575, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1554, 1575, 1501, 1501, 1501], 
+				"geth": 2, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "敵侵攻機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1528, 1555, 1555, 1575, 1575], 
+				"geth": 0, 
+				"experience": 170, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1528, 1555, 1575, 1575, 1575], 
+				"geth": 0, 
+				"experience": 160, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1560, 1555, 1575, 1575, 1575], 
+				"geth": 0, 
+				"experience": 150, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1528, 1555, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 130, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1560, 1555, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1523, 1555, 1575, 1501, 1501], 
+				"geth": 2, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 1, 
+		"name": "敵通商破壊主力潜水艦隊", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1572, 1533, 1533, 1530], 
+				"geth": 0, 
+				"experience": 190, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1572, 1533, 1530, 1530], 
+				"geth": 0, 
+				"experience": 185, 
+				"choose_rate": 0,
+				"level": 80
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1535, 1533, 1530, 1530], 
+				"geth": 0, 
+				"experience": 180, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1535, 1530, 1530, 1530], 
+				"geth": 1, 
+				"experience": 175, 
+				"choose_rate": 0,
+				"level": 40
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1535, 1530, 1530], 
+				"geth": 2, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530], 
+				"geth": 3, 
+				"experience": 165, 
+				"choose_rate": 0
+			}, 
+			"7": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530], 
+				"geth": 4, 
+				"experience": 160, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

@@ -80,7 +80,7 @@ function chCreateFleetTable(root,num,name,noheader) {
 	let numShips = (num == 1)? 7 : 6;
 	for (var i=1; i<=numShips; i++) {
 		var table = $('<table class="t2" id="fleet'+num+i+'"></table>');
-		table.append($('<tr class="t2show"><td colspan="4"><div style="text-align:center"><div class="t2name" id="fleetname'+num+i+'" onclick="chDialogShip('+num+','+i+')">Slot '+num+'</div></div></td></tr>'));
+		table.append($('<tr class="t2show"><td colspan="4"><div style="text-align:center"><div class="t2name" id="fleetname'+num+i+'" onclick="chDialogShip('+num+','+i+')">Slot '+i+'</div></div></td></tr>'));
 		table.append($('<tr class="t2show"><td colspan="4"><img src="assets/icons/Kblank.png" class="t2portrait" id="fleetimg'+num+i+'"/><img id="fleetlock'+num+i+'" src="" class="t2lock"/></td></tr>'));
 		var tr = $('<tr></tr>');
 		tr.append($('<td><span>Lv. </span><span class="t2lvlnum" id="fleetlvl'+num+i+'"></span></td>'));
@@ -129,6 +129,12 @@ function chCreateFleetTable(root,num,name,noheader) {
 		
 		if (i == 7) table.hide();
 	}
+	divWrap.append('<br style="clear:both"/>');
+	divWrap.append('<select class="presetSelect" id="presets' + num + '" name="presets' + num + '" style="width:150px" tabIndex="-1"></select>');
+	divWrap.append('<button id="presetLoad' + num + '" onclick="chLoadFleetPreset(' + num + ', true)" tabIndex="-1">Load Preset (With Equips)</button>');
+	divWrap.append('<button id="presetLoadN' + num + '" onclick="chLoadFleetPreset(' + num + ', false)" tabIndex="-1">Load Preset (Ships Only)</button>');
+	divWrap.append('<button id="presetSave' + num + '" onclick="chSaveFleetPreset(' + num + ')" style="margin-left:10px" tabIndex="-1">Save Preset</button>');
+	divWrap.append('<button id="presetDelete' + num + '" onclick="chDeleteFleetPreset(' + num + ')" tabIndex="-1">Delete Preset</button>');
 }
 function chCreateFleetTableLBAS(root,num) {
 	var divWrap = $('<div class="ftwrap"></div>');
@@ -220,6 +226,35 @@ function chAddDragEquip(fleetnum,shipslot,eqslot) {
 	imgEq.on('dragend',function(event) {
 		DIALOGFLEETSEL = DIALOGSLOTSEL = DIALOGITEMSEL = null;
 	});
+}
+
+
+var abyssals = [];
+var boss = [];
+
+var installation = [];
+
+var submarines = [];
+var submarinesBoss = [];
+
+var bossIds = [1539,1540,1544,1545,1546,1547,1548,1556,1557,1573,1574,1581,1582,1583,1584,1585,1586,1587,1588,1589,1590,1597,1598,1599,1600,1601,1602,1603,1604,1605,1606,1607,1608,1609,1610,1611,1612,1613,1619,1620,1625,1626,1627,1628,1629,1630,1631,1632,1633,1634,1635,1636,1641,1642,1643,1647,1648,1649,1650,1651,1652,1653,1654,1655,1656,1657,1658,1659,1660,1661,1662,1663,1664,1668,1669,1670,1671,1672,1673,1674,1675,1676,1677,1678,1679,1680,1681,1682,1683,1684,1685,1686,1687,1688,1689,1690,1691,1692,1696,1697,1698,1699,1700,1701,1702,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1745,1746,1747,1748,1749,1750,1751,1752,1753,1754,1755,1756,1757,1758,1759,1760,1767,1768,1769,1770,1771,1772,1773,1774,1775,1781,1782,1783,1784,1785,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1819,1820,1821,1822,1823,1824,1825,1826,1827,1828,1829,1830,1831,1832,1834,1835,1836,1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1847,1848,1849,1850,1851,1852,1853,1854,1855,1856,1857,1644,1645,1646,1693,1694,1695,1736,1737,1738,1805,1806,1807,1808];
+
+function chInitAbyssalTables () {
+	
+	for (ship_id in SHIPDATA) {
+		if (ship_id >= 1500 && ship_id < 2000) {
+			let ship = SHIPDATA[ship_id];
+
+			if (bossIds.indexOf(parseInt(ship_id)) !== -1) {
+				if (ship.type === 'SS') submarinesBoss[ship_id] = ship;
+				else if (ship.type === 'Installation' || ship.installtype) installation[ship_id] = ship;
+				else boss[ship_id] = ship;
+			} else {
+				if (ship.type === 'SS') submarines[ship_id] = ship;
+				else abyssals[ship_id] = ship;
+			}
+		}
+	}
 }
 
 $('#tabsupportN').attr('value',1);
@@ -480,7 +515,7 @@ function chDialogItemFilter(category) {
 		case 5: types=[FIGHTER,INTERCEPTOR]; break;
 		case 6: types=[DIVEBOMBER,LANDBOMBER]; break;
 		case 7: types=[TORPBOMBER]; break;
-		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
+		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2]; break;
 		case 9: types=[RADARS,RADARL,RADARXL]; break;
 		case 10: types=[DEPTHCHARGE,SONARS,SONARL]; break;
 		case 11: types=[APSHELL,TYPE3SHELL]; break;
@@ -606,19 +641,6 @@ function chLoadKC3File() {
 	console.log('LOAD');
 }
 
-function chProcessKC3File(reader){
-	CHDATA = {};
-	CHDATA.kcdata = JSON.parse(reader.result);
-	$('#menusdone').prop('disabled',false);
-	$('#menufrank').text(CHDATA.kcdata.player.rank);
-	$('#menufname').text(CHDATA.kcdata.player.name);
-	$('#menufhq').text(CHDATA.kcdata.player.level);
-	if (CHDATA.kcdata.player.lastPortTime)
-		$('#menufdate').text((new Date(CHDATA.kcdata.player.lastPortTime*1000)).toISOString().slice(0,10));
-	$('#menufinfo').show();
-	$('#menusettings').show();
-}
-
 function getEvasion(ship, level){
 	return ship.EVbase + Math.floor((ship.EV - ship.EVbase) * (level/99));
 }
@@ -631,28 +653,25 @@ function getLOS(ship, level){
 	return ship.LOSbase + Math.floor((ship.LOS - ship.LOSbase) * (level/99));
 }
 
-function chLoadFleetData(){
-	var equipments = JSON.parse(document.getElementById('equipmentData').value);
-	var ships = JSON.parse(document.getElementById('shipData').value);
-
+function chProcessImportOther(ships,equipments,name,level){
 	CHDATA = {};
 	CHDATA.kcdata = {};
 	CHDATA.kcdata.player = {};
-	CHDATA.kcdata.player.rank = document.getElementById('ttkRank').value;
-	CHDATA.kcdata.player.name = document.getElementById('ttkName').value;
-	CHDATA.kcdata.player.level = document.getElementById('ttkLevel').value;
+	CHDATA.kcdata.player.name = name;
+	CHDATA.kcdata.player.level = level;
 
 	CHDATA.kcdata.gears = {};
 	var equip = {};
 	var id = 1;
-	for(equipment of equipments){
+	for (let equipment of equipments){
 		equip = {};
 		equip.itemId = id;
 		equip.masterId = equipment.api_slotitem_id;
+		if (!EQDATA[equip.masterId]) continue;
 		equip.stars = equipment.api_level;
 		equip.lock = 1;
 		
-		if(EQDATA[equip.masterId] && EQTDATA[EQDATA[equip.masterId].type].canAce && (EQDATA[equip.masterId].canAce === undefined || EQDATA[equip.masterId].canAce)){
+		if(EQTDATA[EQDATA[equip.masterId].type].isPlane && EQDATA[equip.masterId].type != AUTOGYRO && EQDATA[equip.masterId].type != ASWPLANE){
 			equip.ace = 7;
 		}
 		
@@ -662,7 +681,7 @@ function chLoadFleetData(){
 	CHDATA.kcdata.ships = {};
 	var ship = {};
 	id = 1;
-	for(ship_data of ships){
+	for (let ship_data of ships){
 		ship = {
 			hp: [],
 			fp: [],
@@ -681,11 +700,12 @@ function chLoadFleetData(){
 		ship.mod = ship_data.api_kyouka
 
 		var ship_base_data = SHIPDATA[ship.masterId];
-		if (!SHIPDATA[ship.masterId]) continue;
+		if (!ship_base_data) continue;
 
 		// HP = Base HP + Marriage HP + HP Mod
 		if(ship.level > 99){
-			ship.hp[0] = ship.hp[1] = ship_base_data.HP + (ship_base_data.HPmarriage || 0) + ship.mod[5];
+			let HPmarriage = [4,4,4,5,6,7,7,8,8,9][Math.floor(ship_base_data.HP/10)] || 9;
+			ship.hp[0] = ship.hp[1] = ship_base_data.HP + (HPmarriage || 0) + ship.mod[5];
 		}else{
 			ship.hp[0] = ship.hp[1] = ship_base_data.HP + ship.mod[5];
 		}
@@ -725,17 +745,26 @@ function chLoadFleetData(){
 		ship.ammo = ship_base_data.ammo;
 
 		ship.morale = 49;
-		ship.akashiMark = true;
 
 		CHDATA.kcdata.ships["x"+id++] = ship;
 	}
 	
 	$('#menusdone').prop('disabled',false);
+	$('#menufname').text(CHDATA.kcdata.player.name);
+	$('#menufhq').text(CHDATA.kcdata.player.level);
+	$('#menufinfo').show();
+	$('#menusettings').show();
+}
+
+function chProcessKC3File(reader){
+	CHDATA = {};
+	CHDATA.kcdata = JSON.parse(reader.result);
+	$('#menusdone').prop('disabled',false);
 	$('#menufrank').text(CHDATA.kcdata.player.rank);
 	$('#menufname').text(CHDATA.kcdata.player.name);
 	$('#menufhq').text(CHDATA.kcdata.player.level);
 	if (CHDATA.kcdata.player.lastPortTime)
-		$('#menufdate').text((new Date()).toISOString().slice(0,10));
+		$('#menufdate').text((new Date(CHDATA.kcdata.player.lastPortTime*1000)).toISOString().slice(0,10));
 	$('#menufinfo').show();
 	$('#menusettings').show();
 }
@@ -744,7 +773,12 @@ function chProcessKC3File2() {
 	var kcdata = CHDATA.kcdata;
 	delete CHDATA.kcdata;
 	
-	CHDATA.player = kcdata.player;
+	CHDATA.player = {
+		name: kcdata.player.name,
+		rank: kcdata.player.rank,
+		level: kcdata.player.level,
+		lastPortTime: kcdata.player.lastPortTime,
+	};
 	CHDATA.gears = kcdata.gears;
 	CHDATA.ships = {};
 	CHDATA.event = { createtime:Date.now(), lasttime:0, maps:{}, world:EVENTNUM, mapnum:1, unlocked:1, resources: { fuel: 0, ammo: 0, steel: 0, baux: 0 } };
@@ -755,6 +789,7 @@ function chProcessKC3File2() {
 		}
 	}
 	CHDATA.fleets = {1:[null,null,null,null,null,null],2:[null,null,null,null,null,null],3:[null,null,null,null,null,null],4:[null,null,null,null,null,null],combined:0};
+	if (MAPDATA[EVENTNUM].allowFleets.indexOf(7) != -1) CHDATA.fleets[1].push(null);
 	if (!CHDATA.config) CHDATA.config = {};
 	CHDATA.config.mechanics = {};
 	var mechanicsdate = CHDATA.config.mechanicsdate || MAPDATA[CHDATA.event.world].date;
@@ -1014,8 +1049,9 @@ function chSave() {
 	basic.player = CHDATA.player;
 	data.ships = CHDATA.ships;
 	data.gears = CHDATA.gears;
-	data.fleets = CHDATA.fleets;
 	data.maps = CHDATA.maps;
+	data.fleets = CHDATA.fleets;
+	data.presets = CHDATA.presets;
 	localStorage.setItem('ch_basic'+FILE,JSON.stringify(basic));
 	localStorage.setItem('ch_data'+FILE,JSON.stringify(data));
 	localStorage.setItem('ch_file',FILE);
@@ -1163,7 +1199,7 @@ function chDoStartChecksFleet(fleetnum,errors) {
 			first = false;
 		}
 		//ship lock
-		if (CHDATA.event.maps[MAPNUM].diff > 1 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
+		if (CHDATA.event.maps[MAPNUM].diff > 1 && CHDATA.event.maps[MAPNUM].diff < 4 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
 			errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
 		if (CHDATA.event.maps[MAPNUM].diff == 3 && mdata.checkLockHard && ship.lock && mdata.checkLockHard.indexOf(ship.lock) != -1)
 			errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
@@ -1202,13 +1238,12 @@ function chStart() {
 	if (MAPDATA[CHDATA.event.world].allowLBAS) {
 		var numBase = 0, numBaseMax = MAPDATA[WORLD].maps[MAPNUM].lbasSortie || MAPDATA[WORLD].maps[MAPNUM].lbas;
 		for (var i=1; i<=3; i++) {
-			if (numBase < numBaseMax && CHDATA.fleets['lbas'+i]) {
-				chLoadLBAS(i);
+			chLoadLBAS(i);
+			if (numBase < numBaseMax && CHDATA.fleets['lbas'+i] && LBAS[i-1].equips.length) {
 				numBase++;
 			} else {
-				// LBAS[i-1] = null;
 				CHDATA.fleets['lbas'+i] = false;
-				chLoadLBAS(i);
+				$('#btnLBAS'+i).css('opacity',.5);
 			}
 		}
 		var fuel = 0, ammo = 0;
@@ -1727,8 +1762,10 @@ function chLoadSortieInfo(mapnum) {
 	}
 	if (mapdata.transport) {
 		$('#srtHPBar').css('background-color','#00ff00');
+		$('#srtHPBorder').attr('src','assets/bossbarTP.png');
 	} else {
 		$('#srtHPBar').css('background-color','red');
+		$('#srtHPBorder').attr('src','assets/bossbar.png');
 	}
 	if (mapnum == CHDATA.event.unlocked && mapdata.hpRegenTick && nowhp > 0 && nowhp < maxhp) {
 		$('#srtHPRegen').show();
@@ -1857,7 +1894,7 @@ function chLoadSortieInfo(mapnum) {
 	MAPNUM = CHDATA.event.mapnum = mapnum;
 	if (MAPNUM <= 1) $('#srtLeft').hide();
 	else $('#srtLeft').show();
-	if (!MAPDATA[WORLD].maps[MAPNUM+1] && (CHDATA.event.world == 99 && MAPNUM >= 7)) $('#srtRight').hide();
+	if (MAPNUM >= Object.keys(CHDATA.event.maps).length) $('#srtRight').hide();
 	else $('#srtRight').show();
 }
 
@@ -1875,7 +1912,7 @@ function chClickedSortieLeft() {
 }
 
 function chClickedSortieRight() {
-	if (!MAPDATA[WORLD].maps[MAPNUM+1] && CHDATA.event.world != 99) return;
+	if (MAPNUM >= Object.keys(CHDATA.event.maps).length) return;
 	$('#srtHPBar').css('animation','');
 
 	MAPNUM++;
@@ -1883,13 +1920,8 @@ function chClickedSortieRight() {
 	if(WORLD == 99) {
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
-
-	chLoadSortieInfo(MAPNUM);
-}
-
-function chSortieViewStrategy() {
-	if (MAPDATA[WORLD].maps[MAPNUM].strategy) alert(MAPDATA[WORLD].maps[MAPNUM].strategy);
-	else alert("No strategy description available.");
+	
+	chLoadSortieInfo(MAPNUM);	
 }
 
 function chSortieStartChangeDiff() {
@@ -1993,7 +2025,7 @@ function chAddLBAS(num) {
 	if (MAPNUM > CHDATA.event.unlocked) return;
 	var numBaseMax = MAPDATA[WORLD].maps[MAPNUM].lbasSortie || MAPDATA[WORLD].maps[MAPNUM].lbas;
 	var numSelected = 0;
-	for (var i=1; i<=3; i++) if (CHDATA.fleets['lbas'+i]) numSelected++;
+	for (var i=1; i<=MAPDATA[WORLD].maps[MAPNUM].lbas; i++) if (CHDATA.fleets['lbas'+i]) numSelected++;
 	
 	if (!CHDATA.fleets['lbas'+num] && numSelected < numBaseMax) {
 		CHDATA.fleets['lbas'+num] = true;
@@ -2003,7 +2035,6 @@ function chAddLBAS(num) {
 		$('#btnLBAS'+num).css('opacity',.5);
 	}
 }
-
 
 function chFleetSetHP(fleetnum,shipnum,hp) {
 	var maxhp = CHDATA.ships[CHDATA.fleets[fleetnum][shipnum-1]].HP[1];
@@ -2100,8 +2131,7 @@ function chResupplyAll() {
 	fleets.push(4);
 	if (MAPDATA[WORLD].allowLBAS) fleets.push(5);
 	for (var i=0; i<fleets.length; i++) {
-		for (var j=0; j<CHDATA.fleets[fleets[i]].length; j++) 
-			chResupplyOne(fleets[i],j+1);
+		for (var j=0; j<CHDATA.fleets[fleets[i]].length; j++) chResupplyOne(fleets[i],j+1);
 	}
 }
 
@@ -2229,7 +2259,7 @@ function chClickMorale(fleetnum,shipnum,dofull) {
 		ship.morale = 85;
 	}
 	else{
-		ship.morale = Math.min(85,ship.morale+12);
+	ship.morale = Math.min(85,ship.morale+12);
 	}
 	chFleetSetMorale(fleetnum,shipnum,ship.morale);
 	var fuel = Math.floor(SHIPDATA[ship.masterId].fuel * .4) * sparkleRuns;
@@ -2312,3 +2342,115 @@ function chAllowImprovement(eqid) {
 	}
 	return true;
 }
+
+//----presets-----
+function chSaveFleetPreset(fleetnum){
+	// initializing preset slots in localstorage if they aren't already there
+	if (!CHDATA.presets) CHDATA.presets = {};
+
+	// get preset slot and commit fleet to localstorage
+	let presetSlot = +$('#presets' + fleetnum + ' option:selected').prop('value'), isNew = false;
+	if (presetSlot == 0) {
+		isNew = true;
+		while ($('#presets1' + '_' + (++presetSlot)).length);
+	}
+	if(!CHDATA.presets[presetSlot]) CHDATA.presets[presetSlot] = {};
+	let sidFirst;
+	for (let sid of CHDATA.fleets[fleetnum]) if (sid) { sidFirst = sid; break }
+	if (!sidFirst) return;
+	CHDATA.presets[presetSlot].fleet = CHDATA.fleets[fleetnum].slice();
+
+	// commit fleet equips to localstorage
+	CHDATA.presets[presetSlot].equips = {};
+	for(let i in CHDATA.presets[presetSlot].fleet){
+		if(CHDATA.presets[presetSlot].fleet[i] != null){
+			let equips = CHDATA.ships[CHDATA.presets[presetSlot].fleet[i]].items.slice();
+			CHDATA.presets[presetSlot].equips[CHDATA.presets[presetSlot].fleet[i]] = equips;
+		}
+	}
+
+	// update preset selection
+	let name = SHIPDATA[CHDATA.ships[sidFirst].masterId].name;
+	if (isNew) {
+		chPresetAddSelect(presetSlot,name);
+	} else {
+		$('.presetSelect').each(function() {
+			$(this).children('option[value="'+presetSlot+'"]').text(presetSlot + ' - ' + name);
+		});
+	}
+	$('.presetSelect').val(presetSlot);
+}
+
+function chLoadFleetPreset(fleetnum,loadequips){
+	// update ships localstorage
+	let presetSlot = +$('#presets' + fleetnum + ' option:selected').prop('value');
+	if (presetSlot == 0) return;
+	if (!CHDATA.presets[presetSlot]) return;
+	let fleetPreset = CHDATA.presets[presetSlot].fleet.slice();
+	for(let i = 0; i < CHDATA.fleets[fleetnum].length; ++i){
+		if (i >= 6 && !CHDATA.fleets.sf) break;
+		CHDATA.fleets[fleetnum][i] = null;
+		chTableSetShip(fleetPreset[i], fleetnum, i+1);
+	}
+
+	if(loadequips && CHDATA.presets[presetSlot].equips){
+		DIALOGFLEETSEL = fleetnum;
+		for(let i1 = 0; i1 < CHDATA.fleets[fleetnum].length; ++i1){
+			let equips = CHDATA.presets[presetSlot].equips[CHDATA.fleets[fleetnum][i1]];
+			if(equips != null){
+				for(let j = 0; j < equips.length; ++j){
+					if (equips[j] == CHDATA.ships[CHDATA.fleets[fleetnum][i1]].items[j]) continue;
+					// update global variables to simulate equipments being selected through the item dialog
+					DIALOGSLOTSEL = (i1 + 1);
+					DIALOGITEMSEL = (j + 1);
+					chSetEquip('x' + equips[j]);
+				}
+			}
+		}
+		// reset globals after use
+		DIALOGFLEETSEL = DIALOGSLOTSEL = DIALOGITEMSEL = -1;
+	}
+}
+
+function chDeleteFleetPreset(fleetnum){
+	let presetSlot = +$('#presets' + fleetnum + ' option:selected').prop('value');
+	if (presetSlot == 0) return;
+	if(CHDATA.presets[presetSlot]) delete CHDATA.presets[presetSlot];
+	$('.presetSelect').each(function() {
+		$(this).children('option[value="'+presetSlot+'"]').remove();
+		if ($(this).children().length <= 0) {
+			chPresetAddSelect(1,'Empty Slot');
+		}
+		$(this).prop('selectedIndex', 0);
+	});
+}
+
+function chInitPreset() {
+	if(!CHDATA.presets) CHDATA.presets = {};
+
+	$('.presetSelect').html('<option value="0">New Preset</option>');
+	for (let n of Object.keys(CHDATA.presets).sort((a,b) => a-b)) {
+		let sidFirst;
+		for (let sid of CHDATA.presets[n].fleet) if (sid) { sidFirst = sid; break; }
+		let name = SHIPDATA[CHDATA.ships[sidFirst].masterId].name;
+		chPresetAddSelect(n,name);
+	}
+}
+
+function chPresetAddSelect(num,name) {
+	$('.presetSelect').each(function(idx) {
+		$(this).append('<option id="' + $(this).attr('id') + '_' + num + '" value="' + num + '">' + num + ' - ' + name + '</option>');
+	});
+}
+//---------
+
+$('#inpSoundBGM').change(function() {
+	($(this).prop('checked'))? SM.turnOnBGM() : SM.turnOffBGM();
+});
+$('#inpSoundSFX').change(function() {
+	let isOn = $(this).prop('checked');
+	($(this).prop('checked'))? SM.turnOnSFX() : SM.turnOffSFX();
+});
+$('#inpSoundVoice').change(function() {
+	($(this).prop('checked'))? SM.turnOnVoice() : SM.turnOffVoice();
+});

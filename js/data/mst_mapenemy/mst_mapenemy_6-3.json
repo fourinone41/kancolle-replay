@@ -1,0 +1,290 @@
+{
+	"2": {
+		"boss": 0, 
+		"name": "泊地哨戒線", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530, 1530, 1530], 
+				"geth": 40, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1532, 1530, 1530, 1530, 1530], 
+				"geth": 40, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1532, 1530, 1530, 1530], 
+				"geth": 41, 
+				"experience": 90, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1532, 1530, 1530, 1530], 
+				"geth": 41, 
+				"experience": 90, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1554, 1576, 1576], 
+				"geth": 42, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1576, 1576, 1576], 
+				"geth": 42, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "深海潜水艦隊", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1571, 1533, 1532, 1530, 1530], 
+				"geth": 38, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1571, 1533, 1532, 1530, 1530], 
+				"geth": 38, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1533, 1532, 1532, 1530, 1530, 1530], 
+				"geth": 39, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1533, 1532, 1532, 1530, 1530, 1530], 
+				"geth": 39, 
+				"experience": 100, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1530, 1530, 1530], 
+				"geth": 40, 
+				"experience": 90, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1533, 1533, 1530, 1530, 1530], 
+				"geth": 40, 
+				"experience": 90, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "深海ピケット艦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1555, 1576, 1576, 1576], 
+				"geth": 30, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1555, 1576, 1576, 1576], 
+				"geth": 30, 
+				"experience": 140, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1576, 1575, 1575], 
+				"geth": 31, 
+				"experience": 130, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1555, 1576, 1575, 1575], 
+				"geth": 31, 
+				"experience": 120, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1555, 1576, 1576], 
+				"geth": 32, 
+				"experience": 110, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1555, 1576, 1576], 
+				"geth": 32, 
+				"experience": 100, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "深海哨戒水雷戦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1592, 1521, 1521, 1575, 1575], 
+				"geth": 0, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1592, 1521, 1521, 1575, 1575], 
+				"geth": 0, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1521, 1521, 1575, 1575, 1575], 
+				"geth": 3, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1555, 1521, 1521, 1575, 1575, 1575], 
+				"geth": 3, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1555, 1521, 1521, 1575, 1575], 
+				"geth": 5, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1555, 1521, 1521, 1575, 1575], 
+				"geth": 5, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "深海中部水上打撃群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1595, 1522, 1520, 1575, 1575], 
+				"geth": 2, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1595, 1522, 1520, 1575, 1575], 
+				"geth": 12, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1595, 1520, 1520, 1575, 1575], 
+				"geth": 2, 
+				"experience": 230, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1595, 1520, 1520, 1575, 1575], 
+				"geth": 12, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1595, 1520, 1518, 1575, 1575], 
+				"geth": 2, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1595, 1520, 1518, 1575, 1575], 
+				"geth": 12, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 1, 
+		"name": "留守泊地旗艦艦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1598, 1543, 1543, 1527, 1578, 1578], 
+				"geth": 0, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1543, 1543, 1527, 1597, 1578, 1578], 
+				"geth": 0, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1543, 1527, 1527, 1597, 1578, 1578], 
+				"geth": 1, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1543, 1527, 1527, 1597, 1577, 1577], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1543, 1527, 1527, 1597, 1576, 1576], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1543, 1527, 1555, 1597, 1576, 1576], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

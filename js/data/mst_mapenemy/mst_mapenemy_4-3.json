@@ -1,0 +1,399 @@
+{
+	"1": {
+		"boss": 0, 
+		"name": "敵東方潜水艦隊 哨戒分遣集団", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1520, 1576, 1576], 
+				"geth": 16, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530, 1520, 1576, 1576], 
+				"geth": 16, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1520, 1576], 
+				"geth": 18, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530, 1520, 1576], 
+				"geth": 18, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1520], 
+				"geth": 20, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530, 1520], 
+				"geth": 20, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"3": {
+		"boss": 0, 
+		"name": "敵東方潜水艦隊 哨戒主力集団", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1533, 1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1533, 1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 160, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "敵東方哨戒艦隊 B群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1519, 1518, 1576, 1576], 
+				"geth": 13, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1527, 1555, 1519, 1518, 1576, 1576], 
+				"geth": 13, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1518, 1576, 1576, 1576], 
+				"geth": 13, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1527, 1555, 1518, 1576, 1576, 1576], 
+				"geth": 13, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1518, 1576, 1501, 1501], 
+				"geth": 15, 
+				"experience": 160, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1527, 1555, 1518, 1576, 1501, 1501], 
+				"geth": 15, 
+				"experience": 160, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "敵東方空母機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1528, 1560, 1543, 1555, 1577, 1577], 
+				"geth": 3, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1528, 1523, 1543, 1555, 1577, 1577], 
+				"geth": 4, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1528, 1523, 1542, 1555, 1577, 1577], 
+				"geth": 5, 
+				"experience": 280, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1560, 1523, 1542, 1518, 1577, 1577], 
+				"geth": 6, 
+				"experience": 260, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"7": {
+		"boss": 0, 
+		"name": "敵東方哨戒艦隊 A群", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1527, 1555, 1519, 1576, 1576], 
+				"geth": 13, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1527, 1527, 1555, 1519, 1576, 1576], 
+				"geth": 13, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1519, 1576, 1576, 1576], 
+				"geth": 14, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1527, 1555, 1519, 1576, 1576, 1576], 
+				"geth": 14, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1527, 1555, 1519, 1576, 1501, 1501], 
+				"geth": 15, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1527, 1555, 1519, 1576, 1501, 1501], 
+				"geth": 15, 
+				"experience": 170, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "敵東方空母機動部隊　分遣群", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1560, 1543, 1527, 1555, 1577, 1577], 
+				"geth": 2, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1560, 1542, 1527, 1555, 1577, 1577], 
+				"geth": 3, 
+				"experience": 290, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1560, 1542, 1522, 1555, 1577, 1577], 
+				"geth": 4, 
+				"experience": 280, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1560, 1542, 1522, 1518, 1577, 1577], 
+				"geth": 5, 
+				"experience": 270, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1523, 1542, 1522, 1518, 1577, 1577], 
+				"geth": 6, 
+				"experience": 260, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"9": {
+		"boss": 0, 
+		"name": "敵東方艦隊 増援戦艦部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1543, 1543, 1560, 1554, 1576, 1576], 
+				"geth": 0, 
+				"experience": 360, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1543, 1542, 1560, 1554, 1576, 1576], 
+				"geth": 0, 
+				"experience": 350, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1543, 1542, 1523, 1554, 1576, 1576], 
+				"geth": 1, 
+				"experience": 340, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1543, 1542, 1523, 1518, 1576, 1576], 
+				"geth": 2, 
+				"experience": 330, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"12": {
+		"boss": 0, 
+		"name": "敵哨戒艦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1527, 1519, 1519, 1576, 1575, 1575], 
+				"geth": 9, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1527, 1519, 1519, 1576, 1575, 1575], 
+				"geth": 9, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1555, 1519, 1519, 1576, 1575, 1575], 
+				"geth": 10, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1555, 1519, 1519, 1576, 1575, 1575], 
+				"geth": 10, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1555, 1519, 1519, 1576, 1501, 1501], 
+				"geth": 13, 
+				"experience": 150, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1555, 1519, 1519, 1576, 1501, 1501], 
+				"geth": 13, 
+				"experience": 150, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"14": {
+		"boss": 1, 
+		"name": "敵東方港湾基地", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1573, 1560, 1576, 1576, 1513, 1513], 
+				"geth": 0, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1573, 1520, 1576, 1576, 1513, 1513], 
+				"geth": 0, 
+				"experience": 390, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1573, 1520, 1576, 1501, 1513, 1513], 
+				"geth": 1, 
+				"experience": 380, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1573, 1520, 1501, 1501, 1513, 1513], 
+				"geth": 1, 
+				"experience": 370, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1573, 1501, 1501, 1513, 1513], 
+				"geth": 2, 
+				"experience": 360, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1573, 1501, 1513, 1513], 
+				"geth": 3, 
+				"experience": 350, 
+				"choose_rate": 0
+			}
+		}
+	}
+}

@@ -1,0 +1,83 @@
+{
+	"1": {
+		"boss": 0,
+		"name": "敵偵察艦",
+		"comp": {
+			"1": {
+				"formation": 1,
+				"ship": [1503],
+				"geth": 6,
+				"experience": 20,
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1,
+				"ship": [1502],
+				"geth": 8,
+				"experience": 15,
+				"choose_rate": 0
+			},
+			"3": {
+				"formation": 1,
+				"ship": [1501],
+				"geth": 10,
+				"experience": 10,
+				"choose_rate": 0
+			}
+		}
+	},
+	"2": {
+		"boss": 0,
+		"name": "敵はぐれ艦隊",
+		"comp": {
+			"1": {
+				"formation": 1,
+				"ship": [1503,1503],
+				"geth": 0,
+				"experience": 40,
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1,
+				"ship": [1502,1502],
+				"geth": 3,
+				"experience": 30,
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1,
+				"ship": [1501,1501],
+				"geth": 6,
+				"experience": 20,
+				"choose_rate": 0
+			}
+		}
+	},
+	"3": {
+		"boss": 1,
+		"name": "敵主力艦隊",
+		"comp": {
+			"1": {
+				"formation": 1,
+				"ship": [1505,1503,1502,1502],
+				"geth": 0,
+				"experience": 70,
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1,
+				"ship": [1505,1502,1502],
+				"geth": 3,
+				"experience": 60,
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1,
+				"ship": [1505,1501,1501],
+				"geth": 6,
+				"experience": 50,
+				"choose_rate": 0
+			}
+		}
+	}
+}

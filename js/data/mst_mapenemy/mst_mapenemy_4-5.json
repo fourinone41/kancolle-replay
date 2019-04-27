@@ -1,0 +1,578 @@
+{
+	"2": {
+		"boss": 0, 
+		"name": "東洋方面潜水艦隊 哨戒線Cライン", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1571, 1533, 1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 230, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1571, 1533, 1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 230, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1571, 1533, 1531, 1530, 1530], 
+				"geth": 100, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1571, 1533, 1531, 1530, 1530], 
+				"geth": 100, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1571, 1531, 1531, 1530, 1530], 
+				"geth": 100, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1571, 1531, 1531, 1530, 1530], 
+				"geth": 100, 
+				"experience": 210, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"4": {
+		"boss": 0, 
+		"name": "東洋方面潜水艦隊 哨戒線Bライン", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1535, 1535, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1535, 1535, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1535, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1535, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1535, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1535, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"5": {
+		"boss": 0, 
+		"name": "東洋方面艦隊 威力偵察部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1566, 1527, 1527, 1592, 1576, 1576], 
+				"geth": 40, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1566, 1527, 1527, 1592, 1576, 1576], 
+				"geth": 41, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1566, 1527, 1527, 1592, 1575, 1575], 
+				"geth": 42, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1566, 1527, 1527, 1592, 1575, 1575], 
+				"geth": 43, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1566, 1527, 1527, 1591, 1575, 1575], 
+				"geth": 44, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1566, 1527, 1527, 1591, 1575, 1575], 
+				"geth": 45, 
+				"experience": 180, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"6": {
+		"boss": 0, 
+		"name": "東洋方面潜水艦隊 哨戒線Aライン", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1533, 1533, 1533, 1530, 1530], 
+				"geth": 100, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1533, 1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1533, 1533, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1533, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1533, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 170, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"7": {
+		"boss": 0, 
+		"name": "東洋方面艦隊 威力偵察部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1566, 1527, 1527, 1592, 1576, 1576], 
+				"geth": 40, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1566, 1527, 1527, 1592, 1576, 1576], 
+				"geth": 41, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1566, 1527, 1527, 1592, 1575, 1575], 
+				"geth": 42, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1566, 1527, 1527, 1592, 1575, 1575], 
+				"geth": 43, 
+				"experience": 190, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1566, 1527, 1527, 1591, 1575, 1575], 
+				"geth": 44, 
+				"experience": 180, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1566, 1527, 1527, 1591, 1575, 1575], 
+				"geth": 45, 
+				"experience": 180, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"8": {
+		"boss": 0, 
+		"name": "東洋方面艦隊 新編水上打撃部隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1566, 1542, 1542, 1595, 1592, 1575], 
+				"geth": 10, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 2, 
+				"ship": [1566, 1542, 1542, 1595, 1592, 1575], 
+				"geth": 10, 
+				"experience": 250, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1566, 1542, 1595, 1592, 1575, 1575], 
+				"geth": 11, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 2, 
+				"ship": [1566, 1542, 1595, 1592, 1575, 1575], 
+				"geth": 11, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1566, 1542, 1592, 1575, 1575, 1575], 
+				"geth": 12, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 2, 
+				"ship": [1566, 1542, 1592, 1575, 1575, 1575], 
+				"geth": 12, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"10": {
+		"boss": 0, 
+		"name": "東洋方面艦隊 突撃水雷戦隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1559, 1559, 1559, 1592, 1576, 1576], 
+				"geth": 13, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 4, 
+				"ship": [1559, 1559, 1559, 1592, 1576, 1576], 
+				"geth": 13, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1559, 1559, 1559, 1591, 1576, 1576], 
+				"geth": 14, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 4, 
+				"ship": [1559, 1559, 1559, 1591, 1576, 1576], 
+				"geth": 14, 
+				"experience": 210, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1559, 1559, 1559, 1591, 1575, 1575], 
+				"geth": 15, 
+				"experience": 200, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 4, 
+				"ship": [1559, 1559, 1559, 1591, 1575, 1575], 
+				"geth": 15, 
+				"experience": 200, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"11": {
+		"boss": 0, 
+		"name": "深海東洋艦隊 機動部隊", 
+		"comp": {
+			"1": {
+				"formation": 3, 
+				"ship": [1602, 1579, 1579, 1567, 1567, 1555], 
+				"geth": 2, 
+				"experience": 350, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1602, 1579, 1528, 1567, 1567, 1555], 
+				"geth": 2, 
+				"experience": 340, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 3, 
+				"ship": [1602, 1528, 1567, 1567, 1595, 1555], 
+				"geth": 2, 
+				"experience": 330, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1601, 1579, 1528, 1567, 1529, 1555], 
+				"geth": 3, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 3, 
+				"ship": [1601, 1579, 1528, 1529, 1529, 1555], 
+				"geth": 3, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1601, 1528, 1529, 1529, 1594, 1555], 
+				"geth": 3, 
+				"experience": 310, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"14": {
+		"boss": 0, 
+		"name": "東洋方面艦隊 後方兵站部隊", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1558, 1526, 1526, 1554, 1576, 1576], 
+				"geth": 0, 
+				"experience": 450, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1558, 1526, 1526, 1554, 1576, 1576], 
+				"geth": 0, 
+				"experience": 450, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1526, 1526, 1526, 1554, 1576, 1576], 
+				"geth": 1, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1526, 1526, 1526, 1554, 1576, 1576], 
+				"geth": 2, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1526, 1526, 1526, 1518, 1576, 1576], 
+				"geth": 2, 
+				"experience": 400, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1526, 1526, 1526, 1518, 1576, 1576], 
+				"geth": 3, 
+				"experience": 400, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"15": {
+		"boss": 0, 
+		"name": "深海東洋方面増援潜水艦隊", 
+		"comp": {
+			"1": {
+				"formation": 4, 
+				"ship": [1571, 1571, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 5, 
+				"ship": [1571, 1571, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 260, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 4, 
+				"ship": [1571, 1571, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 5, 
+				"ship": [1571, 1571, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 240, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 4, 
+				"ship": [1571, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 220, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 5, 
+				"ship": [1571, 1530, 1530, 1530, 1530], 
+				"geth": 100, 
+				"experience": 220, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"19": {
+		"boss": 0, 
+		"name": "深海東洋方面増援艦隊", 
+		"comp": {
+			"1": {
+				"formation": 2, 
+				"ship": [1560, 1543, 1595, 1592, 1577, 1577], 
+				"geth": 4, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 3, 
+				"ship": [1560, 1543, 1595, 1592, 1577, 1577], 
+				"geth": 4, 
+				"experience": 320, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 2, 
+				"ship": [1560, 1543, 1595, 1591, 1577, 1576], 
+				"geth": 5, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 3, 
+				"ship": [1560, 1543, 1595, 1591, 1577, 1576], 
+				"geth": 5, 
+				"experience": 310, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 2, 
+				"ship": [1560, 1542, 1595, 1591, 1576, 1576], 
+				"geth": 6, 
+				"experience": 300, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 3, 
+				"ship": [1560, 1542, 1595, 1591, 1576, 1576], 
+				"geth": 6, 
+				"experience": 300, 
+				"choose_rate": 0
+			}
+		}
+	}, 
+	"20": {
+		"boss": 1, 
+		"name": "リランカ島港湾守備隊", 
+		"comp": {
+			"1": {
+				"formation": 1, 
+				"ship": [1613, 1549, 1550, 1567, 1595, 1558], 
+				"geth": 0, 
+				"experience": 480, 
+				"choose_rate": 0
+			}, 
+			"2": {
+				"formation": 1, 
+				"ship": [1613, 1550, 1567, 1595, 1558, 1526], 
+				"geth": 0, 
+				"experience": 460, 
+				"choose_rate": 0
+			}, 
+			"3": {
+				"formation": 1, 
+				"ship": [1613, 1549, 1567, 1595, 1526, 1526], 
+				"geth": 1, 
+				"experience": 440, 
+				"choose_rate": 0
+			}, 
+			"4": {
+				"formation": 1, 
+				"ship": [1573, 1550, 1551, 1567, 1577, 1577], 
+				"geth": 4, 
+				"experience": 440, 
+				"choose_rate": 0
+			}, 
+			"5": {
+				"formation": 1, 
+				"ship": [1573, 1550, 1551, 1567, 1575, 1575], 
+				"geth": 4, 
+				"experience": 420, 
+				"choose_rate": 0
+			}, 
+			"6": {
+				"formation": 1, 
+				"ship": [1573, 1550, 1551, 1529, 1575, 1575], 
+				"geth": 4, 
+				"experience": 400, 
+				"choose_rate": 0
+			}
+		}
+	}
+}
