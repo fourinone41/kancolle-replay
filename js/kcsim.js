@@ -152,6 +152,7 @@ var MECHANICS = {
 	CVCI: true,
 	destroyerNBCI: true,
 	LBASBuff: false,
+	installRevamp: false,
 	specialAttacks: false
 };
 var NERFPTIMPS = false;

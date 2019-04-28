@@ -26,7 +26,8 @@ var MECHANICDATES = {
 	aswSoftCap: '2017-11-10',
 	LBASBuff: '2017-11-17',
 	equipBonus: '2017-12-22',
-	specialAttacks: '2018-09-12',
+	installRevamp: '2018-08-17',
+	specialAttacks: '2018-09-08',
 };
 
 var MECHANICDATESOTHER = {
@@ -517,7 +518,7 @@ function chDialogItemFilter(category) {
 		case 5: types=[FIGHTER,INTERCEPTOR]; break;
 		case 6: types=[DIVEBOMBER,LANDBOMBER]; break;
 		case 7: types=[TORPBOMBER]; break;
-		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2]; break;
+		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
 		case 9: types=[RADARS,RADARL,RADARXL]; break;
 		case 10: types=[DEPTHCHARGE,SONARS,SONARL]; break;
 		case 11: types=[APSHELL,TYPE3SHELL]; break;
