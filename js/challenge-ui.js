@@ -1051,7 +1051,7 @@ function chSave() {
 	basic.player = CHDATA.player;
 	data.ships = CHDATA.ships;
 	data.gears = CHDATA.gears;
-	data.maps = CHDATA.maps;
+	basic.maps = CHDATA.maps;
 	data.fleets = CHDATA.fleets;
 	data.presets = CHDATA.presets;
 	localStorage.setItem('ch_basic'+FILE,JSON.stringify(basic));

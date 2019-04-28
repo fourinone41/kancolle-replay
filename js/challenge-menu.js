@@ -89,14 +89,14 @@ function chMenuShowFiles() {
 						nowhp++;
 					} else if (data.event.maps[mapnum].part == part) {
 						var nowhpP = data.event.maps[mapnum].hp;
-						var maxhpP = getMapHP(data.event.world,mapnum,data.event.maps[mapnum].diff,part);
+						var maxhpP = getMapHP(data.maps[mapnum].world,mapnum,data.event.maps[mapnum].diff,part);
 						if (maxhpP) nowhp += nowhpP/maxhpP;
 						else nowhp++;
 					}
 				}
 			} else {
 				nowhp = data.event.maps[mapnum].hp;
-				maxhp = getMapHP(data.event.world,mapnum,data.event.maps[mapnum].diff) || 0;
+				maxhp = getMapHP(data.maps[mapnum].world,mapnum,data.event.maps[mapnum].diff) || 0;
 			}
 			if (!maxhp) continue;
 			progress += (maxhp-nowhp)/maxhp/total;
