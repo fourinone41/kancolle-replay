@@ -21950,7 +21950,7 @@ var MAPDATA = {
 			},
 			6: {
 				name: 'E-6',
-				nameT: 'Pursuit! The 2nd Strike Unit',
+				nameT: 'Pursuit! The 2nd Strike Unit <br><button onclick="MAPDATA[41].maps[6].giveLockKurita()">Give Kurita locks to the fleet</button>',
 				fleetTypes: [0,7],
 				bgmMap: 112,
 				bgmDN: 114,
