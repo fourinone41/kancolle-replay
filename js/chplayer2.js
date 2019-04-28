@@ -1401,7 +1401,8 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 			var ennemies = abyssals;
 			var ennemiesBoss = boss;
 
-			let ship_data = SHIPDATA[ship_id.toString()]
+			let ship_data = SHIPDATA[ship_id.toString()];
+			console.log(ship_data)
 
 			if(ship_data.type === 'SS') {
 				ennemies = submarines;
@@ -1409,10 +1410,11 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 			}
 
 			if(ship_data.type === 'Installation' || ship_data.installtype) {
-				ennemies = ennemiesBoss = installation;
+				ennemies = installation;
+				ennemiesBoss = installationBoss;
 			}
 
-			if(Object.keys(ennemiesBoss).indexOf(ship_id.toString()) !== -1){
+			if(bossIds.indexOf(ship_id) !== -1){
 				var obj_keys = Object.keys(ennemiesBoss);
 				var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 

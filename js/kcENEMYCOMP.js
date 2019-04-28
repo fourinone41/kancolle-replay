@@ -1,4 +1,4 @@
-var ENEMYCOMPS = {
+const ENEMYCOMPS = {
 	'World 1':{
 		'1-1':{
 			'Boss':{

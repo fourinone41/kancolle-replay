@@ -12138,10 +12138,10 @@ var MAPDATA = {
 				},
 				debuffCheck: function(debuff) {
 					if (!debuff) return false;
-					let debuffE2 = CHDATA.event.maps[2].debuff;
-					let dE2 = debuffE2.A && debuffE2.G && debuffE2.K && debuffE2.L && (debuffE2.AB >= 3 || CHDATA.config.disableRaidReq);
+					//let debuffE2 = CHDATA.event.maps[2].debuff;
+					//let dE2 = debuffE2.A && debuffE2.G && debuffE2.K && debuffE2.L && (debuffE2.AB >= 3 || CHDATA.config.disableRaidReq);
 					let dE3 = debuff.C && debuff.D && debuff.H && debuff.J && debuff.K;
-					return dE2 && dE3;
+					return dE3;
 				},
 				nodes: {
 					'Start1': {
