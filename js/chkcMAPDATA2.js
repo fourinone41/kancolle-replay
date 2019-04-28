@@ -25419,7 +25419,9 @@ function randomizeMaps(){
 			for(event_id in MAPDATA){
 				if(event_id !== "99"){
 					if(MAPDATA[event_id].maps[i] !== undefined){
-						let map = MAPDATA[event_id].maps[i];
+						//let map = MAPDATA[event_id].maps[i];
+						let map = {};
+
 						map.world = event_id;
 						possible_maps.push(map);
 					}
