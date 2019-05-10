@@ -2489,7 +2489,7 @@ var MAPDATA = {
 				name: 'E-5',
 				nameT: 'North Pacific Sea - Capture Peacock Island Operation',
 				fleetTypes: [0],
-				bgmMap: 2001,
+				bgmMap: 2130,
 				bgmDN: 10,
 				bgmNN: 10,
 				bgmDB: 9,
@@ -10543,8 +10543,8 @@ var MAPDATA = {
 				nameT: 'Beyond the Surging Sea',
 				fleetTypes: [1,2,3],
 				bgmMap: 2134,
-				bgmDN: 64,
-				bgmNN: 64,
+				bgmDN: 62,
+				bgmNN: 62,
 				bgmDB: 68,
 				bgmNB: 68,
 				bgmLB: 62,
@@ -22060,6 +22060,11 @@ var MAPDATA = {
 						}
 					}
 				},
+				giveLockKurita: function () {
+					for (let i=0; i<CHDATA.fleets[1].length; i++) {
+						chGiveLock(1,i+1,'4');
+					}
+				},
 				additionalChecks: function(ships,errors) {
 					if (ships.BB + ships.BBV) errors.push('No BB(V)');
 					if (ships.CV + ships.CVL + ships.CVB) errors.push('No CV(L/B)');
@@ -25419,7 +25424,6 @@ function randomizeMaps(){
 			for(event_id in MAPDATA){
 				if(event_id !== "99"){
 					if(MAPDATA[event_id].maps[i] !== undefined){
-						//let map = MAPDATA[event_id].maps[i];
 						let map = {};
 
 						map.world = event_id;
@@ -25428,6 +25432,7 @@ function randomizeMaps(){
 				}
 			}
 			maps[i] = possible_maps[Math.floor(Math.random()*possible_maps.length)];
+			//if(maps[i].world == 42) alert('fall18')
 		}
 		CHDATA.maps = maps;
 		return maps;

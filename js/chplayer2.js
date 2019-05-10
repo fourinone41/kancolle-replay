@@ -1429,7 +1429,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 
 		compd.c = compMain;
 
-		var formations = [1,2,3,4,6];
+		var formations = [1,2,3,4];
 		var formationsSubs = [5,4];
 		compd.f = formations[Math.floor(Math.random()*formations.length)];
 
