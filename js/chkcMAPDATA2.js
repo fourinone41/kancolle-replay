@@ -25359,7 +25359,7 @@ var MAPDATA = {
 	},
 	99: {
 		name: 'Random Fiesta',
-		date: '2019-03-09',
+		date: '2019-05-10',
 		diffMode: 2,
 		allowDiffs: [3,2,1],
 		allowFleets: [0,1,2,3,7],
