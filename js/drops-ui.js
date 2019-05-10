@@ -125,6 +125,12 @@ function changeData(map) {
 }
 
 function changeTable(prop) {
+	if (NOTES_SPECIAL[MAP+'_'+prop]) {
+		$('#spanNoteMap').html(NOTES_SPECIAL[MAP+'_'+prop] + '<br>');
+		$('#spanNoteMap').parent().show();
+	} else {
+		$('#spanNoteMap').parent().hide();
+	}
 	if (!SHIPGET || !MAPENEMY) return;
 	for (let i=0; i<100; i++) {
 		if (i < SHIPGET[prop].ships.length) {
@@ -427,5 +433,9 @@ function getExportData() {
 	for (let row of DATAOUT) output += row.join(',') + '\n';
 	return output.trim();
 }
+
+var NOTES_SPECIAL = {
+	'1-6_normal': 'Note: Nagara (長良) used to drop on slot 11 (?) before 2018-10-26 (end of Saury event).'
+};
 
 // })();

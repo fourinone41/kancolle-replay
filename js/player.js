@@ -955,7 +955,7 @@ function processAPI(root) {
 					}
 					defenders.push(defender);
 				}
-				if (hou.api_at_type[j] >= 100) d.push(defenders);
+				if (hou.api_at_type[j] >= 100 && hou.api_at_type[j] < 200) d.push(defenders);
 				else d.push(defenders[0]); //target
 				
 				for (var k=0; k<hou.api_damage[j].length; k++) {
@@ -998,6 +998,8 @@ function processAPI(root) {
 					case 4:
 					case 5:
 					case 6:
+					case 200:
+					case 201:
 						eventqueue.push([shootCutIn,d,getState()]); break;
 					case 7:
 						eventqueue.push([shootPlaneCutIn,d,getState()]); break;
@@ -1023,7 +1025,7 @@ function processAPI(root) {
 		var processYasenHougeki = function(hou) {
 			for (var j=0; j<hou.api_at_list.length; j++) {
 				if (hou.api_at_list[j] == -1) continue;
-				var d = [];
+				var d = [], targets;
 				if (hou.api_at_eflag) { //new format 2017-11-17
 					var ind = hou.api_at_list[j], attacker;
 					if (hou.api_at_eflag[j]) {
@@ -1032,7 +1034,7 @@ function processAPI(root) {
 						attacker = (ind >= 6 && fleet1.length < 7)? fleet1C[ind-6] : fleet1[ind];
 					}
 					d.push(attacker);
-					var targets = [];
+					targets = [];
 					for (var k=0; k<hou.api_df_list[j].length; k++) {
 						var ind = hou.api_df_list[j][k];
 						if (hou.api_at_eflag[j]) {
@@ -1042,15 +1044,21 @@ function processAPI(root) {
 						}
 						targets.push(target);
 					}
-					if (hou.api_sp_list[j] == 100) d.push(targets);
+					if (hou.api_sp_list[j] >= 100 && hou.api_sp_list[j] < 200) d.push(targets);
 					else d.push(targets[0]);
 				} else {
 					d.push( (hou.api_at_list[j]>6)? f2e[hou.api_at_list[j]-7] : f1[hou.api_at_list[j]-1] ); //attacker
-					d.push( (hou.api_df_list[j][0]>6)? f2e[hou.api_df_list[j][0]-7] : f1[hou.api_df_list[j][0]-1] ); //target
+					targets = [];
+					for (var k=0; k<hou.api_df_list[j].length; k++) {
+						targets.push( (hou.api_df_list[j][k]>6)? f2e[hou.api_df_list[j][k]-7] : f1[hou.api_df_list[j][k]-1] ); //target
+					}
+					if (hou.api_sp_list[j] >= 100 && hou.api_sp_list[j] < 200) d.push(targets);
+					else d.push(targets[0]);
 				}
 				for (var k=0; k<hou.api_damage[j].length; k++) {
 					d.push(parseInt(hou.api_damage[j][k])); //damage
-					d[1].hpTrack -= Math.max(0,Math.floor(hou.api_damage[j][k]));
+					var defender = (targets.length > 1 && targets[k])? targets[k] : targets[0];
+					defender.hpTrack -= Math.max(0,Math.floor(hou.api_damage[j][k]));
 				}
 				for (var k=0; k<hou.api_cl_list[j].length; k++) d.push((hou.api_cl_list[j][k]==2));
 				d.push((hou.api_damage[j][0] != Math.floor(hou.api_damage[j][0])));
