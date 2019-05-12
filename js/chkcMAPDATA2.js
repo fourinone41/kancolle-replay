@@ -13637,7 +13637,7 @@ var MAPDATA = {
 			},
 			3: {
 				name: 'E-3',
-				nameT: 'Commence! Operation \'Hikari\'',
+				nameT: 'Commence! Operation \'Hikari\' <button onclick="MAPDATA[37].maps[3].giveSaiun()">Disassemble the Saiun</button>',
 				bgmMap: 2037,
 				bgmDN: 88,
 				bgmNN: 88,
@@ -13647,6 +13647,11 @@ var MAPDATA = {
 				checkLock: [2],
 				giveLock: 1,
 				reward: { ships: [495] },
+				giveSaiun: function () {
+					chShowReward({items:[209,209]});
+					chAddReward({items:[209]});
+					chAddReward({items:[209]});
+				},
 				parts: {
 					1: {
 						currentBoss: 'I',
@@ -25413,6 +25418,22 @@ function getRandomBanner(){
 
 function getRandomBannerAlt(){
 	return bannersAlt[Math.floor(Math.random()*bannersAlt.length)];
+}
+
+function randomizeMap(MAPNUM) {
+	let possible_maps = [];
+	for(event_id in MAPDATA){
+		if(event_id !== "99"){
+			if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
+				let map = {};
+
+				map.world = event_id;
+				possible_maps.push(map);
+			}
+		}
+	}
+	CHDATA.maps[MAPNUM] = possible_maps[Math.floor(Math.random()*possible_maps.length)];
+	chLoadSortieInfo(MAPNUM);	
 }
 
 function randomizeMaps(){
