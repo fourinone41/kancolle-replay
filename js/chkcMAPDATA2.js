@@ -23027,12 +23027,14 @@ var MAPDATA = {
 			royalnavy: [515, 571,439, 519],
 			marinenationale: [492, 491],
 			sovietnavy: [511, 516,147],
+			swedish: [574],
 			europeans: [
 				432, 171, 176, 174,175, 431,
 				515, 571,439, 519,
 				492, 491,
 				443,575, 449,448, 444, 441,442, 535,
 				511, 516,147,
+				574
 			]
 		},
 		friendFleet: {
@@ -25195,7 +25197,7 @@ var MAPDATA = {
 
 							for (ship of ships) {
 								if (MAPDATA[42].historical.europeans.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial = [{ mod : 1.25 }];
+									ship.bonusSpecial = [{ mod : 1.1 }];
 								}
 								if (MAPDATA[42].historical.kriegsmarine.indexOf(getBaseId(ship.mid)) !== -1){
 									ship.bonusSpecial.push({ mod : 1.3 });
