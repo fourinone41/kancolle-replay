@@ -13726,6 +13726,7 @@ var SHIPDATA = {
 		next: 0,
 		prev: 149,
 		nextlvl: 0,
+		canTorp: function() { return (this.HP/this.maxHP > .5); },
 	},
 	605: {
 		name: 'Luigi Torelli Kai',

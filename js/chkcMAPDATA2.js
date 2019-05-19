@@ -10262,8 +10262,8 @@ var MAPDATA = {
 				nameT: 'Friendly anchorage Recapturing Strategy',
 				fleetTypes: [1],
 				bgmMap: 2134,
-				bgmDN: 64,
-				bgmNN: 64,
+				bgmDN: 62,
+				bgmNN: 62,
 				bgmDB: 68,
 				bgmNB: 68,
 				bossnode: 14,
@@ -10290,7 +10290,7 @@ var MAPDATA = {
 				},
 				debuffCheck: function(debuff) {
 					if (!debuff) return false;
-					return (debuff.A && debuff.G && debuff.L && CHDATA.event.maps[5].debuff && CHDATA.event.maps[5].debuff.I);
+					return (debuff.A && debuff.G && debuff.L);
 				},
 				nodes: {
 					'Start1': {

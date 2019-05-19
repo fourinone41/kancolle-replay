@@ -1475,7 +1475,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 
 			compd.ce = compEscort;
 
-			var formationsC = [114, 214];
+			var formationsC = [113, 114, 213, 214];
 
 			compd.f = formationsC[Math.floor(Math.random()*formationsC.length)];
 		}

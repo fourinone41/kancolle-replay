@@ -1507,6 +1507,14 @@ var VOICES = {
 		damage3: "assets/voice/Kongou-Major_Damage.ogg",
 		friend141: "assets/voice/Kongou_FriendFleet.mp3",
 	},
+	591: {
+		start: "assets/voice/Kongou-Battle_Start.ogg",
+		attack: "assets/voice/Kongou-Attack.ogg",
+		nbattack: "assets/voice/KongouKai2C-Battle_Start.ogg",
+		damage1: "assets/voice/Kongou-Minor_Damage_1.ogg",
+		damage2: "assets/voice/Kongou-Minor_Damage_2.ogg",
+		damage3: "assets/voice/Kongou-Major_Damage.ogg",
+	},
 	151: {
 		start: "assets/voice/Haruna-Battle_Start.ogg",
 		attack: "assets/voice/Haruna-Attack.ogg",
