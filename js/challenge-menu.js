@@ -82,7 +82,7 @@ function chMenuShowFiles() {
 		for (var mapnum in mdata.maps) total++;
 		for (var mapnum in data.event.maps) {
 			var nowhp = 0, maxhp = 0;
-			let map = MAPDATA[mdata.maps[mapnum].world].maps[mapnum];
+			let map = MAPDATA[data.maps[mapnum].world].maps[mapnum];
 			if (map.parts) {
 				for (var part in map.parts) {
 					maxhp++;
@@ -97,7 +97,7 @@ function chMenuShowFiles() {
 				}
 			} else {
 				nowhp = data.event.maps[mapnum].hp;
-				maxhp = getMapHP(mdata.maps[mapnum].world,mapnum,data.event.maps[mapnum].diff) || 0;
+				maxhp = getMapHP(data.maps[mapnum].world,mapnum,data.event.maps[mapnum].diff) || 0;
 			}
 			if (!maxhp) continue;
 			progress += (maxhp-nowhp)/maxhp/total;
