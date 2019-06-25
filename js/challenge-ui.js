@@ -229,6 +229,10 @@ function chAddDragEquip(fleetnum,shipslot,eqslot) {
 	});
 }
 
+const escortShipType = ['DD', 'CA', 'CL', 'CAV']
+
+var allAbyssals = [];
+var escortAbyssals = [];
 
 var abyssals = [];
 var boss = [];
@@ -256,6 +260,13 @@ function chInitAbyssalTables () {
 				else if (ship.type === 'Installation' || ship.installtype) installation[ship_id] = ship;
 				else abyssals[ship_id] = ship;
 			}
+			allAbyssals[ship_id] = ship;
+			if (!ship.type.includes('CV') && !ship.type.includes('BB') && !ship.type.includes('SS')) {
+				escortAbyssals[ship_id] = ship;
+			}
+
+			SHIPDATA[ship_id].fuel = 100;
+			SHIPDATA[ship_id].ammo = 100;
 		}
 	}
 }
@@ -367,6 +378,76 @@ function chDialogShip(fleet,slot) {
 	$('#shipselectdialog').dialog('open');
 	chFillDialogShip(1);
 	chFilterDialogShip();
+
+	// randomize
+	//chRandomizeShip(fleet, slot);
+}
+
+function chRandomizeShip(fleet,slot) {
+	var array = fleet === 2 ? escortAbyssals : allAbyssals;
+	var obj_keys = Object.keys(array);
+	var shipId = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+
+	let shipN = Object.assign({}, array[shipId]);
+
+	shipN.masterId = shipId;
+	shipN.LVL = 99;
+	let HP = [shipN.HP,shipN.HP];
+	shipN.HP = HP;
+	shipN.ex = 1;
+
+	shipN.items = chCreateItems(shipN.EQUIPS);
+
+	shipN.planes = shipN.SLOTS;
+	shipN.fuel = 10;
+	shipN.ammo = 10;
+	shipN.morale = 49;
+
+	var arrayShipsId = Object.keys(CHDATA.ships);
+	var lastId = arrayShipsId[arrayShipsId.length-1];
+	var i = 2;
+	while (lastId.includes('z')) {
+		lastId = arrayShipsId[arrayShipsId.length-i];
+		i++;
+	}
+	lastId = lastId.replace('x', '');
+	lastId = parseInt(lastId);
+
+	var cursId = 'x'+ (++lastId);
+	CHDATA.ships[cursId] = shipN;
+
+	chTableSetShip(cursId, fleet, slot);
+}
+
+const PLANETYPES = [FIGHTER, DIVEBOMBER,TORPBOMBER,CARRIERSCOUT,SEAPLANE,SEAPLANEBOMBER,CARRIERSCOUT2,JETBOMBER,JETSCOUT,LANDBOMBER,INTERCEPTOR,LANDSCOUT,SEAPLANEFIGHTER];
+
+function chCreateItems(equips) {
+	if(!equips) return [];
+
+	var arrayEquipsId = Object.keys(CHDATA.gears);
+	var lastId = arrayEquipsId[arrayEquipsId.length-1];
+	lastId = lastId.replace('x', '');
+	lastId = parseInt(lastId);
+	
+
+	var gears = [];
+
+	for (equip of equips) {
+		var curId = 'x'+ (++lastId);
+		var equipd = EQDATA[equip];
+		var gear = {
+			itemId: lastId,
+			lock: 1,
+			masterId: equip,
+			stars : Math.floor(Math.random()*11)
+		};
+
+		if (PLANETYPES.includes(equipd.type)) gear.ace = 7;
+		CHDATA.gears[curId] = gear;
+		gears.push(lastId);
+	}
+
+	return gears;
 }
 
 function chDialogShipClose() {

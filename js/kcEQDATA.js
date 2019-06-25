@@ -5198,6 +5198,8 @@ var LBASDATA = {
 	306: { distance: 4, cost: 8 },
 	311: { distance: 8, cost: 5 },
 	312: { distance: 9, cost: 5 },
+	562: { distance: 20, cost: 5 },
+	586: { distance: 10, cost: 5 },
 };
 
 var EXPANSIONSLOTDATA = {

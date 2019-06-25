@@ -1392,7 +1392,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode[0] : MAPDATA[WORLD].maps[MAPNUM].bossnode;
 		var letterboss = (typeof bossnum == 'string')? bossnum : String.fromCharCode(64+bossnum);
 
-		var compd = ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
+		var compd = Object.assign({}, ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp]);
 		var compMain = [];
 
 		for(ship in compd.c){
