@@ -25197,13 +25197,13 @@ var MAPDATA = {
 
 							for (ship of ships) {
 								if (MAPDATA[42].historical.europeans.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial = [{ mod : 1.1 }];
+									ship.bonusSpecial = [{ mod : 1.2 }];
 								}
 								if (MAPDATA[42].historical.kriegsmarine.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial.push({ mod : 1.3 });
+									ship.bonusSpecial.push({ mod : 1.1 });
 								}
 								if (MAPDATA[42].historical.marinenationale.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial.push({ mod : 1.3 });
+									ship.bonusSpecial.push({ mod : 1.1 });
 								}
 							}
 						},
