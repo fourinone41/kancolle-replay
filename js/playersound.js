@@ -40,6 +40,7 @@ var SOUNDNAMES = {
 	'done': { path: 'assets/sounds/41_res.sounds.SE_correct_answer3.mp3', voldef: .5 },
 	'hover': { path: 'assets/sounds/242_nodehover.mp3', voldef: .5 },
 	'ooyodoClear': { path: 'assets/voice/425.mp3', voldef: .5 },
+	'ambush': { path: 'assets/sounds/257_ambush.mp3', voldef: .5 },
 }
 SoundManager.prototype = {
 	play: function(name,vol,loop) {

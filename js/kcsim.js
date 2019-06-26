@@ -1931,6 +1931,7 @@ function orderByRange(ships,order,includeSubs) {
 }
 
 function sim(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BAPI,noupdate,friendFleet,earlySupport) {
+	return simAmbush(F1, F2, BAPI);
 	var ships1 = F1.ships, ships2 = F2.ships;
 	var alive1 = [], alive2 = [], subsalive1 = [], subsalive2 = [];
 	var hasInstall1 = false, hasInstall2 = false;
@@ -3009,6 +3010,96 @@ function friendFleetPhase(fleet1,fleet2,alive2,subsalive2,BAPI) {
 	}
 	
 	for (let ship of ships2) ship.protection = false;
+}
+
+function simAmbush(F1,F2,BAPI) {
+	var ships1 = F1.ships, ships2 = F2.ships;
+	var alive1 = [], alive2 = [], subsalive1 = [], subsalive2 = [];
+	var hasInstall1 = false, hasInstall2 = false;
+	for (var i=0; i<ships1.length; i++) {
+		if (ships1[i].HP <= 0) continue;
+		if (ships1[i].retreated) continue;
+		if(ships1[i].isSub) subsalive1.push(ships1[i]);
+		else alive1.push(ships1[i]);
+		ships1[i].HPprev = ships1[i].HP;
+		if (!MECHANICS.morale) ships1[i].morale = 49;
+		if (ships1[i].isInstall) hasInstall1 = true;
+	}
+	for (var i=0; i<ships2.length; i++) {
+		if (ships2[i].HP <= 0) continue;
+		if (ships2[i].retreated) continue;
+		if(ships2[i].isSub) subsalive2.push(ships2[i]);
+		else alive2.push(ships2[i]);
+		ships2[i].HPprev = ships2[i].HP;
+		if (!MECHANICS.morale) ships2[i].morale = 49;
+		if (ships2[i].isInstall) hasInstall2 = true;
+	}
+	
+	ENGAGEMENT = 1;
+	
+	F1.AS = 0;
+	F2.AS = 999; // enable spotting for abyssals 
+	
+	if (C) {
+		console.log('ENGAGEMENT: '+ENGAGEMENT);
+		var dataroot = BAPI.data;
+		dataroot.api_formation = [F1.formation.id,F2.formation.id,{1:1,.8:2,1.2:3,.6:4}[ENGAGEMENT]];
+		dataroot.api_deck_id = 1;
+		dataroot.api_f_maxhps = []; dataroot.api_f_nowhps = [];
+		dataroot.api_e_maxhps = []; dataroot.api_e_nowhps = [];
+		for (let ship of ships1) {
+			dataroot.api_f_nowhps.push(ship.HP);
+			dataroot.api_f_maxhps.push(ship.maxHP);
+		}
+		var retreatlist = [];
+		for (var i=0; i<ships1.length; i++) if (ships1[i].retreated) retreatlist.push(i+1);
+		if (retreatlist.length) dataroot.api_escape_idx = retreatlist;
+		dataroot.api_ship_ke = [];
+		dataroot.api_eSlot = [];
+		for (var i=0; i<6; i++) {
+			dataroot.api_ship_ke.push((i<ships2.length)? ships2[i].mid : -1);
+			dataroot.api_e_nowhps.push((i<ships2.length)? ships2[i].HP : -1);
+			dataroot.api_e_maxhps.push((i<ships2.length)? ships2[i].maxHP : -1);
+			dataroot.api_eSlot.push([]);
+			for (var j=0; j<5; j++)
+				dataroot.api_eSlot[i].push((i<ships2.length && j<ships2[i].equips.length)? ships2[i].equips[j].mid : -1);	
+		}
+	}
+	if (C) console.log(API);
+
+	
+	var order1 = [], order2 = [];
+	for (var i=0; i<ships2.length; i++) {
+		if (!hasInstall1 && ships2[i].isSub) continue;
+		if (ships2[i].retreated) continue;
+		if (ships2[i].canShell()) order2.push(ships2[i]);
+	}
+	
+	if (C) BAPI.data.api_hougeki2 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
+	shellPhase(order1,order2,alive1,subsalive1,alive2,subsalive2,(C)? BAPI.data.api_hougeki2:undefined);	
+	
+	var results = {};
+	results.rankDay = results.rank = getRank(ships1,ships2);
+	results.redded = false;
+	results.flagredded = (ships1[0].HP/ships1[0].maxHP <= .25);
+	results.reddedIndiv = [false,false,false,false,false];
+	results.flagsunk = (ships2[0].HP <= 0);
+	results.undamaged = true;
+	results.buckets = 0;
+	for (var i=0; i<ships1.length; i++) {
+		if (ships1[i].HP/ships1[i].maxHP <= .25) {
+			results.redded = true;
+			results.reddedIndiv[i] = true;
+			if (!ships1[i].isflagship) ships1[i].protection = false;
+		}
+		if (ships1[i].HP/ships1[i].maxHP <= .5) results.undamaged = false;
+		if (ships1[i].HP/ships1[i].maxHP <= BUCKETPERCENT || getRepairTime(ships1[i]) > BUCKETTIME) results.buckets++;
+	}
+	results.mvpDay = results.MVP = F1.getMVP();
+	
+	dataroot.api_formation = [-1,7,1];
+
+	return results;
 }
 
 function formatRemovePadding(obj) {

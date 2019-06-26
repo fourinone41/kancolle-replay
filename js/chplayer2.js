@@ -423,6 +423,15 @@ function addMapNode(letter,type) {
 			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeND.png');
 			nodeG.pivot.set(10,10);
 		}
+	} else if (node.ambush) {
+		if (CHDATA.event.maps[MAPNUM].visited.indexOf(letter) == -1) {
+			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
+			nodeG.pivot.set(10,10);
+		} else {
+			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeAmbush.png');
+			nodeG.scale.set(1);
+			nodeG.pivot.set(12,30);
+		}
 	} else if (!node.boss) {
 		if (node.dropoff) {
 			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeAnchor.png');
@@ -556,11 +565,17 @@ function mapBattleNode(ship,letter) {
 			},[]]);
 			SM.fadeBGM();
 		}, 500);
-		addTimeout(function() { ecomplete = true; }, 2000);
+		if (node.ambush) {
+			addTimeout(function() { SM.play('ambush'); }, 2000);
+			addTimeout(function() { ecomplete = true; }, 4000);
+		} else {
+			addTimeout(function() { ecomplete = true; }, 2000);
+		}		
 	}
 	
 	FORMSELECTED = 0;
-	if (formcombined) addTimeout(function() { chShowFormSelectC(afterSelect); }, 3200);
+	if (node.ambush) addTimeout(function() { FORMSELECTED = 1; afterSelect(); }, 3200);
+	else if (formcombined) addTimeout(function() { chShowFormSelectC(afterSelect); }, 3200);
 	else if (CHSHIPCOUNT.total >= 4) addTimeout(function() { chShowFormSelect(afterSelect); }, 3200);
 	else addTimeout(function() { FORMSELECTED = 1; afterSelect(); }, 3200);
 	
@@ -1636,6 +1651,7 @@ function prepBattle(letter) {
 	var NBonly = compd.NB || mapdata.night2; //change to node level?
 	var aironly = compd.air;
 	var landbomb = compd.bomb;
+	var ambush = compd.ambush;
 	var supportfleet = (MAPDATA[WORLD].maps[MAPNUM].nodes[letter].boss)? FLEETS1S[1] : FLEETS1S[0];
 	
 	var LBASwaves = null;
@@ -1689,13 +1705,15 @@ function prepBattle(letter) {
 	
 	res.NBonly = NBonly;
 	res.landbomb = landbomb;
-	res.noammo = compd.noammo;
+	res.noammo = compd.noammo || ambush;
+	res.ambush = ambush;
 	if (mapdata.overrideCost) res.overrideCost = mapdata.overrideCost;
 	if (mapdata.nightToDay2) res.nightToDay2 = true;
-	if (landbomb) {
+	if (landbomb || ambush) {
 		res.rank = res.rankDay = getRankRaid(FLEETS1[0].ships,(CHDATA.fleets.combined)? FLEETS1[1].ships : null);
 		delete BAPI.data.api_hougeki1;
 	}
+	if (ambush) BAPI.data.api_ambush = true;
 	CHDATA.temp = res;
 	//update morale after NB select
 	
@@ -2511,6 +2529,9 @@ function chUpdateSupply() {
 		} else if (results.NBonly) {
 			baseF = .1;
 			baseA = .1;
+		} else if (results.ambush) {
+			baseF = .04;
+			baseA = 0;
 		}
 	}
 	console.log(baseF + ' ' + baseA);

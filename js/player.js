@@ -26,6 +26,7 @@ loader.add('BG1','assets/82_res.images.ImgBackgroundDay.jpg')
 	.add('shutter11','assets/512_res.common.ImgShutterTop.png')
 	.add('shutter12','assets/510_res.common.ImgShutterBottom.png')
 	.add('radar','assets/375_res.battle.images.ImgRaderBG.png')
+	.add('aradar','assets/_res.battle.common.ImgAmbushRadar.png')
 	.add('nmiss','assets/Nmiss.png')
 	.add('ccrit','assets/Ccrit.png')
 	.add('dminor','assets/d383.png')
@@ -270,6 +271,13 @@ function createDots(container,form,num,side) {
 				container.addChild(dot);
 			}
 			break;
+		case 7: 
+			var aRadar = getFromPool('aradar','assets/_res.battle.common.ImgAmbushRadar.png');
+			aRadar.position.set(-1,-4);
+			aRadar.anchor.set(.5);
+			aRadar.scale.set(1);
+			container.addChild(aRadar);
+			break;
 		case 11:
 			var coords = [[5,0],[10,30],[10,-30],[20,15],[20,-15],[30,0]];
 			for (var i=0; i<coords.length; i++) {
@@ -428,7 +436,7 @@ function processAPI(root) {
 		data = root.battles[0].yasen;
 		stage.removeChild(bg);
 		stage.addChildAt(bg2,0);
-	} else if (data.api_n_hougeki1) {
+	} else if (data.api_n_hougeki1 || data.api_ambush) {
 		stage.removeChild(bg);
 		stage.addChildAt(bg2,0);
 	}
@@ -660,7 +668,8 @@ function processAPI(root) {
 			}
 		}
 		var NBonly = (!!data.api_hougeki || Object.keys(data).length <= 0 || data.api_n_hougeki1);
-		var battledata = [data.api_formation[2],data.api_formation[0],data.api_formation[1],0,0,(NBonly)?1:0];
+		var ambush = (!!data.api_ambush);
+		var battledata = [data.api_formation[2],data.api_formation[0],data.api_formation[1],0,0,(NBonly)?1:0,(ambush)?1:0];
 		var escape = [[],[]];
 		if (data.api_escape_idx) escape[0] = data.api_escape_idx;
 		if (data.api_escape_idx_combined) escape[1] = data.api_escape_idx_combined;
@@ -1701,7 +1710,7 @@ function battleStart(battledata,newships,newshipsC,escape,bgm,showbosshp) {
 	}
 	
 	if (VOICES[fleet2[0].mid] && VOICES[fleet2[0].mid].start && !isPlayable(fleet2[0].mid)) SM.playVoice(fleet2[0].mid,'start',10);
-	else SM.playVoice(fleet1[0].mid,'start',0);
+	else if (battledata[6]) SM.playVoice(fleet1[0].mid,'damage1',0);
 	var j = 0;
 	for (var i=0; i<fleet1.length; i++) {
 		addTimeout(function(){

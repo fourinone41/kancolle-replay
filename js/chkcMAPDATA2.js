@@ -25400,6 +25400,87 @@ var MAPDATA = {
 		get maps (){
 			return randomizeMaps();
 		} 
+	},
+	43: {
+		name: 'Winter 2019',
+		date: '2019-05-10',
+		diffMode: 2,
+		allowDiffs: [3,2,1],
+		allowFleets: [0,1,2,3],
+		allowLBAS: true,
+		allowVanguard: true,
+		vanguardConsts: { vanguardEvDD1: 20, vanguardEvDD2: 40, vanguardEvOther1: 5, vanguardEvOther2: 20 },
+		newResupplyCosts: true,
+		bannerImg: 'assets/maps/43/banner1.png',
+		bannerImgAlt: 'assets/maps/43/banner2.png',
+		transportCalc: function(ships,rank) {
+			rank = rank || 'S';
+			let tp = transportCalcStandard(ships,'S');
+			for (let ship of ships) {
+				if (!ship) continue;
+				for (let item of ship.items) {
+					if (item <= 0) continue;
+					let eq = CHDATA.gears['x'+item];
+					let eqd = EQDATA[eq.masterId];
+					if (eqd.type == LANDINGTANK) tp += 18;
+				}
+			}
+			tp = Math.floor(tp);
+			if (rank == 'A') tp *= 0.7;
+			if (rank != 'S' && rank != 'A') return 0;
+			return Math.floor(tp);
+		},
+		maps: {
+			1: {
+				name: 'E-1',
+				nameT: '',
+				fleetTypes: [0],
+				bgmMap: 119,
+				bgmDN: 120,
+				bgmNN: 120,
+				bgmDB: 121,
+				bgmNB: 121,
+				bossnode: 1,
+				checkLock: [2,4,3,9,8],
+				giveLock: 5,
+				maphp: {
+					3: { 1: 1500 },
+					2: { 1: 1200 },
+					1: { 1: 750 },
+					4: { 1: 750 },
+				},
+				finalhp: {
+					3: 388,
+					2: 288,
+					1: 188,
+					4: 188,
+				},
+				nodes: {
+					'Start': {
+						type: 3,
+						x: 97,
+						y: 88,
+						route: 'B'
+					},
+					'A': {
+						type: 1,
+						x: 203,
+						y: 107,
+						ambush: true,
+						end: true,
+						compDiff: {
+							3: ['Hard 1'],
+						},
+					},
+					'B': {
+						type: 3,
+						x: 253,
+						y: 107,
+						route: 'A',
+					},
+				}
+			}
+		}
 	}
 }
 
