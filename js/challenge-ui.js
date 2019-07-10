@@ -243,7 +243,7 @@ var installation = [];
 var submarines = [];
 var submarinesBoss = [];
 
-var bossIds = [1539,1540,1544,1545,1546,1547,1548,1556,1557,1573,1574,1581,1582,1583,1584,1585,1586,1587,1588,1589,1590,1597,1598,1599,1600,1601,1602,1603,1604,1605,1606,1607,1608,1609,1610,1611,1612,1613,1619,1620,1625,1626,1627,1628,1629,1630,1631,1632,1633,1634,1635,1636,1641,1642,1643,1647,1648,1649,1650,1651,1652,1653,1654,1655,1656,1657,1658,1659,1660,1661,1662,1663,1664,1668,1669,1670,1671,1672,1673,1674,1675,1676,1677,1678,1679,1680,1681,1682,1683,1684,1685,1686,1687,1688,1689,1690,1691,1692,1696,1697,1698,1699,1700,1701,1702,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1745,1746,1747,1748,1749,1750,1751,1752,1753,1754,1755,1756,1757,1758,1759,1760,1767,1768,1769,1770,1771,1772,1773,1774,1775,1781,1782,1783,1784,1785,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1819,1820,1821,1822,1823,1824,1825,1826,1827,1828,1829,1830,1831,1832,1834,1835,1836,1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1847,1848,1849,1850,1851,1852,1853,1854,1855,1856,1857,1644,1645,1646,1693,1694,1695,1736,1737,1738,1789,1805,1806,1807,1808,2012,2013,2014,2015,2016,2018,2019,2020,2021,2022];
+var bossIds = [1539,1540,1544,1545,1546,1547,1548,1556,1557,1573,1574,1581,1582,1583,1584,1585,1586,1587,1588,1589,1590,1597,1598,1599,1600,1601,1602,1603,1604,1605,1606,1607,1608,1609,1610,1611,1612,1613,1619,1620,1625,1626,1627,1628,1629,1630,1631,1632,1633,1634,1635,1636,1641,1642,1643,1647,1648,1649,1650,1651,1652,1653,1654,1655,1656,1657,1658,1659,1660,1661,1662,1663,1664,1668,1669,1670,1671,1672,1673,1674,1675,1676,1677,1678,1679,1680,1681,1682,1683,1684,1685,1686,1687,1688,1689,1690,1691,1692,1696,1697,1698,1699,1700,1701,1702,1703,1704,1705,1706,1707,1708,1709,1710,1711,1712,1713,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,1729,1730,1731,1732,1733,1745,1746,1747,1748,1749,1750,1751,1752,1753,1754,1755,1756,1757,1758,1759,1760,1767,1768,1769,1770,1771,1772,1773,1774,1775,1781,1782,1783,1784,1785,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1819,1820,1821,1822,1823,1824,1825,1826,1827,1828,1829,1830,1831,1832,1834,1835,1836,1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1847,1848,1849,1850,1851,1852,1853,1854,1855,1856,1857,1644,1645,1646,1693,1694,1695,1736,1737,1738,1789,1805,1806,1807,1808,1863,1864,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,2012,2013,2014,2015,2016,2018,2019,2020,2021,2022,];
 
 function chInitAbyssalTables () {
 	
@@ -641,7 +641,7 @@ function chSetEquip(itemid) {
 	
 	if (item && DIALOGFLEETSEL == 5) { //LBAS only
 		var type = EQDATA[item.masterId].type;
-		var num = (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT)? 4 : (MAPDATA[WORLD].lbasSlotCount || 18);
+		var num = (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT || type == LANDSCOUT)? 4 : (MAPDATA[WORLD].lbasSlotCount || 18);
 		CHDATA.event.resources.baux += num * LBASDATA[item.masterId].cost;
 		chUIUpdateResources();
 	}
@@ -711,7 +711,7 @@ function chShipEquipItem(shipid,itemid,slot) {
 function chGetLBASNumPlanes(item) {
 	if (!EQDATA[item.masterId]) return (MAPDATA[WORLD].lbasSlotCount || 18);
 	let type = EQDATA[item.masterId].type;
-	let num = (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT)? 4 : (MAPDATA[WORLD].lbasSlotCount || 18);
+	let num = (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT || type == LANDSCOUT)? 4 : (MAPDATA[WORLD].lbasSlotCount || 18);
 	return num;
 }
 
@@ -1263,6 +1263,7 @@ function chDoStartChecks() {
 		errors.push('Support not allowed');
 	}
 	
+	if (!CHDATA.event.maps[MAPNUM].routes) CHDATA.event.maps[MAPNUM].routes = [];
 	if (MAPDATA[WORLD].maps[MAPNUM].additionalChecks) MAPDATA[WORLD].maps[MAPNUM].additionalChecks(counts,errors);
 	
 	return errors;
@@ -1338,7 +1339,7 @@ function chStart() {
 			for (var j=0; j<LBAS[i].equips.length; j++) {
 				var equip = LBAS[i].equips[j];
 				if (equip.type == LANDBOMBER || equip.type == INTERCEPTOR) { fuel += 27; ammo += 12; }
-				else if (equip.type == CARRIERSCOUT || equip.type == SEAPLANE || equip.type == FLYINGBOAT) { fuel += 4; ammo += 3; }
+				else if (equip.type == CARRIERSCOUT || equip.type == SEAPLANE || equip.type == FLYINGBOAT || equip.type == LANDSCOUT) { fuel += 4; ammo += 3; }
 				else { fuel += 18; ammo += 11; }
 			}
 		}
@@ -2119,6 +2120,36 @@ function chAddLBAS(num) {
 		$('#btnLBAS'+num).css('opacity',.5);
 	}
 }
+
+function chAddFriendFleet() {
+	if (CHDATA.fleets.ff === 0) {
+		chSetFriendFleet(1);
+	} else if (CHDATA.fleets.ff === 1 && MAPDATA[WORLD].allowStrongFF) {
+		chSetFriendFleet(2);
+	} else {
+		chSetFriendFleet(0);
+	}
+}
+
+function chSetFriendFleet(num) {
+	if (num == 1) {
+		CHDATA.fleets.ff = 1;
+		$('#btnFF').css('opacity',1);
+		$('#imgFF').show();
+		$('#imgFFStrong').hide();
+	} else if (num == 2) {
+		CHDATA.fleets.ff = 2;
+		$('#btnFF').css('opacity',1);
+		$('#imgFF').hide();
+		$('#imgFFStrong').show();
+	} else {
+		CHDATA.fleets.ff = 0;
+		$('#btnFF').css('opacity',.5);
+		$('#imgFF').show();
+		$('#imgFFStrong').hide();
+	}
+}
+
 
 function chFleetSetHP(fleetnum,shipnum,hp) {
 	var maxhp = CHDATA.ships[CHDATA.fleets[fleetnum][shipnum-1]].HP[1];

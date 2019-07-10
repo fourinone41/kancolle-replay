@@ -253,6 +253,11 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 				var mod = 0;
 				if (eq.rank == 7) mod = 10;
 				else if (eq.rank == 6) mod = 7;
+				else if (eq.rank == 5) mod = 5;
+				else if (eq.rank == 4) mod = 4;
+				else if (eq.rank == 3) mod = 3;
+				else if (eq.rank == 2) mod = 2;
+				else if (eq.rank == 1) mod = 1;
 				this.critratebonus += mod*.6; //x.75????
 				this.critdmgbonus += Math.floor(Math.sqrt(eq.exp) + mod)/((i==0)? 100:200);
 				planeexp += eq.exp;
@@ -442,6 +447,15 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 	
 	if (this.repairs) this.repairsOrig = this.repairs.slice();
 	
+	if (MECHANICS.divebomberInstall && this.hasDivebomber) {
+		for (let eq of this.equips) {
+			if (eq.canShellInstall) {
+				this.hasDivebomber = false;
+				break;
+			}
+		}
+	}
+	
 	this.hasTorpStat = this.TP - tpEquip > 0 && SHIPDATA[this.mid].TP > 0;
 	
 	if (aswPenetrate > 0) this.aswPenetrate = aswPenetrate;
@@ -524,8 +538,8 @@ Ship.prototype.AStype = function() {
 		if (this.equiptypes[DIVEBOMBER] && this.equiptypes[TORPBOMBER]) this._astype.push(73);
 	}
 	
-	var mguns = this.equiptypesB[B_MAINGUN], sguns = this.equiptypesB[B_SECGUN], radars = this.equiptypesB[B_RADAR], apshells = this.equiptypesB[B_APSHELL];
-	var recons = (this.equiptypesB[B_RECON])? this.equiptypesB[B_RECON] : 0;
+	var mguns = this.equiptypesB[B_MAINGUN] || 0, sguns = this.equiptypesB[B_SECGUN] || 0, radars = this.equiptypesB[B_RADAR] || 0, apshells = this.equiptypesB[B_APSHELL] || 0;
+	var recons = this.equiptypesB[B_RECON] || 0;
 	if (recons <= 0 || mguns <= 0) return this._astype;
 	
 	if (mguns >= 2 && apshells) this._astype.push(6);
@@ -802,7 +816,7 @@ Ship.prototype.airPower = function(jetonly,includeScout) {
 	var ap = 0;
 	for (var i=0; i<this.equips.length; i++) {
 		if ((this.equips[i].isfighter && (!jetonly||this.equips[i].isjet)) || (includeScout && EQTDATA[this.equips[i].type].isPlane)) {
-			ap += Math.floor(((this.equips[i].AA||0) + (this.equips[i].level||0)*.2) * Math.sqrt(this.planecount[i]) + (this.equips[i].APbonus||0));
+			ap += Math.floor(((this.equips[i].AA||0) + (this.equips[i].AAImprove||0)) * Math.sqrt(this.planecount[i]) + (this.equips[i].APbonus||0));
 		}
 	}
 	return Math.floor(ap);
@@ -927,14 +941,15 @@ CV.prototype.canStillShell = function () {
 CV.prototype.CVshelltype = true;
 CV.prototype.shellPower = function(target,base) {
 	var dp = 0, tp = 0;
+	let installOnly = MECHANICS.divebomberInstall && target && target.isInstall;
 	for (var i=0; i<this.equips.length; i++) {
-		if(this.equips[i].DIVEBOMB) dp += this.equips[i].DIVEBOMB;
+		if(this.equips[i].DIVEBOMB && (!installOnly || this.equips[i].canShellInstall)) dp += this.equips[i].DIVEBOMB;
 		if(this.equips[i].TP) tp += this.equips[i].TP;
 	}
 	var bonus = (base||0) + 5;
 	if (target && target.isInstall) tp = 0;
 	var improvebonus = (this.improves.Pshell)? Math.floor(this.improves.Pshell) : 0;
-	return 50 + bonus + 1.5*(this.FP + improvebonus + tp + Math.floor(1.3*dp));
+	return 25 + 1.5*(15 + bonus + this.FP + improvebonus + tp + Math.floor(1.3*dp));
 }
 CV.prototype.NBPower = function(target) {
 	if (this.canNBAirAttack()) {
@@ -1101,7 +1116,7 @@ LandBase.prototype.airPower = function(jetonly) {
 			else if (this.equips[i].ACC <= 2 && landscoutmod < 1.15) landscoutmod = 1.15;
 		}
 		if (EQTDATA[this.equips[i].type].isPlane && (!jetonly||this.equips[i].isjet)) {
-			var base = (this.equips[i].AA||0) + (this.equips[i].level||0)*.2;
+			var base = (this.equips[i].AA||0) + (this.equips[i].AAImprove||0);
 			if (this.equips[i].type == LANDBOMBER || this.equips[i].type == INTERCEPTOR) base += (this.equips[i].EV||0)*1.5;
 			ap += Math.floor(base * Math.sqrt(this.planecount[i]) + (this.equips[i].APbonus||0));
 		}
@@ -1113,7 +1128,7 @@ LandBase.prototype.airPowerDefend = function() {
 	var ap = 0, mod = 1;
 	for (var i=0; i<this.equips.length; i++) {
 		if (EQTDATA[this.equips[i].type].isPlane) {
-			var base = (this.equips[i].AA||0) + (this.equips[i].level||0)*.2;
+			var base = (this.equips[i].AA||0) + (this.equips[i].AAImprove||0);
 			if (this.equips[i].type == LANDBOMBER || this.equips[i].type == INTERCEPTOR) base += (this.equips[i].EV||0) + (this.equips[i].ACC||0)*2;
 			ap += Math.floor(base * Math.sqrt(this.planecount[i]) + (this.equips[i].APbonus||0));
 		}
@@ -1221,7 +1236,14 @@ Equip.prototype.setImprovement = function(level) {
 	}
 	if ((this.type == MAINGUNSAA || this.type == SECGUNAA) && this.AA >= 8) special = IMPROVESPECIAL['HAFDGUN'];
 	if (special) {
-		for (var key in special) this.improves[key] = improve[key]*Math.sqrt(level);
+		for (var key in special) this.improves[key] = special[key]*Math.sqrt(level);
+	}
+
+	switch (this.type) {
+		case FIGHTER:
+			this.AAImprove = .2*level;
+		case DIVEBOMBER:
+			this.AAImprove = .25*level;
 	}
 }
 Equip.prototype.setProficiency = function(rank,forLBAS) {

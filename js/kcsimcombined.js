@@ -927,7 +927,7 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 		for (var i=0; i<ships2C.length; i++) {
 			if (ships2C[i].HP/ships2C[i].maxHP > .5) count++;
 		}
-		if (ships2C[0].HP/ships2C[0].maxHP > .5) count++;
+		if (ships2C[0].HP/ships2C[0].maxHP > 0) count++;
 		var fightescort = (allsunk || count >= 3);
 		
 		var order1 = [], order2 = [];

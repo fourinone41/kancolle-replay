@@ -345,7 +345,7 @@ EQTDATA[BULGEM] = {
 	image: 23,
 	improve: {AR:.7},
 	canequip: ['CT','CA','CAV','CVL','AS','AV','AR'],
-	canequipS: [146, 147, 216, 217, 305, 306, 307, 314, 500, 542, 543, 547, 566, 567, 568, 579],
+	canequipS: [146, 147, 216, 217, 305, 306, 307, 314, 500, 542, 543, 547, 563, 566, 567, 568, 579],
 };
 EQTDATA[BULGEL] = {
 	name: 'Torpedo Bulge',
@@ -359,7 +359,7 @@ EQTDATA[LANDINGCRAFT] = {
 	btype: B_LC1,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['AV','LHA'],
-	canequipS: [147, 198, 199, 200, 352, 418, 434, 435, 464, 468, 469, 470, 478, 487, 488, 489, 490, 498, 500, 541, 547, 548],
+	canequipS: [147, 198, 199, 200, 352, 418, 434, 435, 464, 468, 469, 470, 478, 487, 488, 489, 490, 498, 500, 541, 547, 548, 563],
 	cannotequipS: [445, 491]
 };
 EQTDATA[SEARCHLIGHTS] = {
@@ -1203,6 +1203,7 @@ var EQDATA = {
 		nameJP: 'Ju87C改',
 		added: '2013-11-13',
 		type: DIVEBOMBER,
+		canShellInstall: true,
 		improveType: 2,
 		ASW: 5,
 		DIVEBOMB: 9,
@@ -1356,6 +1357,7 @@ var EQDATA = {
 		type: SEAPLANEBOMBER,
 		btype: B_RECON,
 		improveType: 2,
+		aaResistShip: .6,
 		AA: 2,
 		ASW: 5,
 		LOS: 6,
@@ -1370,6 +1372,7 @@ var EQDATA = {
 		type: SEAPLANEBOMBER,
 		btype: B_RECON,
 		improveType: 2,
+		aaResistShip: .6,
 		AA: 3,
 		ASW: 5,
 		LOS: 6,
@@ -1384,6 +1387,7 @@ var EQDATA = {
 		type: SEAPLANEBOMBER,
 		btype: B_RECON,
 		improveType: 2,
+		aaResistShip: .6,
 		AA: 3,
 		ASW: 6,
 		LOS: 7,
@@ -1509,6 +1513,7 @@ var EQDATA = {
 		added: '2014-06-06',
 		type: TORPBOMBER,
 		improveType: 2,
+		aaResistShip: .6,
 		TP: 11,
 		AA: 1,
 		ASW: 5,
@@ -1521,6 +1526,7 @@ var EQDATA = {
 		added: '2014-06-06',
 		type: TORPBOMBER,
 		improveType: 2,
+		aaResistShip: .6,
 		TP: 14,
 		AA: 1,
 		ASW: 6,
@@ -1577,6 +1583,7 @@ var EQDATA = {
 		added: '2014-07-18',
 		type: DIVEBOMBER,
 		improveType: 2,
+		aaResistShip: .6,
 		ASW: 5,
 		LOS: 3,
 		DIVEBOMB: 10,
@@ -1588,6 +1595,8 @@ var EQDATA = {
 		added: '2014-07-18',
 		type: DIVEBOMBER,
 		improveType: 2,
+		aaResistShip: .6,
+		aaResistFleet: .7,
 		AA: 1,
 		ASW: 5,
 		LOS: 4,
@@ -2096,6 +2105,7 @@ var EQDATA = {
 		added: '2015-08-10',
 		type: TORPBOMBER,
 		improveType: 2,
+		aaResistShip: .6,
 		TP: 12,
 		AA: 1,
 		ASW: 5,
@@ -2108,6 +2118,7 @@ var EQDATA = {
 		added: '2015-08-10',
 		type: TORPBOMBER,
 		improveType: 2,
+		aaResistShip: .6,
 		TP: 15,
 		AA: 1,
 		ASW: 6,
@@ -2145,6 +2156,7 @@ var EQDATA = {
 		added: '2015-08-21',
 		type: DIVEBOMBER,
 		improveType: 2,
+		canShellInstall: true,
 		AA: 1,
 		ASW: 4,
 		LOS: 2,
@@ -2204,6 +2216,8 @@ var EQDATA = {
 		type: DIVEBOMBER,
 		btype: B_NIGHTBOMBER2,
 		improveType: 2,
+		aaResistShip: .6,
+		aaResistFleet: .7,
 		DIVEBOMB: 4,
 		AA: 7,
 		ACC: 1,
@@ -2388,6 +2402,7 @@ var EQDATA = {
 		added: '2016-05-02',
 		b_image: 13,
 		type: LANDBOMBER,
+		aaResistShip: .6,
 		DIVEBOMB: 13,
 		TP: 12,
 		AA: 3,
@@ -2720,6 +2735,8 @@ var EQDATA = {
 		b_image: 14,
 		type: JETBOMBER,
 		isjet: true,
+		aaResistShip: .5,
+		aaResistFleet: .7,
 		DIVEBOMB: 15,
 		AA: 6,
 		ACC: 1,
@@ -2733,6 +2750,8 @@ var EQDATA = {
 		b_image: 14,
 		type: JETBOMBER,
 		isjet: true,
+		aaResistShip: .5,
+		aaResistFleet: .5,
 		DIVEBOMB: 11,
 		AA: 12,
 		EV: 1,
@@ -2804,6 +2823,7 @@ var EQDATA = {
 		type: SEAPLANEBOMBER,
 		btype: B_RECON,
 		improveType: 2,
+		aaResistShip: .6,
 		DIVEBOMB: 7,
 		AA: 1,
 		ASW: 2,
@@ -3080,6 +3100,7 @@ var EQDATA = {
 		nameJP: 'F4U-1D',
 		added: '2017-06-29',
 		type: DIVEBOMBER,
+		canShellInstall: true,
 		FP: 1,
 		DIVEBOMB: 7,
 		AA: 7,
@@ -3131,6 +3152,8 @@ var EQDATA = {
 		added: '2017-06-23',
 		type: SEAPLANEBOMBER,
 		btype: B_RECON,
+		aaResistShip: .6,
+		aaResistFleet: .7,
 		DIVEBOMB: 9,
 		AA: 4,
 		ACC: 1,
@@ -3545,6 +3568,7 @@ var EQDATA = {
 		nameJP: 'FM-2',
 		added: '2018-02-16',
 		type: DIVEBOMBER,
+		canShellInstall: true,
 		FP: 2,
 		DIVEBOMB: 2,
 		AA: 6,
@@ -3847,6 +3871,7 @@ var EQDATA = {
 		nameJP: 'Ju87C改二(KMX搭載機)',
 		added: '2018-09-13',
 		type: DIVEBOMBER,
+		canShellInstall: true,
 		DIVEBOMB: 9,
 		ACC: 2,
 		EV: 1,
@@ -3858,6 +3883,7 @@ var EQDATA = {
 		nameJP: 'Ju87C改二(KMX搭載機/熟練)',
 		added: '2018-09-13',
 		type: DIVEBOMBER,
+		canShellInstall: true,
 		DIVEBOMB: 10,
 		ACC: 3,
 		EV: 1,
@@ -4004,6 +4030,7 @@ var EQDATA = {
 		nameJP: '彗星一二型(六三四空/三号爆弾搭載機)',
 		added: '2019-03-27',
 		type: DIVEBOMBER,
+		canShellInstall: true,
 		DIVEBOMB: 12,
 		AA: 3,
 		ACC: 1,
@@ -4024,6 +4051,8 @@ var EQDATA = {
 		nameJP: '瑞雲改二(六三四空)',
 		added: '2019-03-27',
 		type: SEAPLANEBOMBER,
+		aaResistShip: .5,
+		aaResistFleet: .7,
 		FP: 2,
 		DIVEBOMB: 10,
 		AA: 4,
@@ -4037,6 +4066,8 @@ var EQDATA = {
 		nameJP: '瑞雲改二(六三四空/熟練)',
 		added: '2019-03-27',
 		type: SEAPLANEBOMBER,
+		aaResistShip: .5,
+		aaResistFleet: .7,
 		FP: 2,
 		DIVEBOMB: 11,
 		AA: 5,
@@ -4240,6 +4271,28 @@ var EQDATA = {
 		ACC: 2,
 		EV: 1,
 		RNG: 2,
+	},
+	342: {
+		name: 'Ryuusei Kai (CarDiv 1)',
+		nameJP: '流星改(一航戦)',
+		added: '2019-04-30',
+		type: TORPBOMBER,
+		TP: 14,
+		AA: 2,
+		ACC: 1,
+		ASW: 6,
+		LOS: 4,
+	},
+	343: {
+		name: 'Ryuusei Kai (CarDiv 1/Skilled)',
+		nameJP: '流星改(一航戦/熟練)',
+		added: '2019-04-30',
+		type: TORPBOMBER,
+		TP: 15,
+		AA: 3,
+		ACC: 2,
+		ASW: 7,
+		LOS: 6,
 	},
 	501: {
 		name: '5inch Single Cannon',
@@ -5661,7 +5714,7 @@ var EQDATAHISTORY = {
 		16: { ASW: 3 },
 		17: { ASW: 2 },
 		18: { ASW: 3 },
-		19: { AA: 2 },
+		19: { AA: 2, EV: 0 },
 		23: { ASW: 1 },
 		24: { ASW: 2 },
 		25: { ASW: 1 },
@@ -5848,6 +5901,17 @@ function setEquipDataDate(dateSet) {
 						EQTDATA[eqType][key].splice(ind,1);
 					}
 				}
+			}
+		}
+	}
+	for (let date in EQUIPBONUSDATA2) {
+		if (date <= dateSet) {
+			for (let eqid in EQUIPBONUSDATA2[date]) {
+				EQUIPBONUSDATA[eqid] = EQUIPBONUSDATA2[date][eqid];
+			}
+		} else {
+			for (let eqid in EQUIPBONUSDATA2[date]) {
+				delete EQUIPBONUSDATA[eqid];
 			}
 		}
 	}

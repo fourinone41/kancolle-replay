@@ -383,6 +383,8 @@ function chShowReward(data,tracker) {
 				269: 'assets/maps/40/Prototype_Toukai_269_Card.png',
 				270: 'assets/maps/40/Toukai_(901_Air_Group)_270_Card.png',
 				272: 'assets/maps/40/Striking_Force_Fleet_Command_Facility_272_Card.png',
+				311: 'assets/maps/43/i311.png',
+				312: 'assets/maps/43/i312.png',
 			};
 			var ind = tracker-numShips;
 			if (imageSpecial[data.items[ind]]) {
