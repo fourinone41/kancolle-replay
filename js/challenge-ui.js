@@ -1866,6 +1866,7 @@ function chLoadSortieInfo(mapnum) {
 		$('#srtDiffEasy').hide();
 		$('#srtDiffCasual').hide();
 		$('#srtDiffBack').hide();
+		$('#srtDiffReroll').show();
 		$('#srtDiffChange').hide();
 		chRemoveSortieError(1);
 		$('#srtStart').prop('disabled',(CHDATA.event.unlocked < mapnum));
@@ -1897,7 +1898,7 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtDiffMed').hide();
 			$('#srtDiffEasy').hide();
 			$('#srtDiffCasual').hide();
-			$('#srtDiffBack').hide();
+			$('#srtDiffReroll').hide();
 			$('#srtDiffChange').hide();
 			chAddSortieError(1);
 		} else if (!CHDATA.event.maps[mapnum].diff) {
@@ -1909,7 +1910,8 @@ function chLoadSortieInfo(mapnum) {
 			else $('#srtDiffEasy').show();
 			if (MAPDATA[world].allowDiffs.indexOf(4) == -1) $('#srtDiffCasual').hide();
 			else $('#srtDiffCasual').show();
-			$('#srtDiffBack').hide();
+			$('#srtDiffReroll').hide();
+			$('#srtDiffReroll').show();
 			$('#srtDiffChange').hide();
 			chAddSortieError(1);
 		} else {
@@ -1917,6 +1919,7 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtDiffMed').hide();
 			$('#srtDiffEasy').hide();
 			$('#srtDiffCasual').hide();
+			$('#srtDiffReroll').hide();
 			$('#srtDiffBack').hide();
 			if (nowhp) $('#srtDiffChange').show();
 			else $('#srtDiffChange').hide();
@@ -2009,6 +2012,13 @@ function chClickedSortieRight() {
 	chLoadSortieInfo(MAPNUM);	
 }
 
+function chRerollMap() {
+	randomizeMap(MAPNUM);
+	chSortieStartChangeDiff();
+	CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
+	chLoadSortieInfo(MAPNUM);
+}
+
 function chSortieStartChangeDiff() {
 	chAddSortieError(1);
 	$('#srtDiffTitle').text('');
@@ -2024,6 +2034,7 @@ function chSortieStartChangeDiff() {
 	else $('#srtDiffEasy').show();
 	if (MAPDATA[WORLD].allowDiffs.indexOf(4) == -1) $('#srtDiffCasual').hide();
 	else $('#srtDiffCasual').show();
+	$('#srtDiffReroll').show();
 	$('#srtDiffBack').show();
 	$('#srtDiffChange').hide();
 }
@@ -2035,6 +2046,7 @@ function chSortieEndChangeDiff() {
 	$('#srtDiffMed').hide();
 	$('#srtDiffEasy').hide();
 	$('#srtDiffCasual').hide();
+	$('#srtDiffReroll').hide();
 	$('#srtDiffBack').hide();
 	$('#srtDiffChange').show();
 	
