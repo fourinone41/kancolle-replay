@@ -89,6 +89,8 @@ loader.add('BG1','assets/82_res.images.ImgBackgroundDay.jpg')
 	.add('plane588','assets/plane588.png')
 	.add('plane590','assets/plane590.png')
 	.add('plane592','assets/plane592.png')
+	.add('plane594','assets/plane594.png')
+	.add('plane597','assets/plane597.png')
 	.add('WG1','assets/684.png')
 	.add('WG2','assets/687.png')
 	.add('WG3','assets/690.png')
@@ -414,7 +416,7 @@ function createShip(data,side,i,damaged) {
 	}
 	ship.hasonlytorp = hasonlytorp;
 	ship.issub = (sdata.type == 'SS' || sdata.type == 'SSV');
-	ship.isinstall = (sdata.type == 'Installation' || sdata.installtype > 0);
+	ship.isinstall = (sdata.type == 'Installation' || sdata.installtype > 0 || sdata.isAnchorage);
 	ship.isCV = (sdata.type == 'CV' || sdata.type == 'CVL' || sdata.type == 'CVB' || (sdata.type=='AO'&&ship.hasbomber));
 	ship.isfog = (parseInt(data[0]) >= 2000 && parseInt(data[0]) <= 2100);
 	if (sdata.nightattack==2) ship.nightgun = true;
@@ -2430,7 +2432,7 @@ function createKleinFieldRing(field) {
 	},[]]);
 }
 
-var PLANESPRITES = ['938','914','916','918','920','922','924','926','plane9','plane10','plane11','plane12','plane13','plane544','plane511','plane588','plane590','plane592'];
+var PLANESPRITES = ['938','914','916','918','920','922','924','926','plane9','plane10','plane11','plane12','plane13','plane544','plane511','plane588','plane590','plane592','plane594','plane597'];
 function createPlane(x,y,planetypes,shots,shots2,side) {
 	var num = Math.min(3,planetypes.length);
 	if (shots) shots = shuffle(shots);

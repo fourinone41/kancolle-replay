@@ -263,13 +263,18 @@ function chRestrictReward(data) {
 	}
 	if (data.items) {
 		for (let item of data.items) {
-			let found = false;
+			let limit = 1;
+			if (typeof item === 'object') {
+				limit = item.limit;
+				item = item.id;
+			}
+			let count = 0;
 			for (let eqid in CHDATA.gears) {
 				if (!CHDATA.gears[eqid].disabled && CHDATA.gears[eqid].masterId == item) {
-					found = true; break;
+					count++;
 				}
 			}
-			if (!found) result.items.push(item);
+			if (count < limit) result.items.push(item);
 		}
 	}
 	if (!result.ships.length) delete result.ships;
@@ -385,6 +390,13 @@ function chShowReward(data,tracker) {
 				272: 'assets/maps/40/Striking_Force_Fleet_Command_Facility_272_Card.png',
 				311: 'assets/maps/43/i311.png',
 				312: 'assets/maps/43/i312.png',
+				333: 'assets/maps/44/i333.png',
+				334: 'assets/maps/44/i334.png',
+				346: 'assets/maps/45/i346.png',
+				348: 'assets/maps/45/i348.png',
+				350: 'assets/maps/45/i350.png',
+				351: 'assets/maps/45/i351.png',
+				355: 'assets/maps/45/i355.png',
 			};
 			var ind = tracker-numShips;
 			if (imageSpecial[data.items[ind]]) {

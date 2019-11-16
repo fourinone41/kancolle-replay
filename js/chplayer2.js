@@ -886,6 +886,55 @@ function mapSendScout(ship,node,isSuccess) {
 	addTimeout(function() { ecomplete = true; }, 3000);
 }
 
+function mapSortieItems(items) {
+	let bubbles = [];
+	if (items.supply) {
+		let bubble = getFromPool('bubble','assets/maps/bubbleSupply.png');
+		bubble.pivot.set(61,60);
+		bubble.scale.y = 0;
+		bubble.position.set(mapship.x-20,mapship.y-15);
+		stage.addChild(bubble);
+		bubbles.push(bubble);
+	}
+	if (items.ration) {
+		let bubble = getFromPool('bubble','assets/maps/bubbleRation.png');
+		bubble.pivot.set(0,60);
+		bubble.scale.y = 0;
+		bubble.position.set(mapship.x+20,mapship.y-15);
+		stage.addChild(bubble);
+		bubbles.push(bubble);
+	}
+	if (items.repair) {
+		let bubble = getFromPool('bubble','assets/maps/bubbleRepair.png');
+		bubble.pivot.set(0,60);
+		bubble.scale.y = 0;
+		bubble.position.set(mapship.x+20,mapship.y-15);
+		stage.addChild(bubble);
+		bubbles.push(bubble);
+	}
+	for (let bubble of bubbles) {
+		updates.push([function() {
+			bubble.scale.y += .1;
+			if (bubble.scale.y >= 1) {
+				bubble.scale.y = 1;
+				return true;
+			}
+		},[]]);
+		addTimeout(function() {
+			updates.push([function() {
+				bubble.scale.y -= .1;
+				if (bubble.scale.y <= 0) {
+					bubble.scale.y = 0;
+					recycle(bubble);
+					return true;
+				}
+			},[]]);
+		},2000);
+	}
+	
+	addTimeout(function() { ecomplete = true; }, 2100);
+}
+
 function createRadar(x,y,imagec) {
 	if (!imagec) imagec = '';
 	var radar = getFromPool('mapradar'+imagec,'assets/maps/radar'+imagec+'.png');
@@ -1022,6 +1071,10 @@ function mapPhase(first) {
 					addTimeout(function() { showRouteUnlock(hiddenRoutes[routeKey],routeKey); }, 1000);
 					addTimeout(function() { ecomplete = true; }, 4000);
 				},[]]);
+				if (WORLD >= 42) { //early-fall onward force return
+					eventqueue.push([endMap,[]]);
+					return;
+				}
 			}
 		}
 	} else {
@@ -1104,6 +1157,18 @@ function mapPhase2(nextletter) {
 				CHDATA.sortie.raidCounter -= 1;
 				CHDATA.sortie.raidNum++;
 			}
+		}
+	}
+	
+	if (nextnode.repair) {
+		if (chAnchorageRepair()) {
+			eventqueue.push([mapSortieItems,[{repair:true}]]);
+		}
+	}
+	if (nextnode.boss) {
+		let result = chApplySortieItems();
+		if (result.supply || result.ration) {
+			eventqueue.push([mapSortieItems,[result]]);
 		}
 	}
 	
@@ -1380,6 +1445,7 @@ function selectNode(letters) {
 // eventqueue.push([prepBattle,[]]);
 
 function getEnemyComp(letter,mapdata,diff,lastdance) {
+	lastdance = lastdance && (!mapdata.compFPart || mapdata.compFPart == CHDATA.event.maps[MAPNUM].part);
 	var comps;
 	if (CHDATA.config.diffmode == 1) {
 		var compHQ = (mapdata.compHQF && lastdance)? mapdata.compHQF : mapdata.compHQ;
@@ -1406,8 +1472,17 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		if (mapdata.compDiffC && CHDATA.event.maps[MAPNUM].hp <= 0) comps = mapdata.compDiffC[diff];
 		if (mapdata.compDiffC && MAPDATA[WORLD].maps[MAPNUM].currentBoss && MAPDATA[WORLD].maps[MAPNUM].currentBoss != letter) comps = mapdata.compDiffC[diff];
 	}
-	var comp = comps[Math.floor(Math.random()*comps.length)];
-	var compd;
+	var comp, compd;
+	if (Array.isArray(comps)) {
+		comp = comps[Math.floor(Math.random()*comps.length)];
+	} else {
+		let r = Math.floor(100*Math.random());
+		for (let key in comps) {
+			comp = key;
+			r -= comps[key];
+			if (r < 0) break;
+		}
+	}
 	if (WORLD == 20) {
 		let n = (mapdata.compName)? mapdata.compName : (mapdata.boss)? 'Boss' : letter;
 		compd = ENEMYCOMPS['World '+MAPDATA[WORLD].maps[MAPNUM].world][MAPDATA[WORLD].maps[MAPNUM].name][n][comp];
@@ -1534,10 +1609,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 	return compd;
 }
 
-function prepBattle(letter) {
-	SM.stopBGM();
-	var enemies = [];
-	var mapdata = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
+function chGetLastDance() {
 	var diff = CHDATA.event.maps[MAPNUM].diff || 2;
 	var lastdance = false;
 	if (MAPDATA[WORLD].maps[MAPNUM].transport) {
@@ -1549,6 +1621,15 @@ function prepBattle(letter) {
 		lastdance = (CHDATA.event.maps[MAPNUM].hp <= MAPDATA[WORLD].maps[MAPNUM].finalhp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
 	}
 	if (MAPDATA[WORLD].maps[MAPNUM].parts && MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[MAPNUM].part+1] && WORLD == 32) lastdance = false; //for now Fall15 only
+	return lastdance;
+}
+
+function prepBattle(letter) {
+	SM.stopBGM();
+	var enemies = [];
+	var mapdata = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
+	var diff = CHDATA.event.maps[MAPNUM].diff || 2;
+	var lastdance = chGetLastDance();
 	
 	var compd = getEnemyComp(letter,mapdata,diff,lastdance);
 	
@@ -1572,13 +1653,11 @@ function prepBattle(letter) {
 		FLEETS2[1].formation = ALLFORMATIONS[compd.f+'E'];
 	}
 	
-	if (mapdata.boss) {
-		chApplySortieItems();
-	}
-	
 	let friendFleet = null;
 	if (mapdata.friendFleet && CHDATA.fleets.ff !== 0) {
-		friendFleet = chLoadFriendFleet(chChooseFriendFleet(mapdata.friendFleet));
+		let friendFleets = mapdata.friendFleet;
+		let friendFleetsS = (CHDATA.fleets.ff == 2)? mapdata.friendFleetS : null;
+		friendFleet = chLoadFriendFleet(chChooseFriendFleet(friendFleets,friendFleetsS));
 		CHDATA.sortie.fleetFriend = friendFleet;
 		console.log(friendFleet);
 	}
@@ -1840,7 +1919,7 @@ function endMap() {
 			var reward = MAPDATA[WORLD].maps[MAPNUM].reward;
 			if (reward) {
 				if (reward[3]) reward = reward[CHDATA.event.maps[MAPNUM].diff];
-				if (reward.firstOnly) reward = chRestrictReward(reward);
+				if (reward.firstOnly || reward.limit) reward = chRestrictReward(reward);
 				chAddReward(reward);
 				chShowReward(reward);
 			}
@@ -2618,6 +2697,7 @@ function chUIUpdateResources() {
 }
 
 function chApplySortieItems() {
+	let result = { supply: false, ration: false };
 	var num = (CHDATA.fleets.combined)? 2 : 1;
 	var numOil = 0;
 	for (var n=0; n<num; n++) {
@@ -2631,6 +2711,7 @@ function chApplySortieItems() {
 				ship.morale = Math.min(ship.morale+15,100);
 				if (i > 0) FLEETS1[n].ships[i-1].morale = Math.min(FLEETS1[n].ships[i-1].morale+10,100);
 				if (i < FLEETS1[n].ships.length-1) FLEETS1[n].ships[i+1].morale = Math.min(FLEETS1[n].ships[i+1].morale+10,100);
+				result.ration = true;
 			}
 		}
 	}
@@ -2643,9 +2724,17 @@ function chApplySortieItems() {
 				let ammo = 10*Math.floor(amount*ship.ammo)/ship.ammo;
 				ship.fuelleft = Math.min(cleanNumber(ship.fuelleft + fuel), 10);
 				ship.ammoleft = Math.min(cleanNumber(ship.ammoleft + ammo), 10);
+				CHDATA.event.resources.fuel += Math.floor(amount*ship.fuel);
+				CHDATA.event.resources.ammo += Math.floor(amount*ship.ammo);
 			}
 		}
+		result.supply = true;
 	}
+	if (result.supply || result.ration) {
+		pushShipStatusToUI();
+		chUIUpdateResources();
+	}
+	return result;
 }
 
 function chGetShips(noRetreated) {
@@ -2844,8 +2933,10 @@ function doSimEnemyRaid(numLB,compd) {
 	var fleetLB = new Fleet(0);
 	var lbShips = [];
 	for (var i=0; i<numLB; i++) {
-		var ship = new Ship(5001+i,'',0,1,200,0,0,0,80,45,0,0,0,0,[]);
+		LBAS[i].AS = 0;
+		var ship = new Ship(5001+i,'',0,1,200,0,0,0,50,45,0,0,0,0,[]);
 		ship.HP = LBAS[i].HP;
+		ship.protection = true;
 		if (!CHDATA.fleets['lbas'+(i+1)] && LBAS[i].equips.length) ship.lbas = LBAS[i];
 		lbShips.push(ship);
 	}
@@ -2905,7 +2996,8 @@ function doSimEnemyRaid(numLB,compd) {
 function prepEnemyRaid() {
 	var numLB = MAPDATA[WORLD].maps[MAPNUM].lbas;
 	var enemyRaid = MAPDATA[WORLD].maps[MAPNUM].enemyRaid;
-	var enemies = getEnemyComp(enemyRaid.compName,enemyRaid,CHDATA.event.maps[MAPNUM].diff,(WORLD==20 && CHDATA.event.maps[31].hp == 1));
+	let lastdance = (WORLD == 20)? CHDATA.event.maps[31].hp == 1 : chGetLastDance();
+	var enemies = getEnemyComp(enemyRaid.compName,enemyRaid,CHDATA.event.maps[MAPNUM].diff,lastdance);
 	var CHAPI = doSimEnemyRaid(numLB,enemies);
 	
 	stage = STAGEBATTLE;
@@ -2949,7 +3041,10 @@ function prepEnemyRaid() {
 }
 
 
-function chChooseFriendFleet(friendFleets) {
+function chChooseFriendFleet(friendFleets,friendFleetsStrong) {
+	if (friendFleetsStrong) {
+		friendFleets = friendFleets.concat(friendFleetsStrong).concat(friendFleetsStrong);
+	}
 	let pool = [friendFleets[0]];
 	let curShips = FLEETS1[0].ships;
 	if (CHDATA.fleets.combined) curShips = curShips.concat(FLEETS1[1].ships);
@@ -2958,8 +3053,10 @@ function chChooseFriendFleet(friendFleets) {
 		let fleet = MAPDATA[WORLD].friendFleet[name];
 		let found = false;
 		for (let ship of fleet.ships) {
+			let mid = getBaseId(ship.mid);
 			for (let shipC of curShips) {
-				if (ship.mid == shipC.mid) { found = true; break; }	
+				let midC = getBaseId(shipC.mid);
+				if (mid == midC) { found = true; break; }	
 			}
 			if (found) break;
 		}
@@ -2987,9 +3084,49 @@ function chLoadFriendFleet(friendData) {
 		}
 		simShips.push(simShip);
 		
-		if (ship.mid == friendData.voice[0]) simShip.voiceFriend = [friendData.voice[1],1];
+		if (friendData.voice && ship.mid == friendData.voice[0]) simShip.voiceFriend = [friendData.voice[1],1];
 	}
 	fleet.loadShips(simShips);
 	fleet.formation = LINEAHEAD;
 	return fleet;
+}
+
+function chAnchorageRepair() {
+	let type = 0, numCrane = 0, didRepair = false;
+	let ships = FLEETS1[0].ships;
+	if (FLEETS1[1]) ships = ships.concat(FLEETS1[1].ships);
+	if (ships.find(ship => ship.mid == 450)) type = 2;
+	if (ships.find(ship => ship.mid == 187)) type = 1;
+	if (!type) return false;
+	for (let ship of ships) {
+		for (let equip of ship.equips) {
+			if (equip.type == SRF) numCrane++;
+		}
+	}
+	let hpAmt = 0, moraleAmt = 0, shipsRepair = [];
+	if (type == 1) {
+		hpAmt = .3; moraleAmt = 5;
+		numCrane = Math.min(4,numCrane);
+		shipsRepair = ships;
+	} else if (type == 2) {
+		hpAmt = .25; moraleAmt = 5;
+		numCrane = Math.min(2,numCrane);
+		let fleet = FLEETS1[1] || FLEETS1[0];
+		for (let i=0; i<numCrane*2; i++) {
+			if (i >= fleet.ships.length) break;
+			shipsRepair.push(fleet.ships[i]);
+		}
+	}
+	for (let ship of shipsRepair) {
+		if (!ship) continue;
+		if (ship.HP >= ship.maxHP) continue;
+		if (ship.HP/ship.maxHP <= .25) continue;
+		ship.HP += Math.ceil(hpAmt*ship.maxHP);
+		if (ship.HP > ship.maxHP) ship.HP = ship.maxHP;
+		ship.morale += moraleAmt;
+		if (ship.morale > 100) ship.morale = 100;
+		didRepair = true;
+	}
+	pushShipStatusToUI();
+	return didRepair;
 }
