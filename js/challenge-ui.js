@@ -209,6 +209,7 @@ function chAddDragEquip(fleetnum,shipslot,eqslot) {
 	imgEq.on('dragover',function(event) {
 		if (DIALOGFLEETSEL == fleetnum && DIALOGSLOTSEL == shipslot && DIALOGITEMSEL != eqslot) {
 			let sid = CHDATA.fleets[DIALOGFLEETSEL][DIALOGSLOTSEL-1];
+			if (SHIPDATA[CHDATA.ships[sid].masterId].excludeEquip || SHIPDATA[CHDATA.ships[sid].masterId].onlyEquip) return;
 			if (eqslot > SHIPDATA[CHDATA.ships[sid].masterId].SLOTS.length) return;
 			if (DIALOGITEMSEL > SHIPDATA[CHDATA.ships[sid].masterId].SLOTS.length) return;
 			event.originalEvent.preventDefault();
@@ -533,6 +534,13 @@ function chDialogShowItems(shipmid,types) {
 				if (EXPANSIONSLOTDATA[date].specialS && EXPANSIONSLOTDATA[date].specialS[eqid] && EXPANSIONSLOTDATA[date].specialS[eqid].indexOf(shipmid) != -1) { found = true; break; }
 			}
 			if (!found) include = false;
+		}
+		let type = equip.type > 100 ? equip.type - 100 : equip.type;
+		if (include && SHIPDATA[shipmid].excludeEquip && SHIPDATA[shipmid].excludeEquip[DIALOGITEMSEL]) {
+			if (SHIPDATA[shipmid].excludeEquip[DIALOGITEMSEL].indexOf(type) != -1) include = false;
+		}
+		if (include && SHIPDATA[shipmid].onlyEquip && SHIPDATA[shipmid].onlyEquip[DIALOGITEMSEL]) {
+			if (SHIPDATA[shipmid].onlyEquip[DIALOGITEMSEL].indexOf(type) == -1) include = false;
 		}
 		
 		if (include) {
@@ -876,6 +884,10 @@ function chProcessKC3File2() {
 			if (!MAPDATA[EVENTNUM].maps[n]) { CHDATA.event.unlocked = n-1; break; }
 		}
 	}
+	if (MAPDATA[EVENTNUM].unlockSpecial) {
+		CHDATA.event.unlockedS = MAPDATA[EVENTNUM].unlockSpecial;
+		if (CHDATA.config.unlockAll) CHDATA.event.unlockedS = Object.keys(MAPDATA[EVENTNUM].maps).map(id => +id);
+	}
 	CHDATA.fleets = {1:[null,null,null,null,null,null],2:[null,null,null,null,null,null],3:[null,null,null,null,null,null],4:[null,null,null,null,null,null],combined:0};
 	if (MAPDATA[EVENTNUM].allowFleets.indexOf(7) != -1) CHDATA.fleets[1].push(null);
 	if (!CHDATA.config) CHDATA.config = {};
@@ -884,6 +896,12 @@ function chProcessKC3File2() {
 	for (var mechanic in MECHANICDATES) {
 		CHDATA.config.mechanics[mechanic] = (MECHANICDATES[mechanic] <= mechanicsdate);
 	}
+	if (CHDATA.config.mechanicsunique && MAPDATA[EVENTNUM].mechanicsOther) {
+		for (let mechanic of MAPDATA[EVENTNUM].mechanicsOther) {
+			CHDATA.config.mechanics[mechanic] = true;
+		}
+	}
+	delete CHDATA.config.mechanicsunique;
 	let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[EVENTNUM].date)? MAPDATA[EVENTNUM].date : CHDATA.config.mechanicsdate;
 	setShipDataDate(dataDate);
 	setEquipDataDate(dataDate);
@@ -988,7 +1006,8 @@ function chProcessKC3File2() {
 		}
 		
 		let disableMore = MAPDATA[EVENTNUM].disableMore && MAPDATA[EVENTNUM].disableMore.ships && MAPDATA[EVENTNUM].disableMore.ships.indexOf(getBaseId(shipN.masterId)) != -1;
-		if (CHDATA.config.disableships && (shipd.added > MAPDATA[CHDATA.event.world].date || disableMore)) {
+		let enableMore = MAPDATA[EVENTNUM].enableMore && MAPDATA[EVENTNUM].enableMore.ships && MAPDATA[EVENTNUM].enableMore.ships.indexOf(getBaseId(shipN.masterId)) != -1;
+		if (CHDATA.config.disableships && (shipd.added > MAPDATA[CHDATA.event.world].date || disableMore) && !enableMore) {
 			for (var i=0; i<shipN.items.length; i++) {
 				if (shipN.items[i] <= 0) continue;
 				if (!EQDATA[CHDATA.gears['x'+shipN.items[i]].masterId]) {
@@ -1319,6 +1338,7 @@ function chStart() {
 	for (var mechanic in MECHANICS) {
 		MECHANICS[mechanic] = CHDATA.config.mechanics[mechanic];
 	}
+	chSetupVita(MECHANICS.vita);
 
 	chLoadMainFleet();
 	if (CHDATA.fleets.combined) chLoadEscortFleet();
@@ -1327,6 +1347,8 @@ function chStart() {
 	else FLEETS1S[0] = null;
 	if (CHDATA.fleets.supportB) chLoadSupportFleetB();
 	else FLEETS1S[1] = null;
+	
+	chCombineShipCount();
 	
 	if (MAPDATA[CHDATA.event.world].allowLBAS) {
 		var numBase = 0, numBaseMax = MAPDATA[WORLD].maps[MAPNUM].lbasSortie || MAPDATA[WORLD].maps[MAPNUM].lbas;
@@ -1509,6 +1531,24 @@ function chRefreshShipCountSortie() { //use in sortie only
 	if (CHDATA.fleets.combined) {
 		CHSHIPCOUNT.escort = countsA[1];
 		CHSHIPCOUNT.speed = Math.min(CHSHIPCOUNT.speed,CHSHIPCOUNT.escort.speed);
+	}
+	
+	chCombineShipCount();
+}
+
+function chCombineShipCount() {
+	if (CHSHIPCOUNT.escort) {
+		CHSHIPCOUNT.c = chNewShipCount();
+		for (let key in CHSHIPCOUNT.c) {
+			if (key == 'ids') {
+				CHSHIPCOUNT.c.ids = CHSHIPCOUNT.ids.concat(CHSHIPCOUNT.escort.ids);
+				continue;
+			}
+			CHSHIPCOUNT.c[key] = CHSHIPCOUNT[key] + CHSHIPCOUNT.escort[key];
+		}
+		CHSHIPCOUNT.c.speed = CHSHIPCOUNT.speed;
+	} else {
+		CHSHIPCOUNT.c = CHSHIPCOUNT;
 	}
 }
 
@@ -1826,14 +1866,21 @@ function chLoadSortieInfo(mapnum) {
 	}
 	if (!MAPDATA[world]) return;
 	var mapdata = MAPDATA[world].maps[mapnum];
-	if (!mapdata) return;
+	if (!mapdata) {
+		if (MAPDATA[world].worldMap) showWorldMap();
+		return;
+	}
 	var title = mapdata.name;
-	if (mapdata.nameT) title += (mapnum <= CHDATA.event.unlocked)? ': '+mapdata.nameT : ': ???';
+	let unlocked = mapnum <= CHDATA.event.unlocked;
+	if (CHDATA.event.unlockedS) {
+		unlocked = CHDATA.event.unlockedS.indexOf(mapnum) != -1;
+	}
+	if (mapdata.nameT) title += (unlocked)? ': '+mapdata.nameT : ': ???';
 	$('#srtTitle').html(title);
 	if (title.indexOf('<br>') != -1) $('#srtTitle').css('font-size','20px');
 	else $('#srtTitle').css('font-size','24px');
 	$('#srtMapImg').attr('src','assets/maps/'+world+'/'+mapnum+'m.png');
-	if (mapnum > CHDATA.event.unlocked) {
+	if (!unlocked) {
 		$('#srtMapImg').css('filter','blur(5px) grayscale(1)');
 		$('#srtMapImg').css('-webkit-filter','blur(5px) grayscale(1)');
 	} else {
@@ -1843,7 +1890,7 @@ function chLoadSortieInfo(mapnum) {
 	
 	var diff = CHDATA.event.maps[mapnum].diff;
 	var nowhp = CHDATA.event.maps[mapnum].hp, maxhp = getMapHP(world,mapnum,diff);
-	if (nowhp === null || (CHDATA.config.diffmode == 1 && CHDATA.event.unlocked < mapnum)) {
+	if (nowhp === null || (CHDATA.config.diffmode == 1 && !unlocked)) {
 		$('#srtHPText').text('???/???');
 		$('#srtHPText').css('color','#FF6666');
 		$('#srtHPBar').css('width','146px');
@@ -1880,23 +1927,24 @@ function chLoadSortieInfo(mapnum) {
 		$('#srtDiffReroll').show();
 		$('#srtDiffChange').hide();
 		chRemoveSortieError(1);
-		$('#srtStart').prop('disabled',(CHDATA.event.unlocked < mapnum));
+		$('#srtStart').prop('disabled',!unlocked);
 	} else {
+		let diffNames = MAPDATA[world].diffNames || {};
 		switch(CHDATA.event.maps[mapnum].diff) {
 			case 3:
-				$('#srtDiffTitle').text('HARD');
+				$('#srtDiffTitle').text(diffNames[3] || 'HARD');
 				$('#srtDiffTitle').css('color','#FF6666');
 				break;
 			case 2:
-				$('#srtDiffTitle').text('NORMAL');
+				$('#srtDiffTitle').text(diffNames[2] || 'NORMAL');
 				$('#srtDiffTitle').css('color','#FFFF66');
 				break;
 			case 1:
-				$('#srtDiffTitle').text('EASY');
+				$('#srtDiffTitle').text(diffNames[1] || 'EASY');
 				$('#srtDiffTitle').css('color','#66FF66');
 				break;
 			case 4:
-				$('#srtDiffTitle').text('CASUAL');
+				$('#srtDiffTitle').text(diffNames[4] || 'CASUAL');
 				$('#srtDiffTitle').css('color','#6666FF');
 				break;
 			default:
@@ -1904,7 +1952,7 @@ function chLoadSortieInfo(mapnum) {
 				$('#srtDiffTitle').css('color','');
 				break;
 		}
-		if (mapnum > CHDATA.event.unlocked) {
+		if (!unlocked) {
 			$('#srtDiffHard').hide();
 			$('#srtDiffMed').hide();
 			$('#srtDiffEasy').hide();
@@ -1913,7 +1961,7 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtDiffChange').hide();
 			chAddSortieError(1);
 		} else if (!CHDATA.event.maps[mapnum].diff) {
-			if (mapnum > 1 && CHDATA.event.maps[mapnum-1].diff <= 1 || MAPDATA[world].allowDiffs.indexOf(3) == -1) $('#srtDiffHard').hide();
+			if (mapnum > 1 && CHDATA.event.maps[mapnum-1] && CHDATA.event.maps[mapnum-1].diff <= 1 || MAPDATA[world].allowDiffs.indexOf(3) == -1) $('#srtDiffHard').hide();
 			else $('#srtDiffHard').show();
 			if (MAPDATA[world].allowDiffs.indexOf(2) == -1) $('#srtDiffMed').hide();
 			else $('#srtDiffMed').show();
@@ -2039,7 +2087,7 @@ function chSortieStartChangeDiff() {
 	$('#srtHPBar').css('animation','');
 	$('#srtHPBar').css('animation','fadein 0.5s ease 0s infinite alternate');
 	
-	if (MAPNUM > 1 && CHDATA.event.maps[MAPNUM-1].diff <= 1 || MAPDATA[WORLD].allowDiffs.indexOf(3) == -1) $('#srtDiffHard').hide();
+	if (MAPNUM > 1 && CHDATA.event.maps[MAPNUM-1] && CHDATA.event.maps[MAPNUM-1].diff <= 1 || MAPDATA[WORLD].allowDiffs.indexOf(3) == -1) $('#srtDiffHard').hide();
 	else $('#srtDiffHard').show();
 	if (MAPDATA[WORLD].allowDiffs.indexOf(2) == -1) $('#srtDiffMed').hide();
 	else $('#srtDiffMed').show();
@@ -2141,7 +2189,11 @@ function chAddSupportB() {
 }
 
 function chAddLBAS(num) {
-	if (MAPNUM > CHDATA.event.unlocked) return;
+	if (CHDATA.event.unlockedS) {
+		if (CHDATA.event.unlockedS.indexOf(MAPNUM) == -1) return;
+	} else {
+		if (MAPNUM > CHDATA.event.unlocked) return;
+	}
 	var numBaseMax = MAPDATA[WORLD].maps[MAPNUM].lbasSortie || MAPDATA[WORLD].maps[MAPNUM].lbas;
 	var numSelected = 0;
 	for (var i=1; i<=MAPDATA[WORLD].maps[MAPNUM].lbas; i++) if (CHDATA.fleets['lbas'+i]) numSelected++;
@@ -2603,3 +2655,36 @@ $('#inpSoundSFX').change(function() {
 $('#inpSoundVoice').change(function() {
 	($(this).prop('checked'))? SM.turnOnVoice() : SM.turnOffVoice();
 });
+
+
+function chSetupVita(active) {
+	if (active) {
+		if (NBATTACKDATA[1].chanceMod == 0) {
+			NBATTACKDATA[1].chanceMod = 1.1;
+			let tempDmg = NBATTACKDATA[5].dmgMod, tempAcc = NBATTACKDATA[5].accMod;
+			for (let i=4; i>=1; i--) {
+				NBATTACKDATA[i+1].dmgMod = NBATTACKDATA[i].dmgMod;
+				NBATTACKDATA[i+1].accMod = NBATTACKDATA[i].accMod;
+			}
+			NBATTACKDATA[1].dmgMod = tempDmg; NBATTACKDATA[1].accMod = tempAcc;
+		}
+		FIXTORPEDOSUPPORT = true;
+		let love = 10;
+		for (let mapnum in CHDATA.event.maps) {
+			if (+mapnum % 10 != 4) continue;
+			if (CHDATA.event.maps[mapnum].hp === 0) love += 25;
+		}
+		SIMCONSTS.love = love;
+	} else {
+		if (NBATTACKDATA[1].chanceMod != 0) {
+			NBATTACKDATA[1].chanceMod = 0;
+			let tempDmg = NBATTACKDATA[1].dmgMod, tempAcc = NBATTACKDATA[1].accMod;
+			for (let i=1; i<=4; i++) {
+				NBATTACKDATA[i].dmgMod = NBATTACKDATA[i+1].dmgMod;
+				NBATTACKDATA[i].accMod = NBATTACKDATA[i+1].accMod;
+			}
+			NBATTACKDATA[5].dmgMod = tempDmg; NBATTACKDATA[5].accMod = tempAcc;
+		}
+		FIXTORPEDOSUPPORT = false;
+	}
+}
