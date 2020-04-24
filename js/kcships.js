@@ -247,18 +247,20 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		}
 		if (eq.isdivebomber||eq.istorpbomber) {
 			if (eq.exp > 0) {
-				if (!this.critratebonus) this.critratebonus = 0;
-				if (!this.critdmgbonus) this.critdmgbonus = 1;
-				var mod = 0;
-				if (eq.rank == 7) mod = 10;
-				else if (eq.rank == 6) mod = 7;
-				else if (eq.rank == 5) mod = 5;
-				else if (eq.rank == 4) mod = 4;
-				else if (eq.rank == 3) mod = 3;
-				else if (eq.rank == 2) mod = 2;
-				else if (eq.rank == 1) mod = 1;
-				this.critratebonus += mod*.6; //x.75????
-				this.critdmgbonus += Math.floor(Math.sqrt(eq.exp) + mod)/((i==0)? 100:200);
+				if (!MECHANICS.vitaProficiency) {
+					if (!this.critratebonus) this.critratebonus = 0;
+					if (!this.critdmgbonus) this.critdmgbonus = 1;
+					var mod = 0;
+					if (eq.rank == 7) mod = 10;
+					else if (eq.rank == 6) mod = 7;
+					else if (eq.rank == 5) mod = 5;
+					else if (eq.rank == 4) mod = 4;
+					else if (eq.rank == 3) mod = 3;
+					else if (eq.rank == 2) mod = 2;
+					else if (eq.rank == 1) mod = 1;
+					this.critratebonus += mod*.6; //x.75????
+					this.critdmgbonus += Math.floor(Math.sqrt(eq.exp) + mod)/((i==0)? 100:200);
+				}
 				planeexp += eq.exp;
 			}
 			planecount++;
@@ -340,8 +342,12 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 	var installbonus3 = 1 + (installeqs.DH3stars / installeqs.DH3)/30;
 	
 	this.installFlat = 0;
-	if (this.numWG) this.installFlat += WGpower(this.numWG);
 	if (installeqs.TDH11) this.installFlat += 25;
+	if (installeqs.m4a1) {
+		this.installFlat += 25;
+		this.installFlat *= 1.4;
+	}
+	if (this.numWG) this.installFlat += WGpower(this.numWG);
 	if (installeqs.mortarC >= 2) this.installFlat += 110;
 	else if (installeqs.mortarC) this.installFlat += 60;
 	if (installeqs.mortar >= 4) this.installFlat += 90;
@@ -368,6 +374,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (installeqs.DH1 || installeqs.DH2 || installeqs.TDH || installeqs.TDH11) this.softSkinMult *= 1.4;
 		if (installeqs.TDH) this.softSkinMult *= 1.15;
 		if (installeqs.TDH11) this.softSkinMult *= 1.8;
+		if (installeqs.m4a1) this.softSkinMult *= 1.4 * 1.1;
 		if (installeqs.DH2 > 0) this.softSkinMult *= 1.5;
 		if (installeqs.DH2 >= 2) this.softSkinMult *= 1.3;
 		if (installbonus1 > 1) this.softSkinMult *= installbonus1;
@@ -389,11 +396,13 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (installeqs.DH1 || installeqs.DH2 || installeqs.TDH || installeqs.TDH11) this.pillboxMult *= 1.8;
 		if (installeqs.TDH) this.pillboxMult *= 1.15;
 		if (installeqs.TDH11) this.pillboxMult *= 1.8;
+		if (installeqs.m4a1) this.pillboxMult *= 1.4 * 2;
 		if (installeqs.DH2 > 0) this.pillboxMult *= 1.5;
 		if (installeqs.DH2 >= 2) this.pillboxMult *= 1.4;
 		if (installbonus1 > 1) this.pillboxMult *= installbonus1;
 		if (installeqs.DH3) this.pillboxMult *= 2.4 * installbonus3;
 		if (installeqs.DH3 >= 2) this.pillboxMult *= 1.35;
+		if (installeqs.DB >= 2) this.pillboxMult *= 2;
 	} else {
 		if (installeqs.DH2 >= 2) this.pillboxMult*=3*installbonus1;
 		else if (installeqs.TDH11) this.pillboxMult*=2.2*installbonus1;
@@ -418,11 +427,13 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (installeqs.DH1 || installeqs.DH2 || installeqs.TDH || installeqs.TDH11) this.isoMult *= 1.8;
 		if (installeqs.TDH) this.isoMult *= 1.15;
 		if (installeqs.TDH11) this.isoMult *= 1.8;
+		if (installeqs.m4a1) this.isoMult *= 1.4 * 1.8;
 		if (installeqs.DH2 > 0) this.isoMult *= 1.2;
 		if (installeqs.DH2 >= 2) this.isoMult *= 1.4;
 		if (installbonus1 > 1) this.isoMult *= installbonus1;
 		if (installeqs.DH3) this.isoMult *= 2.4 * installbonus3;
 		if (installeqs.DH3 >= 2) this.isoMult *= 1.35;
+		if (installeqs.DB >= 2) this.isoMult *= 1.75;
 	} else {
 		if (installeqs.DH2 >= 2) this.isoMult*=3*installbonus1;
 		else if (installeqs.TDH11) this.isoMult*=2.2*installbonus1;
@@ -444,7 +455,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (installeqs.DH1 || installeqs.DH2 || installeqs.TDH || installeqs.TDH11) this.harbourSummerMult *= 1.7;
 		if (installeqs.TDH) this.harbourSummerMult *= 1.2;
 		if (installeqs.TDH11) this.harbourSummerMult *= 1.8;
-		if (installeqs.m4a1) this.harbourSummerMult *= 2.8;
+		if (installeqs.m4a1) this.harbourSummerMult *= 1.4 * 2;
 		if (installeqs.DH2) this.harbourSummerMult *= 1.6;
 		if (installeqs.DH2 >= 2) this.harbourSummerMult *= 1.5;
 		if (installbonus1 > 1) this.harbourSummerMult *= installbonus1;
@@ -563,30 +574,38 @@ Ship.prototype.NBtypes = function() {
 	var sguns = (this.equiptypesB[B_SECGUN])? this.equiptypesB[B_SECGUN] : 0;
 	var torps = (this.equiptypesB[B_TORPEDO])? this.equiptypesB[B_TORPEDO] : 0;
 	
-	if (MECHANICS.CVCI && this.canNBAirAttack() && this.equiptypesB[B_NIGHTFIGHTER]) {
-		if (this.equiptypesB[B_NIGHTFIGHTER] >= 2 && this.equiptypesB[B_NIGHTBOMBER]) this._nbtypes.push(61);
-		if (this.equiptypesB[B_NIGHTBOMBER]) this._nbtypes.push(62);
-		if (this.equiptypesB[B_NIGHTFIGHTER] >= 3) {
-			this._nbtypes.push(63);
-		} else if (this.equiptypesB[B_NIGHTBOMBER2]) {
+	if (MECHANICS.CVCI && this.canNBAirAttack()) {
+		let hasFuze = this.equips.some(eq => eq.mid == 320);
+		if (this.equiptypesB[B_NIGHTFIGHTER] >= 2 && this.equiptypesB[B_NIGHTBOMBER]) {
+			this._nbtypes.push(61);
+		}
+		if ((this.equiptypesB[B_NIGHTFIGHTER] && hasFuze) || (this.equiptypesB[B_NIGHTBOMBER] && hasFuze) || (this.equiptypesB[B_NIGHTFIGHTER] && this.equiptypesB[B_NIGHTBOMBER])) {
+			this._nbtypes.push(62);
+		}
+		if (this.equiptypesB[B_NIGHTFIGHTER]) {
 			if ((this.equiptypesB[B_NIGHTFIGHTER] || 0) + (this.equiptypesB[B_NIGHTBOMBER] || 0) + (this.equiptypesB[B_NIGHTBOMBER2] || 0) >= 3) {
 				this._nbtypes.push(63);
 			}
 		}
-		// if ((this.equiptypesB[B_NIGHTFIGHTER] || 0) + (this.equiptypesB[B_NIGHTBOMBER] || 0) + (this.equiptypesB[B_NIGHTBOMBER2] || 0) >= 3) {
-			// this._nbtypes.push(63);
-		// }
 	}
 	if (MECHANICS.destroyerNBCI && this.type == 'DD') {
 		if (mguns && torps && this.equiptypesB[B_RADAR]) this._nbtypes.push(7);
 		if (this.hasLookout && torps && this.equiptypesB[B_RADAR]) this._nbtypes.push(8);
 	}
 	
+	if (MECHANICS.vita) {
+		if (mguns >= 3) this._nbtypes.push(5); //triple gun cut-in
+		if (mguns >= 2 && sguns) this._nbtypes.push(4);  //gun cut-in
+		if (torps >= 2) this._nbtypes.push(3);  //torp cut-in
+		if (torps && mguns) this._nbtypes.push(2);  //mix cut-in
+		if (mguns+sguns >= 2) this._nbtypes.push(1);  //double attack
+	} else {
 	if (torps >= 2) this._nbtypes.push(3);  //torp cut-in
-	else if (mguns >= 3) this._nbtypes.push(5); //triple gun cut-in
-	else if (mguns >= 2 && sguns) this._nbtypes.push(4);  //gun cut-in
-	else if (torps && mguns) this._nbtypes.push(2);  //mix cut-in
-	else if (mguns+sguns >= 2) this._nbtypes.push(1);  //double attack
+		else if (mguns >= 3) this._nbtypes.push(5); //triple gun cut-in
+		else if (mguns >= 2 && sguns) this._nbtypes.push(4);  //gun cut-in
+		else if (torps && mguns) this._nbtypes.push(2);  //mix cut-in
+		else if (mguns+sguns >= 2) this._nbtypes.push(1);  //double attack
+	}
 	return this._nbtypes;
 }
 
@@ -818,6 +837,9 @@ Ship.prototype.getAACItype = function(atypes) {
 		if (atypes[A_AIRRADAR]) types.push(16);
 		types.push(17);
 	}
+	if (this.mid == 622 && atypes[A_HAGUN] && atypes[A_AAGUN] && atypes[A_AIRRADAR]) { //Yuubari Kai Ni
+		types.push(16);
+	}
 	if (this.mid == 487 && concentrated && atypes[A_HAGUN] > (atypes[A_HAFD] || 0)) types.push(19); //Kinu Kai Ni (1)
 	if (this.mid == 488 && atypes[A_HAGUN] && atypes[A_AIRRADAR]) types.push(21); //Yura Kai Ni
 	if ([77,82,87,88,553].indexOf(this.mid) != -1 && hasID[274] && atypes[A_AIRRADAR] && atypes[A_TYPE3SHELL]) types.push(25); //Ise-class
@@ -827,6 +849,12 @@ Ship.prototype.getAACItype = function(atypes) {
 		if (hasID[313] >= 1 && hasID[308] >= 1) types.push(35);
 		if (hasID[313] >= 2) types.push(37);
 		if (hasID[313] >= 2 && hasID[307]) types.push(36);
+	}
+	
+	if (this.mid == 597 || this.mid == 696) { //Atlanta
+		if (hasID[363] && (hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(39);
+		if (hasID[307] && (hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(40);
+		if ((hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(41);
 	}
 	
 	var add6 = false;
@@ -902,6 +930,7 @@ Ship.prototype.airState = function() { return this.fleet.AS; }
 Ship.prototype.airPower = function(jetonly,includeScout) {
 	var ap = 0;
 	for (var i=0; i<this.equips.length; i++) {
+		if (this.planecount[i] <= 0) continue;
 		if ((this.equips[i].isfighter && (!jetonly||this.equips[i].isjet)) || (includeScout && EQTDATA[this.equips[i].type].isPlane)) {
 			ap += Math.floor(((this.equips[i].AA||0) + (this.equips[i].AAImprove||0)) * Math.sqrt(this.planecount[i]) + (this.equips[i].APbonus||0));
 		}
@@ -992,6 +1021,13 @@ BBV.prototype = Object.create(Ship.prototype);
 BBV.prototype.APweak = true;
 BBV.prototype.enableSecondShelling = true;
 BBV.prototype.canASW = CAV.prototype.canASW;
+BBV.prototype.canOASW = function() {
+	if (this.mid == 554) {
+		if (this.equips.find(eq => eq.mid == 326 || eq.mid == 327)) return true;
+		if (this.equips.filter(eq => eq.mid == 69 || eq.mid == 324 || eq.mid == 325).length >= 2) return true;
+	}
+	return Ship.prototype.canOASW.call(this);
+}
 BBV.prototype.rocketBarrageChance = CAV.prototype.rocketBarrageChance;
 
 function BBVT(id,name,side,LVL,HP,FP,TP,AA,AR,EV,ASW,LOS,LUK,RNG,planeslots) {
@@ -1036,7 +1072,28 @@ CV.prototype.shellPower = function(target,base) {
 	var bonus = (base||0) + 5;
 	if (target && target.isInstall) tp = 0;
 	var improvebonus = (this.improves.Pshell)? Math.floor(this.improves.Pshell) : 0;
-	return 25 + 1.5*(15 + bonus + this.FP + improvebonus + tp + Math.floor(1.3*dp));
+	let fp = this.FP + bonus + improvebonus;
+	if (installOnly) {
+		switch (target.installtype) {
+			case 2: //artillery imp
+				fp = fp*this.pillboxMult + this.installFlat;
+				break;
+			case 4: //isolated island
+				fp = fp*this.isoMult + this.installFlat;
+				break;
+			case 5: //northernmost
+				fp = fp*this.northernMult + this.installFlat;
+				break;
+			case 6:
+				fp = fp*this.harbourSummerMult + this.installFlat;
+				break;
+			case 3: //supply depot
+			default: //regular soft
+				fp = fp*this.softSkinMult + this.installFlat;
+				break;
+		}
+	}
+	return 25 + 1.5*(15 + fp + tp + Math.floor(1.3*dp));
 }
 CV.prototype.NBPower = function(target) {
 	if (this.canNBAirAttack()) {
@@ -1131,12 +1188,14 @@ AO.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		var d = EQTDATA[EQDATA[equips[i]].type];
 		if (d && (d.istorpbomber||d.isdivebomber)) {
 			this.planeasw = true;
-			this.CVshelltype = true;
-			this.shellPower = CV.prototype.shellPower;
-			this.canShell = CV.prototype.canShell;
-			this.canStillShell = CV.prototype.canStillShell;
-			this.numBombers = CV.prototype.numBombers;
-			break;
+			if (d.istorpbomber) {
+				this.CVshelltype = true;
+				this.shellPower = CV.prototype.shellPower;
+				this.canShell = CV.prototype.canShell;
+				this.canStillShell = CV.prototype.canStillShell;
+				this.numBombers = CV.prototype.numBombers;
+				break;
+			}
 		}
 	}
 }

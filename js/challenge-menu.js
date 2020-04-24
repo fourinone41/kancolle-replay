@@ -120,6 +120,7 @@ function chMenuShowFiles() {
 		var divBar = $('<div style="width:420px;height:20px;float:left"></div>');
 		var height = (medals.length > 10)? 23 : 50;
 		for (var i=0; i<medals.length; i++) {
+			if (data.event.world == 10 && i % 10 != 3) continue;
 			var div = $('<div style="width:'+height+'px;height:'+height+'px;float:left"></div>');
 			divMedal.append(div);
 			if (medals[i] == null) continue;
@@ -188,6 +189,13 @@ function chMenuSelectedEvent(eventnum) {
 	}
 	$('#menusettings').hide();
 	$(".ui-dialog-titlebar").hide();
+	if (MAPDATA[EVENTNUM].mechanicsOther) {
+		$('#menusmechunique').parent().show();
+		$('#menusmechunique').parent().attr('title',MAPDATA[EVENTNUM].mechanicsDescription);
+	} else {
+		$('#menusmechunique').parent().hide();
+		$('#menusmechunique').parent().attr('title','');
+	}
 }
 
 function chMenuBackEvent() {
@@ -215,6 +223,8 @@ function chMenuDefaultSettings() {
 	$('#menuslock').prop('checked',false);
 	$('#menusraidreq').prop('checked',false);
 	$('#menusunlock').prop('checked',false);
+	
+	$('#menusmechunique').prop('checked',true);
 }
 
 function chMenuExtractSettings() {
@@ -222,6 +232,7 @@ function chMenuExtractSettings() {
 	CHDATA.config.disableships = $('#menusships').prop('checked');
 	CHDATA.config.disableequips = $('#menusequips').prop('checked');
 	CHDATA.config.mechanicsdate = $('#menusmechanics').val();
+	CHDATA.config.mechanicsunique = $('#menusmechunique').prop('checked');
 	CHDATA.config.diffmode = parseInt($('#menusdiff').val());
 	CHDATA.config.disablelock = $('#menuslock').prop('checked');
 	CHDATA.config.disableRaidReq = $('#menusraidreq').prop('checked');
@@ -505,3 +516,5 @@ $('#btnImportOtherSubmit').click(function() {
 		return;
 	}
 });
+
+$('#menusmechunique').parent().css('text-decoration','underline dashed');

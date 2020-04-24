@@ -11,7 +11,11 @@
 		<script src="js/kcEQDATA.js"></script>
 		<script src="js/chkcMAPDATA2.js"></script>
 		<script src="js/data/event/mapdata45.js"></script>
+		<script src="js/data/event/mapdata46.js"></script>
+		<script src="js/data/event/mapdata10.js"></script>
 		<script src="js/kcENEMYCOMP.js"></script>
+		<script src="js/data/event/enemycomp46.js"></script>
+		<script src="js/data/event/enemycomp10.js"></script>
 		<script src="js/shared.js"></script>
 		<script src="js/kcships.js"></script>
 		<script src="js/kcsim.js"></script>
@@ -29,7 +33,13 @@
 		<div id="resourcespace" style="float:left;margin-left:500px" title="Resources Used">
 			<table style="width:240px">
 				<tr><td><img src="assets/stats/fuel.png" /><span id="resfuel">0</span></td><td><img src="assets/stats/steel.png" /><span id="ressteel">0</span></td><td><img src="assets/stats/bucket.png" /><span id="resbucket">0</span></td></tr>
-				<tr><td><img src="assets/stats/ammo.png" /><span id="resammo">0</span></td><td><img src="assets/stats/baux.png" /><span id="resbaux">0</span></td></tr>
+				<tr><td><img src="assets/stats/ammo.png" /><span id="resammo">0</span></td><td><img src="assets/stats/baux.png" /><span id="resbaux">0</span></td><td><img src="assets/stats/ibuild.png" /><span id="resibuild">0</span></td></tr>
+			</table>
+		</div>
+		<div id="resourcespace2" class="resourcetable" style="float:left;margin-left:10px">
+			<table>
+				<tr><td><img src="assets/maps/item50.png" /><span id="resDamecon">0</span></td><td><img src="assets/maps/item66.png" /><span id="resRation">0</span></td><td><img src="assets/maps/item91.png" /><span id="resRepair">0</span></td></tr>
+				<tr><td><img src="assets/maps/item51.png" /><span id="resDamegami">0</span></td><td><img src="assets/maps/item67.png" /><span id="resSupply">0</span></td></tr>
 			</table>
 		</div>
 		<br style="clear:both">
@@ -196,6 +206,7 @@
 		
 			<div id="battlespace" style="width:800px;height:480px" onclick="SCREENCLICKFUNCTION()"></div>
 		</div>
+		<div id="divWorldMap"></div>
 		<div>
 			<span style="font-size:12px;margin-left:750px">FPS: <span id="FPS"></span></span><br>
 			
@@ -317,6 +328,7 @@
 					<option value="2019-03-22">2019-03-22: Anti-Air Resist</option>
 					<option value="2019-03-27">2019-03-27: Anti-Installation Divebombers + Zuiun CI</option>
 				</select><br>
+				<div><input type="checkbox" id="menusmechunique" /><label for="menusmechunique">Enable Unique Mechanics</label><br></div>
 				<label for="menusdiff">Difficulty Selection: </label>
 				<select id="menusdiff">
 					<option value="1">Automatic By HQ Level</option>
@@ -346,5 +358,6 @@
 		<script src="js/challenge-ui.js"></script>
 		<script src="js/chplayer2.js"></script>
 		<script src="js/challenge-menu.js"></script>
+		<script src="js/challenge-map.js"></script>
 	</body>
 </html>

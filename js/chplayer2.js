@@ -43,6 +43,7 @@ function InitUI() {
 	
 	chLoadSortieInfo(CHDATA.event.mapnum);
 	chUIUpdateResources();
+	chUIUpdateItems();
 	
 	var found = false;
 	for (var i=1; i<=3; i++) {
@@ -123,6 +124,22 @@ function InitUI() {
 	
 	chClickedTab('#tabmain');
 	$('#mainspace').show();
+	
+	if (MAPDATA[WORLD].worldMap) {
+		initWorldMap(MAPDATA[WORLD].worldMap);
+		showWorldMap();
+	} else {
+		hideWorldMap();
+	}
+	
+	let diffNames = { 3: 'HARD', 2: 'NORMAL', 1: 'EASY', 4: 'CASUAL' };
+	if (MAPDATA[WORLD].diffNames) {
+		for (let diff in MAPDATA[WORLD].diffNames) diffNames[diff] = MAPDATA[WORLD].diffNames[diff];
+	}
+	$('#srtDiffHard').val(diffNames[3]);
+	$('#srtDiffMed').val(diffNames[2]);
+	$('#srtDiffEasy').val(diffNames[1]);
+	$('#srtDiffCasual').val(diffNames[4]);
 }
 
 var WORLD, MAPNUM;
@@ -505,7 +522,7 @@ var FORMSELECTED;
 function mapBattleNode(ship,letter) {
 	if (!mapnodes[letter]) addMapNode(letter);
 	let node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
-	if ((node.aironly || node.raid || node.night2 || node.nightToDay2 || node.ambush) && (WORLD > 27 || WORLD == 20)) addMapNode(letter);
+	if ((node.aironly || node.raid || node.night2 || node.nightToDay2 || node.ambush) && (WORLD > 27 || WORLD <= 20)) addMapNode(letter);
 
 	var radarstop = false, radartimer = 270;
 	updates.push([function() {
@@ -605,7 +622,8 @@ function mapResourceNode(ship,letter) {
 	// var num = node.min + Math.floor(Math.random()*(node.max-node.min+5)/5)*5;
 	var num;
 	if (node.resource != 0) {
-		num = node.amount[Math.floor(Math.random()*node.amount.length)];
+		let amount = node.amount || [0];
+		num = amount[Math.floor(Math.random()*amount.length)];
 	} else {
 		var ships = chGetShips(true);
 		var transportCalc = MAPDATA[WORLD].maps[MAPNUM].transportCalc || MAPDATA[WORLD].transportCalc;
@@ -725,6 +743,7 @@ function mapStormNode(ship,letter) {
 function createResource(type,num) {
 	var res = new PIXI.Container();
 	var icon;
+	if (type == null) type = 1;
 	switch(type) {
 		case 1: icon = PIXI.Sprite.fromImage('assets/stats/fuel.png'); break;
 		case 2: icon = PIXI.Sprite.fromImage('assets/stats/ammo.png'); break;
@@ -1048,7 +1067,7 @@ function chLoadMap(mapnum) {
 		if (MAPDATA[WORLD].maps[mapnum].nodes[letter].type==3) addMapNode(letter,1);
 		else addMapNode(letter);
 	}
-	if (WORLD > 27 || WORLD == 20) { //fill unvisited air nodes
+	if (WORLD > 27 || WORLD <= 20) { //fill unvisited air nodes
 		for (var letter in MAPDATA[WORLD].maps[MAPNUM].nodes) {
 			var node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
 			if (node.replacedBy && CHDATA.event.maps[MAPNUM].routes.indexOf(MAPDATA[WORLD].maps[MAPNUM].nodes[node.replacedBy].hidden) != -1) continue;
@@ -1618,7 +1637,7 @@ function chGetLastDance() {
 		lastdance = CHDATA.event.maps[MAPNUM].hp <= tp && CHDATA.event.maps[MAPNUM].hp > 0;
 		if (!lastdance && MAPDATA[WORLD].maps[MAPNUM].finaltp) lastdance = (CHDATA.event.maps[MAPNUM].hp <= MAPDATA[WORLD].maps[MAPNUM].finaltp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
 	} else {
-		lastdance = (CHDATA.event.maps[MAPNUM].hp <= MAPDATA[WORLD].maps[MAPNUM].finalhp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
+		lastdance = (MAPDATA[WORLD].maps[MAPNUM].finalhp && CHDATA.event.maps[MAPNUM].hp <= MAPDATA[WORLD].maps[MAPNUM].finalhp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
 	}
 	if (MAPDATA[WORLD].maps[MAPNUM].parts && MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[MAPNUM].part+1] && WORLD == 32) lastdance = false; //for now Fall15 only
 	return lastdance;
@@ -1656,8 +1675,8 @@ function prepBattle(letter) {
 	let friendFleet = null;
 	if (mapdata.friendFleet && CHDATA.fleets.ff !== 0) {
 		let friendFleets = mapdata.friendFleet;
-		let friendFleetsS = (CHDATA.fleets.ff == 2)? mapdata.friendFleetS : null;
-		friendFleet = chLoadFriendFleet(chChooseFriendFleet(friendFleets,friendFleetsS));
+		let friendFleetsS = (CHDATA.fleets.ff == 2)? (mapdata.friendFleetSX || mapdata.friendFleetS) : null;
+		friendFleet = chLoadFriendFleet(chChooseFriendFleet(friendFleets,friendFleetsS,!!mapdata.friendFleetSX));
 		CHDATA.sortie.fleetFriend = friendFleet;
 		console.log(friendFleet);
 	}
@@ -1793,6 +1812,9 @@ function prepBattle(letter) {
 			BAPI.yasen = {};
 		}
 	}
+	if (MAPDATA[WORLD].maps[MAPNUM].bgTint) {
+		BAPI.sim_bgtint = MAPDATA[WORLD].maps[MAPNUM].bgTint;
+	}
 	CHAPI.battles.push(BAPI);
 	$('#code').val(JSON.stringify(CHAPI)); //remove?
 	
@@ -1829,6 +1851,7 @@ function prepBattle(letter) {
 		}
 	}
 	if (!MAPDATA[WORLD].maps[MAPNUM].transport && MAPDATA[WORLD].maps[MAPNUM].hpmode != 1) lastdance = FLEETS2[0].ships[0].maxHP >= CHDATA.event.maps[MAPNUM].hp; //if last dance hp < boss hp, still play sunk line
+	if (MAPDATA[WORLD].isVita) lastdance = true; 
 	if (mapdata.boss && lastdance && res.flagsunk && !MAPDATA[WORLD].maps[MAPNUM].transport) {
 		var shipid = compd.c[0];
 		if (VOICES[shipid] && VOICES[shipid]['sunk']) {
@@ -1880,6 +1903,17 @@ function endMap() {
 			CHDATA.event.maps[MAPNUM].part = partNext;
 			mapChangePart(WORLD,MAPNUM,partNext);
 			CHDATA.event.maps[MAPNUM].hp = getMapHP(WORLD,MAPNUM,CHDATA.event.maps[MAPNUM].diff);
+		} else if (CHDATA.event.unlockedS) {
+			if (!CHDATA.event.maps[MAPNUM].clear) {
+				CHDATA.event.maps[MAPNUM].clear = 1;
+				cleared = true;
+				for (let mapnum in MAPDATA[WORLD].maps) {
+					if (CHDATA.event.unlockedS.indexOf(+mapnum) != -1) continue;
+					if (MAPDATA[WORLD].maps[mapnum].requiresMap && MAPDATA[WORLD].maps[mapnum].requiresMap.every(m => CHDATA.event.maps[m].clear)) {
+						CHDATA.event.unlockedS.push(+mapnum);
+					}
+				}
+			}
 		} else if (CHDATA.event.unlocked == MAPNUM || (CHDATA.config.unlockAll && !CHDATA.event.maps[MAPNUM].clear)) {
 			if (CHDATA.config.unlockAll) CHDATA.event.maps[MAPNUM].clear = 1;
 			else CHDATA.event.unlocked++;
@@ -2031,6 +2065,21 @@ function shuttersPostbattle(noshutters) {
 	if (MAPDATA[WORLD].maps[MAPNUM].hpmode == -1 && MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].boss) {
 		var rank = (!CHDATA.temp.NBonly && !NBSELECT)? CHDATA.temp.rankDay : CHDATA.temp.rank;
 		if (rank == 'S' || rank == 'A' || rank == 'B') CHDATA.event.maps[MAPNUM].hp = 0;
+	}
+	if (!CHDATA.temp.NBonly && NBSELECT && CHDATA.fleets.ff == 2 && CHDATA.sortie.fleetFriend) {
+		CHDATA.event.resources.ibuild = CHDATA.event.resources.ibuild + 6 || 6;
+		chUIUpdateResources();
+	}
+	for (let n=0; n<=1; n++) {
+		if (!FLEETS1[n]) continue;
+		for (let ship of FLEETS1[n].ships) {
+			if (ship.repairs && ship.repairsOrig && ship.repairsOrig.length > ship.repairs.length) {
+				let id = ship.repairsOrig.pop();
+				let key = id == 43 ? 'damegami' : 'damecon';
+				CHDATA.event.resources[key] = CHDATA.event.resources[key] + 1 || 1;
+				chUIUpdateItems();
+			}
+		}
 	}
 	chUpdateMorale();
 	chUpdateSupply();
@@ -2694,6 +2743,26 @@ function chUIUpdateResources() {
 	$('#ressteel').text(CHDATA.event.resources.steel);
 	$('#resbaux').text(CHDATA.event.resources.baux);
 	$('#resbucket').text(CHDATA.event.resources.bucket || 0);
+	$('#resibuild').text(CHDATA.event.resources.ibuild || 0);
+}
+
+function chUIUpdateItems() {
+	$('#resDamecon').text(CHDATA.event.resources.damecon || 0);
+	$('#resDamegami').text(CHDATA.event.resources.damegami || 0);
+	$('#resRation').text(CHDATA.event.resources.ration || 0);
+	$('#resSupply').text(CHDATA.event.resources.supply || 0);
+	$('#resRepair').text(CHDATA.event.resources.repair || 0);
+	
+	let costs = {
+		'damecon': 200,
+		'damegami': 500,
+		'ration': 100,
+		'supply': 150,
+		'repair': 200,
+	};
+	let yen = 0;
+	for (let key in costs) yen += (CHDATA.event.resources[key] || 0) * costs[key];
+	$('#resourcespace2').attr('title','\u00a5'+yen);
 }
 
 function chApplySortieItems() {
@@ -2712,6 +2781,7 @@ function chApplySortieItems() {
 				if (i > 0) FLEETS1[n].ships[i-1].morale = Math.min(FLEETS1[n].ships[i-1].morale+10,100);
 				if (i < FLEETS1[n].ships.length-1) FLEETS1[n].ships[i+1].morale = Math.min(FLEETS1[n].ships[i+1].morale+10,100);
 				result.ration = true;
+				CHDATA.event.resources.ration = CHDATA.event.resources.ration + 1 || 1;
 			}
 		}
 	}
@@ -2729,10 +2799,12 @@ function chApplySortieItems() {
 			}
 		}
 		result.supply = true;
+		CHDATA.event.resources.supply = CHDATA.event.resources.supply + numOil || numOil;
 	}
 	if (result.supply || result.ration) {
 		pushShipStatusToUI();
 		chUIUpdateResources();
+		chUIUpdateItems();
 	}
 	return result;
 }
@@ -3041,15 +3113,18 @@ function prepEnemyRaid() {
 }
 
 
-function chChooseFriendFleet(friendFleets,friendFleetsStrong) {
+function chChooseFriendFleet(friendFleets,friendFleetsStrong,strongExcludes) {
+	let fleetDefault = friendFleets[0] || null;
 	if (friendFleetsStrong) {
-		friendFleets = friendFleets.concat(friendFleetsStrong).concat(friendFleetsStrong);
+		if (strongExcludes) friendFleets = friendFleetsStrong;
+		else friendFleets = friendFleets.concat(friendFleetsStrong).concat(friendFleetsStrong);
 	}
-	let pool = [friendFleets[0]];
+	if (friendFleets.length <= 0) return null;
+	let pool = (strongExcludes || !fleetDefault) ? [] : [fleetDefault];
 	let curShips = FLEETS1[0].ships;
 	if (CHDATA.fleets.combined) curShips = curShips.concat(FLEETS1[1].ships);
 	for (let name of friendFleets) {
-		if (name == friendFleets[0]) continue;
+		if (name == fleetDefault) continue;
 		let fleet = MAPDATA[WORLD].friendFleet[name];
 		let found = false;
 		for (let ship of fleet.ships) {
@@ -3062,11 +3137,13 @@ function chChooseFriendFleet(friendFleets,friendFleetsStrong) {
 		}
 		if (!found) pool.push(name);
 	}
+	if (pool.length <= 0) return fleetDefault;
 	let nameC = pool[Math.floor(Math.random()*pool.length)];
 	return MAPDATA[WORLD].friendFleet[nameC];
 }
 
 function chLoadFriendFleet(friendData) {
+	if (!friendData) return null;
 	let fleet = new Fleet(0);
 	let simShips = [];
 	for (let ship of friendData.ships) {
@@ -3092,41 +3169,51 @@ function chLoadFriendFleet(friendData) {
 }
 
 function chAnchorageRepair() {
-	let type = 0, numCrane = 0, didRepair = false;
+	let type = 0, didRepair = false;
 	let ships = FLEETS1[0].ships;
 	if (FLEETS1[1]) ships = ships.concat(FLEETS1[1].ships);
-	if (ships.find(ship => ship.mid == 450)) type = 2;
-	if (ships.find(ship => ship.mid == 187)) type = 1;
+	let shipR;
+	if (shipR = ships.find(ship => ship.mid == 187 && ship.apiID2 != 1 && ship.HP/ship.maxHP > .5)) type = 1;
+	else if (shipR = ships.find(ship => ship.mid == 450 && ship.apiID2 != 1 && ship.HP/ship.maxHP > .5)) type = 2;
 	if (!type) return false;
-	for (let ship of ships) {
-		for (let equip of ship.equips) {
-			if (equip.type == SRF) numCrane++;
-		}
-	}
-	let hpAmt = 0, moraleAmt = 0, shipsRepair = [];
+	if (type == 2 && !FLEETS1[1]) return false;
+
+	let hpAmount = 0, shipsRepair = [];
 	if (type == 1) {
-		hpAmt = .3; moraleAmt = 5;
-		numCrane = Math.min(4,numCrane);
-		shipsRepair = ships;
+		hpAmount = .3;
+		for (let i=0; i<shipR.equips.length; i++) {
+			if (shipR.equips[i].type != SRF) continue;
+			if (i == 0) shipsRepair.push.apply(shipsRepair,FLEETS1[0].ships.slice(0,3));
+			if (i == 1) shipsRepair.push.apply(shipsRepair,FLEETS1[0].ships.slice(3));
+			if (!FLEETS1[1]) continue;
+			if (i == 2) shipsRepair.push.apply(shipsRepair,FLEETS1[1].ships.slice(0,3));
+			if (i == 3) shipsRepair.push.apply(shipsRepair,FLEETS1[1].ships.slice(3));
+		};
 	} else if (type == 2) {
-		hpAmt = .25; moraleAmt = 5;
-		numCrane = Math.min(2,numCrane);
+		hpAmount = .25;
 		let fleet = FLEETS1[1] || FLEETS1[0];
-		for (let i=0; i<numCrane*2; i++) {
-			if (i >= fleet.ships.length) break;
-			shipsRepair.push(fleet.ships[i]);
-		}
+		for (let i=0; i<shipR.equips.length; i++) {
+			if (shipR.equips[i].type != SRF) continue;
+			if (i == 0) shipsRepair.push.apply(shipsRepair,FLEETS1[1].ships.slice(0,3));
+			if (i == 1) shipsRepair.push.apply(shipsRepair,FLEETS1[1].ships.slice(3));
+		};
 	}
 	for (let ship of shipsRepair) {
 		if (!ship) continue;
 		if (ship.HP >= ship.maxHP) continue;
 		if (ship.HP/ship.maxHP <= .25) continue;
-		ship.HP += Math.ceil(hpAmt*ship.maxHP);
+		ship.HP += Math.ceil(hpAmount*ship.maxHP);
 		if (ship.HP > ship.maxHP) ship.HP = ship.maxHP;
-		ship.morale += moraleAmt;
+		ship.morale += 15 + Math.floor(Math.random()*6);
 		if (ship.morale > 100) ship.morale = 100;
 		didRepair = true;
 	}
 	pushShipStatusToUI();
+	
+	if (didRepair) {
+		CHDATA.event.resources.repair = CHDATA.event.resources.repair + 1 || 1;
+		chUIUpdateItems();
+	}
+	
 	return didRepair;
 }

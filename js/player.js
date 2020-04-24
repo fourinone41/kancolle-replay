@@ -417,7 +417,7 @@ function createShip(data,side,i,damaged) {
 	ship.hasonlytorp = hasonlytorp;
 	ship.issub = (sdata.type == 'SS' || sdata.type == 'SSV');
 	ship.isinstall = (sdata.type == 'Installation' || sdata.installtype > 0 || sdata.isAnchorage);
-	ship.isCV = (sdata.type == 'CV' || sdata.type == 'CVL' || sdata.type == 'CVB' || (sdata.type=='AO'&&ship.hasbomber));
+	ship.isCV = (sdata.type == 'CV' || sdata.type == 'CVL' || sdata.type == 'CVB' || (sdata.type=='AO'&&ship.hastorpbomber));
 	ship.isfog = (parseInt(data[0]) >= 2000 && parseInt(data[0]) <= 2100);
 	if (sdata.nightattack==2) ship.nightgun = true;
 	ship.shakepid = 0;
@@ -434,6 +434,11 @@ function processAPI(root) {
 	} else if (data.api_n_hougeki1 || data.api_name == 'ld_shooting') {
 		stage.removeChild(bg);
 		stage.addChildAt(bg2,0);
+	}
+	if (root.battles[0].sim_bgtint) {
+		bg.tint = bg2.tint = root.battles[0].sim_bgtint;
+	} else {
+		bg.tint = bg2.tint = 0xffffff;
 	}
 	console.log(root);
 	COMBINED = root.combined;

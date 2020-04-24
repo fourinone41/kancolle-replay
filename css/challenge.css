@@ -338,7 +338,8 @@ table.dialog4 img {
 	height:400px;
 	background-color:#375524;
 	border:8px solid #D3B47B;
-	padding:5px
+	padding:5px;
+	margin-bottom:58px;
 }
 
 .mainbutton {
@@ -484,14 +485,23 @@ tr.chfile:hover {
 }
 
 #resourcespace table {
-	width: 160px;
+	width: 270px;
 }
-#resourcespace span {
+#resourcespace td {
+	width: 90px;
+}
+#resourcespace2 table {
+	width: 195px;
+}
+#resourcespace2 td {
+	width: 65px;
+}
+.resourcetable span {
 	color: red;
 	margin-left: 4px;
 	vertical-align: middle;
 }
-#resourcespace img {
+.resourcetable img {
 	vertical-align: middle;
 }
 
