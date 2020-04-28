@@ -1508,8 +1508,10 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 	} else {
 		let n = (mapdata.compName)? mapdata.compName : letter;
 
-		var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode[0] : MAPDATA[WORLD].maps[MAPNUM].bossnode;
-		var letterboss = (typeof bossnum == 'string')? bossnum : String.fromCharCode(64+bossnum);
+		var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode : [MAPDATA[WORLD].maps[MAPNUM].bossnode];
+		var letterboss = bossnum.map((x) => (typeof x == 'string')? x : String.fromCharCode(64+x));
+		let isBoss = letterboss.indexOf(n) != -1;
+		let hasRealBoss = false;
 
 		var compd = Object.assign({}, ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp]);
 		var compMain = [];
@@ -1533,12 +1535,13 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 				ennemiesBoss = installationBoss;
 			}
 
-			if(bossIds.indexOf(ship_id) !== -1){
+			if(bossIds.indexOf(ship_id) !== -1) {
 				var obj_keys = Object.keys(ennemiesBoss);
 				var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+				hasRealBoss = true;
 
 				compMain.push(parseInt(shipID));
-			}else{
+			} else {
 				var obj_keys = Object.keys(ennemies);
 				var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 
@@ -1547,6 +1550,13 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		}
 
 		compd.c = compMain;
+
+		if (isBoss && !hasRealBoss) {
+			// if boss but no "boss ship" => order by hp
+			compd.c = compd.c.sort((a, b) => {
+				return SHIPDATA[b].HP - SHIPDATA[a].HP;
+			});
+		}
 
 		var formations = [1,2,3,4];
 		var formationsSubs = [5,4];
@@ -1559,22 +1569,8 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		if(shouldBeCombined){
 			compEscort = [];
 
-			let ennemiesEscort = [];
-			let bossEscort = [];
-
-			for(ennemy in ennemiesBoss){
-				var enemy_data = ennemiesBoss[ennemy];
-				if(!enemy_data.type.includes('CV') && !enemy_data.type.includes('BB')){
-					bossEscort[ennemy] = enemy_data;
-				}
-			}
-
-			for(ennemy in ennemies){
-				var enemy_data = ennemies[ennemy];
-				if(!enemy_data.type.includes('CV') && !enemy_data.type.includes('BB')){
-					ennemiesEscort[ennemy] = enemy_data;
-				}
-			}
+			let ennemiesEscort = escortAbyssals;
+			let bossEscort = escortAbyssalsBoss;
 
 			for(ship in compd.ce){
 				var ship_id = compd.ce[ship];
@@ -1594,7 +1590,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 
 			compd.ce = compEscort;
 
-			var formationsC = [113, 114, 213, 214];
+			var formationsC = [113, 114, 114, 114, 213, 214, 214, 214];
 
 			compd.f = formationsC[Math.floor(Math.random()*formationsC.length)];
 		}
@@ -2848,6 +2844,7 @@ function getLBASRange(ship) {
 		for (var i=0; i<ship.items.length; i++) {
 			if (ship.items[i] <= -1) continue;
 			var eq = CHDATA.gears['x'+ship.items[i]];
+			if (!LBASDATA[eq.masterId]) continue;
 			if (LBASDATA[eq.masterId].distance > rangeMax) rangeMax = LBASDATA[eq.masterId].distance;
 		}
 		return rangeMax;
@@ -2856,6 +2853,7 @@ function getLBASRange(ship) {
 	for (var i=0; i<ship.items.length; i++) {
 		if (ship.items[i] <= -1) continue;
 		var eq = CHDATA.gears['x'+ship.items[i]];
+		if (!LBASDATA[eq.masterId]) continue;
 		if (LBASDATA[eq.masterId].distance < rangeMin) rangeMin = LBASDATA[eq.masterId].distance;
 		if (EQDATA[eq.masterId].type == SEAPLANE || EQDATA[eq.masterId].type == CARRIERSCOUT || EQDATA[eq.masterId].type == FLYINGBOAT || EQDATA[eq.masterId].type == LANDSCOUT) {
 			rangeScout = Math.max(rangeScout,LBASDATA[eq.masterId].distance);

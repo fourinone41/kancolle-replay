@@ -1763,12 +1763,13 @@ var MAPDATA45 = {
 						friendFleetS: ['E3-10','E3-11','E3-12','E3-13','E3-14'],
 						setupSpecial: function() {
 							let idBoss = FLEETS2[0].ships[0].mid;
+
 							if (CHDATA.event.maps[3].debuffed) {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken;
-								VOICES[idBoss].damage = 'assets/voice/453188630.mp3';
+								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken ? SHIPDATA[idBoss].imageBroken : SHIPDATA[idBoss].image;
+								VOICES[idBoss].damage = [1815,1816,1817,1818,1819,1820].includes(idBoss) ? 'assets/voice/453188630.mp3' : VOICES[idBoss].damage;
 							} else {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase;
-								VOICES[idBoss].damage = 'assets/voice/453188631.mp3';
+								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase ? SHIPDATA[idBoss].imageBase : SHIPDATA[idBoss].image;
+								VOICES[idBoss].damage = [1815,1816,1817,1818,1819,1820].includes(idBoss) ? 'assets/voice/453188631.mp3' : VOICES[idBoss].damage;
 							}
 							
 							let ships = FLEETS1[0].ships;
@@ -1795,7 +1796,7 @@ var MAPDATA45 = {
 								}
 								if (CHDATA.event.maps[3].debuffed) {
 									if (!ship.bonusSpecial) ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.15,on:[1815,1816,1817,1818,1819,1820,1883,1884,1885,1886,1887,1888]});
+									ship.bonusSpecial.push({mod:1.15,on:[1815,1816,1817,1818,1819,1820,1815,1816,1817,1818,1819,1820]});
 								}
 							}
 						},

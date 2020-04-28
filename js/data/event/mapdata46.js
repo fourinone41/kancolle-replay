@@ -1902,9 +1902,9 @@ MAPDATA[46] =
 							
 							let idBoss = FLEETS2[0].ships[0].mid;
 							if (CHDATA.event.maps[4].debuffed) {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken;
+								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken ? SHIPDATA[idBoss].imageBroken : SHIPDATA[idBoss].image;
 							} else {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase;
+								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase ? SHIPDATA[idBoss].imageBase : SHIPDATA[idBoss].image;
 							}
 						},
 						compDiff: {
@@ -3109,11 +3109,11 @@ MAPDATA[46] =
 							
 							let idBoss = FLEETS2[0].ships[0].mid;
 							if (CHDATA.event.maps[6].debuffed) {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken;
-								VOICES[idBoss].damage = 'assets/voice/466191230.mp3';
+								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken ? SHIPDATA[idBoss].imageBroken : SHIPDATA[idBoss].image;
+								VOICES[idBoss].damage = [1909,1910,1911,1912,1913,1914].includes(idBoss) ? 'assets/voice/466191231.mp3' : VOICES[idBoss].damage;
 							} else {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase;
-								VOICES[idBoss].damage = 'assets/voice/466191231.mp3';
+								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase ? SHIPDATA[idBoss].imageBase : SHIPDATA[idBoss].image;
+								VOICES[idBoss].damage = [1909,1910,1911,1912,1913,1914].includes(idBoss) ? 'assets/voice/466191230.mp3' : VOICES[idBoss].damage;
 							}
 						},
 						compDiff: {

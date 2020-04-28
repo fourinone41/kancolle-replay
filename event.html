@@ -282,11 +282,13 @@
 				<br>
 				<div id="menuImportKC3">
 					<label for="fileKC3" style="font-weight:bold">Import .kc3 file: </label><input type="file" id="fileKC3" accept=".kc3" onchange="chLoadKC3File()"/>
-					<input id="btnImportOther" type="button" style="margin-left:130px" value="Import Other Format" /><br>
+					<input class="btnImportOther" type="button" style="margin-left:10px" value="Import Other Format" />
+					<input class="btnRandomFile" type="button" style="margin-left:20px" value="Create Random File" /><br>
 					<span style="font-size:10px">Strategy Room > Profile > Export Basic Profile (player info, fleets, ships, equipment, config)</span>
 				</div>
 				<div id="menuImportOther">
-					<span style="font-weight:bold">Import API/fleetanalysis Format:</span><input id="btnImportKC3" type="button" style="margin-left:320px" value="Import KC3 format" /><br>
+					<span style="font-weight:bold">Import API/fleetanalysis Format:</span><input class="btnImportKC3" type="button" style="margin-left:120px" value="Import KC3 format" />
+					<input class="btnRandomFile" type="button" style="margin-left:20px" value="Create Random File" /><br>
 					<table>
 					<tr><td><label for="inpImportOtherShip">Ship: </label></td><td><textarea rows="1" id="inpImportOtherShip" style="resize:none"></textarea></td><td>    </td>
 					<td><label for="inpImportOtherEquip">Equipment: </label></td><td><textarea rows="1" id="inpImportOtherEquip" style="resize:none"></textarea></td></tr>
@@ -297,6 +299,21 @@
 					<span style="font-size:10px">ElectronicObserver: View > Fleet > #1 > Right click header row > Copy Ship/Equip List (kancolle-fleetanalysis) > paste in Ship/Equipment</span><br>
 					<span style="font-size:10px">Chrome Only: <a href="https://kancolle-fleetanalysis.firebaseapp.com/#/">fleetanalysis</a> > 艦隊入力 > 艦隊情報反映 > 反映手順 (Chromeブラウザの使用を想定) > follow guide, paste result in Ship</span><br>
 					<span style="font-size:10px;margin-left:150px">装備入力 > 装備情報反映 > 反映手順 (Chromeブラウザの使用を想定) > follow guide, paste result in Equipment</span>
+				</div>
+				<div id="menuCreateRandomFile">
+					<span style="font-weight:bold">Create a random file:</span><input class="btnImportKC3" type="button" style="margin-left:120px" value="Import KC3 format" />
+					<input class="btnImportOther" type="button" style="margin-left:20px" value="Import Other Format" /><br>
+					
+					<label for="inpCreateRandomName">Name: </label><input id="inpCreateRandomName" /><br>
+					<label for="inpCreateRandomHQ">HQ Level: </label><input id="inpCreateRandomHQ" type="number" min="1" max="120" style="width:50px" /><br><br>
+				
+					<label for="inpCreateRandomNbShips">Number of ships: </label><input id="inpCreateRandomNbShips" type="number" min="1" style="width:50px" /><br>
+					<label for="inpCreateRandomNbEquips">Number of equipments: </label><input id="inpCreateRandomNbEquips" type="number" min="1" style="width:50px" /><br><br>
+				
+					<input type="checkbox" id="inpCreateRandomAbyssalShip" /><label for="inpCreateRandomAbyssalShip">Allow abyssals in your fleet?</label><br>
+					<input type="checkbox" id="inpCreateRandomAbyssalEquipments" /><label for="inpCreateRandomAbyssalEquipments">Allow abyssals equipments?</label><br>
+					
+					<input id="btnImportRandomSubmit" type="button" value="Import" /><br>
 				</div>
 				<div id="menufinfo" style="display:none"><br><span id="menufrank"></span> <span id="menufname"></span><span style="margin-left:20px">HQ </span><span id="menufhq"></span><span id="menufdate" style="margin-left:20px"></span></div>
 			</div>

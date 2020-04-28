@@ -183,9 +183,11 @@ function chMenuSelectedEvent(eventnum) {
 	if (localStorage.ch_import == 1) {
 		$('#menuImportKC3').hide();
 		$('#menuImportOther').show();
+		$('#menuCreateRandomFile').hide();
 	} else {
 		$('#menuImportKC3').show();
 		$('#menuImportOther').hide();
+		$('#menuCreateRandomFile').hide();
 	}
 	$('#menusettings').hide();
 	$(".ui-dialog-titlebar").hide();
@@ -474,15 +476,39 @@ function chGetStorageLeft() {
 }
 
 
-$('#btnImportOther').click(function() {
+$('.btnImportOther').click(function() {
 	$('#menuImportKC3').hide();
 	$('#menuImportOther').show();
+	$('#menuCreateRandomFile').hide();
 	localStorage.ch_import = 1;
 });
-$('#btnImportKC3').click(function() {
+$('.btnImportKC3').click(function() {
 	$('#menuImportKC3').show();
 	$('#menuImportOther').hide();
+	$('#menuCreateRandomFile').hide();
 	delete localStorage.ch_import;
+});
+$('.btnRandomFile').click(function() {
+	$('#menuImportKC3').hide();
+	$('#menuImportOther').hide();
+	$('#menuCreateRandomFile').show();
+	localStorage.ch_import = 1;
+});
+$('#btnImportRandomSubmit').click(function() {
+	let name = $('#inpCreateRandomName').val();
+	let level = $('#inpCreateRandomHQ').val();
+	let nbShips = $('#inpCreateRandomNbShips').val();
+	let nbEquips = $('#inpCreateRandomNbEquips').val();
+	let allowAbyssals = $('#inpCreateRandomAbyssalShip').prop('checked');
+	let allowAbyssalsEquips = $('#inpCreateRandomAbyssalEquipments').prop('checked');
+
+	chProcessCreateRandomFile(nbShips, nbEquips, name, level, true, allowAbyssals, allowAbyssalsEquips);
+
+	$('#menusdone').prop('disabled',false);
+	$('#menufname').text(CHDATA.kcdata.player.name);
+	$('#menufhq').text(CHDATA.kcdata.player.level);
+	$('#menufinfo').show();
+	$('#menusettings').show();
 });
 $('#btnImportOtherSubmit').click(function() {
 	$('#spanImportOtherError').text('');
