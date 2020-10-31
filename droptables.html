@@ -114,6 +114,9 @@
 		#spanHL {
 			margin-left: 50px;
 		}
+		#spanGroup {
+			margin-left: 50px;
+		}
 		
 		span.note {
 			color: red;
@@ -156,7 +159,14 @@
 			<option>6-4</option>
 			<option>6-5</option>
 			<option>7-1</option>
-			<!--<option>7-2</option>-->
+			<option>7-2</option>
+			<option value="48-1">Summer20 E-1</option>
+			<option value="48-2">Summer20 E-2</option>
+			<option value="48-3">Summer20 E-3</option>
+			<option value="48-4">Summer20 E-4</option>
+			<option value="48-5">Summer20 E-5</option>
+			<option value="48-6">Summer20 E-6</option>
+			<option value="48-7">Summer20 E-7</option>
 		</select>
 		<input type="radio" name="radGroup" id="inpGroupN" value="1" checked /><label for="inpGroupN">Normal</label>
 		<input type="radio" name="radGroup" id="inpGroupB" value="2" /><label for="inpGroupB">Boss</label>
@@ -180,6 +190,9 @@
 					Highlight Mode: 
 					<input type="radio" name="radHL" id="radHL1" /><label for="radHL1">Diff</label>
 					<input type="radio" name="radHL" id="radHL2" /><label for="radHL2">Stdev</label>
+				</span>
+				<span id="spanGroup">
+					<label>Group Replacements: <input type="checkbox" id="chkGroup" /></label>
 				</span>
 				<span id="spanPoiLoad">poi-statistics data loading...</span>
 				<br>

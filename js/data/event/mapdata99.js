@@ -1,6 +1,6 @@
 MAPDATA[99] = {
     name: 'Random Fiesta',
-    date: '2019-02-02',
+    date: '2025-02-02',
     diffMode: 2,
     allowDiffs: [3,2,1],
     allowFleets: [0,1,2,3,7],
@@ -84,12 +84,12 @@ function randomizeMaps(){
                         let map = {};
 
                         map.world = event_id;
+                        //if(map.world != 47 && i == 1) continue;
                         possible_maps.push(map);
                     }
                 }
             }
             maps[i] = possible_maps[Math.floor(Math.random()*possible_maps.length)];
-            //if(maps[i].world == 42) alert('fall18')
         }
         CHDATA.maps = maps;
         return maps;

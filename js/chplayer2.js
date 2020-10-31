@@ -1487,6 +1487,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		}
 		// console.log(comps);
 	} else {
+		if (mapdata.compDiffPart) mapdata = mapdata.compDiffPart[CHDATA.event.maps[MAPNUM].part];
 		comps = (mapdata.compDiffF && lastdance)? mapdata.compDiffF[diff] : mapdata.compDiff[diff];
 		if (mapdata.compDiffC && CHDATA.event.maps[MAPNUM].hp <= 0) comps = mapdata.compDiffC[diff];
 		if (mapdata.compDiffC && MAPDATA[WORLD].maps[MAPNUM].currentBoss && MAPDATA[WORLD].maps[MAPNUM].currentBoss != letter) comps = mapdata.compDiffC[diff];
@@ -2674,6 +2675,16 @@ function chUpdateSupply() {
 	}
 	console.log(baseF + ' ' + baseA);
 	var didNB = (results.rankDay && NBSELECT) || results.nightToDay2;
+	
+	let costSpecial = null, shipsSpecial = null, isECombined = !!FLEETS2[0].combinedWith && !results.nightToDay2;
+	if (FLEETS1[0].didSpecial == 1) {
+		let attackSpecial = FLEETS1[0].ships[0].attackSpecial;
+		if (attackSpecial == 101 || attackSpecial == 102) costSpecial = 1.5;
+		else if (attackSpecial == 104) costSpecial = 1.3;
+		if (costSpecial) shipsSpecial = getSpecialAttackShips(FLEETS1[0].ships,attackSpecial);
+		FLEETS1[0].didSpecial = 2;
+	}
+	
 	let num = (CHDATA.fleets.combined)? 2 : 1;
 	for (let n=0; n<num; n++) {
 		for (var i=0; i<FLEETS1[n].ships.length; i++) {
@@ -2681,8 +2692,10 @@ function chUpdateSupply() {
 			if (ship.retreated) continue;
 			ship.fuelleft -= 10*Math.floor(Math.max(1,baseF*ship.fuel))/ship.fuel;
 			if (!results.noammo) {
-				ship.ammoleft -= 10*Math.floor(Math.max(1,baseA*ship.ammo))/ship.ammo;
-				if (didNB) ship.ammoleft -= 10*Math.ceil(.1*ship.ammo)/ship.ammo;
+				let subAmmo = Math.floor(Math.max(1,baseA*ship.ammo));
+				if (didNB && !isECombined) subAmmo += Math.ceil(ship.ammo*baseA/2);
+				if (costSpecial && shipsSpecial.indexOf(ship) != -1 && (!isECombined || !didNB)) subAmmo = Math.floor(subAmmo*costSpecial);
+				ship.ammoleft -= 10*subAmmo/ship.ammo;
 			}
 			if (ship.fuelleft < 0) ship.fuelleft = 0;
 			if (ship.ammoleft < 0) ship.ammoleft = 0;

@@ -5,11 +5,14 @@ var MAP, CELLID, COMPID, RANK = 'S';
 var RANKOFFSET = { 'S':0, 'A':20, 'B': 50 };
 var HLTYPE, SDZ = 1.25;
 var DATAOUT;
+var GROUPREPLACEMENTS;
 
 $('#divNode').hide();
 $('#spanPoiLoad').hide();
 $('#linkExport').css('visibility','hidden');
 $('#radHL'+(HLTYPE = +localStorage.drops_hl || 1)).prop('checked',true);
+if (localStorage.drops_group == null) localStorage.drops_group = 1;
+$('#chkGroup').prop('checked',GROUPREPLACEMENTS = !!+localStorage.drops_group);
 
 for (let i=0; i<100; i++) {
 	$('#tabDrops').append('<tr id="trDrops'+i+'"><td>'+(i+1)+'</td><td id="tdDropsName'+i+'"></td><td><img id="imgDrops'+i+'" src="" /></td><td><img id="imgDropsR'+i+'" src="" /></td></tr>');
@@ -30,8 +33,10 @@ function htmlCreateEnemyComp(compId) {
 	$('#inpComp'+compId).change(function() {
 		COMPID = compId;
 		let offset = MAPENEMY[CELLID].comp[COMPID].geth;
-		tableHighlightRank(offset);
-		tableOutlinePool(offset + RANKOFFSET[RANK]);
+		if (offset >= 0) {
+			tableHighlightRank(offset);
+			tableOutlinePool(offset + RANKOFFSET[RANK]);
+		}
 		changeRates();
 	});
 	
@@ -44,7 +49,7 @@ function htmlCreateEnemyComp(compId) {
 }
 
 function htmlCreateNodeButton(cellId) {
-	let letter = String.fromCharCode(+cellId+64);
+	let letter = (!+cellId)? cellId : String.fromCharCode(+cellId+64);
 	let e = $('<div class="buttonNode">'+letter+'</div>');
 	$('#divNodeButtons').append(e);
 	e.click(function() {
@@ -72,7 +77,11 @@ for (let letter of ['S','A','B']) {
 	$('#inpRank'+letter).change(function() {
 		RANK = letter;
 		if (COMPID) {
-			tableOutlinePool(MAPENEMY[CELLID].comp[COMPID].geth+RANKOFFSET[letter]);
+			let offset = MAPENEMY[CELLID].comp[COMPID].geth;
+			if (offset >= 0) {
+				offset += RANKOFFSET[letter];
+				tableOutlinePool(offset);
+			}
 			changeRates();
 		}
 	});
@@ -93,6 +102,12 @@ document.getElementById('linkExport').onclick = function() {
     this.target = '_blank';
     this.download = 'droptables_'+MAP+'_'+CELLID+'_'+COMPID+'_'+RANK+'.csv';
 };
+
+$('#chkGroup').change(function() {
+	GROUPREPLACEMENTS = $(this).prop('checked');
+	localStorage.drops_group = +GROUPREPLACEMENTS;
+	if (COMPID) changeRates();
+});
 
 
 function getShipImagePath(mid) {
@@ -158,6 +173,7 @@ function changeTable(prop) {
 	$('#divNodeButtons').html('');
 	for (let id of ids) {
 		if (!!MAPENEMY[id].boss != (prop == 'boss')) continue;
+		if (MAP.split('-')[0].length >= 2 && !Object.keys(MAPENEMY[id].comp).find(cid => MAPENEMY[id].comp[cid].geth < 100)) continue;
 		let e = htmlCreateNodeButton(id);
 		buttonFirst = buttonFirst || e;
 	}
@@ -181,7 +197,7 @@ function changeNode(cellId) {
 			htmlCreateEnemyComp(compId);
 		}
 		$('#divEnemyComp'+compId).show();
-		$('#divEnemyCompOffset'+compId).text(comp.geth);
+		$('#divEnemyCompOffset'+compId).text((comp.geth >= 0)? comp.geth : '?');
 		let ships = comp.ship.slice();
 		if (comp.shipC) ships = ships.concat(comp.shipC);
 		for (let i=0; i<12; i++) {
@@ -189,9 +205,11 @@ function changeNode(cellId) {
 			if (i < ships.length) {
 				e.show();
 				e.attr('src',getShipImagePath(ships[i]));
+				e.attr('title',ships[i]);
 			} else {
 				e.hide();
 				e.attr('src','');
+				e.attr('title','');
 			}
 		}
 		$('#imgEnemyCompForm'+compId).attr('src',getFormationImagePath(comp.formation));
@@ -205,16 +223,39 @@ function changeNode(cellId) {
 	// $('#inpComp1').click();
 	// $('#inpComp1').change();
 	
-	poiLoadData(MAP,cellId);
+	let diff = (+MAP.split('-')[0] >= 20)? 4 : null;
+	poiLoadData(MAP,cellId,diff);
 }
 
 function changeRates() {
 	if (!COMPID) return;
-	let offset = MAPENEMY[CELLID].comp[COMPID].geth + RANKOFFSET[RANK];
+	let offset = MAPENEMY[CELLID].comp[COMPID].geth;
+	if (offset < 0) offset = 100;
+	offset += RANKOFFSET[RANK];
 	let prop = ($('input[name=radGroup]:checked').val() == '1')? 'normal' : 'boss';
 	let ships = SHIPGET[prop].ships.slice(offset,offset+50);
 	let shipRates = {}, shipRatesR = {};
 	let shipCount = 0;
+	
+	let groups = [], mapGroup = {};
+	for (let replace of SHIPGET[prop].replace) {
+		let ids = {};
+		ids[replace.id] = 1;
+		for (let slot of replace.slots) {
+			if (slot < offset || slot >= offset+50) continue;
+			ids[SHIPGET[prop].ships[slot]] = 1;
+		}
+		let group = groups.find(group => Object.keys(ids).find(id => group[id]));
+		if (group) {
+			for (let id in ids) group[id] = 1;
+		} else {
+			if (Object.keys(ids).length > 1) groups.push(ids);
+		}
+	}
+	for (let group of groups) {
+		for (let id in group) mapGroup[id] = group;
+	}
+	
 	for (let i=0; i<50; i++) {
 		let mid = (i < ships.length)? ships[i] : 0;
 		shipRates[mid] = shipRates[mid] + 2 || 2;
@@ -242,6 +283,8 @@ function changeRates() {
 	let mids = Object.keys(shipRates).sort(function(a,b) {
 		if (a == 0) return -1;
 		if (b == 0) return 1;
+		if (GROUPREPLACEMENTS && mapGroup[a] && !mapGroup[b]) return -1;
+		if (GROUPREPLACEMENTS && mapGroup[b] && !mapGroup[a]) return 1;
 		if (SHIPDATA[a].type != SHIPDATA[b].type) return classOrder.indexOf(SHIPDATA[a].type) - classOrder.indexOf(SHIPDATA[b].type);
 		return SHIPDATA[a].nid - SHIPDATA[b].nid;
 	});
@@ -253,6 +296,7 @@ function changeRates() {
 		if (compData.shipC) compShips = compShips.concat(compData.shipC);
 		for (let comp in poiData.counts) {
 			let ids = comp.match(/\d{4}/g);
+			if (!ids) continue;
 			if (ids.length != compShips.length) continue;
 			let found = false;
 			for (let i=0; i<compShips.length; i++) {
@@ -271,14 +315,38 @@ function changeRates() {
 	for (let mid of mids) {
 		let rate = Math.round(shipRates[mid]*100)/100;
 		let rateStr = rate.toString();
+		let shipName = (mid == 0)? '(None)' : getShipName(mid);
+		let htmlImg = '<img src="'+getShipImagePath(mid)+'" />';
 		if (shipRatesR[mid]) {
-			rateStr += '~' + Math.round((rate+shipRatesR[mid])*100)/100;
-			rate = rate + Math.round(shipRatesR[mid]*100)/100/2;
+			if (GROUPREPLACEMENTS) {
+				let group = groups.find(g => g[mid]);
+				if (group) {
+					let rateSum = 0, names = [], imgs = [];
+					for (let id in group) {
+						rateSum += shipRatesR[id]/2 + shipRates[id];
+						names.push(getShipName(id));
+						imgs.push('<img src="'+getShipImagePath(id)+'"/>');
+					}
+					rate = Math.round(rateSum*10000)/10000;
+					rateStr = rate.toString();
+					shipName = names.join('/');
+					htmlImg = imgs.join('<br>');
+					mid = Object.keys(group).join('/');
+					groups.splice(groups.indexOf(group),1);
+				} else {
+					continue;
+				}
+			} else {
+				rateStr += '~' + Math.round((rate+shipRatesR[mid])*100)/100;
+				rate = [rate,rate+Math.round(shipRatesR[mid]*100)/100];
+			}
 		}
 		rateStr += '%';
-		let shipName = (mid == 0)? '(None)' : getShipName(mid);
-		let html = '<tr class="rateData"><td class="rateName">'+shipName+'</td><td><img src="'+getShipImagePath(mid)+'" /></td><td>'+rateStr+'</td>';
-		let rateShipOnly = (mid == 0)? '' : Math.round(10000*rate/(100-(shipRates[0] || 0)))/10000;
+		let html = '<tr class="rateData"><td class="rateName">'+shipName+'</td><td>'+htmlImg+'</td><td>'+rateStr+'</td>';
+		let rateShipOnly; //= (mid == 0 || rate == null)? '' : Math.round(10000*rate/(100-(shipRates[0] || 0)))/10000;
+		if (mid == 0) rateShipOnly = '';
+		else if (Array.isArray(rate)) rateShipOnly = Math.round(10000*rate[0]/(100-(shipRates[0] || 0)))/10000 + '~' + Math.round(10000*rate[1]/(100-(shipRates[0] || 0)))/10000;
+		else rateShipOnly = Math.round(10000*rate/(100-(shipRates[0] || 0)))/10000;
 		html += '<td>'+rateShipOnly+'</td>';
 		let dataRow = [];
 		dataRow.push(mid); dataRow.push(shipName); dataRow.push(rate); dataRow.push(rateShipOnly);
@@ -286,31 +354,37 @@ function changeRates() {
 		if (poiData && poiComp) {
 			let numPoi = 0;
 			if (shipName == '(None)') shipName = '(无)';
-			if (poiData.orig.data[shipName] && poiData.orig.data[shipName].enemy[poiComp]) {
-				numPoi = poiData.orig.data[shipName].enemy[poiComp].count[rankInd];
+			for (let name of shipName.split('/')) {
+				if (poiData.orig.data[name] && poiData.orig.data[name].enemy[poiComp]) {
+					numPoi += poiData.orig.data[name].enemy[poiComp].count[rankInd];
+				}
 			}
 			let numPoiStr = '', ratePoiStr = '', style = '';
 			if (mid != 0) {
 				numPoiStr = numPoi + '/' + poiData.counts[poiComp][rankInd];
 				ratePoiStr = Math.round(numPoi/poiData.counts[poiComp][rankInd]*10000)/10000;
 				if (numPoi > 0) {
-					let cGreen, cRed;
-					if (HLTYPE == 1) {
-						let diff = Math.abs(rateShipOnly-ratePoiStr)/(1/shipCount);
-						if (diff > 1) diff = 1;
-						cGreen = (diff <= .5)? 255 : 255*2*(1-diff);
-						cRed = (diff >= .5)? 255 : 255*2*diff;
-					} else {
-						let sd = SD(rateShipOnly, numPoi, poiData.counts[poiComp][rankInd]);
-						sd = sd/SDZ;
-						let tRed = 3, tYellow = 2;
-						if (sd > tRed) sd = tRed;
-						cGreen = (sd <= tYellow)? 255 : 255*(tRed-sd)/(tRed-tYellow);
-						cRed = (sd >= tYellow)? 255 : 255*(sd)/tYellow;
+					if (!Array.isArray(rate)) {
+						let cGreen, cRed;
+						if (HLTYPE == 1) {
+							let diff = Math.abs(rateShipOnly-ratePoiStr)/(1/shipCount);
+							if (diff > 1) diff = 1;
+							cGreen = (diff <= .5)? 255 : 255*2*(1-diff);
+							cRed = (diff >= .5)? 255 : 255*2*diff;
+						} else {
+							let sd = SD(rateShipOnly, numPoi, poiData.counts[poiComp][rankInd]);
+							sd = sd/SDZ;
+							let tRed = 3, tYellow = 2;
+							if (sd > tRed) sd = tRed;
+							cGreen = (sd <= tYellow)? 255 : 255*(tRed-sd)/(tRed-tYellow);
+							cRed = (sd >= tYellow)? 255 : 255*(sd)/tYellow;
+						}
+						let c = Math.round(cRed)*65536 + Math.round(cGreen)*256;
+						style = 'background-color:#' + c.toString(16).padStart(6,'0');
 					}
-					let c = Math.round(cRed)*65536 + Math.round(cGreen)*256;
-					style = 'background-color:#' + c.toString(16).padStart(6,'0');
-					poiNames.push(shipName);
+					for (let name of shipName.split('/')) {
+						poiNames.push(name);
+					}
 				}
 			} else {
 				numPoiStr = numPoi + '/' + (numPoi + poiData.counts[poiComp][rankInd]);
@@ -337,6 +411,7 @@ function changeRates() {
 			let nums = poiData.orig.data[name].enemy[poiComp].count[rankInd] + '/' + poiData.counts[poiComp][rankInd];
 			let e = $('<tr class="rateData" style="opacity:.5"><td class="rateName">'+name+'</td><td></td><td></td><td></td><td>'+nums+'</td><td>'+rate+'</td></tr>');
 			$('#tabRates').append(e);
+			console.log('add missing ' + name + ' ' + nums + ' ' + rate);
 		}
 	}
 	
@@ -392,22 +467,47 @@ function tableOutlinePool(offset) {
 
 var POIDATA = {};
 var FORMATIONMAP = { '単縦陣':1, '複縦陣':2, '梯形陣':4, '輪形陣':3, '単横陣':5, '警戒陣':6, '第一警戒航行序列':11, '第二警戒航行序列':12, '第三警戒航行序列':13, '第四警戒航行序列':14 };
-function poiLoadData(map,cellId) {
-	let letter = String.fromCharCode(+cellId+64);
+function poiLoadData(map,cellId,diff) {
+	let letter = (!+cellId)? cellId : String.fromCharCode(+cellId+64);
 	let url = 'https://db.kcwiki.org/drop/map/'+map.replace('-','')+'/'+letter+'-SAB.json';
+	if (diff) url = url.replace('/'+letter,'/'+diff+'/'+letter);
 	$('#linkPoi').attr('href',url.replace('.json','.html'));
-	if (POIDATA[map] && POIDATA[map][cellId]) return;
+	if (POIDATA[map] && POIDATA[map][cellId] && (!diff || diff == 4)) return;
 	if (!POIDATA[map]) POIDATA[map] = {};
 	console.log('start get '+map+' '+letter);
 	$('#spanPoiLoad').show();
 	$('#spanHL').hide();
+	$('#spanGroup').hide();
 	$('#linkExport').hide();
 	if (window.location.hostname == 'fourinone41.github.io') url = 'https://cors-anywhere.herokuapp.com/' + url;
 	$.getJSON(url,function(data) {
-		$('#spanPoiLoad').hide();
-		$('#spanHL').show();
-		$('#linkExport').show();
-		let poiData = POIDATA[map][cellId] = { 'orig': data, 'counts': {} };
+		if (!POIDATA[map][cellId]) {
+			POIDATA[map][cellId] = { 'orig': data, 'counts': {} };
+		} else {
+			let poiData = POIDATA[map][cellId];
+			for (let name in data.data) {
+				for (let comp in data.data[name].enemy) {
+					if (!poiData.orig.data[name]) {
+						poiData.orig.data[name] = data.data[name];
+						continue;
+					}
+					if (!poiData.orig.data[name].enemy[comp]) {
+						poiData.orig.data[name].enemy[comp] = data.data[name].enemy[comp];
+						continue;
+					}
+					for (let i=0; i<poiData.orig.data[name].enemy[comp].count.length; i++) {
+						poiData.orig.data[name].enemy[comp].count[i] += data.data[name].enemy[comp].count[i];
+					}
+				}
+			}
+		}
+		if (!diff || diff <= 1) {
+			$('#spanPoiLoad').hide();
+			$('#spanHL').show();
+			$('#spanGroup').show();
+			$('#linkExport').show();
+		}
+		let poiData = POIDATA[map][cellId];
 		for (let name in data.data) {
 			if (name == '(无)') continue;
 			for (let comp in data.data[name].enemy) {
@@ -417,8 +517,12 @@ function poiLoadData(map,cellId) {
 				}
 			}
 		}
-		console.log(poiData);
-		if (COMPID) changeRates();
+		if (diff && diff > 1) {
+			poiLoadData(map,cellId,diff-1);
+		} else {
+			console.log(poiData);
+			if (COMPID) changeRates();
+		}
 	});
 }
 
@@ -435,7 +539,11 @@ function getExportData() {
 }
 
 var NOTES_SPECIAL = {
-	'1-6_normal': 'Note: Nagara (長良) used to drop on slot 11 (?) before 2018-10-26 (end of Saury event).'
+	'1-6_normal': 'Note: Nagara (長良) used to drop on slot 11 (?) before 2018-10-26 (end of Saury event).',
+	'45-2_boss': 'Note: Zara/Pola drop rate was changed 2019-09-04.',
+	'48-1_normal': 'Note: Shimushu, Kunashiri, Etorofu\'s replacements are unclear.',
+	'48-1_boss': 'Note: Shimushu, Kunashiri, Etorofu\'s replacements are unclear but include Jintsuu and Naka.',
+	'48-5_boss': 'Note: Almost no data for B rank, assumed same pattern as other boss nodes from the event.',
 };
 
 // })();
