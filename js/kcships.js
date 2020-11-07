@@ -1115,7 +1115,7 @@ CV.prototype.NBPower = function(target) {
 	return Ship.prototype.NBPower.call(this,target);
 }
 CV.prototype.canNBAirAttack = function() {
-	return (this.equiptypesB[B_NIGHTCREW] || this.hasBuiltInNightCrew) && this.HP/this.maxHP > .5;
+	return (this.equiptypesB[B_NIGHTCREW] || this.hasBuiltInNightCrew) && (this.HP/this.maxHP > .5 || (!isPlayable(this.mid) && this.HP/this.maxHP > .25));
 }
 CV.prototype.rocketBarrageChance = CAV.prototype.rocketBarrageChance;
 

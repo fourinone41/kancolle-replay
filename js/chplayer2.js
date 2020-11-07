@@ -1096,11 +1096,13 @@ function mapPhase(first) {
 	}
 
 	if (curnode.end) {
-		if (curnode.dropoff) {
+		if (curnode.dropoff || curnode.type == 3) {
 			if (curnode.debuffGive) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
 			}
+		}
+		if (curnode.dropoff) {
 			if (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == curletter) {
 				var transportCalc = MAPDATA[WORLD].maps[MAPNUM].transportCalc || MAPDATA[WORLD].transportCalc;
 				CHDATA.event.maps[MAPNUM].hp -= transportCalc(chGetShips(true),'S');
@@ -2883,7 +2885,7 @@ function mapEnemyRaid() {
 	addTimeout(function() { ecomplete = true; }, 3500);
 }
 
-function doSimEnemyRaid(numLB,compd) {
+function doSimEnemyRaid(numLB,compd,forceHA) {
 	var CHAPI = {battles:[],fleetnum:1,support1:3,support2:4,source:2,world:WORLD,mapnum:MAPNUM};
 	var BAPI = {data:{},yasen:{},mvp:[],rating:'',node:'AB'};
 	
@@ -2907,6 +2909,7 @@ function doSimEnemyRaid(numLB,compd) {
 	}
 	fleetE.loadShips(shipsE);
 	fleetE.formation = ALLFORMATIONS[compd.f];
+	if (forceHA) fleetE.highAltitude = true;
 	
 	simLBRaid(fleetLB,fleetE,BAPI);
 	
@@ -2955,7 +2958,7 @@ function prepEnemyRaid() {
 	var enemyRaid = MAPDATA[WORLD].maps[MAPNUM].enemyRaid;
 	let lastdance = (WORLD == 20)? CHDATA.event.maps[31].hp == 1 : chGetLastDance();
 	var enemies = getEnemyComp(enemyRaid.compName,enemyRaid,CHDATA.event.maps[MAPNUM].diff,lastdance);
-	var CHAPI = doSimEnemyRaid(numLB,enemies);
+	var CHAPI = doSimEnemyRaid(numLB,enemies,enemyRaid.highAltitude[CHDATA.event.maps[MAPNUM].diff]);
 	
 	stage = STAGEBATTLE;
 	stage.addChild(bg);

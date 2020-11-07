@@ -639,7 +639,7 @@ var MAPDATA45 = {
 					if (CHDATA.event.maps[2].routes.indexOf(1) != -1) {
 						if (CHDATA.fleets.combined == 2) return 'Start2';
 						if (CHDATA.fleets.combined == 3) {
-							if (ships.AV + ships.AO + ships.AR + ships.AS + ships.escort.AV + ships.escort.AO + ships.escort.AR + ships.escort.AS) return 'Start2';
+							if (ships.c.AV + ships.c.AO + ships.c.AR + ships.c.AS) return 'Start2';
 						}
 					}
 					return 'Start1';
@@ -716,7 +716,7 @@ var MAPDATA45 = {
 						},
 						routeC: function(ships) {
 							if (CHDATA.fleets.combined == 3) return 'G';
-							if (ships.speed >= 10 && ships.aCV + ships.escort.aCV <= 1 && ships.aBB + ships.escort.aBB + ships.aCV + ships.escort.aCV <= 2) return 'G';
+							if (ships.speed >= 10 && ships.c.aCV <= 1 && ships.c.aBB + ships.c.aCV <= 2) return 'G';
 							return 'F';
 						}
 					},
@@ -782,8 +782,8 @@ var MAPDATA45 = {
 							4: {'Casual 1':30,'Casual 2':35,'Casual 3':35},
 						},
 						routeC: function(ships) {
-							if (ships.aCV + ships.escort.aCV <= 0) return 'K';
-							if (ships.aCV + ships.escort.aCV <= 1 && ships.aBB + ships.escort.aBB <= 0) return 'K';
+							if (ships.c.aCV <= 0) return 'K';
+							if (ships.c.aCV <= 1 && ships.c.aBB <= 0) return 'K';
 							return 'I';
 						}
 					},
@@ -834,8 +834,8 @@ var MAPDATA45 = {
 						},
 						routeC: function(ships) {
 							this.showLoSPlane = 'G';
-							let num = ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB + ships.LHA + ships.escort.LHA;
-							if (num <= 4 && ships.aCV + ships.escort.aCV <= 2 && ships.speed >= 10) this.showLoSPlane = 'K';
+							let num = ships.c.aCV + ships.c.aBB + ships.c.LHA;
+							if (num <= 4 && ships.c.aCV <= 2 && ships.speed >= 10) this.showLoSPlane = 'K';
 							return checkELoS33(getELoS33(1,1)+getELoS33(2,1),{ 30: this.showLoSPlane, 25: 'L' });
 						}
 					},
@@ -947,9 +947,9 @@ var MAPDATA45 = {
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':40},
 						},
 						routeC: function(ships) {
-							if (ships.SS + ships.SSV + ships.escort.SS + ships.escort.SSV) return 'R';
-							let num = ships.aBB + ships.escort.aBB + ships.aCV + ships.escort.aCV;
-							if (num + ships.LHA + ships.escort.LHA <= 3 && num + ships.CA + ships.CAV + ships.escort.CA + ships.escort.CAV <= 6) return 'P';
+							if (ships.c.SS + ships.c.SSV) return 'R';
+							let num = ships.c.aBB + ships.c.aCV;
+							if (num + ships.c.LHA <= 3 && num + ships.c.CA + ships.c.CAV <= 6) return 'P';
 							return 'R';
 						}
 					},
@@ -994,7 +994,7 @@ var MAPDATA45 = {
 							4: ['Casual 2'],
 						},
 						routeC: function(ships) {
-							let ids = ships.ids.concat(ships.escort.ids);
+							let ids = ships.c.ids;
 							if (isShipInList(ids,187) || isShipInList(ids,450)) return 'S';
 							return 'V';
 						}
@@ -1048,8 +1048,8 @@ var MAPDATA45 = {
 						},
 						routeC: function(ships) {
 							this.showLoSPlane = null;
-							let num = ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB;
-							if (ships.speed >= 10 && num <= 4 && num + ships.CA + ships.CAV + ships.escort.CA + ships.escort.CAV <= 7) return 'V';
+							let num = ships.c.aCV + ships.c.aBB;
+							if (ships.speed >= 10 && num <= 4 && num + ships.c.CA + ships.c.CAV <= 7) return 'V';
 							this.showLoSPlane = 'Q';
 							return checkELoS33(getELoS33(1,1)+getELoS33(1,2),{ 35: 'Q', 24: 'U' });
 						}
@@ -1279,8 +1279,8 @@ var MAPDATA45 = {
 						},
 						routeC: function(ships) {
 							if (!CHDATA.fleets.combined || CHDATA.fleets.combined == 3) return 'B';
-							if (ships.aCV + ships.escort.aCV >= 3) return 'C';
-							if (ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB >= 5) return 'C';
+							if (ships.c.aCV >= 3) return 'C';
+							if (ships.c.aCV + ships.c.aBB >= 5) return 'C';
 							return 'F';
 						}
 					},
@@ -1396,8 +1396,8 @@ var MAPDATA45 = {
 						routeC: function(ships) {
 							if (!CHDATA.fleets.combined || CHDATA.fleets.combined == 3) return 'I';
 							if (ships.speed <= 5) return 'G';
-							if (ships.aCV + ships.escort.aCV) return 'G';
-							if (ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB >= 4) return 'G';
+							if (ships.c.aCV) return 'G';
+							if (ships.c.aCV + ships.c.aBB >= 4) return 'G';
 							return 'I';
 						}
 					},
@@ -1420,14 +1420,14 @@ var MAPDATA45 = {
 							4: {'Casual 1':35,'Casual 2':40,'Casual 3':25},
 						},
 						routeC: function(ships) {
-							let num = ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB;
+							let num = ships.c.aCV + ships.c.aBB;
 							if (CHDATA.event.maps[3].routes.indexOf(1) != -1) {
 								if (ships.CV > 2) return 'H';
 								if (num > 5) return 'H';
 								if (ships.speed <= 5 && num > 4) return 'H';
 								return 'M';
 							} else {
-								if (ships.aBB + ships.escort.aBB + ships.CV > 2) return 'H';
+								if (ships.c.aBB + ships.c.CV > 2) return 'H';
 								if (ships.speed <= 5 && num > 3) return 'H';
 								return 'I';
 							}
@@ -1556,22 +1556,22 @@ var MAPDATA45 = {
 							if (rank == 'S' || rank == 'A') debuff.KA = 1;
 						},
 						routeC: function(ships) {
-							let num = ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB;
-							let ids = ships.ids.concat(ships.escort.ids);
-							if (ships.aBB + ships.escort.aBB <= 2 && num + ships.LHA + ships.escort.LHA <= 4) {
+							let num = ships.c.aCV + ships.c.aBB;
+							let ids = ships.c.ids;
+							if (ships.c.aBB <= 2 && num + ships.c.LHA <= 4) {
 								this.showLoSPlane = 'R';
-							} else if (ships.SS + ships.SSV + ships.escort.SS + ships.escort.SSV) {
+							} else if (ships.c.SS + ships.c.SSV) {
 								this.showLoSPlane = 'P';
-							} else if (ships.DD + ships.escort.DD < 2) {
+							} else if (ships.c.DD < 2) {
 								this.showLoSPlane = 'P';
 							} else if (isShipInList(ids,187) || isShipInList(ids,450)) {
-								let numQ = num + ships.LHA + ships.escort.LHA + ships.AO + ships.escort.AO + ships.CA + ships.escort.CA + ships.CAV + ships.escort.CAV + ships.CL + ships.escort.CL + ships.CLT + ships.escort.CLT;
+								let numQ = num + ships.c.LHA + ships.c.AO + ships.c.CA + ships.c.CAV + ships.c.CL + ships.c.CLT;
 								this.showLoSPlane = (numQ <= 8)? 'R' : 'P';
 							} else if (num > 5) {
 								this.showLoSPlane = 'P';
 							} else if (ships.speed <= 5 && num > 4) {
 								this.showLoSPlane = 'P';
-							} else if (CHDATA.event.maps[3].diff != 4 && ships.aBB + ships.escort.aBB > 2) {
+							} else if (CHDATA.event.maps[3].diff != 4 && ships.c.aBB > 2) {
 								this.showLoSPlane = 'P';
 							} else {
 								this.showLoSPlane = 'R';
@@ -1589,7 +1589,7 @@ var MAPDATA45 = {
 						distance: 5,
 						hidden: 1,
 						routeC: function(ships) {
-							let ids = ships.ids.concat(ships.escort.ids);
+							let ids = ships.c.ids;
 							if (isShipInList(ids,187) || isShipInList(ids,450)) return 'Q';
 							return 'K';
 						}
@@ -1619,9 +1619,9 @@ var MAPDATA45 = {
 							this.showNoCompass = true;
 							if (CHDATA.event.maps[3].routes.indexOf(2) != -1) {
 								this.showNoCompass = false;
-								let num = ships.SS + ships.escort.SS + ships.SSV + ships.escort.SSV;
+								let num = ships.c.SS + ships.c.SSV;
 								if (num >= 6) return 'T';
-								if (ships.AS + ships.escort.AS && num >= 3) return 'T';
+								if (ships.c.AS && num >= 3) return 'T';
 							}
 							return 'O';
 						}
@@ -1682,8 +1682,8 @@ var MAPDATA45 = {
 							if (CHDATA.event.maps[3].routes.indexOf(3) != -1) {
 								this.showNoCompass = false;
 								if (ships.speed >= 15) return 'P';
-								if (ships.aCV + ships.escort.aCV + ships.aBB + ships.escort.aBB > 5) return 'K';
-								if (ships.aBB + ships.escort.aBB + ships.CA + ships.CAV + ships.escort.CA + ships.escort.CAV + ships.CLT + ships.escort.CLT + ships.AV + ships.escort.AV > 6) return 'K';
+								if (ships.c.aCV + ships.c.aBB > 5) return 'K';
+								if (ships.c.aBB + ships.c.CA + ships.c.CAV + ships.c.CLT + ships.c.AV > 6) return 'K';
 								return 'P';
 							}
 							return 'K';
