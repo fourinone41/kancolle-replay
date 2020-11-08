@@ -5434,11 +5434,13 @@ MAPDATA[48] =
 						friendFleetSX: ['E7Y-5','E7Y-8','E7Y-9','E7Y-11','E7Y-12','E7Y-8','E7Y-9','E7Y-11','E7Y-12','E7Y-12'],
 						setupSpecial: function() {
 							let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
+							let shipsFF = [];
 							if (CHDATA.sortie.fleetFriend) {
 								ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
+								shipsFF = CHDATA.sortie.fleetFriend.ships;
 								MAPDATA[48].maps[7].applyBonus(CHDATA.sortie.fleetFriend.ships);
 							}
-							let s = CHDATA.sortie.R ? CHDATA.sortie.fleetFriend.ships : ships;
+							let s = CHDATA.sortie.R ? shipsFF : ships;
 							for (let ship of s) {
 								let mid = getBaseId(ship.mid);
 								if ([17,19,22,62,66,67,68,78,79,92,135,458,459].indexOf(mid) != -1) {
