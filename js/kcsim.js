@@ -1196,7 +1196,7 @@ function airstrike(ship,target,slot,contactMod,issupport) {
 	if (!contactMod) contactMod = 1;
 	var acc = (issupport)? .85 : .95;
 	if (target.isPT && !NERFPTIMPS) acc *= .5;
-	var res = rollHit(accuracyAndCrit(ship,target,acc,target.getFormation().AAmod,0,.2,!issupport),!issupport && ship.critdmgbonus);
+	var res = rollHit(accuracyAndCrit(ship,target,acc,target.getFormation().AAmod,0,.2,!issupport && 2),!issupport && ship.critdmgbonus);
 	var equip = ship.equips[slot];
 	var dmg = 0, realdmg = 0;
 	var planebase = (equip.isdivebomber)? equip.DIVEBOMB : (target.isInstall)? 0 : equip.TP + .2*(equip.level || 0);
@@ -1269,6 +1269,15 @@ function accuracyAndCrit(ship,target,hit,evMod,evFlat,critMod,isPlanes,critBonus
 	dodge*=.01;
 	if (target.fuelleft < 7.5) dodge -= (7.5-target.fuelleft)/10;
 	if (evFlat) dodge += evFlat*.01;
+	
+	if (ship.bonusSpecialAcc && isPlanes != 2) {
+		for (var i=0; i<ship.bonusSpecialAcc.length; i++) {
+			if (ship.bonusSpecialAcc[i].type == 2) continue;
+			if (!ship.bonusSpecialAcc[i].on || ship.bonusSpecialAcc[i].on.indexOf(target.mid) != -1) {
+				hit *= ship.bonusSpecialAcc[i].mod;
+			}
+		}
+	}
 	
 	if (C) console.log('	hit: '+hit+' dodge: '+dodge);
 	acc = Math.max(hit-dodge,.1);
@@ -2784,7 +2793,7 @@ function simLBRaid(F1,F2,BAPI) {
 	}
 	
 	var ap1 = 0; for (let ship of ships1) if (ship.lbas) ap1 += ship.lbas.airPowerDefend();
-	if (F2.ships.find(ship => ship.equips.find(eq => eq.highAltitude))) {
+	if (F2.ships.find(ship => ship.equips.find(eq => eq.highAltitude)) || F2.highAltitude) {
 		let numRocket = 0;
 		for (let ship of ships1) {
 			if (ship.lbas) numRocket += ship.lbas.equips.filter(eq => eq.isRocket).length;

@@ -26182,7 +26182,8 @@ var MAPDATA = {
 						boss: true,
 						friendFleet: ['E2-1','E2-2','E2-3','E2-4'],
 						setupSpecial: function() {
-							let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
+							let ships = FLEETS1[0].ships;
+							if (CHDATA.fleets.combined) ships = ships.concat(FLEETS1[1].ships);
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend);
 							for (let ship of ships) {
 								let midBase = getBaseId(ship.mid), bonus = 0;
@@ -30104,6 +30105,7 @@ function getMapHP(worldnum,mapnum,diff,part) {
 	return mdata.maphp[diff][hqtier];
 }
 function isShipInList(ships,basemid) {
+	if (!ships) return false;
 	var ship = SHIPDATA[basemid];
 	var done = [];
 	while(ship) {

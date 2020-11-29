@@ -347,10 +347,11 @@ function chAddReward(data,forceNew) {
 	}
 	if (data.items) {
 		for (var i=0; i<data.items.length; i++) {
+			var mid = typeof data.items[i] === 'object' ? data.items[i].id : data.items[i];
 			if (!forceNew) {
 				let gearExisting = null;
 				for (let eqid in CHDATA.gears) {
-					if (CHDATA.gears[eqid].disabled && CHDATA.gears[eqid].masterId == data.items[i]) {
+					if (CHDATA.gears[eqid].disabled && CHDATA.gears[eqid].masterId == mid) {
 						gearExisting = CHDATA.gears[eqid];
 						break;
 					}
@@ -360,7 +361,6 @@ function chAddReward(data,forceNew) {
 					continue;
 				}
 			}
-			var mid = data.items[i];
 			if (!EQDATA[mid]) continue;
 			for (var j=0; j<100; j++) {
 				var eqid = 'x'+(90000+j);
@@ -393,6 +393,8 @@ function chShowReward(data,tracker) {
 		} else {
 			let imageSpecial = {
 				56: 'assets/maps/22/Shinden_Kai_056_Card.png',
+				143: 'assets/maps/48/i143.png',
+				144: 'assets/maps/48/i144.png',
 				175: 'assets/maps/36/Raiden_175_Card.png',
 				176: 'assets/maps/36/Type_3_Fighter_Hien_176_Card.png',
 				185: 'assets/maps/36/Type_3_Fighter_Hien_Model_1D_185_Card.png',
@@ -411,15 +413,15 @@ function chShowReward(data,tracker) {
 				351: 'assets/maps/45/i351.png',
 				355: 'assets/maps/45/i355.png',
 			};
-			var ind = tracker-numShips;
-			if (imageSpecial[data.items[ind]]) {
+			var ind = tracker-numShips, id = typeof data.items[ind] === 'object' ? data.items[ind].id : data.items[ind];
+			if (imageSpecial[id]) {
 				$('#rewardship').css('margin-top','70px');
-				$('#rewardship').attr('src',imageSpecial[data.items[ind]]);
+				$('#rewardship').attr('src',imageSpecial[id]);
 			} else if (data.items[ind] == 'apology') {
 				$('#rewardship').css('margin-top','40px');
 				$('#rewardship').attr('src','assets/maps/Apology_scroll.png');
 			} else {
-				$('#rewardship').attr('src','assets/items/'+EQTDATA[EQDATA[data.items[ind]].type].image+'.png');
+				$('#rewardship').attr('src','assets/items/'+EQTDATA[EQDATA[id].type].image+'.png');
 			}
 		}
 		$('#rewardship').css('animation','appear 1s linear 1');
