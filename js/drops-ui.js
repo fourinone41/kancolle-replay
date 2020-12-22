@@ -245,9 +245,13 @@ function changeRates() {
 			if (slot < offset || slot >= offset+50) continue;
 			ids[SHIPGET[prop].ships[slot]] = 1;
 		}
-		let group = groups.find(group => Object.keys(ids).find(id => group[id]));
-		if (group) {
-			for (let id in ids) group[id] = 1;
+		let gs = groups.filter(g => Object.keys(ids).find(id => g[id]));
+		if (gs.length) {
+			for (let id in ids) gs[0][id] = 1;
+			for (let i=1; i<gs.length; i++) {
+				for (let id in gs[i]) gs[0][id] = 1;
+				groups.splice(groups.indexOf(gs[1]),1);
+			}
 		} else {
 			if (Object.keys(ids).length > 1) groups.push(ids);
 		}
