@@ -2958,7 +2958,8 @@ function prepEnemyRaid() {
 	var enemyRaid = MAPDATA[WORLD].maps[MAPNUM].enemyRaid;
 	let lastdance = (WORLD == 20)? CHDATA.event.maps[31].hp == 1 : chGetLastDance();
 	var enemies = getEnemyComp(enemyRaid.compName,enemyRaid,CHDATA.event.maps[MAPNUM].diff,lastdance);
-	var CHAPI = doSimEnemyRaid(numLB,enemies,enemyRaid.highAltitude[CHDATA.event.maps[MAPNUM].diff]);
+	let highAltitude = enemyRaid.highAltitude ? enemyRaid.highAltitude[CHDATA.event.maps[MAPNUM].diff] : false;
+	var CHAPI = doSimEnemyRaid(numLB,enemies,highAltitude);
 	
 	stage = STAGEBATTLE;
 	stage.addChild(bg);
