@@ -1,6 +1,7 @@
 function InitUI() {
 	if (!CHDATA.event) return;
 	randomizeMaps();
+	chLoadRandomFile();
 
 	chInitAbyssalTables();
 
@@ -1510,119 +1511,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		compd = ENEMYCOMPS['World '+MAPDATA[WORLD].maps[MAPNUM].world][MAPDATA[WORLD].maps[MAPNUM].name][n][comp];
 	} else {
 		let n = (mapdata.compName)? mapdata.compName : letter;
-
-		var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode : [MAPDATA[WORLD].maps[MAPNUM].bossnode];
-		var letterboss = bossnum.map((x) => (typeof x == 'string')? x : String.fromCharCode(64+x));
-		let isBoss = letterboss.indexOf(n) != -1;
-		let hasRealBoss = false;
-
-		var compd = Object.assign({}, ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp]);
-		var compMain = [];
-
-		for(ship in compd.c){
-			var ship_id = compd.c[ship];
-
-			var ennemies = abyssals;
-			var ennemiesBoss = boss;
-
-			let ship_data = SHIPDATA[ship_id.toString()];
-			console.log(ship_data)
-
-			if(ship_data.type === 'SS') {
-				ennemies = submarines;
-				ennemiesBoss = submarinesBoss;
-			}
-
-			if(ship_data.type === 'Installation' || ship_data.installtype) {
-				ennemies = installation;
-				ennemiesBoss = installationBoss;
-			}
-
-			if(bossIds.indexOf(ship_id) !== -1) {
-				var obj_keys = Object.keys(ennemiesBoss);
-				var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
-				hasRealBoss = true;
-
-				compMain.push(parseInt(shipID));
-			} else {
-				var obj_keys = Object.keys(ennemies);
-				var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
-
-				compMain.push(parseInt(shipID));
-			}
-		}
-
-		compd.c = compMain;
-
-		if (isBoss && !hasRealBoss) {
-			// if boss but no "boss ship" => order by hp
-			compd.c = compd.c.sort((a, b) => {
-				return SHIPDATA[b].HP - SHIPDATA[a].HP;
-			});
-		}
-
-		var formations = [1,2,3,4];
-		var formationsSubs = [5,4];
-		compd.f = formations[Math.floor(Math.random()*formations.length)];
-
-		if(MAPDATA[WORLD].maps[MAPNUM].nodes[letter] && MAPDATA[WORLD].maps[MAPNUM].nodes[letter].subonly) compd.f = formationsSubs[Math.floor(Math.random()*formationsSubs.length)];
-
-		var shouldBeCombined = compd.ce ? true : false;
-
-		if(shouldBeCombined){
-			compEscort = [];
-
-			let ennemiesEscort = escortAbyssals;
-			let bossEscort = escortAbyssalsBoss;
-
-			for(ship in compd.ce){
-				var ship_id = compd.ce[ship];
-	
-				if(Object.keys(bossEscort).indexOf(ship_id.toString()) !== -1){
-					var obj_keys = Object.keys(bossEscort);
-					var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
-	
-					compEscort.push(parseInt(shipID));
-				}else{
-					var obj_keys = Object.keys(ennemiesEscort);
-					var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
-	
-					compEscort.push(parseInt(shipID));
-				}
-			}
-
-			compd.ce = compEscort;
-
-			var formationsC = [113, 114, 114, 114, 213, 214, 214, 214];
-
-			compd.f = formationsC[Math.floor(Math.random()*formationsC.length)];
-		}
-
-		/*if(MAPDATA[WORLD].maps[MAPNUM].nodes[letter].raid) {
-			compd.air = true;
-		}*/
-
-		//var isCombinedFleet = (Math.random()) < 0.25;
-
-		/*var escortNumb = 6;
-		if(isCombinedFleet) escortNumb = 2;
-		if(isBoss) escortNumb = 4;
-
-		if(shouldBeCombined){
-			compEscort = []
-			for(let i = 0; i < escortNumb; i++){
-				var obj_keys = Object.keys(ennemies);
-				var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
-	
-				compEscort.push(parseInt(shipID));
-			}
-
-			compd.ce = compEscort;
-
-			var formationsC = [114, 214];
-
-			compd.f = formationsC[Math.floor(Math.random()*formationsC.length)];
-		}*/
+		compd = CHDATA.event.comps['E-'+MAPNUM][n][comp];
 	}
 	return compd;
 }
@@ -1682,6 +1571,11 @@ function prepBattle(letter) {
 	
 	if (mapdata.setupSpecial) {
 		mapdata.setupSpecial(); //not reverted until sortie end
+	}
+
+	if (mapdata.boss) {
+		// --- Randomizer code
+		chrApplySpecial();
 	}
 	
 	if (mapdata.debuffAmount) {
@@ -3084,7 +2978,7 @@ function prepEnemyRaid() {
 	var enemyRaid = MAPDATA[WORLD].maps[MAPNUM].enemyRaid;
 	let lastdance = (WORLD == 20)? CHDATA.event.maps[31].hp == 1 : chGetLastDance();
 	var enemies = getEnemyComp(enemyRaid.compName,enemyRaid,CHDATA.event.maps[MAPNUM].diff,lastdance);
-	var CHAPI = doSimEnemyRaid(numLB,enemies,enemyRaid.highAltitude[CHDATA.event.maps[MAPNUM].diff]);
+	var CHAPI = doSimEnemyRaid(numLB,enemies, enemyRaid.highAltitude ? enemyRaid.highAltitude[CHDATA.event.maps[MAPNUM].diff] : 0); 
 	
 	stage = STAGEBATTLE;
 	stage.addChild(bg);

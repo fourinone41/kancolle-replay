@@ -25262,13 +25262,7 @@ var MAPDATA = {
 						friendFleet: ['desdiv31D','desdiv31E','desdiv31G','europefleet5','europefleet10','europefleet11','europefleet12','europefleet13'],
 						setupSpecial: function() {
 							let debuffed = MAPDATA[42].maps[5].debuffCheck(CHDATA.event.maps[5].debuff);
-							
-							let euWaterHimeId = FLEETS2[0].ships[0].mid;
-							if ([1843,1844,1845].indexOf(euWaterHimeId) !== -1){
-								SHIPDATA[euWaterHimeId].image = debuffed ? SHIPDATA[euWaterHimeId].imageBroken : SHIPDATA[euWaterHimeId].imageBase;
-								VOICES[euWaterHimeId].damage = debuffed ? VOICES[euWaterHimeId].armorBrokenDamage : VOICES[euWaterHimeId].normalDamage;	
-							}
-							
+														
 							let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
 
@@ -30154,7 +30148,7 @@ function transportCalcStandard(ships,rank) {
 			if (eqd.type == LANDINGTANK) tp += 2;
 		}
 	}
-	tp = Math.floor(tp);
+	tp = Math.floor(tp) * 10;
 	if (rank == 'A') tp *= 0.7;
 	if (rank != 'S' && rank != 'A') return 0;
 	return Math.floor(tp);

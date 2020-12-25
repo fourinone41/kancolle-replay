@@ -1296,7 +1296,10 @@ function accuracyAndCrit(ship,target,hit,evMod,evFlat,critMod,isPlanes,critBonus
 
 function rollHit(accCrit,critdmgbonus) {
 	var r = Math.floor(Math.random()*100)/100;
-	if (r <= accCrit[1]) return CRITMOD * ((critdmgbonus)? critdmgbonus : 1);
+	if (r <= accCrit[1]) {
+		console.log("	Crit");
+		return CRITMOD * ((critdmgbonus)? critdmgbonus : 1);
+	}
 	if (r <= accCrit[0]) return 1; //normal hit
 	return 0;  //miss
 }

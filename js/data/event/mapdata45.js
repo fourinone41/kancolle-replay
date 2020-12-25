@@ -1761,17 +1761,7 @@ var MAPDATA45 = {
 						boss: true,
 						friendFleet: ['E3-4','E3-2','E3-3','E3-5','E3-6','E3-7'],
 						friendFleetS: ['E3-10','E3-11','E3-12','E3-13','E3-14'],
-						setupSpecial: function() {
-							let idBoss = FLEETS2[0].ships[0].mid;
-
-							if (CHDATA.event.maps[3].debuffed) {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBroken ? SHIPDATA[idBoss].imageBroken : SHIPDATA[idBoss].image;
-								VOICES[idBoss].damage = [1815,1816,1817,1818,1819,1820].includes(idBoss) ? 'assets/voice/453188630.mp3' : VOICES[idBoss].damage;
-							} else {
-								SHIPDATA[idBoss].image = SHIPDATA[idBoss].imageBase ? SHIPDATA[idBoss].imageBase : SHIPDATA[idBoss].image;
-								VOICES[idBoss].damage = [1815,1816,1817,1818,1819,1820].includes(idBoss) ? 'assets/voice/453188631.mp3' : VOICES[idBoss].damage;
-							}
-							
+						setupSpecial: function() {							
 							let ships = FLEETS1[0].ships;
 							if (FLEETS1[1]) ships = ships.concat(FLEETS1[1].ships);
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships); 
@@ -1793,10 +1783,6 @@ var MAPDATA45 = {
 								if (shortcut) {
 									if (!ship.bonusSpecial) ship.bonusSpecial = [];
 									ship.bonusSpecial.push({mod:1.07});
-								}
-								if (CHDATA.event.maps[3].debuffed) {
-									if (!ship.bonusSpecial) ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.15,on:[1815,1816,1817,1818,1819,1820,1815,1816,1817,1818,1819,1820]});
 								}
 							}
 						},

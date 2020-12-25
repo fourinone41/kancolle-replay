@@ -2081,8 +2081,10 @@ function chLoadSortieInfo(mapnum) {
 		if (MAPDATA[world].worldMap) showWorldMap();
 		return;
 	}
-	var title = mapdata.name;
 	let unlocked = mapnum <= CHDATA.event.unlocked;
+	var title = (unlocked) ? chHelpLink() : '';
+	title += mapdata.name;
+
 	if (CHDATA.event.unlockedS) {
 		unlocked = CHDATA.event.unlockedS.indexOf(mapnum) != -1;
 	}
@@ -2189,7 +2191,7 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtDiffMed').hide();
 			$('#srtDiffEasy').hide();
 			$('#srtDiffCasual').hide();
-			$('#srtDiffReroll').hide();
+			$('#srtDiffReroll').show();
 			$('#srtDiffBack').hide();
 			if (nowhp) $('#srtDiffChange').show();
 			else $('#srtDiffChange').hide();

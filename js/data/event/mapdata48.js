@@ -4194,14 +4194,7 @@ MAPDATA[48] =
 									if (!ship.bonusSpecial) ship.bonusSpecial = ship.bonusSpecialAcc = [];
 									bonus.push({mod:1.25,type:2});
 								}
-								if (debuffed) {
-									bonus.push({mod:1.1,on:[1968,1969,1970]});
-								}
 								ship.bonusSpecialAcc = ship.bonusSpecial = bonus;
-							}
-							for (let mid = 1968; mid <= 1970; mid++) {
-								VOICES[mid].attack = debuffed ? VOICES[mid].attackB : VOICES[mid].attackN;
-								VOICES[mid].damage = debuffed ? VOICES[mid].damageB : VOICES[mid].damageN;
 							}
 						},
 						compDiff: {
@@ -5534,13 +5527,6 @@ MAPDATA[48] =
 								if (ship.equips.find(eq => eq.type == APSHELL)) {
 									ship.bonusSpecial.push({mod:1.17,type:2});
 								}
-								if (debuffed) {
-									ship.bonusSpecial.push({mod:1.1,type:2,on:[1974,1975,1976]});
-								}
-							}
-							for (let mid = 1974; mid <= 1976; mid++) {
-								VOICES[mid].attack = debuffed ? VOICES[mid].attackB : VOICES[mid].attackN;
-								VOICES[mid].damage = debuffed ? VOICES[mid].damageB : VOICES[mid].damageN;
 							}
 						},
 						compDiff: {
