@@ -752,7 +752,9 @@ MAPDATA[46] =
 							4: {'Casual 1':55,'Casual 2':45},
 						},
 						debuffGive: function() {
-							CHDATA.event.maps[2].debuff.A = CHDATA.event.maps[2].debuff.A + 1 || 1;
+							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') {
+								CHDATA.event.maps[2].debuff.A = CHDATA.event.maps[2].debuff.A + 1 || 1;
+							}
 						},
 						end: true
 					},
