@@ -1612,7 +1612,7 @@ function prepBattle(letter) {
 			var obj = {equip:[],kyouka:[]};
 			obj.mst_id = ship.mid;
 			var repairs = (ship.repairs)? ship.repairs.slice() : null;
-			for (var k=0; k<5; k++) {
+			for (var k=0; k<Math.max(5,ship.equips.length); k++) {
 				if (ship.equips[k]) {
 					//don't load repair into replay if used (but keep on simship because it breaks things if remove)
 					//this is still bugged, if both team and goddess are equipped, because replayer doesn't know which to use first, need to figure out
