@@ -55,44 +55,11 @@ function getRandomBannerAlt(){
     return bannersAlt[Math.floor(Math.random()*bannersAlt.length)];
 }
 
-function randomizeMap(MAPNUM) {
-    let possible_maps = [];
-    for(event_id in MAPDATA){
-        if(event_id !== "99"){
-            if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
-                let map = {};
-
-                map.world = event_id;
-                possible_maps.push(map);
-            }
-        }
-    }
-
-    CHDATA.maps[MAPNUM] = possible_maps[Math.floor(Math.random()*possible_maps.length)];
-    chLoadSortieInfo(MAPNUM);
 }
-
 function randomizeMaps(){   
     if(CHDATA.maps === undefined) {
         // randomize
-        var maps = {};
-        for(var i = 1; i < 8; i++){
-            let possible_maps = [];
-            for(event_id in MAPDATA){
-                if(event_id !== "99"){
-                    if(MAPDATA[event_id].maps[i] !== undefined){
-                        let map = {};
-
-                        map.world = event_id;
-                        //if(map.world != 47 && i == 1) continue;
-                        possible_maps.push(map);
-                    }
-                }
-            }
-            maps[i] = possible_maps[Math.floor(Math.random()*possible_maps.length)];
-        }
-        CHDATA.maps = maps;
-        return maps;
+        CHDATA.maps = chRandomizeMaps();
     } else {
         if(Array.isArray(CHDATA.maps)) {
             var newObjMap = {};
@@ -103,8 +70,32 @@ function randomizeMaps(){
             }
             CHDATA.maps = newObjMap;
         }
-        return CHDATA.maps;
     }
+    return CHDATA.maps;
+}
+
+function chRandomizeMap(MAPNUM) {
+    let possible_maps = [];
+    for(event_id in MAPDATA){
+        if(event_id !== "99"){
+            if(MAPDATA[event_id].maps[MAPNUM] !== undefined && !tested[event_id][MAPNUM-1]){
+                let map = {};
+
+                map.world = event_id;
+                possible_maps.push(map);
+            }
+        }
+    }
+
+    return possible_maps[Math.floor(Math.random()*possible_maps.length)];
+}
+
+function chRandomizeMaps() {
+        var maps = {};
+        for(var i = 1; i < 8; i++){
+        maps[i] = chRandomizeMap(i);
+                    }
+        return maps;
 }
 
 function chLoadRandomFile() {
@@ -123,6 +114,19 @@ function chRemoveLocks() {
     for (let ship in CHDATA.ships) {
         if (CHDATA.ships[ship].lock) delete CHDATA.ships[ship].lock;
     }
+    InitUI();
+}
+
+// --- Debug only
+function chRerollMap() {
+    CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
+    
+	chSortieStartChangeDiff();
+	CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
+    chLoadSortieInfo(MAPNUM);
+
+    chRerollComps();
+
     InitUI();
 }
 
@@ -158,9 +162,15 @@ function chRandomizeComps() {
 function chHelpLink() {
     let eventName = MAPDATA[WORLD].name.replace(' ', '_');
     
-    return `${MAPDATA[WORLD].name} 
-    <a href="https://en.kancollewiki.net/${eventName}_Event#E${MAPNUM}" target="_blank">(EnWiki)</a> 
-    <a href="https://kancolle.fandom.com/wiki/${eventName}_Event#E${MAPNUM}" target="_blank">(Wikia)</a>`;
+    if (WORLD > 47) {
+        eventName = 'Summer_2020_';
+        let suffixe = (MAPNUM < 5 ? '/Main_Operations' : '/Extra_Operations') + `#E${MAPNUM}`;
+
+        return `<a href="https://en.kancollewiki.net/${eventName}_Event${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;
+    }
+
+    let suffixe = `#/E-${MAPNUM}`;
+    return `<a href="https://kancolle.fandom.com/wiki/${eventName}_Event${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;
 }
 
 // --- debug
@@ -184,7 +194,7 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
         var ennemiesBoss = boss;
 
         let ship_data = SHIPDATA[ship_id.toString()];
-        //console.log(ship_data)
+        //console.log(compData)
 
         if(ship_data.type === 'SS') {
             ennemies = submarines;

@@ -6262,6 +6262,9 @@ var EXPANSIONSLOTDATA = {
 	'2020-03-27': {
 		types: [PICKET,AAFD],
 	},
+	'2020-06-26': {
+		types: [SUBRADAR],
+	},
 };
 
 var EQUIPBONUSDATA = {

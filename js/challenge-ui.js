@@ -2205,13 +2205,6 @@ function chClickedSortieRight() {
 	chLoadSortieInfo(MAPNUM);	
 }
 
-function chRerollMap() {
-	randomizeMap(MAPNUM);
-	chSortieStartChangeDiff();
-	CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
-	chLoadSortieInfo(MAPNUM);
-}
-
 function chSortieStartChangeDiff() {
 	chAddSortieError(1);
 	$('#srtDiffTitle').text('');
