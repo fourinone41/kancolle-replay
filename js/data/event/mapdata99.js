@@ -78,7 +78,7 @@ function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
     for(event_id in MAPDATA){
         if(event_id !== "99"){
-            if(MAPDATA[event_id].maps[MAPNUM] !== undefined && !tested[event_id][MAPNUM-1]){
+            if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
                 let map = {};
 
                 map.world = event_id;
