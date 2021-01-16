@@ -52,42 +52,42 @@
 		"name": "敵通商破壊侵入 高速機動部隊", 
 		"comp": {
 			"1": {
-				"formation": 2, 
+				"formation": 3, 
 				"ship": [1579, 1543, 1595, 1592, 1576, 1576], 
 				"geth": 0, 
 				"experience": 270, 
 				"choose_rate": 0
 			}, 
 			"2": {
-				"formation": 3, 
+				"formation": 2, 
 				"ship": [1579, 1543, 1595, 1592, 1576, 1576], 
 				"geth": 0, 
 				"experience": 270, 
 				"choose_rate": 0
 			}, 
 			"3": {
-				"formation": 2, 
+				"formation": 3, 
 				"ship": [1579, 1595, 1595, 1592, 1576, 1576], 
-				"geth": 1, 
+				"geth": 0, 
 				"experience": 250, 
 				"choose_rate": 0
 			}, 
 			"4": {
-				"formation": 3, 
+				"formation": 2, 
 				"ship": [1579, 1595, 1595, 1592, 1576, 1576], 
 				"geth": 1, 
 				"experience": 250, 
 				"choose_rate": 0
 			}, 
 			"5": {
-				"formation": 2, 
+				"formation": 3, 
 				"ship": [1579, 1595, 1592, 1576, 1576, 1576], 
 				"geth": 2, 
 				"experience": 230, 
 				"choose_rate": 0
 			}, 
 			"6": {
-				"formation": 3, 
+				"formation": 2, 
 				"ship": [1579, 1595, 1592, 1576, 1576, 1576], 
 				"geth": 2, 
 				"experience": 230, 
