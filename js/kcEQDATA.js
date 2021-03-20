@@ -3020,8 +3020,8 @@ var EQDATA = {
 		LOS: 1,
 	},
 	224: {
-		name: 'Bomb-carrying Type 1 Fighter Hayabusa Model III Kai (55th Squadron)',
-		nameJP: '爆装一式戦 隼III型改(55戦隊)',
+		name: 'Bomb-carrying Type 1 Fighter Hayabusa Model III Kai (65th Squadron)',
+		nameJP: '爆装一式戦 隼III型改(65戦隊)',
 		added: '2017-05-02',
 		b_image: 13,
 		type: LANDBOMBER,
@@ -4501,6 +4501,7 @@ var EQDATA = {
 		name: '5inch Twin Dual-purpose Gun Mount (Concentrated Deployment)',
 		nameJP: '5inch連装両用砲(集中配備)',
 		added: '2019-12-07',
+		image: 16,
 		type: MAINGUNM,
 		atype: A_HAFD,
 		FP: 5,
@@ -4513,6 +4514,7 @@ var EQDATA = {
 		name: 'GFCS Mk.37 + 5inch Twin Dual-purpose Gun Mount (Concentrated Deployment)',
 		nameJP: 'GFCS Mk.37+5inch連装両用砲(集中配備)',
 		added: '2019-12-07',
+		image: 16,
 		type: MAINGUNM,
 		atype: A_HAFD,
 		FP: 6,
@@ -4734,6 +4736,7 @@ var EQDATA = {
 		nameJP: '後期型53cm艦首魚雷(8門)',
 		added: '2020-06-26',
 		type: TORPEDOSS,
+		specialCutIn: true,
 		TP: 19,
 		ACC: 3,
 		EV: 1,
@@ -5748,6 +5751,7 @@ var EQDATA = {
 		name: 'Abyssal 15inch Late Model Twin Gun Mount',
 		nameJP: '深海15inch連装砲後期型',
 		added: '2017-08-12',
+		image: 16,
 		type: MAINGUNL,
 		btype: B_MAINGUN,
 		atype: A_HAFD,
@@ -6342,6 +6346,7 @@ var EQUIPBONUSDATA = {
 	15: [
 		{ bonus: { TP: 2 }, num: 1, shipS: [566,567,568] },
 		{ bonus: { TP: 2 }, num: 2, shipS: [566,567,568] },
+		{ bonus: { FP: 1, TP: 5 }, num: 1, shipS: [642] },
 	],
 	24: [
 		{ bonus: { FP: 2 }, shipS: [553,554] },
@@ -6381,6 +6386,9 @@ var EQUIPBONUSDATA = {
 	],
 	111: [
 		{ bonus: { FP: 2 }, shipS: [553,554] },
+	],
+	122: [
+		{ bonus: { FP: 5, AA: 3, EV: 2 }, bonusSR: { FP: 4, EV: 3 }, bonusAR: { AA: 4, EV: 3 }, shipX: [656], improve: 4 },
 	],
 	149: [
 		{ bonus: { ASW: 1, EV: 3 }, num: 1, shipS: [141,160,488,622] },
@@ -6447,6 +6455,9 @@ var EQUIPBONUSDATA = {
 		{ bonus: { TP: 2, EV: 1 }, shipS: [566,567,568] },
 		{ bonus: { TP: 1 }, shipS: [566,567,568], improve: 5 },
 		{ bonus: { FP: 1 }, shipS: [566,567,568], improve: 10 },
+		{ bonus: { FP: 2, TP: 7 }, num: 1, shipS: [642] },
+		{ bonus: { TP: 2 }, num: 1, shipS: [642], improve: 7 },
+		{ bonus: { TP: 2 }, num: 1, shipS: [642], improve: 10 },
 	],
 	287: [
 		{ bonus: { ASW: 1, EV: 1 }, shipS: [141,160,488,622] },
@@ -6906,6 +6917,56 @@ var EQUIPBONUSDATA = {
 		{ bonus: { FP: 2, EV: 2 }, shipClass: [14], remodel: 2 },
 		{ bonus: { FP: 2, ASW: 3, EV: 1 }, shipClass: [69,83,84,105] },
 	],
+	390: [
+		{ bonus: { FP: 1 }, shipType: ['FBB'] },
+		{ bonus: { FP: 1, AR: 1 }, shipClass: [102] },
+		{ bonus: { FP: 1 }, shipClass: [65,93,102] },
+		{ bonus: { FP: 1 }, shipClass: [65,93,102], improve: 3 },
+		{ bonus: { EV: 1 }, shipClass: [65,93,102], improve: 6 },
+		{ bonus: { AR: 1 }, shipClass: [65,93,102], improve: 10 },
+	],
+	391: [
+		{ bonus: { FP: 1 }, shipClass: [24,33] },
+		{ bonus: { FP: 1 }, shipS: [116,185,282] },
+		{ bonus: { EV: 1 }, shipS: [117,318] },
+	],
+	392: [
+		{ bonus: { FP: 2, EV: 1 }, shipClass: [33] },
+		{ bonus: { FP: 1, EV: 1 }, shipClass: [24] },
+		{ bonus: { FP: 2, EV: 1 }, shipS: [116,185,282] },
+		{ bonus: { EV: 1 }, shipS: [117,318] },
+		{ bonus: { FP: 1 }, shipS: [555] },
+	],
+	393: [
+		{ bonus: { FP: 2, AA: 1, EV: 1 }, shipClass: [61] },
+	],
+	394: [
+		{ bonus: { FP: 2, AA: 1, EV: 2 }, shipClass: [61] },
+		{ bonus: { EV: 1 }, shipS: [614] },
+	],
+	397: [
+		{ bonus: { FP: 5, AA: 2, EV: 1 }, bonusSR: { FP: 3, EV: 3 }, shipX: [651] },
+		{ bonus: { FP: 4, EV: 1 }, improve: 4, shipX: [651] },
+		{ bonus: { FP: 3, AA: 1, EV: 1 }, bonusSR: { FP: 3, EV: 3 }, shipX: [656] },
+	],
+	398: [
+		{ bonus: { FP: 4, AA: 4, EV: 2 }, bonusSR: { FP: 3, EV: 3 }, bonusAR: { AA: 3, EV: 3 }, shipX: [651] },
+		{ bonus: { FP: 3, EV: 2 }, improve: 4, shipX: [651] },
+		{ bonus: { FP: 3, AA: 2, EV: 2 }, bonusSR: { FP: 3, EV: 3 }, bonusAR: { AA: 3, EV: 3 }, shipX: [656] },
+		{ bonus: { FP: 2, EV: 1 }, improve: 4, shipX: [656] },
+	],
+	399: [
+		{ bonus: { FP: 1, EV: 2 }, shipClass: [108] },
+		{ bonus: { FP: 1 }, improve: 3, shipClass: [108] },
+		{ bonus: { FP: 1 }, improve: 5, shipClass: [108] },
+	],
+	400: [
+		{ bonus: { FP: 1, TP: 5, AR: 1, EV: 2 }, shipS: [147,516] },
+		{ bonus: { FP: 2 }, requires: [282], shipS: [147,516] },
+	],
+	407: [
+		{ bonus: { FP: 4, AA: 2, EV: 1 }, bonusSR: { FP: 2, TP: 2, EV: 2 }, bonusAR: { AA: 2, EV: 3 }, shipS: [662] },
+	],
 };
 var EQUIPBONUSDATA2 = {
 	'': {
@@ -7084,7 +7145,7 @@ var EQUIPBONUSDATA2 = {
 			{ bonus: { FP: 1 }, shipClass: [8,9,29,31] },
 		],
 		129: [ //skilled lookout
-			{ bonus: { FP: 1, TP: 2, ASW: 2, EV: 2, LOS: 1 }, shipClass: [1,5,10,12,18,22,23,28,30,38,66] },
+			{ bonus: { FP: 1, TP: 2, ASW: 2, EV: 2, LOS: 1 }, shipClass: [1,5,10,12,18,22,23,28,30,38,54,66,101] },
 			{ bonus: { FP: 1, TP: 2, EV: 2, LOS: 3 }, shipClass: [4,16,20,21,34,41,56] },
 			{ bonus: { FP: 1,  EV: 2, LOS: 3 }, shipClass: [7,8,9,13,29,31] },
 		],
@@ -7124,13 +7185,16 @@ var EQUIPBONUSDATA2 = {
 };
 
 
-function getBonusStats(mid,eqids) {
+function getBonusStats(mid,eqids,improves) {
 	let sdata = SHIPDATA[mid];
 	let result = {};
-	let eqCounts = {}, hasSR = false, hasAR = false;
-	for (let eqid of eqids) {
+	let eqCounts = {}, eqImproves = {}, hasSR = false, hasAR = false;
+	for (let i=0; i<eqids.length; i++) {
+		let eqid = eqids[i];
 		if (!eqid || eqid < 0) continue;
 		eqCounts[eqid] = eqCounts[eqid] + 1 || 1;
+		if (!eqImproves[eqid]) eqImproves[eqid] = [];
+		eqImproves[eqid].push(improves[i]);
 		let eqdata = EQDATA[eqid];
 		if (!eqdata) continue;
 		if (EQTDATA[eqdata.type].btype == B_RADAR) {
@@ -7149,10 +7213,15 @@ function getBonusStats(mid,eqids) {
 		for (let bonusData of EQUIPBONUSDATA[eqid]) {
 			if (bonusData.shipClass && bonusData.shipClass.indexOf(sdata.sclass) == -1) continue;
 			if (bonusData.shipS && !mids.find((m) => bonusData.shipS.indexOf(m) != -1)) continue;
+			if (bonusData.shipX && bonusData.shipX.indexOf(mid) == -1) continue;
 			if (bonusData.shipType && bonusData.shipType.indexOf(sdata.type) == -1) continue;
 			if (bonusData.remodel && bonusData.remodel > remodel) continue;
-			if (bonusData.num && bonusData.num > eqCounts[eqid]) continue;
-			if (bonusData.improve) continue;
+			let eqCount = eqCounts[eqid];
+			if (bonusData.improve) {
+				eqCount = eqImproves[eqid].filter(n => n >= bonusData.improve).length;
+				if (eqCount <= 0) continue;
+			}
+			if (bonusData.num && bonusData.num > eqCount) continue;
 			if (bonusData.requires) {
 				let count = 0, reqNum = bonusData.requiresNum || 1;
 				for (let id of bonusData.requires) count += eqCounts[id] || 0;
@@ -7161,7 +7230,7 @@ function getBonusStats(mid,eqids) {
 			for (let key in bonusData.bonus) {
 				if (!result[key]) result[key] = 0;
 				let amt = bonusData.bonus[key];
-				if (!bonusData.num && !bonusData.requires) amt *= eqCounts[eqid];
+				if (!bonusData.num && !bonusData.requires) amt *= eqCount;
 				result[key] += amt;
 			}
 			if (hasSR && bonusData.bonusSR) {
@@ -7230,7 +7299,7 @@ var EQDATAHISTORY = {
 		139: { FP: 5 },
 		149: { AR: 0 },
 		173: { AA: 10 },
-		224: { DIVEBOMB: 8, ACC: 3, aaResistShip: 0, aaResistFleet: 0 },
+		224: { name: 'Bomb-carrying Type 1 Fighter Hayabusa Model III Kai (55th Squadron)', DIVEBOMB: 8, ACC: 3, aaResistShip: 0, aaResistFleet: 0 },
 		228: { EV: 1 },
 		234: { AA: 4, ACC: 3 },
 		235: { AA: 4, ACC: 2 },
@@ -7317,6 +7386,9 @@ var EQDATAHISTORY = {
 	},
 	'2018-06-29': {
 		267: { AA: 4 },
+	},
+	'2018-08-17': {
+		224: { name: 'Bomb-carrying Type 1 Fighter Hayabusa Model III Kai (65th Squadron)' },
 	},
 	'2018-11-29': {
 		19: { AA: 3, EV: 1 },

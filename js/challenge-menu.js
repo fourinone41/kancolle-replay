@@ -315,7 +315,7 @@ function chAddReward(data,forceNew) {
 				var sid = 'x'+(90000+j);
 				if (CHDATA.ships[sid]) continue;
 				var sdata = SHIPDATA[mid];
-				var lvl = (mid > 2000)? 20 : 1;
+				var lvl = (mid > 9000)? 20 : 1;
 				var newship = {
 					HP: [sdata.HP,sdata.HP],
 					LVL: lvl,
@@ -409,6 +409,7 @@ function chShowReward(data,tracker) {
 				350: 'assets/maps/45/i350.png',
 				351: 'assets/maps/45/i351.png',
 				355: 'assets/maps/45/i355.png',
+				402: 'assets/maps/49/i402.png',
 			};
 			var ind = tracker-numShips, id = typeof data.items[ind] === 'object' ? data.items[ind].id : data.items[ind];
 			if (imageSpecial[id]) {

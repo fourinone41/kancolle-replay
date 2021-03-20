@@ -215,7 +215,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (eq.type == SEARCHLIGHTL) this.hasSearchlight = 2;
 		if (eq.isnightscout) this.hasNightScout = true;
 		if (eq.type == PICKET) this.hasLookout = true;
-		if (eq.type == DIVEBOMBER || eq.type == JETBOMBER) this.hasDivebomber = true;
+		if ((eq.type == DIVEBOMBER || eq.type == JETBOMBER) && this.CVshelltype) this.hasDivebomber = true;
 		if (eq.type == FCF) this.hasFCF = equips[i];
 		if (eq.type == SUBRADAR) this.hasSubRadar = true;
 		if (eq.specialCutIn) this.numSpecialTorp = this.numSpecialTorp+1 || 1;
@@ -592,6 +592,7 @@ Ship.prototype.NBtypes = function() {
 		if (mguns && torps && this.equiptypesB[B_RADAR]) this._nbtypes.push(7);
 		if (this.hasLookout && torps && this.equiptypesB[B_RADAR]) this._nbtypes.push(8);
 	}
+	if (this.hasSubRadar && this.numSpecialTorp) torps++;
 	
 	if (MECHANICS.vita) {
 		if (mguns >= 3) this._nbtypes.push(5); //triple gun cut-in

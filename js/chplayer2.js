@@ -112,6 +112,7 @@ function InitUI() {
 	} else {
 		$('#btnFF').hide();
 	}
+	chEnableFriendFleetWaves(MAPDATA[WORLD].friendFleetWaves);
 	
 	chInitPreset();
 	
@@ -1549,6 +1550,12 @@ function prepBattle(letter) {
 	}
 	
 	let friendFleet = null;
+	if (mapdata.friendFleetWaves) {
+		let waveNum = CHDATA.fleets.ffWave || Math.max(...Object.keys(mapdata.friendFleetWaves));
+		for (let key in mapdata.friendFleetWaves[waveNum]) {
+			mapdata[key] = mapdata.friendFleetWaves[waveNum][key];
+		}
+	}
 	if (mapdata.friendFleet && CHDATA.fleets.ff !== 0) {
 		let friendFleets = mapdata.friendFleet;
 		let friendFleetsS = (CHDATA.fleets.ff == 2)? (mapdata.friendFleetSX || mapdata.friendFleetS) : null;
@@ -1727,7 +1734,7 @@ function prepBattle(letter) {
 	}
 	if (!MAPDATA[WORLD].maps[MAPNUM].transport && MAPDATA[WORLD].maps[MAPNUM].hpmode != 1) lastdance = FLEETS2[0].ships[0].maxHP >= CHDATA.event.maps[MAPNUM].hp; //if last dance hp < boss hp, still play sunk line
 	if (MAPDATA[WORLD].isVita) lastdance = true; 
-	if (mapdata.boss && lastdance && res.flagsunk && !MAPDATA[WORLD].maps[MAPNUM].transport) {
+	if (mapdata.boss && lastdance && res.flagsunk && !MAPDATA[WORLD].maps[MAPNUM].transport && (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter)) {
 		var shipid = compd.c[0];
 		if (VOICES[shipid] && VOICES[shipid]['sunk']) {
 			var sndindex = eventqueue.length;
@@ -2995,6 +3002,7 @@ function prepEnemyRaid() {
 		chResetMapSpritePos();
 		eventqueue = eventqueueTemp;
 		e = eTemp;
+		if (WORLD < 22 || WORLD >= 36) SM.playBGM(MAPDATA[WORLD].maps[MAPNUM].bgmMap);
 		addTimeout(function() { ecomplete = true; }, 500);
 	},[]]);
 	
