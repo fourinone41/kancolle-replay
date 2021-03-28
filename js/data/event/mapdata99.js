@@ -162,8 +162,15 @@ function chRandomizeComps() {
 function chHelpLink() {
     let eventName = MAPDATA[WORLD].name.replace(' ', '_');
     
+    if (WORLD == 47) {
+        eventName = 'Hinamatsuri_2020_Mini-Event#/E-1';
+        return `<a href="https://en.kancollewiki.net/${eventName}" target="_blank">${MAPDATA[WORLD].name}</a>`;
+    }
+
     if (WORLD > 47) {
+        if (WORLD == 48)
         eventName = 'Summer_2020_';
+
         let suffixe = (MAPNUM < 5 ? '/Main_Operations' : '/Extra_Operations') + `#E${MAPNUM}`;
 
         return `<a href="https://en.kancollewiki.net/${eventName}_Event${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;

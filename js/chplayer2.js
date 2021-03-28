@@ -1539,11 +1539,96 @@ function prepBattle(letter) {
 	var lastdance = chGetLastDance();
 	
 	var compd = getEnemyComp(letter,mapdata,diff,lastdance);
-	
+
+	$('#enemyComp').html('');
+	$('#enemyComp').css('display', 'flex')
+	$('#enemyCompC').html('');
+	$('#enemyCompC').css('display', 'flex')
+
+	function getRandMultiplier(stat) {
+		let multiplier = Math.random() + 0.5;
+		let multiplierDisplay = multiplier * 100;
+		multiplierDisplay = Math.floor(multiplierDisplay);
+		multiplierDisplay = multiplierDisplay / 100;
+
+		stat = Math.floor(stat * multiplier);
+
+		// -50 to +50
+		let bonus = (Math.random() * 100) - 50;
+		stat = stat + bonus;
+
+		let displayBonus = Math.abs(Math.floor(bonus));
+		displayBonus = bonus < 0 ? '- ' + displayBonus : '+ ' + displayBonus;
+
+		// --- no negative
+		stat = Math.max(stat, 0);
+
+		return {
+			s: stat,
+			d: multiplierDisplay,
+			db: displayBonus,
+		}
+	}
+
+	function randoStats(sid, combined) {
+
+		let enemyDiv = $('<div>');
+
+		enemyDiv.append(`<img src="assets/icons/${SHIPDATA[sid].image}"><br>`);
+		enemyDiv.append(`${SHIPDATA[sid].name}<br>`);
+		
+		let m = getRandMultiplier(SHIPDATA[sid].HP);
+		SHIPDATA[sid].HP = Math.max(m.s, 1);
+		enemyDiv.append(`HP : ${Math.floor(SHIPDATA[sid].HP)} (x${m.d} ${m.db}) <br>`);
+
+		m = getRandMultiplier(SHIPDATA[sid].FP);
+		SHIPDATA[sid].FP = m.s;
+		enemyDiv.append(`FP : ${Math.floor(SHIPDATA[sid].FP)} (x${m.d} ${m.db}) <br>`);
+
+		m = getRandMultiplier(SHIPDATA[sid].TP);
+		SHIPDATA[sid].TP = m.s;
+		enemyDiv.append(`TP : ${Math.floor(SHIPDATA[sid].TP)} (x${m.d} ${m.db}) <br>`);
+
+		m = getRandMultiplier(SHIPDATA[sid].AA);
+		SHIPDATA[sid].AA = m.s;
+		enemyDiv.append(`AA : ${Math.floor(SHIPDATA[sid].AA)} (x${m.d} ${m.db}) <br>`);
+
+		m = getRandMultiplier(SHIPDATA[sid].AR);
+		SHIPDATA[sid].AR = Math.min(m.s, 400);
+		enemyDiv.append(`AR : ${Math.floor(SHIPDATA[sid].AR)} (x${m.d} ${m.db}) <br>`);
+
+		enemyDiv.css('margin-right', '20px');
+		$('#enemyComp'+(combined ? 'C' : '')).append(enemyDiv);
+	}
+
+	// --- 1 => enemies have their normal stats
+	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
+	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
+	const RANDO_MODE = 1;
+
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
 		var overrideStats = (MAPDATA[WORLD].overrideStats)? MAPDATA[WORLD].overrideStats[sid] : null;
-		enemies.push(createDefaultShip(sid,overrideStats));
+		
+		if (RANDO_MODE == 1) {
+			enemies.push(createDefaultShip(sid,overrideStats));
+		}
+		
+		if (RANDO_MODE == 2 || RANDO_MODE == 3) {
+
+			let oldShip = {};
+
+			if (RANDO_MODE == 2)
+				Object.assign(oldShip, SHIPDATA[sid]);
+			else 
+				oldShip = SHIPDATA[sid];
+	
+			randoStats(sid, 0);
+	
+			enemies.push(createDefaultShip(sid,overrideStats));
+	
+			SHIPDATA[sid] = oldShip;
+		}
 	}
 	FLEETS2[0] = new Fleet(1);
 	FLEETS2[0].loadShips(enemies);
@@ -1553,7 +1638,26 @@ function prepBattle(letter) {
 		for (var i=0; i<compd.ce.length; i++) {
 			var sid = compd.ce[i];
 			var overrideStats = (MAPDATA[WORLD].overrideStats)? MAPDATA[WORLD].overrideStats[sid] : null;
-			enemiesC.push(createDefaultShip(sid,overrideStats));
+						
+			if (RANDO_MODE == 1) {
+				enemiesC.push(createDefaultShip(sid,overrideStats));
+			}
+
+			if (RANDO_MODE == 2 || RANDO_MODE == 3) {
+	
+				let oldShip = {};
+	
+				if (RANDO_MODE == 2)
+					Object.assign(oldShip, SHIPDATA[sid]);
+				else 
+					oldShip = SHIPDATA[sid];
+		
+				randoStats(sid, 0);
+		
+				enemiesC.push(createDefaultShip(sid,overrideStats));
+		
+				SHIPDATA[sid] = oldShip;
+			}
 		}
 		FLEETS2[1] = new Fleet(1,FLEETS2[0]);
 		FLEETS2[1].loadShips(enemiesC);

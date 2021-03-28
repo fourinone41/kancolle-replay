@@ -522,7 +522,7 @@ var MAPDATA45 = {
 								let mid = getBaseId(ship.mid);
 								if (MAPDATA[45].historical.french.indexOf(mid) != -1) {
 									ship.bonusSpecial.push({mod:1.1});
-									ship.bonusSpecial.push({mod:1.3,on:[1834,1835,1836,1837,1838,1839]});
+									ship.bonusSpecial.push({mod:1.3,on:[FLEETS2[0].ships[0].mid]});
 								}
 							}
 						},
@@ -927,7 +927,7 @@ var MAPDATA45 = {
 								let mid = getBaseId(ship.mid);
 								if (MAPDATA[45].historical.italian.indexOf(mid) != -1) {
 									ship.bonusSpecial.push({mod:1.1});
-									ship.bonusSpecial.push({mod:1.15,on:[1696,1697,1698]});
+									ship.bonusSpecial.push({mod:1.15,on:[FLEETS2[0].ships[0].mid]});
 								}
 								if (mid == 515) ship.bonusSpecial.push({mod:1.25});
 								if (mid == 519) ship.bonusSpecial.push({mod:1.2});
