@@ -483,6 +483,17 @@ tr.chfile:hover {
 	border-radius:5px;
 	background-color:#808080;
 }
+.btnwave {
+	cursor:pointer;
+	width:110px;
+	height:15px;
+	border-radius:5px;
+	background-color:#808080;
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 2px;
+	padding-left: 4px;
+}
 
 #resourcespace table {
 	width: 270px;

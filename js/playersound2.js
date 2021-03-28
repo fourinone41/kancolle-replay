@@ -3943,7 +3943,7 @@ var VOICES = {
 	494: {
 		start: "assets/voice/I-13-Battle_Start.ogg",
 		attack: "assets/voice/I-13-Attack.ogg",
-		nbattack: "assets/voice/I-13-Night_Attack.ogg",
+		nbattack: "assets/voice/I-13-NightAttack.mp3",
 		damage1: "assets/voice/I-13-Minor_Damage_1.ogg",
 		damage2: "assets/voice/I-13-Minor_Damage_2.ogg",
 		damage3: "assets/voice/I-13-Major_Damage.ogg",
@@ -3951,7 +3951,7 @@ var VOICES = {
 	374: {
 		start: "assets/voice/I-13Kai-Battle_Start.ogg",
 		attack: "assets/voice/I-13-Attack.ogg",
-		nbattack: "assets/voice/I-13-Night_Attack.ogg",
+		nbattack: "assets/voice/I-13-NightAttack.mp3",
 		damage1: "assets/voice/I-13-Minor_Damage_1.ogg",
 		damage2: "assets/voice/I-13-Minor_Damage_2.ogg",
 		damage3: "assets/voice/I-13-Major_Damage.ogg",
@@ -6607,6 +6607,24 @@ var VOICES = {
 		damage: "assets/voice/493198230.mp3",
 		sunk: "assets/voice/493198241.mp3",
 	},
+	1985: {
+		start: "assets/voice/465191810.mp3",
+		attack: "assets/voice/465191820.mp3",
+		damage: "assets/voice/465191830.mp3",
+		sunk: "assets/voice/465191841.mp3",
+	},
+	1986: {
+		start: "assets/voice/465191810.mp3",
+		attack: "assets/voice/465191820.mp3",
+		damage: "assets/voice/465191830.mp3",
+		sunk: "assets/voice/465191841.mp3",
+	},
+	1987: {
+		start: "assets/voice/465191810.mp3",
+		attack: "assets/voice/465191820.mp3",
+		damage: "assets/voice/465191830.mp3",
+		sunk: "assets/voice/465191841.mp3",
+	},
 	1988: {
 		start: "assets/voice/494198810.mp3",
 		attack: "assets/voice/494198820.mp3",
@@ -6643,7 +6661,7 @@ var VOICES = {
 		damage: "assets/voice/494199130.mp3",
 		sunk: "assets/voice/494199141.mp3",
 	},
-	2001: {
+	9001: {
 		start: "assets/voice/Iona_fog_-Battle_Start.ogg",
 		attack: "assets/voice/Iona_fog_-Attack.ogg",
 		nbattack: "assets/voice/Iona_fog_-Night_Attack.ogg",
@@ -6651,7 +6669,7 @@ var VOICES = {
 		damage2: "assets/voice/Iona_fog_-Minor_Damage_2.ogg",
 		damage3: "assets/voice/Iona_fog_-Major_Damage.ogg",
 	},
-	2002: {
+	9002: {
 		start: "assets/voice/Takao_fog_-Battle_Start.ogg",
 		attack: "assets/voice/Takao_fog_-Attack.ogg",
 		nbattack: "assets/voice/Takao_fog_-Night_Attack.ogg",
@@ -6659,7 +6677,7 @@ var VOICES = {
 		damage2: "assets/voice/Takao_fog_-Minor_Damage_2.ogg",
 		damage3: "assets/voice/Takao_fog_-Major_Damage.ogg",
 	},
-	2003: {
+	9003: {
 		start: "assets/voice/Haruna_fog_-Battle_Start.ogg",
 		attack: "assets/voice/Haruna_fog_-Attack.ogg",
 		nbattack: "assets/voice/Haruna_fog_-Night_Attack.ogg",
@@ -6667,45 +6685,45 @@ var VOICES = {
 		damage2: "assets/voice/Haruna_fog_-Minor_Damage_2.ogg",
 		damage3: "assets/voice/Haruna_fog_-Major_Damage.ogg",
 	},
-	2012: {
+	9012: {
 		attack: "assets/voice/Takao_fog_-Attack.ogg",
 		damage: "assets/voice/Takao_fog_-Minor_Damage_1.ogg",
 	},
-	2014: {
+	9014: {
 		attack: "assets/voice/Haruna_fog_-Attack.ogg",
 		damage: "assets/voice/Haruna_fog_-Minor_Damage_1.ogg",
 	},
-	2015: {
+	9015: {
 		attack: "assets/voice/Kirishima_fog_Attack1.ogg",
 		damage: "assets/voice/Kirishima_fog_Damaged1.ogg",
 	},
-	2013: {
+	9013: {
 		attack: "assets/voice/Maya_fog_Attack1.ogg",
 		damage: "assets/voice/Maya_fog_Damaged1.ogg",
 	},
-	2016: {
+	9016: {
 		start: "assets/voice/Kongou_fog_Intro.ogg",
 		attack: "assets/voice/Kongou_fog_Attack1.ogg",
 		damage: "assets/voice/Kongou_fog_Damaged1.ogg",
 		sunk: "assets/voice/Kongou_fog_Sunk.ogg",
 	},
-	2018: {
+	9018: {
 		attack: "assets/voice/Takao_fog_-Attack.ogg",
 		damage: "assets/voice/Takao_fog_-Minor_Damage_1.ogg",
 	},
-	2020: {
+	9020: {
 		attack: "assets/voice/Haruna_fog_-Attack.ogg",
 		damage: "assets/voice/Haruna_fog_-Minor_Damage_1.ogg",
 	},
-	2021: {
+	9021: {
 		attack: "assets/voice/Kirishima_fog_Attack1.ogg",
 		damage: "assets/voice/Kirishima_fog_Damaged1.ogg",
 	},
-	2019: {
+	9019: {
 		attack: "assets/voice/Maya_fog_Attack1.ogg",
 		damage: "assets/voice/Maya_fog_Damaged1.ogg",
 	},
-	2022: {
+	9022: {
 		start: "assets/voice/Kongou_fog_Intro.ogg",
 		attack: "assets/voice/Kongou_fog_Attack1.ogg",
 		damage: "assets/voice/Kongou_fog_Damaged1.ogg",

@@ -1447,7 +1447,7 @@ var MAPDATA = {
 			1543: { EQUIPS: [508,508,512,529] },
 		},
 		initReward: {
-			'ships': [2001],
+			'ships': [9001],
 		},
 		disableMore: { ships: [155] },
 		maps: {
@@ -1472,7 +1472,7 @@ var MAPDATA = {
 					1: 1,
 				},
 				reward: {
-					'ships': [2002],
+					'ships': [9002],
 					// 'items': [62],
 				},
 				nodes: {
@@ -1565,7 +1565,7 @@ var MAPDATA = {
 					1: 1,
 				},
 				reward: {
-					'ships': [2003],
+					'ships': [9003],
 					// 'items': [42]
 				},
 				nodes: {
@@ -20013,6 +20013,10 @@ var MAPDATA = {
 				{ mid: 189, LVL: 87, FP: 68, TP: 69, AA: 51, AR: 70, equips: [15,15,15,88], damage: [.7,.75] },
 			] },
 		},
+		friendFleetWaves: {
+			1: { date: '2018-02-16' },
+			2: { date: '2018-03-02' },
+		},
 		disableMore: { ships: [551,544,549] },
 		maps: {
 			1: {
@@ -22891,8 +22895,10 @@ var MAPDATA = {
 						distance: 11,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['desdiv19','engano3','engano4','engano5','engano6'],
-						friendFleetSpecial: [],
+						friendFleetWaves: {
+							1: { friendFleet: null },
+							2: { friendFleet: ['desdiv19','engano3','engano4','engano5','engano6'] },
+						},
 						setupSpecial: function() {
 							let debuffed = MAPDATA[41].maps[7].debuffCheck(CHDATA.event.maps[7].debuff);
 							let bonus = (debuffed)? [{mod:1.6}] : [{mod:1.15}];
@@ -22954,8 +22960,10 @@ var MAPDATA = {
 						distance: 9,
 						hidden: 2,
 						boss: true,
-						friendFleet: ['desdiv19B','crudiv4B','ibs2','nishimura2','western1','western2','western3','engano1','engano2','engano4'],
-						friendFleetSpecial: ['desdiv19B','crudiv4B','ibs2','nishimura2','western1','western2-broken','western3'],
+						friendFleetWaves: {
+							1: { friendFleet: ['desdiv19B','crudiv4B','ibs2','nishimura2','western1','western2-broken','western3'] },
+							2: { friendFleet: ['desdiv19B','crudiv4B','ibs2','nishimura2','western1','western2','western3','engano1','engano2','engano4'] },
+						},
 						setupSpecial: function() {
 							let debuffed = MAPDATA[41].maps[7].debuffCheck(CHDATA.event.maps[7].debuff);
 							let bonus = (debuffed)? [{mod:1.6}] : [{mod:1.15}];
@@ -25447,6 +25455,10 @@ var MAPDATA = {
 				{ mid: 490, LVL: 86, FP: 69, TP: 88, AA: 70, AR: 52, equips: [286,286,286] },
 			] },
 		},
+		friendFleetWaves: {
+			1: { date: '2019-01-01' },
+			2: { date: '2019-01-11' },
+		},
 		overrideStats: {
 			1546: { HP: 210, AR: 118, EQUIPS: [509, 505, 520, 531] },
 			1548: { HP: 380, AR: 188, EQUIPS: [509, 505, 520, 531] },
@@ -25694,7 +25706,10 @@ var MAPDATA = {
 						y: 221,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E1-1','E1-2','E1-3','E1-4','E1-5'],
+						friendFleetWaves: {
+							1: { friendFleet: null },
+							2: { friendFleet: ['E1-1','E1-2','E1-3','E1-4','E1-5'] },
+						},
 						setupSpecial: function() {
 							let ships = FLEETS1[0].ships;
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
@@ -26174,7 +26189,10 @@ var MAPDATA = {
 						distance: 8,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E2-1','E2-2','E2-3','E2-4'],
+						friendFleetWaves: {
+							1: { friendFleet: null },
+							2: { friendFleet: ['E2-1','E2-2','E2-3','E2-4'] },
+						},
 						setupSpecial: function() {
 							let ships = FLEETS1[0].ships;
 							if (CHDATA.fleets.combined) ships = ships.concat(FLEETS1[1].ships);
@@ -26850,7 +26868,10 @@ var MAPDATA = {
 						distance: 8,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E3-1','E3-2','E3-3','E3-4','E3-5','E3-6','E3-7'],
+						friendFleetWaves: {
+							1: { friendFleet: ['E3-1','E3-3','E3-4'] },
+							2: { friendFleet: ['E3-1','E3-2','E3-3','E3-4','E3-5','E3-6','E3-7'] },
+						},
 						setupSpecial: function() {
 							MAPDATA[43].maps[3].nodes['S'].setupSpecial();
 							if (CHDATA.event.maps[3].routes.indexOf(2) != -1) {
@@ -27372,6 +27393,10 @@ var MAPDATA = {
 				{ mid: 559, LVL: 86, FP: 59, TP: 84, AA: 80, AR: 51, equips: [15,15,15] },
 				{ mid: 557, LVL: 88, FP: 61, TP: 82, AA: 90, AR: 53, equips: [286,286,286] }
 			] }
+		},
+		friendFleetWaves: {
+			1: { date: '2019-06-06' },
+			2: { date: '2019-06-12' },
 		},
 		overrideStats: {
 			1687: { HP: 600 },
@@ -28633,8 +28658,16 @@ var MAPDATA = {
 						y: 234,
 						distance: 7,
 						boss: true,
-						friendFleet: ['E3-23','E3-25','E3-12','E3-28','E3-29','E3-22'],
-						friendFleetS: ['E3-24','E3-26','E3-27','E3-30'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: null,
+								friendFleetS: null,
+							},
+							2: {
+								friendFleet: ['E3-23','E3-25','E3-12','E3-28','E3-29','E3-22'],
+								friendFleetS: ['E3-24','E3-26','E3-27','E3-30'],
+							},
+						},
 						setupSpecial: function() {
 							if (CHDATA.sortie.fleetFriend) {
 								MAPDATA[44].maps[3].applyBonus(CHDATA.sortie.fleetFriend.ships);
@@ -28727,8 +28760,16 @@ var MAPDATA = {
 						distance: 6,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E3-3','E3-1','E3-2','E3-4','E3-6','E3-10','E3-12','E3-13','E3-14','E3-16','E3-17','E3-18','E3-19','E3-20','E3-22'],
-						friendFleetS: ['E3-5','E3-7','E3-8','E3-9','E3-11','E3-15','E3-21'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: ['E3-3','E3-4','E3-6','E3-12','E3-13','E3-18','E3-19','E3-22'],
+								friendFleetS: ['E3-7','E3-9','E3-21'],
+							},
+							2: {
+								friendFleet: ['E3-2','E3-1','E3-10','E3-14','E3-16','E3-17','E3-20'],
+								friendFleetS: ['E3-5','E3-8','E3-11','E3-15'],
+							},
+						},
 						setupSpecial: function() {
 							if (CHDATA.sortie.fleetFriend) {
 								MAPDATA[44].maps[3].applyBonus(CHDATA.sortie.fleetFriend.ships);
@@ -29270,8 +29311,16 @@ var MAPDATA = {
 						y: 170,
 						distance: 7,
 						boss: true,
-						friendFleet: ['E4-3','E4-1','E4-2','E4-4','E4-5','E4-9','E4-10','E4-13','E4-14','E4-15','E4-16','E4-17','E4-18','E4-19'],
-						friendFleetS: ['E4-6','E4-7','E4-8','E4-11','E4-12','E4-20','E4-21','E4-22'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: ['E4-3','E4-1','E4-4','E4-13','E4-14','E4-16','E4-18'],
+								friendFleetS: ['E4-6','E4-7','E4-11','E4-20'],
+							},
+							2: {
+								friendFleet: ['E4-17','E4-2','E4-5','E4-9','E4-10','E4-15','E4-19'],
+								friendFleetS: ['E4-8','E4-12','E4-21','E4-22'],
+							},
+						},
 						setupSpecial: function() {
 							if (CHDATA.sortie.fleetFriend) {
 								MAPDATA[44].maps[4].applyBonus(CHDATA.sortie.fleetFriend.ships);
@@ -30021,8 +30070,16 @@ var MAPDATA = {
 						distance: 7,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E5-10','E5-3','E5-4','E5-6','E5-7','E5-11'],
-						friendFleetS: ['E5-1','E5-2','E5-5','E5-8','E5-9'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: null,
+								friendFleetS: null,
+							},
+							2: {
+								friendFleet: ['E5-10','E5-3','E5-4','E5-6','E5-7','E5-11'],
+								friendFleetS: ['E5-1','E5-2','E5-5','E5-8','E5-9'],
+							},
+						},
 						setupSpecial: function() {
 							let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);

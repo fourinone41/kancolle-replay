@@ -385,6 +385,10 @@ MAPDATA[48] =
 				{ mid: 689, LVL: 79, FP: 55, TP: 72, AA: 90, AR: 52, equips: [376,376,376], damage: [.9,1] },
 			] },
 		},
+		friendFleetWaves: {
+			1: { date: '2020-07-17' },
+			2: { date: '2020-08-07' },
+		},
 		maps: {
 			1: {
 				name: 'E-1',
@@ -4168,8 +4172,16 @@ MAPDATA[48] =
 						distance: 7,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E6-1','E6-2','E6-3','E6-4','E6-5','E6-6'],
-						friendFleetS: ['E6-7','E6-7','E6-8','E6-9','E6-9','E6-9','E6-10','E6-10','E6-11','E6-11','E6-11'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: null,
+								friendFleetS: null,
+							},
+							2: {
+								friendFleet: ['E6-1','E6-2','E6-3','E6-4','E6-5','E6-6'],
+								friendFleetS: ['E6-7','E6-7','E6-8','E6-9','E6-9','E6-9','E6-10','E6-10','E6-11','E6-11','E6-11'],
+							},
+						},
 						setupSpecial: function() {
 							let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
@@ -5423,8 +5435,16 @@ MAPDATA[48] =
 						distance: 7,
 						hidden: 1,
 						boss: true,
-						friendFleet: ['E7Y-1','E7Y-2','E7Y-3','E7Y-4','E7Y-6','E7Y-7','E7Y-10'],
-						friendFleetSX: ['E7Y-5','E7Y-8','E7Y-9','E7Y-11','E7Y-12','E7Y-8','E7Y-9','E7Y-11','E7Y-12','E7Y-12'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: null,
+								friendFleetSX: null,
+							},
+							2: {
+								friendFleet: ['E7Y-1','E7Y-2','E7Y-3','E7Y-4','E7Y-6','E7Y-7','E7Y-10'],
+								friendFleetSX: ['E7Y-5','E7Y-8','E7Y-9','E7Y-11','E7Y-12','E7Y-8','E7Y-9','E7Y-11','E7Y-12','E7Y-12'],
+							},
+						},
 						setupSpecial: function() {
 							let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
 							let shipsFF = [];
@@ -5491,8 +5511,16 @@ MAPDATA[48] =
 						distance: 9,
 						hidden: 2,
 						boss: true,
-						friendFleet: ['E7Z-1','E7Z-2','E7Z-3','E7Z-5','E7Z-7'],
-						friendFleetSX: ['E7Z-4','E7Z-6','E7Z-8','E7Z-8','E7Z-9','E7Z-9','E7Z-10','E7Z-10','E7Z-10','E7Z-11','E7Z-11','E7Z-12','E7Z-12','E7Z-12','E7Z-13','E7Z-13','E7Z-14','E7Z-14'],
+						friendFleetWaves: {
+							1: {
+								friendFleet: ['E7Z-1','E7Z-2','E7Z-3','E7Z-5','E7Z-7'],
+								friendFleetSX: ['E7Z-4','E7Z-6','E7Z-8','E7Z-8','E7Z-9','E7Z-9','E7Z-10','E7Z-10','E7Z-10'],
+							},
+							2: {
+								friendFleet: ['E7Z-1','E7Z-2','E7Z-3','E7Z-5','E7Z-7'],
+								friendFleetSX: ['E7Z-4','E7Z-6','E7Z-8','E7Z-9','E7Z-10','E7Z-10','E7Z-11','E7Z-11','E7Z-12','E7Z-12','E7Z-12','E7Z-13','E7Z-13','E7Z-14','E7Z-14'],
+							},
+						},
 						setupSpecial: function() {
 							let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);

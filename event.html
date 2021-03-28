@@ -14,12 +14,14 @@
 		<script src="js/data/event/mapdata46.js"></script>
 		<script src="js/data/event/mapdata47.js"></script>
 		<script src="js/data/event/mapdata48.js"></script>
+		<script src="js/data/event/mapdata49.js"></script>
 		<script src="js/data/event/mapdata10.js"></script>
 		<script src="js/data/event/mapdata99.js"></script>
 		<script src="js/kcENEMYCOMP.js"></script>
 		<script src="js/data/event/enemycomp46.js"></script>
 		<script src="js/data/event/enemycomp47.js"></script>
 		<script src="js/data/event/enemycomp48.js"></script>
+		<script src="js/data/event/enemycomp49.js"></script>
 		<script src="js/data/event/enemycomp10.js"></script>
 		<script src="js/shared.js"></script>
 		<script src="js/kcships.js"></script>
@@ -27,6 +29,7 @@
 		<script src="js/kcsimcombined.js"></script>
 		<script src="js/pixi.min.js"></script>
 		<script src="js/howler.min.js"></script>
+		<script src="js/data/event/donotpush.js"></script>
 	</head>
 	<body onunload="chSave()">
 		<div id="mainspace" style="display:none">
@@ -109,6 +112,11 @@
 		<td><div id="btnFF" class="btnsupport" title="Toggle Friend Fleet" onclick="chAddFriendFleet()">
 			<img id="imgFF" src="assets/maps/buttonFriend.png" />
 			<img id="imgFFStrong" src="assets/maps/buttonFriend2.png" />
+		</div></td>
+		<td><div id="divFFWaves" style="width:50px">
+			<div id="btnFFWave1" class="btnwave" onclick="chSetFriendFleetWave(1)">Wave 1 (<span id="spanFFDate1"></span>)</div>
+			<div id="btnFFWave2" class="btnwave" onclick="chSetFriendFleetWave(2)">Wave 2 (<span id="spanFFDate2"></span>)</div>
+			<div id="btnFFWave3" class="btnwave" onclick="chSetFriendFleetWave(3)">Wave 3 (<span id="spanFFDate3"></span>)</div>
 		</div></td>
 		</tr></table>
 
@@ -351,6 +359,7 @@
 					<option value="2019-02-27">2019-02-27: Echelon Buff</option>
 					<option value="2019-03-22">2019-03-22: Anti-Air Resist</option>
 					<option value="2019-03-27">2019-03-27: Anti-Installation Divebombers + Zuiun CI</option>
+					<option value="2021-03-01">2021-03-01: Soft-Cap Increase</option>
 				</select><br>
 				<div><input type="checkbox" id="menusmechunique" /><label for="menusmechunique">Enable Unique Mechanics</label><br></div>
 				<label for="menusdiff">Difficulty Selection: </label>

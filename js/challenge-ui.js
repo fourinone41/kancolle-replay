@@ -32,6 +32,7 @@ var MECHANICDATES = {
 	aaResist: '2019-03-22',
 	zuiunCI: '2019-03-27',
 	divebomberInstall: '2019-03-27',
+	softCapIncrease: '2021-03-01',
 };
 
 var MECHANICDATESOTHER = {
@@ -522,7 +523,7 @@ function chDialogShowItems(shipmid,types) {
 			if (!this.innerHTML) {
 				var tr = $(this);
 				
-				tr.append('<td class="left" onclick="chSetEquip(\''+itemid+'\')"><img src="assets/items/'+EQTDATA[equip.type].image+'.png"/></td>');
+				tr.append('<td class="left" onclick="chSetEquip(\''+itemid+'\')"><img src="assets/items/'+(equip.image || EQTDATA[equip.type].image)+'.png"/></td>');
 				var td = $('<td onclick="chSetEquip(\''+itemid+'\')"></td>');
 				td.append('<div style="position:absolute;z-index:1;margin-top:-10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:300px">'+equip.name+'</div><br>');
 				var div = $('<div style="position:absolute;z-index:1;margin-top:-10px"></div>');
@@ -583,7 +584,7 @@ function chDialogItemFilter(category) {
 		case 3: types=[TORPEDO,TORPEDOSS,MIDGETSUB]; break;
 		case 4: types=[SEAPLANE,SEAPLANEBOMBER,SEAPLANEFIGHTER,FLYINGBOAT]; break;
 		case 5: types=[FIGHTER,INTERCEPTOR]; break;
-		case 6: types=[DIVEBOMBER,LANDBOMBER]; break;
+		case 6: types=[DIVEBOMBER,LANDBOMBER,LANDBOMBERL]; break;
 		case 7: types=[TORPBOMBER]; break;
 		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
 		case 9: types=[RADARS,RADARL,RADARXL]; break;
@@ -626,10 +627,7 @@ function chSetEquip(itemid) {
 	$('#dialogselequip').dialog('close');
 	
 	if (item && DIALOGFLEETSEL == 5) { //LBAS only
-		var type = EQDATA[item.masterId].type;
-		var num = (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT || type == LANDSCOUT)? 4 : (MAPDATA[WORLD].lbasSlotCount || 18);
-		
-		if (!LBASDATA[item.masterId]) return;
+		var num = chGetLBASNumPlanes(item);
 		CHDATA.event.resources.baux += num * LBASDATA[item.masterId].cost;
 		chUIUpdateResources();
 	}
@@ -667,9 +665,11 @@ function chShipEquipItem(shipid,itemid,slot) {
 			if (iid <= 0) eqids.push(0);
 			else eqids.push(CHDATA.gears['x'+iid].masterId);
 		}
-		let bonusesInit = getBonusStats(ship.masterId,eqids);
+		let improves = ship.items.map(id => id < 0 ? 0 : CHDATA.gears['x'+id].stars);
+		let bonusesInit = getBonusStats(ship.masterId,eqids,improves);
 		eqids[slot] = (itemid <= 0)? 0 : CHDATA.gears['x'+itemid].masterId;
-		let bonusesAfter = getBonusStats(ship.masterId,eqids);
+		improves[slot] = (itemid <= 0)? 0 : CHDATA.gears['x'+itemid].stars;
+		let bonusesAfter = getBonusStats(ship.masterId,eqids,improves);
 		
 		for (let key in bonusesInit) bonusesAfter[key] = (bonusesAfter[key] || 0) - (bonusesInit[key] || 0);
 		for (let key in bonusesAfter) ship[key] += bonusesAfter[key];
@@ -700,8 +700,9 @@ function chShipEquipItem(shipid,itemid,slot) {
 function chGetLBASNumPlanes(item) {
 	if (!EQDATA[item.masterId]) return (MAPDATA[WORLD].lbasSlotCount || 18);
 	let type = EQDATA[item.masterId].type;
-	let num = (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT || type == LANDSCOUT)? 4 : (MAPDATA[WORLD].lbasSlotCount || 18);
-	return num;
+	if (type == SEAPLANE || type == CARRIERSCOUT || type == FLYINGBOAT || type == LANDSCOUT) return 4;
+	if (type == LANDBOMBERL) return 9;
+	return MAPDATA[WORLD].lbasSlotCount || 18;
 }
 
 //------------------------
@@ -1027,8 +1028,6 @@ function chProcessKC3File2() {
 	let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[EVENTNUM].date)? MAPDATA[EVENTNUM].date : CHDATA.config.mechanicsdate;
 	setShipDataDate(dataDate);
 	setEquipDataDate(dataDate);
-	CHDATA.config.shelldmgbase = (CHDATA.config.mechanics.shellingSoftCap)? 180 : 150;
-	CHDATA.config.aswdmgbase = (CHDATA.config.mechanics.aswSoftCap)? 150 : 100;
 	
 	for (var mapnum in MAPDATA[EVENTNUM].maps) {
 		CHDATA.event.maps[mapnum] = { visited:[], hp:null };
@@ -1130,7 +1129,7 @@ function chProcessKC3File2() {
 		if (CHDATA.config.mechanics.equipBonus) { //re-add if enabled
 			let eqids = [];
 			for (let item of shipN.items) eqids.push((item<=0)? 0 : CHDATA.gears['x'+item].masterId);
-			let bonusStats = getBonusStats(shipN.masterId,eqids);
+			let bonusStats = getBonusStats(shipN.masterId,eqids,shipN.items.map(id => id < 0 ? 0 : CHDATA.gears['x'+id].stars));
 			for (let key in bonusStats) shipN[key] += bonusStats[key];
 		}
 		
@@ -1512,8 +1511,27 @@ function chStart() {
 	
 	MECHANICS.morale = true;
 	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA;
-	SHELLDMGBASE = CHDATA.config.shelldmgbase;
-	ASWDMGBASE = CHDATA.config.aswdmgbase;
+	MECHANICS.hayabusa65Buff = CHDATA.config.mechanics.softCapIncrease;
+	SIMCONSTS.shellDmgCap = 150;
+	SIMCONSTS.aswDmgCap = 100;
+	SIMCONSTS.torpedoDmgCap = 150;
+	SIMCONSTS.nightDmgCap = 300;
+	SIMCONSTS.airDmgCap = 150;
+	SIMCONSTS.supportDmgCap = 150;
+	if (CHDATA.config.mechanics.shellingSoftCap) {
+		SIMCONSTS.shellDmgCap = 180;
+	}
+	if (CHDATA.config.mechanics.aswSoftCap) {
+		SIMCONSTS.aswDmgCap = 150;
+	}
+	if (CHDATA.config.mechanics.softCapIncrease) {
+		SIMCONSTS.shellDmgCap = 220;
+		SIMCONSTS.aswDmgCap = 170;
+		SIMCONSTS.torpedoDmgCap = 180;
+		SIMCONSTS.nightDmgCap = 360;
+		SIMCONSTS.airDmgCap = 170;
+		SIMCONSTS.supportDmgCap = 170;
+	}
 	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
 	if (WORLD >= 45) { //unknown when/if changed
 		TTFCOMBINED1E.accbase = TTFCOMBINED2E.accbase = TTFCOMBINED3E.accbase = TTFCOMBINED4E.accbase = 50;
@@ -1860,7 +1878,7 @@ function chTableSetEquip(itemid,fleet,shipslot,itemslot) {
 	} else {
 		var item = CHDATA.gears['x'+itemid];
 		var itemd = EQDATA[item.masterId];
-		$('#fleeteqi'+fleet+itemslot+shipslot).attr('src','assets/items/'+EQTDATA[itemd.type].image+'.png');
+		$('#fleeteqi'+fleet+itemslot+shipslot).attr('src','assets/items/'+(itemd.image || EQTDATA[itemd.type].image)+'.png');
 		$('#fleeteqi'+fleet+itemslot+shipslot).css('cursor','move');
 		$('#fleeteqn'+fleet+itemslot+shipslot).text(itemd.name);
 		$('#fleeteqs'+fleet+itemslot+shipslot).text(CHDATA.ships[CHDATA.fleets[fleet][shipslot-1]].planes[itemslot-1]);
@@ -2360,6 +2378,35 @@ function chSetFriendFleet(num) {
 		$('#btnFF').css('opacity',.5);
 		$('#imgFF').show();
 		$('#imgFFStrong').hide();
+	}
+}
+
+function chEnableFriendFleetWaves(waves) {
+	if (!waves) {
+		$('#divFFWaves').hide();
+	} else {
+		$('#divFFWaves').show();
+		for (let n=1; n<=3; n++) {
+			if (waves[n]) {
+				$('#btnFFWave'+n).show();
+				$('#spanFFDate'+n).text(waves[n].date);
+			} else {
+				$('#btnFFWave'+n).hide();
+			}
+		}
+		let num = CHDATA.fleets.ffWave || Math.max(...Object.keys(waves));
+		chSetFriendFleetWave(num);
+	}
+}
+
+function chSetFriendFleetWave(num) {
+	CHDATA.fleets.ffWave = num;
+	for (let n=1; n<=3; n++) {
+		if (n == num) {
+			$('#btnFFWave'+n).css('opacity',1);
+		} else {
+			$('#btnFFWave'+n).css('opacity',.5);
+		}
 	}
 }
 

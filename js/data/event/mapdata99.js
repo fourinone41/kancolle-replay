@@ -55,7 +55,6 @@ function getRandomBannerAlt(){
     return bannersAlt[Math.floor(Math.random()*bannersAlt.length)];
 }
 
-}
 function randomizeMaps(){   
     if(CHDATA.maps === undefined) {
         // randomize
@@ -455,12 +454,13 @@ const bossIds = [
     1985, 1986, 1987,                       // --- Submarine Princess Kai B Flagship
     1988, 1989, 1990, 1991, 1992, 1993,     // --- Abyssal Bamboo Princess
 
-	2012,2013,2014,2015,2016,2018,2019,2020,2021,2022,];
+	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
+];
     
 function chInitAbyssalTables () {
 	
 	for (ship_id in SHIPDATA) {
-		if (ship_id >= 1500 && ship_id < 2000) {
+		if (ship_id >= 1500 && ship_id < 9000) {
 			let ship = SHIPDATA[ship_id];
 
 			if (bossIds.indexOf(parseInt(ship_id)) !== -1) {
