@@ -183,7 +183,7 @@ EQTDATA[MIDGETSUB] = {
 	name: 'Midget Sub',
 	image: 5,
 	canequip: ['CLT','SS','SSV','AV'],
-	canequipS: [200, 488, 623, 657],
+	canequipS: [200, 488, 506, 623, 657, 668],
 	cannotequipS: [372, 445, 450, 491, 539, 605],
 };
 EQTDATA[AAGUN] = {
@@ -215,7 +215,7 @@ EQTDATA[SONARL] = {
 	image: 18,
 	btype: B_SONAR,
 	canequip: ['CA','CAV','FBB','BB','BBV','CVL','CV','CVB','AS','AV','LHA'],
-	canequipS: [500, 624, 629, 662],
+	canequipS: [330, 346, 357, 500, 537, 624, 629, 662, 663, 668],
 	cannotequipS: [380, 381, 521, 526, 534, 581],
 };
 EQTDATA[DEPTHCHARGE] = {
@@ -272,7 +272,7 @@ EQTDATA[SEAPLANEBOMBER] = {
 	image: 10,
 	btype: B_RECON,
 	canequip: ['CAV','BBV','SSV','AV','AO','LandBase'],
-	canequipS: [305, 306, 307, 314, 358, 361, 392, 446, 447, 488, 496, 547, 574, 579, 591, 626, 630, 639, 652, 662],
+	canequipS: [305, 306, 307, 314, 358, 361, 392, 446, 447, 488, 496, 547, 574, 579, 591, 626, 630, 639, 652, 662, 663, 668],
 	isPlane: true,
 	isfighter: true,
 	isdivebomber: true,
@@ -298,7 +298,7 @@ EQTDATA[AUTOGYRO] = {
 	name: 'Anti-Sub Plane',
 	image: 21,
 	canequip: ['CAV','BBV','CVL','AS','AO','AR','LHA'],
-	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 690],
+	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 663, 668, 690],
 	cannotequipS: [380, 381, 521, 526, 534, 621],
 	isPlane: true,
 };
@@ -323,7 +323,7 @@ EQTDATA[RADARL] = {
 	btype: B_RADAR,
 	improve: {LOS:1.4},
 	canequip: ['CL','CT','CLT','CA','CAV','FBB','BB','BBV','CVL','CV','CVB','AV'],
-	canequipS: [352, 470, 626],
+	canequipS: [330, 346, 352, 357, 421, 422, 423, 470, 532, 537, 626],
 	cannotequipS: [477, 478, 521, 574, 623, 624],
 };
 EQTDATA[RADARXL] = {
@@ -349,7 +349,7 @@ EQTDATA[BULGEM] = {
 	image: 23,
 	improve: {AR:.7},
 	canequip: ['CT','CA','CAV','CVL','AS','AV','AR'],
-	canequipS: [146, 147, 216, 217, 305, 306, 307, 314, 500, 542, 543, 547, 563, 564, 566, 567, 568, 569, 578, 579, 621, 622, 623, 624, 626, 629, 630, 652, 656, 657, 662],
+	canequipS: [146, 147, 216, 217, 305, 306, 307, 314, 330, 346, 357, 500, 537, 542, 543, 547, 563, 564, 566, 567, 568, 569, 578, 579, 621, 622, 623, 624, 626, 629, 630, 652, 656, 657, 662, 663, 668],
 };
 EQTDATA[BULGEL] = {
 	name: 'Torpedo Bulge',
@@ -363,7 +363,7 @@ EQTDATA[LANDINGCRAFT] = {
 	btype: B_LC1,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['AV','LHA'],
-	canequipS: [147, 198, 199, 200, 260, 352, 418, 434, 435, 464, 468, 469, 470, 478, 487, 488, 489, 490, 498, 500, 541, 547, 548, 563, 587, 623, 630, 657, 703],
+	canequipS: [147, 198, 199, 200, 260, 352, 418, 434, 435, 464, 468, 469, 470, 478, 487, 488, 489, 490, 498, 500, 506, 541, 547, 548, 563, 587, 623, 630, 657, 703],
 	cannotequipS: [445, 491],
 };
 EQTDATA[SEARCHLIGHTS] = {
@@ -378,7 +378,7 @@ EQTDATA[SEARCHLIGHTL] = {
 	image: 24,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['FBB','BB','BBV'],
-	canequipS: [372, 477, 491, 496, 579, 586, 626, 630],
+	canequipS: [372, 477, 491, 496, 501, 506, 579, 586, 626, 630],
 };
 EQTDATA[STARSHELL] = {
 	name: 'Night Equip',
@@ -409,7 +409,7 @@ EQTDATA[FCF] = {
 	name: 'Misc',
 	image: 28,
 	canequip: ['CL','CT','CLT','CA','CAV','FBB','BB','BBV','CVL','CV','CVB','AS','AV','LHA'],
-	canequipS: [464, 497, 498, 500, 542, 543, 567, 587, 628, 629, 651, 656],
+	canequipS: [330, 346, 357, 421, 422, 423, 464, 497, 498, 500, 532, 537, 542, 543, 567, 587, 628, 629, 651, 656],
 	cannotequipS: [521],
 };
 EQTDATA[DRUM] = {
@@ -422,7 +422,7 @@ EQTDATA[SCAMP] = {
 	name: 'Misc',
 	image: 29,
 	canequip: ['CAV','BBV','CVL','CV','CVB','AO'],
-	canequipS: [166, 372, 450, 488, 491, 496, 547, 574, 579, 581, 586, 626, 630, 652, 662, 690],
+	canequipS: [166, 372, 450, 488, 491, 496, 547, 574, 579, 581, 586, 626, 630, 652, 662, 663, 668, 690],
 };
 EQTDATA[FLYINGBOAT] = {
 	name: 'Recon Seaplane',
@@ -447,7 +447,7 @@ EQTDATA[SEAPLANEFIGHTER] = {
 	name: 'Seaplane Fighter',
 	image: 43,
 	canequip: ['CAV','BBV','SSV','AS','AV','AO','LandBase'],
-	canequipS: [136, 148, 275, 276, 358, 361, 446, 447, 488, 496, 541, 546, 547, 573, 592, 621, 626, 652],
+	canequipS: [136, 148, 275, 276, 358, 361, 446, 447, 488, 496, 541, 546, 547, 573, 592, 621, 626, 652, 668],
 	isPlane: true,
 	isfighter: true,
 };
@@ -457,7 +457,7 @@ EQTDATA[LANDINGTANK] = {
 	btype: B_LC3,
 	improve: {Pshell:1,Pnb:1},
 	canequip: ['SS','SSV','AV','LHA'],
-	canequipS: [147, 198, 199, 200, 352, 418, 464, 468, 470, 478, 487, 488, 489, 490, 497, 500, 541, 547, 548, 564, 568, 569, 573, 578, 587, 623, 656, 657, 662],
+	canequipS: [147, 198, 199, 200, 352, 418, 464, 468, 470, 478, 487, 488, 489, 490, 497, 500, 506, 541, 547, 548, 564, 568, 569, 573, 578, 587, 623, 656, 657, 662, 663, 668],
 	cannotequipS: [445, 491, 581],
 };
 EQTDATA[OILDRUM] = {
@@ -3891,6 +3891,7 @@ var EQDATA = {
 		nameJP: 'Bofors 15.2cm連装砲 Model 1930',
 		added: '2018-09-13',
 		type: MAINGUNM,
+		fitclass: 102,
 		FP: 5,
 		AA: 4,
 		ACC: 3,
@@ -3972,6 +3973,7 @@ var EQDATA = {
 		nameJP: '14cm連装砲改',
 		added: '2018-11-29',
 		type: MAINGUNM,
+		fitclass: 102,
 		FP: 5,
 		AR: 1,
 		ACC: 3,
@@ -4491,6 +4493,7 @@ var EQDATA = {
 		nameJP: '6inch 連装速射砲 Mk.XXI',
 		added: '2019-11-29',
 		type: MAINGUNM,
+		fitclass: 102,
 		FP: 5,
 		AA: 3,
 		AR: 1,
@@ -4503,6 +4506,7 @@ var EQDATA = {
 		nameJP: 'Bofors 15cm連装速射砲 Mk.9 Model 1938',
 		added: '2019-11-29',
 		type: MAINGUNM,
+		fitclass: 102,
 		FP: 6,
 		AA: 5,
 		ACC: 3,
@@ -4514,6 +4518,7 @@ var EQDATA = {
 		nameJP: 'Bofors 15cm連装速射砲 Mk.9改+単装速射砲 Mk.10改 Model 1938',
 		added: '2019-11-29',
 		type: MAINGUNM,
+		fitclass: 102,
 		FP: 7,
 		AA: 6,
 		AR: -1,
@@ -5027,6 +5032,7 @@ var EQDATA = {
 		nameJP: '15.2cm連装砲改二',
 		added: '2021-02-05',
 		type: MAINGUNM,
+		fitclass: 102,
 		FP: 6,
 		AA: 4,
 		AR: 1,
@@ -5050,6 +5056,26 @@ var EQDATA = {
 		FP: 1,
 		AA: 1,
 		ACC: 1,
+	},
+	410: {
+		name: 'Type 21 Air Radar Kai Ni',
+		nameJP: '21号対空電探改二',
+		added: '2021-03-30',
+		type: RADARL,
+		AA: 7,
+		ACC: 4,
+		EV: 4,
+		LOS: 7,
+	},
+	411: {
+		name: 'Type 42 Air Radar Kai Ni',
+		nameJP: '42号対空電探改二',
+		added: '2021-03-31',
+		type: RADARL,
+		AA: 7,
+		ACC: 8,
+		EV: -1,
+		LOS: 6,
 	},
 	501: {
 		name: '5inch Single Cannon',
@@ -6394,7 +6420,7 @@ var EQUIPBONUSDATA = {
 	15: [
 		{ bonus: { TP: 2 }, num: 1, shipS: [566,567,568] },
 		{ bonus: { TP: 2 }, num: 2, shipS: [566,567,568] },
-		{ bonus: { FP: 1, TP: 5 }, num: 1, shipS: [642] },
+		{ bonus: { TP: 5, EV: 1 }, num: 1, shipS: [642] },
 	],
 	24: [
 		{ bonus: { FP: 2 }, shipS: [553,554] },
@@ -6437,10 +6463,6 @@ var EQUIPBONUSDATA = {
 	],
 	122: [
 		{ bonus: { FP: 5, AA: 3, EV: 2 }, bonusSR: { FP: 4, EV: 3 }, bonusAR: { AA: 4, EV: 3 }, shipX: [656], improve: 4 },
-	],
-	149: [
-		{ bonus: { ASW: 1, EV: 3 }, num: 1, shipS: [141,160,488,622] },
-		{ bonus: { ASW: 2, EV: 2 }, num: 1, shipS: [624] },
 	],
 	151: [
 		{ bonus: { FP: 2, LOS: 3 }, improve: 10 },
@@ -6506,13 +6528,6 @@ var EQUIPBONUSDATA = {
 		{ bonus: { FP: 2, TP: 7 }, num: 1, shipS: [642] },
 		{ bonus: { TP: 2 }, num: 1, shipS: [642], improve: 7 },
 		{ bonus: { TP: 2 }, num: 1, shipS: [642], improve: 10 },
-	],
-	287: [
-		{ bonus: { ASW: 1, EV: 1 }, shipS: [141,160,488,622] },
-	],
-	288: [
-		{ bonus: { ASW: 2, EV: 1 }, shipS: [141,160,488,622] },
-		{ bonus: { ASW: 1, EV: 1 }, shipS: [624] },
 	],
 	289: [
 		{ bonus: { FP: 2, AA: 2, EV: 2 }, bonusSR: { FP: 2, EV: 2 }, shipS: [151] },
@@ -6614,6 +6629,7 @@ var EQUIPBONUSDATA = {
 	310: [
 		{ bonus: { FP: 2, AA: 1, EV: 1 }, shipClass: [34] },
 		{ bonus: { FP: 2, ASW: 1, EV: 1 }, bonusSR: { FP: 3, TP: 2, EV: 2 }, shipS: [622] },
+		{ bonus: { FP: 1, TP: 1 }, shipS: [622], improve: 7 },
 		{ bonus: { FP: 2, EV: 1 }, shipClass: [56] },
 		{ bonus: { FP: 3, TP: 2, AA: 1, EV: 1 }, shipClass: [90] },
 	],
@@ -7162,13 +7178,16 @@ var EQUIPBONUSDATA2 = {
 	},
 	'2020-01-14': {
 		149: [ //type 4 sonar
-			{ bonus: { ASW: 1, EV: 3 }, shipS: [141, 160, 488], num: 1 },
+			{ bonus: { ASW: 1, EV: 3 }, num: 1, shipS: [141,160,488,622] },
+			{ bonus: { ASW: 2, EV: 2 }, num: 1, shipS: [624] },
+			{ bonus: { ASW: 1, EV: 2 }, num: 1, shipClass: [54] },
 		],
 		287: [ //t3dc (cd)
-			{ bonus: { ASW: 1, EV: 1 }, shipS: [141, 160, 488], num: 1 },
+			{ bonus: { ASW: 1, EV: 1 }, shipS: [141,160,488,622] },
 		],
 		288: [ //15cm aswroc
-			{ bonus: { ASW: 2, EV: 1 }, shipS: [141, 160, 488], num: 1 },
+			{ bonus: { ASW: 2, EV: 1 }, shipS: [141,160,488,622] },
+			{ bonus: { ASW: 1, EV: 1 }, shipS: [624] },
 		],
 	},
 	'2020-03-27': {
@@ -7204,6 +7223,22 @@ var EQUIPBONUSDATA2 = {
 		],
 		204: [ //kanhon bulge
 			{ bonus: { TP: 1, AR: 1 }, shipS: [591,592] },
+		],
+	},
+	'2020-05-20': {
+		171: [
+			{ bonus: { EV: 1 }, shipClass: [65,69,83,84,87,91,93,95,99,102,105,106,107], num: 1, improve: 5 },
+			{ bonus: { FP: 1 }, shipClass: [65,69,83,84,87,91,93,95,99,102,105,106,107], num: 1, improve: 10 },
+		],
+		278: [
+			{ bonus: { AA: 1, EV: 3, LOS: 1 }, shipClass: [65,69,83,84,87,91,93,95,99,102,105,106,107], num: 1 },
+			{ bonus: { AA: 1, EV: 2 }, shipClass: [67,78,82,88,108], num: 1 },
+			{ bonus: { AA: 1, EV: 1 }, shipClass: [96], num: 1 },
+		],
+		279: [
+			{ bonus: { FP: 2, AA: 2, EV: 3, LOS: 2 }, shipClass: [65,69,83,84,87,91,93,95,99,102,105,106,107], num: 1 },
+			{ bonus: { FP: 1, AA: 1, EV: 2, LOS: 1 }, shipClass: [67,78,82,88,108], num: 1 },
+			{ bonus: { FP: 1, AA: 1, EV: 1 }, shipClass: [96], num: 1 },
 		],
 	},
 	'2020-08-27': {
@@ -7352,8 +7387,14 @@ var EQDATAHISTORY = {
 		234: { AA: 4, ACC: 3 },
 		235: { AA: 4, ACC: 2 },
 		267: { AA: 3 },
+		303: { fitclass: null },
+		310: { fitclass: null },
 		343: { aaResistShip: 0 },
 		358: { AA: 5 },
+		359: { fitclass: null },
+		360: { fitclass: null },
+		361: { fitclass: null },
+		407: { fitclass: null },
 	},
 	'2013-09-18': {
 		6: { CANBbonus: 10 },
@@ -7459,6 +7500,14 @@ var EQDATAHISTORY = {
 	'2021-01-13': {
 		224: { DIVEBOMB: 9, ACC: 4, aaResistFleet: .7 },
 	},
+	'2021-03-30': {
+		303: { fitclass: 102 },
+		310: { fitclass: 102 },
+		359: { fitclass: 102 },
+		360: { fitclass: 102 },
+		361: { fitclass: 102 },
+		407: { fitclass: 102 },
+	},
 };
 
 var EQTDATAHISTORY = {
@@ -7513,6 +7562,12 @@ var EQTDATAHISTORY = {
 	},
 	'2020-11-27': {
 		35: { canequipS: [166] },
+	},
+	'2021-03-30': {
+		13: { canequipS: [330,346,357,421,422,423,532,537] },
+		27: { canequipS: [330,346,357,537] },
+		34: { canequipS: [330,346,357,421,422,423,532,537] },
+		40: { canequipS: [330,346,357,537] },
 	},
 };
 
