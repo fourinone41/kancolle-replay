@@ -549,6 +549,7 @@ var NOTES_SPECIAL = {
 	'48-1_boss': 'Note: Shimushu, Kunashiri, Etorofu\'s replacements are unclear but include Jintsuu and Naka.',
 	'48-5_boss': 'Note: Almost no data for B rank, assumed same pattern as other boss nodes from the event.',
 	'50-2_normal': 'Note: Slots 1 to 6 unclear',
+	'50-3_normal': 'Note: Slots 1 to 8 and node W offsets unclear',
 };
 
 // })();
