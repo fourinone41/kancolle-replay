@@ -7,7 +7,7 @@ function InitUI() {
 
 	MAPNUM = CHDATA.event.mapnum;
 	WORLD = CHDATA.event.world;
-	if(WORLD == 99) {
+	if(WORLD > 90) {
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
 	
@@ -1044,7 +1044,7 @@ function chPlayerStart() {
 function chLoadMap(mapnum) {
 	map.removeChildren();
 	world = CHDATA.event.world;
-	if(world == 99){
+	if(world > 90){
 		world = MAPDATA[world].maps[mapnum].world;
 	}
 	map.addChild(PIXI.Sprite.fromImage('assets/maps/'+world+'/'+mapnum+'.png'));
@@ -1547,6 +1547,10 @@ function prepBattle(letter) {
 	$('#enemyCompC').css('display', 'flex')
 
 	function getRandMultiplier(stat) {
+		if (stat == NaN) {
+			stat = 1;
+		}
+
 		let multiplier = Math.random() + 0.5;
 		let multiplierDisplay = multiplier * 100;
 		multiplierDisplay = Math.floor(multiplierDisplay);
@@ -1565,22 +1569,52 @@ function prepBattle(letter) {
 		stat = Math.max(stat, 0);
 
 		return {
-			s: stat,
+			s: Math.floor(stat),
 			d: multiplierDisplay,
 			db: displayBonus,
 		}
 	}
 
-	function randoStats(sid, combined) {
+	function getBonusText(bonus) {
+		if (bonus == 0) return "";
+
+		let bonusText = ` <span style="color: @p2;font-weight: bold;">@p0 @p1</span>`;
+
+		bonusText = bonusText.replace("@p0", bonus > 0 ? " +" : " ");
+		bonusText = bonusText.replace("@p1", bonus);
+		bonusText = bonusText.replace("@p2", bonus > 0 ? "green" : "red");
+
+		return bonusText;
+	}
+
+	function randoStats(sid, combined, flagship) {
 
 		let enemyDiv = $('<div>');
 
 		enemyDiv.append(`<img src="assets/icons/${SHIPDATA[sid].image}"><br>`);
 		enemyDiv.append(`${SHIPDATA[sid].name}<br>`);
-		
+
+		// --- Bonuses
+		let armor = getRandMultiplier(SHIPDATA[sid].AR);
+		let HPBonus = 0;
+		let ARBonus = 0;
+
+		if (armor.s > 400) {
+			ARBonus = (armor.s * 0.20) * -1;
+			HPBonus = (SHIPDATA[sid].HP * 0.20) + (armor.s * 0.20) ;
+		}
+
+		if (flagship) {
+			HPBonus += (0.25 * SHIPDATA[sid].HP);
+		}
+
+		HPBonus = Math.floor(HPBonus);
+		ARBonus = Math.floor(ARBonus);
+
+		// --- Rand
 		let m = getRandMultiplier(SHIPDATA[sid].HP);
-		SHIPDATA[sid].HP = Math.max(m.s, 1);
-		enemyDiv.append(`HP : ${Math.floor(SHIPDATA[sid].HP)} (x${m.d} ${m.db}) <br>`);
+		SHIPDATA[sid].HP = Math.max(m.s + HPBonus, 1);
+		enemyDiv.append(`HP : ${Math.floor(SHIPDATA[sid].HP)} (x${m.d} ${m.db}${getBonusText(HPBonus)}) <br>`);
 
 		m = getRandMultiplier(SHIPDATA[sid].FP);
 		SHIPDATA[sid].FP = m.s;
@@ -1594,9 +1628,9 @@ function prepBattle(letter) {
 		SHIPDATA[sid].AA = m.s;
 		enemyDiv.append(`AA : ${Math.floor(SHIPDATA[sid].AA)} (x${m.d} ${m.db}) <br>`);
 
-		m = getRandMultiplier(SHIPDATA[sid].AR);
-		SHIPDATA[sid].AR = Math.min(m.s, 400);
-		enemyDiv.append(`AR : ${Math.floor(SHIPDATA[sid].AR)} (x${m.d} ${m.db}) <br>`);
+		m = armor;
+		SHIPDATA[sid].AR = Math.max(Math.min(m.s + ARBonus, 400), 0);
+		enemyDiv.append(`AR : ${Math.floor(SHIPDATA[sid].AR)} (x${m.d} ${m.db}${getBonusText(ARBonus)}) <br>`);
 
 		enemyDiv.css('margin-right', '20px');
 		$('#enemyComp'+(combined ? 'C' : '')).append(enemyDiv);
@@ -1605,7 +1639,7 @@ function prepBattle(letter) {
 	// --- 1 => enemies have their normal stats
 	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
 	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
-	const RANDO_MODE = 1;
+	const RANDO_MODE = 3;
 
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
@@ -1624,7 +1658,7 @@ function prepBattle(letter) {
 			else 
 				oldShip = SHIPDATA[sid];
 	
-			randoStats(sid, 0);
+			randoStats(sid, 0, i == 0);
 	
 			enemies.push(createDefaultShip(sid,overrideStats));
 	
@@ -1653,7 +1687,7 @@ function prepBattle(letter) {
 				else 
 					oldShip = SHIPDATA[sid];
 		
-				randoStats(sid, 0);
+				randoStats(sid, 1);
 		
 				enemiesC.push(createDefaultShip(sid,overrideStats));
 		
@@ -1822,6 +1856,8 @@ function prepBattle(letter) {
 	CHAPI.battles.push(BAPI);
 	$('#code').val(JSON.stringify(CHAPI)); //remove?
 	
+	res.boss = mapdata.boss;
+	res.aironly = aironly;
 	res.NBonly = NBonly;
 	res.landbomb = landbomb;
 	res.noammo = compd.noammo;
@@ -2375,6 +2411,10 @@ function showResults() {
 			addTimeout(function() { SM.fadeBGM(); ecomplete = true; }, 266);
 		}
 	},2000);
+
+	if (CHDATA.event.world == 98) {
+		MAPDATA[98].chrGenerateDrop(CHDATA.temp);
+	}
 }
 
 function FCFSelect() {
@@ -2864,7 +2904,7 @@ function getLBASRange(ship) {
 		for (var i=0; i<ship.items.length; i++) {
 			if (ship.items[i] <= -1) continue;
 			var eq = CHDATA.gears['x'+ship.items[i]];
-			if (!LBASDATA[eq.masterId]) continue;
+			if (!LBASDATA[eq.masterId]) return 99;
 			if (LBASDATA[eq.masterId].distance > rangeMax) rangeMax = LBASDATA[eq.masterId].distance;
 		}
 		return rangeMax;
@@ -2873,7 +2913,7 @@ function getLBASRange(ship) {
 	for (var i=0; i<ship.items.length; i++) {
 		if (ship.items[i] <= -1) continue;
 		var eq = CHDATA.gears['x'+ship.items[i]];
-		if (!LBASDATA[eq.masterId]) continue;
+		if (!LBASDATA[eq.masterId]) return 99;
 		if (LBASDATA[eq.masterId].distance < rangeMin) rangeMin = LBASDATA[eq.masterId].distance;
 		if (EQDATA[eq.masterId].type == SEAPLANE || EQDATA[eq.masterId].type == CARRIERSCOUT || EQDATA[eq.masterId].type == FLYINGBOAT || EQDATA[eq.masterId].type == LANDSCOUT) {
 			rangeScout = Math.max(rangeScout,LBASDATA[eq.masterId].distance);

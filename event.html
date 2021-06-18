@@ -16,6 +16,7 @@
 		<script src="js/data/event/mapdata48.js"></script>
 		<script src="js/data/event/mapdata49.js"></script>
 		<script src="js/data/event/mapdata10.js"></script>
+		<script src="js/data/event/mapdata98.js"></script>
 		<script src="js/data/event/mapdata99.js"></script>
 		<script src="js/kcENEMYCOMP.js"></script>
 		<script src="js/data/event/enemycomp46.js"></script>
@@ -59,6 +60,7 @@
 			<td><div id="tabsupportN" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/maps/nodeR.png" /><span>Support</span></div></td>
 			<td><div id="tabsupportB" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/maps/nodeBoss.png" /><span>Support</span></div></td>
 			<td><div id="tabLBAS" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/plane13.png" /><span>LBAS</span></div></td>
+			<td><div id="tabChr" class="tabfleet" onclick="chClickedTab(this)"><img src="assets/stats/arsenal.png" /><span>Arsenal</span></div></td>
 			</tr></table>
 		</div>
 		<div id="mainfleetspacewrap">
@@ -84,6 +86,10 @@
 		<div id="lbasspacewrap" style="display:none">
 			<div id="lbasspace"></div>
 			<br style="clear:both"><div class="combinespacec" style="height:40px"></div>
+		</div>
+		
+		<div id="chrSpacewrap" style="display:none">
+			<div id="chrSpace"></div>
 		</div>
 		</div>
 		
@@ -224,6 +230,7 @@
 			<span style="font-size:12px;margin-left:750px">FPS: <span id="FPS"></span></span><br>
 			
 		</div>
+		<div id="eventLog"></div>
 		<div id="enemyComp"></div>
 		<div id="enemyCompC"></div>
 		<br style="clear:both"><br>
@@ -248,6 +255,25 @@
 			</div>
 			<div id="ssremove" onclick="chTableRemoveShip(DIALOGFLEETSEL,DIALOGSLOTSEL);chDialogShipClose()"><span>Remove</span></div>
 			<table id="shipselecttable" class="dialog4"></table>
+		</div>
+
+		<div id="chrshipselectdialog" style="background-color:#EDE6D8;display:none;font-size:14px">
+			<div style="height:25px">
+			<span class="shipfilter" id="shipsorterLevel">By Level</span>
+			<span class="shipfilter" id="shipsortName">By Name</span>
+			<span class="shipfilter" id="shipsortDate">By Date</span>
+			</div>
+			<div style="height:25px">
+			<span class="shipfilter" id="shipfilterDD">DD</span>
+			<span class="shipfilter" id="shipfilterCL">CL(T)</span>
+			<span class="shipfilter" id="shipfilterCA">CA</span>
+			<span class="shipfilter" id="shipfilterBB">BB</span>
+			<span class="shipfilter" id="shipfilterCVL">CVL</span>
+			<span class="shipfilter" id="shipfilterCV">CV</span>
+			<span class="shipfilter" id="shipfilterOther">Other</span>
+			</div>
+			<div id="chrssremove"><span>Remove</span></div>
+			<table id="chrshipselecttable" class="dialog4"></table>
 		</div>
 		
 		<div id="dialogselequip" style="background-color:#EDE6D8;display:none">
@@ -289,6 +315,7 @@
 			</div>
 			<div id="menuevents">
 			    <div class="eventbutton" style="background-image:url(assets/maps/20/banner1.png)"><img src="assets/maps/20/banner2.png" alt="RANDOM FIESTA" title="RANDOM FIESTA" onclick="chMenuSelectedEvent(99)"/></div>
+			    <div class="eventbutton" style="background-image:url(assets/maps/98/banner.png)"><img src="assets/maps/98/banner.png" alt="RANDOM FIESTA" title="Start with only 20 ships and 50 randomized equipments, you'll be able to get more while playing" onclick="chMenuSelectedEvent(98)"/></div>
 			</div>
 			<div id="menuloadfile">
 				<img src="" id="menucurbanner" /><br>
@@ -383,6 +410,10 @@
 			<img id="rewardshine" src="assets/maps/rewardshine.png" style="position:absolute;margin-left:-70px;margin-top:-95px" />
 			<img id="rewardship" src="" style="position:absolute;margin-left:90px;margin-top:105px" />
 			<img id="rewardget" src="assets/maps/rewardget.png" style="position:absolute;margin-left:180px;margin-top:-30px" />
+		</div>
+
+		<div id="chrdialoginfo" style="display:none;width:380px;overflow:hidden">
+			
 		</div>
 		
 		<script src="js/playersound.js"></script>

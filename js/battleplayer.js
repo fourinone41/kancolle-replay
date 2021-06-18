@@ -162,6 +162,7 @@ function clearTables() {
 	$('#friendfleetspace').html('');
 	$('#lbasspace').html('');
 	$('#enemyfleetspace').html('');
+	$('#chrSpace').html('');
 }
 
 function showBattleText() {

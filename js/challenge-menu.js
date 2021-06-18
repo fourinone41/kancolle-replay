@@ -17,6 +17,15 @@ $('#dialogreward').dialog({
 	modal:true,
 });
 
+$('#chrdialoginfo').dialog({
+	autoOpen:false,
+	width:480,
+	height:'auto',
+	draggable: false,
+	resizable: false,
+	modal:true,
+});
+
 function chOpenMenu(allowclose) {
 	if (!allowclose) $(".ui-dialog-titlebar").hide();
 
@@ -176,6 +185,7 @@ function chMenuClickedNewFile() {
 
 function chMenuSelectedEvent(eventnum) {
 	EVENTNUM = eventnum;
+
 	$('#menucurbanner').attr('src',MAPDATA[EVENTNUM].bannerImg);
 	chMenuDefaultSettings();
 	$('#menuevents').hide();
@@ -197,6 +207,15 @@ function chMenuSelectedEvent(eventnum) {
 	} else {
 		$('#menusmechunique').parent().hide();
 		$('#menusmechunique').parent().attr('title','');
+	}
+
+	if (EVENTNUM == 98) {
+		localStorage.ch_import = 1;
+		chrInitFile();
+
+		$('#menuImportKC3').hide();
+		$('#menuImportOther').hide();
+		$('#menuCreateRandomFile').hide();
 	}
 }
 
@@ -258,6 +277,11 @@ function chMenuDone() {
 		chAddReward(MAPDATA[EVENTNUM].initReward);
 		chShowReward(MAPDATA[EVENTNUM].initReward);
 	}
+
+	if (EVENTNUM == 98) {
+		MAPDATA[98].chrProcessAfterFileCreation();
+	}
+
 	chSave();
 }
 
@@ -505,7 +529,7 @@ $('#btnImportRandomSubmit').click(function() {
 	let allowAbyssals = $('#inpCreateRandomAbyssalShip').prop('checked');
 	let allowAbyssalsEquips = $('#inpCreateRandomAbyssalEquipments').prop('checked');
 
-	chProcessCreateRandomFile(nbShips, nbEquips, name, level, true, allowAbyssals, allowAbyssalsEquips);
+	chProcessCreateRandomFile(nbShips, nbEquips, name, level, true, allowAbyssals, allowAbyssalsEquips, true);
 
 	$('#menusdone').prop('disabled',false);
 	$('#menufname').text(CHDATA.kcdata.player.name);

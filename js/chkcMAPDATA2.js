@@ -30160,7 +30160,7 @@ function isShipInList(ships,basemid) {
 	var ship = SHIPDATA[basemid];
 	var done = [];
 	while(ship) {
-		if (ships.indexOf(basemid)!=-1) return true;
+		if (ships.indexOf(basemid.toString())!=-1) return true;
 		if (!ship.next) break;
 		basemid = ship.next;
 		ship = SHIPDATA[ship.next];

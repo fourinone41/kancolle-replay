@@ -1,6 +1,7 @@
 var CHDATA = {};
 var FILE = 1;
 var EVENTNUM = 27;
+var EVENTMODE = 1;
 var DIALOGSLOTSEL = -1;
 var DIALOGITEMSEL = -1;
 var DIALOGFLEETSEL = 1;
@@ -70,6 +71,7 @@ SHIPDATA[5003] = {
 }
 
 $('#shipselectdialog').dialog({autoOpen:false,width:480,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
+$('#chrshipselectdialog').dialog({autoOpen:false,width:480,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
 $('#dialogselequip').dialog({autoOpen:false,width:400,height:600,modal:true,open:function() {$(this).scrollTop(0);} });
 
 function chCreateFleetTable(root,num,name,noheader) {
@@ -178,6 +180,7 @@ chCreateFleetTable('#escortfleetspace',2,'Escort Fleet',true);
 chCreateFleetTable('#supportfleetspace1',3,'Normal Support');
 chCreateFleetTable('#supportfleetspace2',4,'Boss Support');
 chCreateFleetTableLBAS('#lbasspace',5,'Land Base');
+chrFillArsenalTab();
 
 function chAddDragShip(fleetnum,slot) {
 	let imgPortrait = $('#fleetimg'+fleetnum+slot);
@@ -235,6 +238,7 @@ function chAddDragEquip(fleetnum,shipslot,eqslot) {
 	});
 }
 
+$('#tabChr').attr('value', 1);
 $('#tabsupportN').attr('value',1);
 $('#tabsupportB').attr('value',1);
 $('#tabLBAS').attr('value',1);
@@ -266,15 +270,23 @@ function chClickedTab(tab) {
 	} else {
 		$('#lbasspacewrap').show();
 	}
+
+	if (id != 'tabChr') {
+		$('#tabChr').attr('value', 1);
+		$('#chrSpacewrap').hide();
+	} else {
+		$('#chrSpacewrap').show();
+		chrFillArsenalTab();
+	}
 }
 
 function chFillDialogShip(sortmethod) {
-	if (sortmethod == DIALOGSORT) return;
 	var table = $('#shipselecttable');
 	table.html('');
 	var ships = [];
 	for (var sid in CHDATA.ships) {
 		if (CHDATA.ships[sid].disabled) continue; //don't allow unreleased ships
+		if (CHDATA.ships[sid].LVL > 180 && CHDATA.fleets[3].includes(sid)) continue; //don't allow cheat ships
 		ships.push(sid);
 	}
 	switch (sortmethod) {
@@ -357,9 +369,6 @@ function chDialogShip(fleet,slot) {
 	$('#shipselectdialog').dialog('open');
 	chFillDialogShip(1);
 	chFilterDialogShip();
-
-	// randomize
-	//chRandomizeShip(fleet, slot);
 }
 
 function chRandomizeShip(fleet,slot) {
@@ -501,7 +510,7 @@ function chDialogShowItems(shipmid,types) {
 		if (include && DIALOGITEMSEL == CHITEMSMAX+1) {
 			let found = false;
 			let dateC = (MAPDATA[WORLD].date > CHDATA.config.mechanicsdate)? MAPDATA[WORLD].date : CHDATA.config.mechanicsdate;
-			if (CHDATA.event.world == 99) dateC = '2099-01-01';
+			if (CHDATA.event.world > 90) dateC = '2099-01-01';
 			for (let date in EXPANSIONSLOTDATA) {
 				if (date > dateC) continue;
 				if (EXPANSIONSLOTDATA[date].types && EXPANSIONSLOTDATA[date].types.indexOf(equip.type) != -1) { found = true; break; }
@@ -575,6 +584,7 @@ function chDialogItem(fleet,eqnum,slot) {
 
 function chDialogItemFilter(category) {
 	var mid = CHDATA.ships[CHDATA.fleets[DIALOGFLEETSEL][DIALOGSLOTSEL-1]].masterId;
+	mid = parseInt(mid);
 	var types;
 	switch (category) {
 		default: case 1: types=[MAINGUNS,MAINGUNSAA]; break;
@@ -628,7 +638,7 @@ function chSetEquip(itemid) {
 	
 	if (item && DIALOGFLEETSEL == 5) { //LBAS only
 		var num = chGetLBASNumPlanes(item);
-		CHDATA.event.resources.baux += num * LBASDATA[item.masterId].cost;
+		CHDATA.event.resources.baux += num * (LBASDATA[item.masterId] ? LBASDATA[item.masterId].cost : 1);
 		chUIUpdateResources();
 	}
 }
@@ -859,7 +869,10 @@ var shipKeys = Object.keys(SHIPDATA);
 		nextlvl: Int16Array,
 	}}
  */
-function chGetRandomShip() {
+function chGetShipForRandomFile(defaultId, randomStat) {
+	if (!randomStat)
+		return SHIPDATA[defaultId];
+
 	let key = shipKeys[shipKeys.length * Math.random() << 0];
 	return SHIPDATA[key];
 }
@@ -868,7 +881,7 @@ function chGetRandomShipId() {
 	return shipKeys[shipKeys.length * Math.random() << 0];
 }
 
-function chProcessCreateRandomFile(nbShips, nbEquipments, name, level, randomUpgrades, abyssalsShips, abyssalsEquipments) {
+function chProcessCreateRandomFile(nbShips, nbEquipments, name, level, randomUpgrades, abyssalsShips, abyssalsEquipments, randomStat) {
 	CHDATA = {};
 	CHDATA.kcdata = {};
 	CHDATA.randomFile = true;
@@ -906,70 +919,8 @@ function chProcessCreateRandomFile(nbShips, nbEquipments, name, level, randomUpg
 	}
 
 	CHDATA.kcdata.ships = {};
-	var ship = {};
 	for (let id = 1; id < nbShips; id++){
-		ship = {
-			hp: [],
-			fp: [],
-			tp: [],
-			aa: [],
-			ar: [],
-			ev: [],
-			as: [],
-			ls: [],
-			lk: [],
-		};
-		
-		ship.rosterId = id;
-		ship.masterId = chGetRandomShipId();
-		ship.level = Math.floor(Math.random() * 176);
-
-		// HP = Base HP + Marriage HP + HP Mod
-		if(ship.level > 99){
-			let HPmarriage = [4,4,4,5,6,7,7,8,8,9][Math.floor(chGetRandomShip().HP/10)] || 9;
-			ship.hp[0] = ship.hp[1] = chGetRandomShip().HP + (HPmarriage || 0);
-		}else{
-			ship.hp[0] = ship.hp[1] = chGetRandomShip().HP;
-		}
-
-		ship.fp[0] = ship.fp[1] = chGetRandomShip().FP;
-
-		ship.tp[0] = ship.tp[1] = chGetRandomShip().TP;
-
-		ship.aa[0] = ship.aa[1] = chGetRandomShip().AA;
-
-		ship.ar[0] = ship.ar[1] = chGetRandomShip().AR;
-
-		let shipd = chGetRandomShip();
-		shipd.EVbase = shipd.EVbase ? shipd.EVbase : 0;
-
-		ship.ev[0] = ship.ev[1] = getEvasion(shipd, ship.level);
-
-		shipd = chGetRandomShip();
-		shipd.ASWbase = shipd.ASWbase ? shipd.ASWbase : 0;
-
-		ship.as[0] = ship.as[1] = getASW(shipd, ship.level);
-
-		shipd = chGetRandomShip();
-		shipd.LOSbase = shipd.LOSbase ? shipd.LOSbase : 0;
-
-		ship.ls[0] = ship.ls[1] = getLOS(shipd, ship.level);
-
-		ship.lk[0] = ship.lk[1] = chGetRandomShip().LUK;
-
-		ship.range = chGetRandomShip().RNG;
-		ship.speed = chGetRandomShip().SPD;
-
-		ship.items = [-1, -1, -1, -1, -1];
-
-		shipd = chGetRandomShip();
-		ship.slots = shipd.SLOTS ? shipd.SLOTS : [0, 0, 0, 0, 0];
-		ship.slotnum = ship.slots.length;
-
-		ship.fuel = chGetRandomShip().fuel;
-		ship.ammo = chGetRandomShip().ammo;
-
-		ship.morale = 49;
+	    var ship = chrCreateRandomShip(id, randomStat);
 
 		CHDATA.kcdata.ships["x"+id++] = ship;
 	}
@@ -1559,6 +1510,7 @@ function chStart() {
 	$('#battlespace').css('animation','');
 	$('#battlespace').css('animation','fadein 0.25s linear');
 	chClickedTab('#tabmain');
+	chrClearLog();
 	chBlockFleetUI();
 	chPlayerStart();
 }
@@ -2011,7 +1963,7 @@ function chToggleShowSF(show) {
 //----------------sortie----------------
 function chLoadSortieInfo(mapnum) {
 	var world = CHDATA.event.world;
-	if(world == 99){
+	if(world > 90){
 		world = MAPDATA[world].maps[mapnum].world;
 	}
 	if (!MAPDATA[world]) return;
@@ -2203,7 +2155,7 @@ function chClickedSortieLeft() {
 
 	MAPNUM--;
 	WORLD = CHDATA.event.world;
-	if(WORLD == 99) {
+	if(WORLD > 90) {
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
 
@@ -2216,7 +2168,7 @@ function chClickedSortieRight() {
 
 	MAPNUM++;
 	WORLD = CHDATA.event.world;
-	if(WORLD == 99) {
+	if(WORLD > 90) {
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
 	
@@ -2651,6 +2603,12 @@ function chUnequipAllShip(fleet, shipslot){
 		chShipEquipItem(shipid,-1,i);
 	}
 	chTableSetShip(shipid, fleet, shipslot);
+}
+
+function chUnequipAllShipById(shipId){
+	for (var i=0; i<CHITEMSMAX+1; i++) {
+		chShipEquipItem(shipId,-1,i);
+	}
 }
 
 function chBlockFleetUI() {

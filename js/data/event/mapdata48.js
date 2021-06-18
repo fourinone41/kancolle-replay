@@ -1614,15 +1614,6 @@ MAPDATA[48] =
 								if (['DE','SS','SSV','CV','CVL','CVB'].indexOf(ship.type) == -1) {
 									ship.bonusSpecial.push({mod:1.1});
 								}
-								let debuffed = CHDATA.event.maps[3].debuffed || MAPDATA[48].maps[3].debuffCheck(CHDATA.event.maps[3].debuff);
-								if (debuffed) {
-									ship.bonusSpecial.push({mod:1.08,on:[1942,1943,1944]});
-								}
-								for (let mid = 1942; mid <= 1944; mid++) {
-									SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
-									VOICES[mid].attack = debuffed ? VOICES[mid].attackB : VOICES[mid].attackN;
-									VOICES[mid].damage = debuffed ? VOICES[mid].damageB : VOICES[mid].damageN;
-								}
 							}
 						},
 						compDiff: {

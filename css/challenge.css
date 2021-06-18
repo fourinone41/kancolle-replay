@@ -77,7 +77,7 @@ table.t2 td {
 	width: 40px;
 	padding: 2px;
 }
-table.t2 div.t2name {
+table.t2 div.t2name, .chrt2name {
 	color: white;
 	font-weight: bold;
 	border: 1px solid #336699;
@@ -87,7 +87,7 @@ table.t2 div.t2name {
 	padding: 0 4px 0 4px;
 	font-size: 16px;
 }
-table.t2 div.t2name:hover {
+table.t2 div.t2name:hover, div.chrt2name:hover {
 	border-color: red;
 	cursor: pointer;
 }
@@ -294,19 +294,19 @@ table.dialog4 img {
 }
 
 
-#esremove, #ssremove {
+#esremove, #chrssremove, #ssremove {
 	height: 40px;
 	width: 358px;
 	background-color: white;
 	border: 1px solid black;
 }
 
-#esremove:hover, #ssremove:hover {
+#esremove:hover, #ssremove:hover, #chrssremove:hover {
 	background-color: #78BEB5;
 	cursor: pointer;
 }
 
-#esremove span, #ssremove span {
+#esremove span, #ssremove span, #chrssremove span {
 	margin-left: 38px;
 	font-size: 14px;
 }
@@ -533,4 +533,36 @@ tr.chfile:hover {
 @keyframes glow {
 	from { color: #FF0000; }
 	to { color: #FFDDDD; }
+}
+
+.chrArsenalGroup {
+	margin: 10px;
+    padding: 4px;
+    border-radius: 10px;
+    background-color: #d0d0d0;
+}
+
+.chrt2name {
+	font-family: Arial, Helvetica, sans-serif;
+	margin-bottom: 5px;
+}
+
+.chrHelpButton {
+	border: 1px solid #336699;
+	border-radius: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+    cursor: pointer;
+    background-color: #7799BB;
+	color: white;
+}
+
+.chrShipSelectionTitle {    
+	text-align: center;
+    margin: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-style: italic;
 }

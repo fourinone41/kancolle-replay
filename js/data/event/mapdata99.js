@@ -76,8 +76,8 @@ function randomizeMaps(){
 function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
     for(event_id in MAPDATA){
-        if(event_id !== "99"){
-            if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
+        if(!["99", '98'].includes(event_id)){
+            if(MAPDATA[event_id].maps[MAPNUM] !== undefined && !tested[event_id][MAPNUM-1]){
                 let map = {};
 
                 map.world = event_id;
@@ -90,11 +90,11 @@ function chRandomizeMap(MAPNUM) {
 }
 
 function chRandomizeMaps() {
-        var maps = {};
-        for(var i = 1; i < 8; i++){
+    var maps = {};
+    for(var i = 1; i < 8; i++){
         maps[i] = chRandomizeMap(i);
-                    }
-        return maps;
+    }
+    return maps;
 }
 
 function chLoadRandomFile() {
@@ -168,11 +168,11 @@ function chHelpLink() {
 
     if (WORLD > 47) {
         if (WORLD == 48)
-        eventName = 'Summer_2020_';
+            eventName = 'Summer_2020_Event';
 
-        let suffixe = (MAPNUM < 5 ? '/Main_Operations' : '/Extra_Operations') + `#E${MAPNUM}`;
+        let suffixe = (MAPNUM < 5 ? '/Main_Operations' : '/Extra_Operations') + `#E-${MAPNUM}`;
 
-        return `<a href="https://en.kancollewiki.net/${eventName}_Event${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;
+        return `<a href="https://en.kancollewiki.net/${eventName}${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;
     }
 
     let suffixe = `#/E-${MAPNUM}`;
@@ -318,6 +318,9 @@ function chrApplyDebuff(ship) {
     // --- New Southern Battleship Princess
     ship.bonusSpecial.push({mod:1.1,on:[1965,1966,1967,1968,1969,1970]});
 
+    // --- Gotou princess
+    ship.bonusSpecial.push({mod:1.08,on:[1939,1940,1941,1942,1943,1944]});
+
     // --- South pacific CV princess
     ship.bonusSpecial.push({mod:1.1,type:2,on:[1971,1972,1973,1974,1975,1976]});
     
@@ -350,6 +353,12 @@ function chrApplyDebuffedForm(abyssal) {
     // --- Anti-Air Cruiser Princess    
     if ([1909,1910,1911,1912,1913,1914].includes(idBoss)) {
         VOICES[idBoss].damage = 'assets/voice/466191231.mp3';
+    }
+    
+    // --- Gotou princess
+    for (let mid = 1942; mid <= 1944; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackB;
+        VOICES[mid].damage = VOICES[mid].damageB;
     }
 
     // --- New Southern Battleship Princess
@@ -387,6 +396,12 @@ function chrApplyBaseForm(abyssal) {
     // --- Anti-Air Cruiser Princess
     if ([1909,1910,1911,1912,1913,1914].includes(idBoss)) {
         VOICES[idBoss].damage = 'assets/voice/466191230.mp3';
+    }
+
+    // --- Gotou princess
+    for (let mid = 1942; mid <= 1944; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackN;
+        VOICES[mid].damage = VOICES[mid].damageN;
     }
 
     // --- New Southern Battleship Princess
@@ -460,7 +475,7 @@ const bossIds = [
 function chInitAbyssalTables () {
 	
 	for (ship_id in SHIPDATA) {
-		if (ship_id >= 1500 && ship_id < 9000) {
+		if (ship_id >= 1500 && ship_id < 3000) {
 			let ship = SHIPDATA[ship_id];
 
 			if (bossIds.indexOf(parseInt(ship_id)) !== -1) {
@@ -485,4 +500,151 @@ function chInitAbyssalTables () {
 			SHIPDATA[ship_id].ammo = 100;
 		}
 	}
+}
+
+/**
+ * Create the equipment and return its id
+ * @param {*} mid 
+ */
+ function chrAddEquipment(mid, stars) {    
+    if (!EQDATA[mid]) return;
+    let eqid;
+
+    for (var j=0; j<1000; j++) {
+        eqid = 'x'+(90000+j);
+        if (CHDATA.gears[eqid]) continue;
+
+        var newequip = {
+            itemId: eqid,
+            masterId: mid,
+            lock: 1,
+            stars: stars ? stars : 0,
+            ace: ((EQTDATA[EQDATA[mid].type].isPlane)? 7 : -1)
+        };
+        CHDATA.gears[eqid] = newequip;
+
+        return (90000+j);
+    }
+
+    return 0;
+}
+
+/**
+ * Create the ship and return its id
+ * @param {*} mid 
+ */
+ function chrAddShip(mid, level) { 
+    if (!SHIPDATA[mid]) return;
+    let sid;
+
+    for (var j=0; j<1000; j++) {
+        sid = 'x'+(90000+j);
+        if (CHDATA.ships[sid]) continue;
+        var sdata = SHIPDATA[mid];
+        var lvl = level ? level : 1;
+
+        const EV = sdata.EVbase ? sdata.EVbase + Math.floor((sdata.EV-sdata.EVbase)*lvl/99) : sdata.EV;
+        const LOS = sdata.LOSbase ? sdata.LOSbase + Math.floor((sdata.LOS-sdata.LOSbase)*lvl/99) : sdata.LOS;
+        const ASW = sdata.ASWbase ? sdata.ASWbase + Math.floor((sdata.ASW-sdata.ASWbase)*lvl/99) : sdata.ASW;
+
+        var newship = {
+            HP: [sdata.HP, sdata.HP],
+            LVL: lvl,
+            FP: sdata.FP,
+            TP: sdata.TP,
+            AA: sdata.AA,
+            AR: sdata.AR,
+            EV: EV,
+            LOS: LOS,
+            ASW: ASW,
+            LUK: sdata.LUK,
+            RNG: sdata.RNG,
+            ammo: 10,
+            fuel: 10,
+            items: [-1,-1,-1,-1,-1],
+            masterId: mid,
+            morale: 49,
+            planes: sdata.SLOTS.slice(),
+            ex: 1
+        };
+
+        // HP = Base HP + Marriage HP + HP Mod
+        if (newship.LVL > 99){
+            let HPmarriage = [4,4,4,5,6,7,7,8,8,9][Math.floor(newship.HP/10)] || 9;
+            newship.HP[0] = newship.HP[1] = sdata.HP + (HPmarriage || 0);
+        }
+
+        CHDATA.ships[sid] = newship;
+
+        return (90000+j);
+    }
+
+    return 0;
+}
+
+function chrCreateRandomShip(id, randomStat) {
+    let ship = {
+        hp: [],
+        fp: [],
+        tp: [],
+        aa: [],
+        ar: [],
+        ev: [],
+        as: [],
+        ls: [],
+        lk: [],
+    };
+    
+    ship.rosterId = id;
+    ship.masterId = chGetRandomShipId();
+    ship.level = Math.max(1, Math.floor(Math.random() * 176));
+
+    // HP = Base HP + Marriage HP + HP Mod
+    if(ship.level > 99){
+        let HPmarriage = [4,4,4,5,6,7,7,8,8,9][Math.floor(chGetShipForRandomFile(ship.masterId, randomStat).HP/10)] || 9;
+        ship.hp[0] = ship.hp[1] = chGetShipForRandomFile(ship.masterId, randomStat).HP + (HPmarriage || 0);
+    }else{
+        ship.hp[0] = ship.hp[1] = chGetShipForRandomFile(ship.masterId, randomStat).HP;
+    }
+
+    ship.fp[0] = ship.fp[1] = chGetShipForRandomFile(ship.masterId, randomStat).FP;
+
+    ship.tp[0] = ship.tp[1] = chGetShipForRandomFile(ship.masterId, randomStat).TP;
+
+    ship.aa[0] = ship.aa[1] = chGetShipForRandomFile(ship.masterId, randomStat).AA;
+
+    ship.ar[0] = ship.ar[1] = chGetShipForRandomFile(ship.masterId, randomStat).AR;
+
+    let shipd = chGetShipForRandomFile(ship.masterId, randomStat);
+    shipd.EVbase = shipd.EVbase ? shipd.EVbase : 0;
+
+    ship.ev[0] = ship.ev[1] = getEvasion(shipd, ship.level);
+
+    shipd = chGetShipForRandomFile(ship.masterId, randomStat);
+    shipd.ASWbase = shipd.ASWbase ? shipd.ASWbase : 0;
+
+    ship.as[0] = ship.as[1] = getASW(shipd, ship.level);
+
+    shipd = chGetShipForRandomFile(ship.masterId, randomStat);
+    shipd.LOSbase = shipd.LOSbase ? shipd.LOSbase : 0;
+
+    ship.ls[0] = ship.ls[1] = getLOS(shipd, ship.level);
+
+    ship.lk[0] = ship.lk[1] = chGetShipForRandomFile(ship.masterId, randomStat).LUK;
+
+    ship.range = chGetShipForRandomFile(ship.masterId, randomStat).RNG;
+    ship.speed = chGetShipForRandomFile(ship.masterId, randomStat).SPD;
+
+    ship.items = [-1, -1, -1, -1, -1];
+
+    shipd = chGetShipForRandomFile(ship.masterId, randomStat);
+    ship.slots = shipd.SLOTS ? shipd.SLOTS : [0, 0, 0, 0, 0];
+    ship.slotnum = ship.slots.length;
+
+    ship.fuel = chGetShipForRandomFile(ship.masterId, randomStat).fuel;
+    ship.ammo = chGetShipForRandomFile(ship.masterId, randomStat).ammo;
+
+    ship.morale = 49;
+
+    return ship;
 }
