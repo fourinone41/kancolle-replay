@@ -299,7 +299,11 @@
 		
 		<div id="dialogmainmenu">
 			<span>KanColle Event Simulator</span><span style="margin-left:20px;color:red;font-size:12px"></span>
-			<br><br><br>
+			<br><br>
+			<button type="button"><a id="download-button">Download save</a></button>
+			<button type="button" onclick="chLoadUploadedFile()">Load save</button>
+			<input type="file" id="save-file" />
+			<br>
 			<div id="menufileselect">
 				<span style="font-size:10px;color:red"><span id="menustorage"></span>/<span id="menustoragemax"></span> MB used</span>
 				<span style="font-size:10px;color:red;margin-left:20px" id="menustoragewarn">Please delete a file or use a new browser profile.</span>

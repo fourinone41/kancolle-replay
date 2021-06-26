@@ -266,6 +266,7 @@ function chrFillDialogShip(sortmethod, callback) {
 		tr.append($('<td>'+htmllock+'<img src="assets/icons/'+shipd.image+'" /></td>'));
 		let $stats = chMakeShipStats(ship);
 		tr.append($('<td class="right">'+$stats+'</td>'));
+		tr.append(chMakeShipHeartLock(ship.heartlock, ships[i]));
 		table.append(tr);
 	}
 	
@@ -322,6 +323,11 @@ chrFillArsenalTab.AddRerollShipGroup = function () {
 
     let filter = (shipId) => {
         let shipsInFleet = [];
+
+        // Don't includ locked ships
+        if (CHDATA.ships[shipId].heartlock) {
+            return false;
+        }
 
         // --- Don't allow ships in fleet
         if (CHDATA && CHDATA.fleets) {
@@ -557,6 +563,11 @@ For each level gained, a stat will be increased beyond its maximum value between
 
         /*if (CHDATA.ships[shipId].LVL >= 175) 
             return false;*/
+            
+        // Don't includ unlocked ships TODO : remove for release
+        if (!CHDATA.ships[shipId].heartlock) {
+            return false;
+        }
 
         return (fodderId != shipId);
     }
@@ -573,6 +584,11 @@ For each level gained, a stat will be increased beyond its maximum value between
     // --- Add fodder button
     filter = (shipId) => {
         let shipsInFleet = [];
+
+        // Don't includ locked ships
+        if (CHDATA.ships[shipId].heartlock) {
+            return false;
+        }
 
         // --- Don't allow ships in fleet
         if (CHDATA && CHDATA.fleets) {
@@ -592,6 +608,7 @@ For each level gained, a stat will be increased beyond its maximum value between
             shipsInFleet.push(shipModernizedId);
 
         if (shipsInFleet.includes(shipId)) return false;
+
         return true;
     }
     

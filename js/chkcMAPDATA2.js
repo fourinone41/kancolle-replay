@@ -2343,7 +2343,7 @@ var MAPDATA = {
 				name: 'E-4',
 				nameT: 'Central Pacific Sea - Sweep Against Subs in the Frontline',
 				fleetTypes: [0],
-				bgmMap: 2001,
+				bgmMap: 43,
 				bgmDN: 10,
 				bgmNN: 10,
 				bgmDB: 9,
@@ -8241,7 +8241,12 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
 						routeC: function(ships) {
-							if (isShipInList(ships.ids,441) || isShipInList(ships.ids,442) || isShipInList(ships.ids,443)) return 'J';
+							// --- Cheat :)
+							let italians = [443,575, 449,448, 444, 441,442, 535]
+
+							for (let id of italians) {
+								if (isShipInList(ships.ids, id)) return 'J';
+							}
 							return (Math.random() < .5)? 'I' : 'J';
 						}
 					},
@@ -24030,14 +24035,16 @@ var MAPDATA = {
 									if (equip.type == SEAPLANEFIGHTER) hasSPFSPB = true;
 								}
 
-								if (hasT3shell) bonuses.push({ mod: 1.35, on: [1821,1822,1823,1824,1825,1826] });
-								if (hasSPFSPB) bonuses.push({ mod: 1.3, on: [1821,1822,1823,1824,1825,1826] });
+								let bossmid = FLEETS2[0].ships[0].mid;
 
-								if(nbDB === 1) bonuses.push({ mod: 1.4, on: [1821,1822,1823,1824,1825,1826] });
-								if(nbDB > 1) bonuses.push({ mod: 2.1, on: [1821,1822,1823,1824,1825,1826] });
+								if (hasT3shell) bonuses.push({ mod: 1.35, on: [bossmid] });
+								if (hasSPFSPB) bonuses.push({ mod: 1.3, on: [bossmid] });
+
+								if(nbDB === 1) bonuses.push({ mod: 1.4, on: [bossmid] });
+								if(nbDB > 1) bonuses.push({ mod: 2.1, on: [bossmid] });
 
 								if (historicals.indexOf(getBaseId(ship.mid)) != -1) {
-									bonuses.push({ mod: 1.2, on: [1821,1822,1823,1824,1825,1826] });;
+									bonuses.push({ mod: 1.2, on: [bossmid] });;
 								}
 
 								if (bonuses.length) {

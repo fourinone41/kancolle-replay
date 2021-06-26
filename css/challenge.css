@@ -566,3 +566,9 @@ tr.chfile:hover {
     font-size: 14px;
     font-style: italic;
 }
+
+button.heartlock_button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}

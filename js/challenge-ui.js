@@ -70,8 +70,8 @@ SHIPDATA[5003] = {
 	ammo: 0,
 }
 
-$('#shipselectdialog').dialog({autoOpen:false,width:480,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
-$('#chrshipselectdialog').dialog({autoOpen:false,width:480,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
+$('#shipselectdialog').dialog({autoOpen:false,width:550,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
+$('#chrshipselectdialog').dialog({autoOpen:false,width:550,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
 $('#dialogselequip').dialog({autoOpen:false,width:400,height:600,modal:true,open:function() {$(this).scrollTop(0);} });
 
 function chCreateFleetTable(root,num,name,noheader) {
@@ -310,10 +310,32 @@ function chFillDialogShip(sortmethod) {
 		tr.append($('<td>'+htmllock+'<img src="assets/icons/'+shipd.image+'" /></td>'));
 		let $stats = chMakeShipStats(ship);
 		tr.append($('<td class="right">'+$stats+'</td>'));
+		tr.append(chMakeShipHeartLock(ship.heartlock, ships[i]));
 		table.append(tr);
 	}
 	
 	DIALOGSORT = sortmethod;
+}
+
+function chMakeShipHeartLock(locked, shipId) {
+	let $container = $('<td class="right"></td>');
+
+	let $heartlock = $(`<button class="heartlock_button" type="button"></button>`);
+	$container.append($heartlock);
+
+	let img = locked ? "assets/heartlock_1.png" : "assets/heartlock_2.png";
+
+	let $img = $(`<img src="${img}"></img>`);
+	$heartlock.append($img);
+
+	$container.click((e) => {
+		e.stopPropagation();
+		CHDATA.ships[shipId].heartlock = !CHDATA.ships[shipId].heartlock;
+		img = CHDATA.ships[shipId].heartlock ? "assets/heartlock_1.png" : "assets/heartlock_2.png";
+		$img.attr('src', img);
+	});
+
+	return $container;
 }
 
 function chMakeShipStats(ship) {

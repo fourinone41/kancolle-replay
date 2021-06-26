@@ -1941,9 +1941,11 @@ MAPDATA[49] =
 							
 							let debuffed = CHDATA.event.maps[3].debuffed || MAPDATA[49].maps[3].debuffCheck(CHDATA.event.maps[3].debuff);
 							if (debuffed) {
+								let bossmid = FLEETS2[0].ships[0].mid;
+
 								for (let ship of ships) {
 									if (!ship.bonusSpecial) ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.06,on:[1982,1983,1984]});
+									ship.bonusSpecial.push({mod:1.06,on:[bossmid]});
 								}
 							}
 						},

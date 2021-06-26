@@ -222,6 +222,11 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
             var obj_keys = Object.keys(ennemies);
             var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 
+            if (!isBoss && strongEnemiesIds.indexOf(parseInt(shipID)) != -1) {
+                // --- REROLL ONCE
+                shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+            }
+
             compMain.push(parseInt(shipID));
         }
     }
@@ -253,14 +258,19 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
         for(ship in compData.ce){
             var ship_id = compData.ce[ship];
 
-            if(Object.keys(bossEscort).indexOf(ship_id.toString()) !== -1){
+            if (Object.keys(bossEscort).indexOf(ship_id.toString()) !== -1){
                 var obj_keys = Object.keys(bossEscort);
                 var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 
                 compEscort.push(parseInt(shipID));
-            }else{
+            } else {
                 var obj_keys = Object.keys(ennemiesEscort);
                 var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+
+                if (strongEnemies.indexOf(parseInt(shipID))) {
+                    // --- REROLL ONCE
+                    shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+                }
 
                 compEscort.push(parseInt(shipID));
             }
@@ -425,6 +435,7 @@ var escortAbyssalsBoss = [];
 
 var abyssals = [];
 var boss = [];
+var strongEnemies = [];
 
 var installationBoss = [];
 var installation = [];
@@ -433,7 +444,8 @@ var submarines = [];
 var submarinesBoss = [];
 
 const bossIds = [
-    1539,1540,1544,1545,1546,1547,1548,1556,1557,1573,1574,1581,1582,1583,1584,1585,1586,1587,
+    1548,
+    1556,1557,1573,1574,1581,1582,1583,1584,1585,1586,1587,
 	1588,1589,1590,1597,1598,1599,1600,1601,1602,1603,1604,1605,1606,1607,1608,1609,1610,1611,
 	1612,1613,1619,1620,1625,1626,1627,1628,1629,1630,1631,1632,1633,1634,1635,
 	1636,1641,1642,1643,1647,1648,1649,1650,1651,1652,1653,1654,1655,1656,1657,
@@ -468,8 +480,20 @@ const bossIds = [
     1979, 1980, 1981, 1982, 1983, 1984,     // --- New Battleship Princess
     1985, 1986, 1987,                       // --- Submarine Princess Kai B Flagship
     1988, 1989, 1990, 1991, 1992, 1993,     // --- Abyssal Bamboo Princess
+    1994, 1995,                             // --- Supply Depot Princess B 4
+    1996,                                   // --- Submarine Princess Kai B Flagship 4
+    1997,                                   // --- Aircraft Carrier Princess Kai 4
+    2000, 2001, 2002, 2003, 2004, 2005,     // --- Lunga Point Heavy Cruiser Princess
+    2006, 2007, 2008, 2009, 2010, 2011,     // --- New Light Cruiser Princess
 
 	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
+];
+
+const strongEnemiesIds = [
+    1539,1540,1544,1545,1546,1547,      // --- Early bosses
+    1561, 1562,                         // --- Re class 
+    1895, 1896,                         // --- Ne kai 1 & 2
+    1953, 1954,                         // --- Summer Ne kai 1 & 2
 ];
     
 function chInitAbyssalTables () {
@@ -493,6 +517,10 @@ function chInitAbyssalTables () {
 				if (!ship.type.includes('CV') && !ship.type.includes('BB') && !ship.type.includes('SS')) {
 					escortAbyssals[ship_id] = ship;
 				}
+
+                if (strongEnemiesIds.indexOf(parseInt(ship_id))) {
+                    strongEnemies[ship_id] = ship;
+                }
 			}
 			allAbyssals[ship_id] = ship;
 

@@ -29,6 +29,8 @@ $('#chrdialoginfo').dialog({
 function chOpenMenu(allowclose) {
 	if (!allowclose) $(".ui-dialog-titlebar").hide();
 
+	chPrepareSaveFile();
+	
 	$('#dialogmainmenu').dialog('open');
 	
 	var foundfile = false;
