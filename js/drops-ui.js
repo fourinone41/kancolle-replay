@@ -162,6 +162,7 @@ function changeTable(prop) {
 		}
 	}
 	for (let replace of SHIPGET[prop].replace) {
+		if (replace.hidden) continue;
 		for (let slot of replace.slots) {
 			$('#imgDropsR'+slot).attr('src',getShipImagePath(replace.id));
 			$('#tdDropsName'+slot).text($('#tdDropsName'+slot).text()+'/'+getShipName(replace.id));
@@ -543,13 +544,14 @@ function getExportData() {
 }
 
 var NOTES_SPECIAL = {
-	'1-6_normal': 'Note: Nagara (長良) used to drop on slot 11 (?) before 2018-10-26 (end of Saury event).',
+	'1-6_normal': 'Note: Nagara (長良) used to drop on slot 11 (?) before 2018-10-26 (end of Saury event).<br>&nbsp;&nbsp;Yura used to drop on slot 13 before 2019-10-26 (beginning of 2019 Saury event).<br>&nbsp;&nbsp;Tone used to drop on slot 11 at some point.',
 	'45-2_boss': 'Note: Zara/Pola drop rate was changed 2019-09-04.',
 	'48-1_normal': 'Note: Shimushu, Kunashiri, Etorofu\'s replacements are unclear.',
 	'48-1_boss': 'Note: Shimushu, Kunashiri, Etorofu\'s replacements are unclear but include Jintsuu and Naka.',
 	'48-5_boss': 'Note: Almost no data for B rank, assumed same pattern as other boss nodes from the event.',
 	'50-2_normal': 'Note: Slots 1 to 6 unclear',
 	'50-3_normal': 'Note: Slots 1 to 8 and node W offsets unclear',
+	'50-5_normal': 'Note: Low data for node Y, slots 1 to 8 unclear',
 };
 
 // })();
