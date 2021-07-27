@@ -13,6 +13,14 @@ MAPDATA[46] =
 		bannerImg: 'assets/maps/46/banner1.png',
 		bannerImgAlt: 'assets/maps/46/banner2.png',
 		transportCalc: transportCalcStandard,
+		overrideStats: {
+			1659: { HP: 350 },
+			1660: { HP: 370 },
+			1661: { HP: 390 },
+			1662: { HP: 350 },
+			1663: { HP: 370 },
+			1664: { HP: 390 },
+		},
 		friendFleet: {
 			'E1-1': { ships: [
 				{ mid: 564, LVL: 75, FP: 66, TP: 84, AA: 67, AR: 53, equips: [267,267,348] },

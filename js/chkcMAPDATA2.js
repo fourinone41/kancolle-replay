@@ -12286,8 +12286,7 @@ var MAPDATA = {
 						type: 2,
 						x: 592,
 						y: 257,
-						resource: 1,
-						amount: [0],
+						resource: 0,
 						route: 'K'
 					},
 					'K': {
@@ -12405,8 +12404,7 @@ var MAPDATA = {
 						type: 2,
 						x: 442,
 						y: 262,
-						resource: 1,
-						amount: [0],
+						resource: 0,
 						route: 'I'
 					},
 					'H': {
@@ -34524,6 +34522,7 @@ function transportCalcStandard(ships,rank) {
 		"LHA": 12,
 		"AO": 15,
 		"AS": 7,
+		"SSV": 1,
 	};
 	for (let ship of ships) {
 		if (!ship) continue;
@@ -34598,4 +34597,20 @@ function checkSurfaceRadar(ships) {
 		}
 	}
 	return { flagship: flagship, num: num };
+}
+
+function checkRoute(id) {
+	return CHDATA.event.maps[MAPNUM].routes.indexOf(id) != -1;
+}
+
+function getDiff() {
+	return CHDATA.event.maps[MAPNUM].diff;
+}
+
+function getAllShips(includeFF) {
+	let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
+	if (includeFF && CHDATA.sortie.fleetFriend) {
+		ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
+	}
+	return ships;
 }

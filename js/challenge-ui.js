@@ -33,6 +33,7 @@ var MECHANICDATES = {
 	zuiunCI: '2019-03-27',
 	divebomberInstall: '2019-03-27',
 	softCapIncrease: '2021-03-01',
+	subFleetAttack: '2021-05-08',
 };
 
 var MECHANICDATESOTHER = {
@@ -573,6 +574,7 @@ function chShipEquipItem(shipid,itemid,slot) {
 		}
 	}
 	
+	let bonusRange = 0;
 	if (CHDATA.config.mechanics.equipBonus) {
 		let eqids = [];
 		for (let iid of ship.items) {
@@ -585,6 +587,7 @@ function chShipEquipItem(shipid,itemid,slot) {
 		improves[slot] = (itemid <= 0)? 0 : CHDATA.gears['x'+itemid].stars;
 		let bonusesAfter = getBonusStats(ship.masterId,eqids,improves);
 		
+		bonusRange = bonusesAfter.RNG || 0;
 		for (let key in bonusesInit) bonusesAfter[key] = (bonusesAfter[key] || 0) - (bonusesInit[key] || 0);
 		for (let key in bonusesAfter) ship[key] += bonusesAfter[key];
 	}
@@ -603,6 +606,7 @@ function chShipEquipItem(shipid,itemid,slot) {
 			else if (EQDATA[CHDATA.gears['x'+item].masterId].type == ENGINE) hasBoiler = true;
 		}
 	}
+	ship.RNG += bonusRange;
 	if (SHIPDATA[ship.masterId].SPD <= 5 && ['DD','CL'].indexOf(SHIPDATA[ship.masterId].type) != -1) hasBoiler = true;
 	if (hasTurbine && hasBoiler) {
 		ship.SPD = SHIPDATA[ship.masterId].SPD + 5;
@@ -1087,6 +1091,8 @@ function chDoStartChecks() {
 		if (!flag) flag = CHDATA.fleets[1][i];
 		let sdata = SHIPDATA[CHDATA.ships[CHDATA.fleets[1][i]].masterId];
 		counts[sdata.type]++;
+		if (['BB','FBB','BBV'].indexOf(sdata.type) != -1) counts.aBB++;
+		if (['CV','CVL','CVB'].indexOf(sdata.type) != -1) counts.aCV++;
 		if (sdata.type == 'CVL' && sdata.CVEtype) counts.CVE++;
 		counts.ids.push(CHDATA.ships[CHDATA.fleets[1][i]].masterId);
 		counts.total++;
@@ -1097,7 +1103,10 @@ function chDoStartChecks() {
 		for (var i=0; i<CHDATA.fleets[2].length; i++) {
 			if (!CHDATA.fleets[2][i]) continue;
 			if (!flagE) flagE = CHDATA.fleets[2][i];
-			countsE[SHIPDATA[CHDATA.ships[CHDATA.fleets[2][i]].masterId].type]++;
+			let sdata = SHIPDATA[CHDATA.ships[CHDATA.fleets[2][i]].masterId];
+			countsE[sdata.type]++;
+			if (['BB','FBB','BBV'].indexOf(sdata.type) != -1) countsE.aBB++;
+			if (['CV','CVL','CVB'].indexOf(sdata.type) != -1) countsE.aCV++;
 			countsE.ids.push(CHDATA.ships[CHDATA.fleets[2][i]].masterId);
 			countsE.total++;
 		}
@@ -1294,6 +1303,7 @@ function chStart() {
 		SIMCONSTS.supportDmgCap = 170;
 	}
 	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
+	toggleDDCIBuff(MECHANICS.subFleetAttack);
 	if (WORLD >= 45) { //unknown when/if changed
 		TTFCOMBINED1E.accbase = TTFCOMBINED2E.accbase = TTFCOMBINED3E.accbase = TTFCOMBINED4E.accbase = 50;
 	} else {
@@ -1330,6 +1340,15 @@ function chGiveLock(fleetnum,slotnum,lock) {
 	if (CHDATA.ships[sid].lock) return;
 	CHDATA.ships[sid].lock = lock;
 	$('#fleetlock'+fleetnum+slotnum).attr('src','assets/maps/lock'+lock+'.png');
+}
+
+function chGiveLockAllCurrent(lock) {
+	let num = CHDATA.fleets.combined ? 2 : 1;
+	for (let n=1; n<=num; n++) {
+		for (let i=0; i<CHDATA.fleets[n].length; i++) {
+			chGiveLock(n,i+1,lock);
+		}
+	}
 }
 
 function chLoadMainFleet() {
@@ -1536,7 +1555,7 @@ function chTableSetShip(sid,fleet,slot,noswap) {
 	$('#fleetlos'+fleet+slot).text(ship.LOS);
 	$('#fleetasw'+fleet+slot).text(ship.ASW);
 	$('#fleetlk'+fleet+slot).text(ship.LUK);
-	$('#fleetrn'+fleet+slot).text(['','Short','Medium','Long','V. Long'][ship.RNG]);
+	$('#fleetrn'+fleet+slot).text((ship.RNG >= 5 ? 'V. Long+' : ['','Short','Medium','Long','V. Long'][ship.RNG]));
 	$('#fleetsp'+fleet+slot).text({0:'N/A',5:'Slow',10:'Fast',15:'Fast+',20:'Fastest'}[ship.SPD||shipd.SPD]);
 	
 	if (fleet == 5) { //LBAS only

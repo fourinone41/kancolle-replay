@@ -1,0 +1,599 @@
+[
+	{
+		"types": [9],
+		"bonusesByDate": {
+			"": [],
+			"2019-02-08": "cur"
+		}
+	},
+	{
+		"types": [29],
+		"bonusesByDate": {
+			"": [],
+			"2018-11-16": [
+				{
+					"bonus": { "houg": 2, "kaih": -1 },
+					"shipS": [34,55,69,85,86],
+					"num": 1
+				},
+				{
+					"bonus": { "raig": 2 },
+					"shipS": [55],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1 },
+					"shipS": [132]
+				},
+				{
+					"bonus": { "tyku": 1 },
+					"shipS": [20]
+				}
+			],
+			"2020-03-27": [
+				{
+					"bonus": { "houg": 4, "kaih": -1 },
+					"shipS": [34,55,69,85,86],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 4, "raig": 6 },
+					"shipS": [55],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2 },
+					"shipS": [132]
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 1 },
+					"shipS": [20]
+				}
+			],
+			"2021-02-05": "cur"
+		}
+	},
+	{
+		"types": [42],
+		"bonusesByDate": {
+			"": [],
+			"2018-11-16": [
+				{
+					"bonus": { "houg": 3, "kaih": -2 },
+					"shipS": [85,86],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "kaih": -1 },
+					"shipS": [131,143],
+					"num": 1
+				}
+			],
+			"2020-03-27": "cur"
+		}
+	},
+	{
+		"ids": [5],
+		"bonusesByDate": {
+			"": [],
+			"2021-02-05": "cur"
+		}
+	},
+	{
+		"ids": [18,52],
+		"bonusesByDate": {
+			"": [],
+			"2019-05-20": "cur"
+		}
+	},
+	{
+		"ids": [19],
+		"bonusesByDate": {
+			"": [],
+			"2019-08-08": "cur"
+		}
+	},
+	{
+		"ids": [30,410],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-30": "cur"
+		}
+	},
+	{
+		"ids": [35],
+		"bonusesByDate": {
+			"": [],
+			"2019-02-22": "cur"
+		}
+	},
+	{
+		"ids": [44,45,287,288],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-01": "cur"
+		}
+	},
+	{
+		"ids": [46,47,132,149],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-01": "cur"
+		}
+	},
+	{
+		"ids": [47],
+		"bonusesByDate": {
+			"": [],
+			"2019-01-22": "cur"
+		}
+	},
+	{
+		"ids": [50],
+		"bonusesByDate": {
+			"": [],
+			"2020-03-27": "cur"
+		}
+	},
+	{
+		"ids": [58],
+		"bonusesByDate": {
+			"": [],
+			"2018-08-17": "cur"
+		}
+	},
+	{
+		"ids": [60,154,219],
+		"bonusesByDate": {
+			"": [],
+			"2021-04-22": "cur"
+		}
+	},
+	{
+		"ids": [63],
+		"bonusesByDate": {
+			"": [],
+			"2018-06-29": "cur"
+		}
+	},
+	{
+		"ids": [66,220],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-30": "cur"
+		}
+	},
+	{
+		"ids": [69],
+		"bonusesByDate": {
+			"": [],
+			"2020-08-27": "cur"
+		}
+	},
+	{
+		"ids": [78],
+		"bonusesByDate": {
+			"": [],
+			"2020-11-13": "cur"
+		}
+	},
+	{
+		"ids": [79,81],
+		"bonusesByDate": {
+			"": [],
+			"2018-06-13": "cur"
+		}
+	},
+	{
+		"ids": [87],
+		"bonusesByDate": {
+			"": [],
+			"2020-04-23": "cur"
+		}
+	},
+	{
+		"ids": [90],
+		"bonusesByDate": {
+			"": [],
+			"2018-11-16": [
+				{
+					"bonus": { "houg": 2, "kaih": 1 },
+					"shipX": [142]
+				},
+				{
+					"bonus": { "houg": 1 },
+					"shipX": [295,416,417]
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 1 },
+					"shipX": [264]
+				},
+				{
+					"bonus": {},
+					"bonusAR": { "tyku": 5, "kaih": 2 },
+					"shipS": [61]
+				},
+				{
+					"bonus": {},
+					"bonusSR": { "houg": 3, "raig": 2, "kaih": 2 },
+					"shipClass": [7,13]
+				}
+			],
+			"2020-03-27": "cur"
+		}
+	},
+	{
+		"ids": [93],
+		"bonusesByDate": {
+			"": [],
+			"2019-04-30": "cur"
+		}
+	},
+	{
+		"ids": [94],
+		"bonusesByDate": {
+			"": [],
+			"2019-04-30": "cur"
+		}
+	},
+	{
+		"ids": [99],
+		"bonusesByDate": {
+			"": [],
+			"2019-04-30": "cur"
+		}
+	},
+	{
+		"ids": [100],
+		"bonusesByDate": {
+			"": [],
+			"2019-04-30": "cur"
+		}
+	},
+	{
+		"ids": [104],
+		"bonusesByDate": {
+			"": [],
+			"2018-05-29": "cur"
+		}
+	},
+	{
+		"ids": [106],
+		"bonusesByDate": {
+			"": [],
+			"2019-01-22": "cur"
+		}
+	},
+	{
+		"ids": [115],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-01": "cur"
+		}
+	},
+	{
+		"ids": [118],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-01": "cur"
+		}
+	},
+	{
+		"ids": [119],
+		"bonusesByDate": {
+			"": [],
+			"2018-11-29": "cur"
+		}
+	},
+	{
+		"ids": [121],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-30": "cur"
+		}
+	},
+	{
+		"ids": [3,122],
+		"bonusesByDate": {
+			"": [],
+			"2021-03-30": "cur"
+		}
+	},
+	{
+		"ids": [129],
+		"bonusesByDate": {
+			"": [],
+			"2020-03-27": "cur"
+		}
+	},
+	{
+		"ids": [143],
+		"bonusesByDate": {
+			"": [],
+			"2019-04-30": "cur"
+		}
+	},
+	{
+		"ids": [144],
+		"bonusesByDate": {
+			"": [],
+			"2019-04-30": "cur"
+		}
+	},
+	{
+		"ids": [147],
+		"bonusesByDate": {
+			"": [],
+			"2020-10-29": "cur"
+		}
+	},
+	{
+		"ids": [149],
+		"bonusesByDate": {
+			"": [],
+			"2020-01-14": "cur"
+		}
+	},
+	{
+		"ids": [171],
+		"bonusesByDate": {
+			"": [],
+			"2020-05-20": "cur"
+		}
+	},
+	{
+		"ids": [194],
+		"bonusesByDate": {
+			"": [],
+			"2019-06-25": "cur"
+		}
+	},
+	{
+		"ids": [195],
+		"bonusesByDate": {
+			"": [],
+			"2021-05-31": "cur"
+		}
+	},
+	{
+		"ids": [204],
+		"bonusesByDate": {
+			"": [],
+			"2020-04-23": "cur"
+		}
+	},
+	{
+		"ids": [228],
+		"bonusesByDate": {
+			"": [],
+			"2019-08-08": "cur"
+		}
+	},
+	{
+		"ids": [235],
+		"bonusesByDate": {
+			"": [],
+			"2021-02-05": "cur"
+		}
+	},
+	{
+		"ids": [242],
+		"bonusesByDate": {
+			"": [],
+			"2021-02-05": "cur"
+		}
+	},
+	{
+		"ids": [243],
+		"bonusesByDate": {
+			"": [],
+			"2021-02-05": "cur"
+		}
+	},
+	{
+		"ids": [244],
+		"bonusesByDate": {
+			"": [],
+			"2021-02-05": "cur"
+		}
+	},
+	{
+		"ids": [266],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 1 },
+					"shipX": [566,567,568,656],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2 },
+					"shipX": [566,567,568,656],
+					"num": 2
+				}
+			],
+			"2018-06-29": "cur"
+		}
+	},
+	{
+		"ids": [267],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 2, "kaih": 1 },
+					"shipClass": [22,38]
+				},
+				{
+					"bonus": { "houg": 1, "kaih": 1 },
+					"shipClass": [30]
+				},
+				{
+					"bonus": { "houg": 1 },
+					"bonusSR": { "houg": 1, "raig": 3, "kaih": 2 },
+					"shipX": [542,543,563,564,569,578]
+				}
+			],
+			"2018-06-29": [
+				{
+					"bonus": { "houg": 2, "kaih": 1 },
+					"shipClass": [22,38]
+				},
+				{
+					"bonus": { "houg": 1, "kaih": 1 },
+					"shipClass": [30]
+				},
+				{
+					"bonus": { "houg": 1 },
+					"shipX": [566,567,568,656],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1 },
+					"bonusSR": { "houg": 1, "raig": 1, "kaih": 2 },
+					"shipX": [542,543,563,564,569,578]
+				},
+				{
+					"bonus": {},
+					"bonusSR": { "houg": 2, "raig": 3, "kaih": 1 },
+					"shipClass": [38]
+				},
+				{
+					"bonus": { "houg": 2 },
+					"shipX": [648,649]
+				},
+				{	
+					"bonus": {},
+					"bonusSR": { "houg": 2, "raig": 3, "kaih": 1 },
+					"shipX": [648]
+				},
+				{
+					"bonus": {},
+					"bonusSR": { "houg": 1, "raig": 3, "kaih": 2 },
+					"shipX": [229,648,649]
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 3 },
+					"shipX": [648],
+					"requires": [129,412]
+				},
+				{
+					"bonus": { "houg": 3, "kaih": -3 },
+					"shipX": [648],
+					"requires": [74]
+				}
+			],
+			"2020-10-16": "cur"
+		}
+	},
+	{
+		"ids": [278],
+		"bonusesByDate": {
+			"": [],
+			"2020-05-20": "cur"
+		}
+	},
+	{
+		"ids": [279],
+		"bonusesByDate": {
+			"": [],
+			"2020-05-20": "cur"
+		}
+	},
+	{
+		"ids": [282],
+		"bonusesByDate": {
+			"": [],
+			"2019-01-22": "cur"
+		}
+	},
+	{
+		"ids": [283],
+		"bonusesByDate": {
+			"": [],
+			"2019-01-22": "cur"
+		}
+	},
+	{
+		"ids": [287],
+		"bonusesByDate": {
+			"": [],
+			"2020-01-14": "cur"
+		}
+	},
+	{
+		"ids": [288],
+		"bonusesByDate": {
+			"": [],
+			"2020-01-14": "cur"
+		}
+	},
+	{
+		"ids": [294],
+		"bonusesByDate": {
+			"": [],
+			"2018-07-12": "cur"
+		}
+	},
+	{
+		"ids": [295],
+		"bonusesByDate": {
+			"": [],
+			"2018-07-12": "cur"
+		}
+	},
+	{
+		"ids": [324,325],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "tais": 2, "kaih": 1 },
+					"shipX": [554]
+				},
+				{
+					"bonus": { "tais": 1, "kaih": 1 },
+					"shipX": [553]
+				}
+			],
+			"2020-08-27": "cur"
+		}
+	},
+	{
+		"ids": [326],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 1, "tais": 3, "kaih": 2 },
+					"shipX": [554]
+				},
+				{
+					"bonus": { "tais": 2, "kaih": 1 },
+					"shipX": [553]
+				}
+			],
+			"2020-08-27": "cur"
+		}
+	},
+	{
+		"ids": [327],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 2, "tais": 4, "kaih": 2 },
+					"shipX": [554]
+				},
+				{
+					"bonus": { "houg": 1, "tais": 3, "kaih": 1 },
+					"shipX": [553]
+				}
+			],
+			"2020-08-27": "cur"
+		}
+	},
+	{
+		"ids": [400],
+		"bonusesByDate": {
+			"": [],
+			"2020-12-10": "cur"
+		}
+	}
+]

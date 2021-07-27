@@ -14,6 +14,12 @@ MAPDATA[49] =
 		bannerImgAlt: 'assets/maps/49/banner2.png',
 		transportCalc: transportCalcStandard,
 		overrideStats: {
+			1659: { HP: 350 },
+			1660: { HP: 370 },
+			1661: { HP: 390 },
+			1662: { HP: 350 },
+			1663: { HP: 370 },
+			1664: { HP: 390 },
 			1863: { HP: 540 },
 			1864: { HP: 540 },
 		},
@@ -2842,10 +2848,9 @@ MAPDATA[49] =
 									if (!ship.bonusSpecial) ship.bonusSpecial = [];
 									ship.bonusSpecial.push({mod:1.11,on:[1991,1992,1993]});
 								}
-								
-								for (let mid = 1991; mid <= 1993; mid++) {
-									SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
-								}
+							}
+							for (let mid = 1991; mid <= 1993; mid++) {
+								SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
 							}
 						},
 						compDiff: {
