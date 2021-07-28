@@ -73,6 +73,7 @@ SoundManager.prototype = {
 	stopBGM: function() {
 		if (!this._bgm) return;
 		this._bgm.stop();
+		this._bgm.unload();
 		this.BGMnum = 0;
 	},
 	fadeBGM: function(dur) {
