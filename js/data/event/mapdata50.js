@@ -2492,6 +2492,7 @@ MAPDATA[50] =
 						y: 113,
 						distance: 5,
 						hidden: 2,
+						subonly: true,
 						setupSpecial: function() {
 							let ships = getAllShips();
 							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;

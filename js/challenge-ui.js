@@ -1208,10 +1208,12 @@ function chDoStartChecksFleet(fleetnum,errors) {
 			first = false;
 		}
 		//ship lock
-		if (CHDATA.event.maps[MAPNUM].diff > 1 && CHDATA.event.maps[MAPNUM].diff < 4 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
-			errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
-		if (CHDATA.event.maps[MAPNUM].diff == 3 && mdata.checkLockHard && ship.lock && mdata.checkLockHard.indexOf(ship.lock) != -1)
-			errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
+		if (!CHDATA.config.disablelock) {
+			if (CHDATA.event.maps[MAPNUM].diff > 1 && CHDATA.event.maps[MAPNUM].diff < 4 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
+				errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
+			if (CHDATA.event.maps[MAPNUM].diff == 3 && mdata.checkLockHard && ship.lock && mdata.checkLockHard.indexOf(ship.lock) != -1)
+				errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
+		}
 		//empty item slots
 		var noitem1 = 0, noitem2 = 0;
 		for (var j=0; j<CHITEMSMAX; j++) {
@@ -1358,14 +1360,12 @@ function chLoadMainFleet() {
 	FLEETS1[0] = new Fleet(0);
 	FLEETS1[0].loadShips(data[0]);
 	
-	if (!CHDATA.config.disablelock) {
-		var lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLock;
-		if (Array.isArray(lock)) lock = null;
-		if (MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard && CHDATA.event.maps[MAPNUM].diff == 3) lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard;
-		if (lock && !MAPDATA[WORLD].maps[CHDATA.event.mapnum].lockSpecial) {
-			for (var i=0; i<CHDATA.fleets[1].length; i++) {
-				chGiveLock(1,i+1,lock);
-			}
+	var lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLock;
+	if (Array.isArray(lock)) lock = null;
+	if (MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard && CHDATA.event.maps[MAPNUM].diff == 3) lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard;
+	if (lock && !MAPDATA[WORLD].maps[CHDATA.event.mapnum].lockSpecial) {
+		for (var i=0; i<CHDATA.fleets[1].length; i++) {
+			chGiveLock(1,i+1,lock);
 		}
 	}
 }
@@ -1378,14 +1378,12 @@ function chLoadEscortFleet() {
 	FLEETS1[1] = new Fleet(0,FLEETS1[0]);
 	FLEETS1[1].loadShips(data[0]);
 	
-	if (!CHDATA.config.disablelock) {
-		var lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLock;
-		if (Array.isArray(lock)) lock = null;
-		if (MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard && CHDATA.event.maps[MAPNUM].diff == 3) lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard;
-		if (lock && !MAPDATA[WORLD].maps[CHDATA.event.mapnum].lockSpecial) {
-			for (var i=0; i<CHDATA.fleets[2].length; i++) {
-				chGiveLock(2,i+1,lock);
-			}
+	var lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLock;
+	if (Array.isArray(lock)) lock = null;
+	if (MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard && CHDATA.event.maps[MAPNUM].diff == 3) lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard;
+	if (lock && !MAPDATA[WORLD].maps[CHDATA.event.mapnum].lockSpecial) {
+		for (var i=0; i<CHDATA.fleets[2].length; i++) {
+			chGiveLock(2,i+1,lock);
 		}
 	}
 }
@@ -1929,7 +1927,7 @@ function chLoadSortieInfo(mapnum) {
 	}
 	
 	var showHardLock = (mapdata.giveLockHard || mapdata.checkLockHard) && (!CHDATA.event.maps[mapnum].diff || CHDATA.event.maps[mapnum].diff == 3);
-	if (CHDATA.config.disablelock || !(mapdata.giveLock||mapdata.checkLock||showHardLock)) {
+	if (!(mapdata.giveLock||mapdata.checkLock||showHardLock)) {
 		$('#srtLock').hide();
 	} else {
 		$('#srtLock').show();
