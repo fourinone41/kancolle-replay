@@ -515,6 +515,7 @@ function NBattack(ship,target,NBonly,NBequips,APIyasen,attackSpecial) {
 				}
 				preMod *= dmgMod;
 				accMod *= attackData.accMod;
+				if (C) console.log(attackData.name);
 			}
 		}
 	}

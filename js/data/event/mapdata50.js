@@ -1158,7 +1158,7 @@ MAPDATA[50] =
 					},
 				},
 				additionalChecks: function(ships,errors) {
-					if (getDiff() == 1 || getDiff() == 4) return;
+					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
 					let lock = '50_2';
 					if (CHDATA.fleets.combined || ships.aCV + +isShipInList(ships.ids,161)) lock = '50_3';
 					let allSame = true;
@@ -1938,7 +1938,7 @@ MAPDATA[50] =
 					}
 				},
 				additionalChecks: function(ships,errors) {
-					if (getDiff() == 1 || getDiff() == 4) return;
+					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
 					let lock = '50_4';
 					let s = CHDATA.ships[CHDATA.fleets[1][0]];
 					if (checkRoute(1) && s.lock != '50_4' && ['CA','CAV'].indexOf(SHIPDATA[s.masterId].type) != -1) lock = '50_6';
@@ -2890,7 +2890,7 @@ MAPDATA[50] =
 					}
 				},
 				additionalChecks: function(ships,errors) {
-					if (getDiff() == 1 || getDiff() == 4) return;
+					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
 					let lock = '50_7';
 					if (CHDATA.fleets.combined == 1) lock = '50_3';
 					if (CHDATA.fleets.combined == 2) lock = '50_9';
@@ -4217,7 +4217,7 @@ MAPDATA[50] =
 					}
 				},
 				additionalChecks: function(ships,errors) {
-					if (getDiff() == 1 || getDiff() == 4) return;
+					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
 					let lock = '50_9';
 					if (!CHDATA.fleets.combined) {
 						lock = '50_6';
