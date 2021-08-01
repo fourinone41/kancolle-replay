@@ -1326,6 +1326,11 @@ function chStart() {
 		BBVT.prototype.canASW = BBV.prototype.canASW = CAV.prototype.canASW;
 		CVB.prototype.canASW = CV.prototype.canASW = Ship.prototype.canASW;
 	}
+	if (CHDATA.config.mechanicsdate < '2013-08-01' && MAPDATA[WORLD].date < '2013-08-01') {
+		for (let ship of FLEETS1[0].ships) {
+			delete ship.hasMidgetSub;
+		}
+	}
 	
 	$('#sortiespace').hide();
 	$('#battlespace').show();
@@ -1694,14 +1699,30 @@ function chUpdateFleetInfo(fleetnum) {
 			
 		}
 	}
-	var los1 = getELoS33(fleetnum,1,CHDATA.fleets.combined);
+	var los1 = getELoS33(fleetnum,1);
+	if (fleetnum == 1 && CHDATA.fleets.combined) {
+		los1 += getELoS33(2,1);
+	}
+	if (WORLD < 45) {
+		los1 = getELoS33(fleetnum,1,CHDATA.fleets.combined);
+	}
 	$('#fleetap'+fleetnum).text(ap);
 	$('#fleetefflos'+fleetnum).text(Math.floor(los1*10)/10);
 	if (WORLD <= 27 && WORLD > 20) { //Summer14 and before only
 		var losOld = testGetLoSOld(fleetnum,CHDATA.fleets.combined);
 		$('#fleetefflos'+fleetnum).parent().attr('title','Old = '+(Math.floor(losOld*10)/10));
 	} else {
-		var los3 = getELoS33(fleetnum,3,CHDATA.fleets.combined), los4 = getELoS33(fleetnum,4,CHDATA.fleets.combined), los2 = getELoS33(fleetnum,2,CHDATA.fleets.combined);
+		var los3 = getELoS33(fleetnum,3), los4 = getELoS33(fleetnum,4), los2 = getELoS33(fleetnum,2);
+		if (fleetnum == 1 && CHDATA.fleets.combined) {
+			los2 += getELoS33(2,2);
+			los3 += getELoS33(2,3);
+			los4 += getELoS33(2,4);
+		}
+		if (WORLD < 45) {
+			los2 = getELoS33(fleetnum,2,CHDATA.fleets.combined);
+			los3 = getELoS33(fleetnum,3,CHDATA.fleets.combined);
+			los4 = getELoS33(fleetnum,4,CHDATA.fleets.combined);
+		}
 		$('#fleetefflos'+fleetnum).parent().attr('title','C2 = '+(Math.floor(los2*10)/10)+', C3 = '+(Math.floor(los3*10)/10)+', C4 = '+(Math.floor(los4*10)/10));
 	}
 	$('#fleetspd'+fleetnum).text(spd);

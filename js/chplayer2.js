@@ -2178,38 +2178,43 @@ function showResults() {
 		var rank = (!CHDATA.temp.NBonly && !NBSELECT)? CHDATA.temp.rankDay : CHDATA.temp.rank;
 		CHDATA.temp.rankT = rank;
 		var rsize;
+		let bgm;
 		switch(rank) {
 			case 'S':
 				rsize = 240;
 				rgraphic = getFromPool('rankS','assets/maps/rankS.png');
-				SM.playBGM(3001,null,true);
+				bgm = 3001;
 				break;
 			case 'A':
 				rsize = 140
 				rgraphic = getFromPool('rankA','assets/maps/rankA.png');
-				SM.playBGM(3002,null,true);
+				bgm = 3002;
 				break;
 			case 'B':
 				rsize = 140;
 				rgraphic = getFromPool('rankB','assets/maps/rankB.png');
-				SM.playBGM(3003,null,true);
+				bgm = 3003;
 				break;
 			case 'C':
 				rsize = 140;
 				rgraphic = getFromPool('rankC','assets/maps/rankC.png');
-				SM.playBGM(3004,null,true);
+				bgm = 3004;
 				break;
 			case 'D':
 				rsize = 140;
 				rgraphic = getFromPool('rankD','assets/maps/rankD.png');
-				SM.playBGM(3004,null,true);
+				bgm = 3004;
 				break;
 			case 'E':
 				rsize = 140;
 				rgraphic = getFromPool('rankE','assets/maps/rankE.png');
-				SM.playBGM(3004,null,true);
+				bgm = 3004;
 				break;
 		}
+		if (WORLD == 22 || WORLD == 23) {
+			bgm = bgm == 3004 ? 3011 : 3010;
+		}
+		SM.playBGM(bgm,null,true);
 		rgraphic.position.set(592,238);
 		rgraphic.pivot.set(121,121);
 		rgraphic.size = rsize+300;
@@ -2799,11 +2804,12 @@ function getLBASRange(ship) {
 function getELoS33(fleet,coef,includeCombined) {
 	coef = coef || 1;
 	var los = 0;
-	var ships = CHDATA.fleets[fleet].slice();
+	var ships = CHDATA.fleets[fleet].slice(), numShip = 0;
 	if (includeCombined) ships = ships.concat(CHDATA.fleets[2]);
 	for (var i=0; i<ships.length; i++) {
 		var ship = CHDATA.ships[ships[i]];
 		if (!ship) continue;
+		numShip++;
 		var shiplos = ship.LOS;
 		for (var j=0; j<ship.items.length; j++) {
 			if (ship.items[j] <= 0) continue;
@@ -2831,7 +2837,8 @@ function getELoS33(fleet,coef,includeCombined) {
 		los += Math.sqrt(shiplos);
 	}
 	los -= Math.ceil(CHDATA.player.level*.4);
-	los += 2*(6-ships.length);
+	let numShipMax = includeCombined ? 12 : CHDATA.fleets.sf ? 7 : 6;
+	los += 2*(numShipMax - numShip);
 	return los;
 }
 

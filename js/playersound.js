@@ -317,5 +317,7 @@ var BGMLIST = {
 	3002: {url:'assets/music/Sound_se_63.ogg'},
 	3003: {url:'assets/music/Sound_se_52.ogg'},
 	3004: {url:'assets/music/Sound_se_31.ogg'},
+	3010: {url:'assets/music/BGM_Old_Fanfare_Victory.mp3'},
+	3011: {url:'assets/music/BGM_Old_Fanfare_Defeat.mp3'},
 };
 
