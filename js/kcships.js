@@ -902,16 +902,17 @@ Ship.prototype.getAACItype = function(atypes) {
 	}
 	if (this.mid == 487 && concentrated && atypes[A_HAGUN] > (atypes[A_HAFD] || 0)) types.push(19); //Kinu Kai Ni (1)
 	if (this.mid == 488 && atypes[A_HAGUN] && atypes[A_AIRRADAR]) types.push(21); //Yura Kai Ni
-	if ([77,82,87,88,553].indexOf(this.mid) != -1 && hasID[274] && atypes[A_AIRRADAR] && atypes[A_TYPE3SHELL]) types.push(25); //Ise-class
+	if ([82,88,553,554].indexOf(this.mid) != -1 && hasID[274] && atypes[A_AIRRADAR] && atypes[A_TYPE3SHELL]) types.push(25); //Ise-class Kai
 
-	if((this.mid == 562 || this.mid == 689) && hasID[308] || hasID[313]) { //Johnston
+	if (this.sclass == 91) { //Fletcher-class
+		let num5Mk30 = (hasID[313] || 0) + (hasID[284] || 0);
 		if (hasID[308] >= 2) types.push(34);
-		if (hasID[313] >= 1 && hasID[308] >= 1) types.push(35);
+		if (num5Mk30 >= 1 && hasID[308] >= 1) types.push(35);
 		if (hasID[313] >= 2) types.push(37);
-		if (hasID[313] >= 2 && hasID[307]) types.push(36);
+		if (num5Mk30 >= 2 && hasID[307]) types.push(36);
 	}
 	
-	if (this.mid == 597 || this.mid == 696) { //Atlanta
+	if (this.sclass == 99) { //Atlanta
 		if (hasID[363] && (hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(39);
 		if (hasID[307] && (hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(40);
 		if ((hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(41);
@@ -930,12 +931,12 @@ Ship.prototype.getAACItype = function(atypes) {
 	if (atypes[A_HAFD] && atypes[A_AIRRADAR]) types.push(8);
 	
 	if (this.mid == 546 && hasID[275] && atypes[A_AIRRADAR]) types.push(26); //Musashi Kai Ni
-	if ([82,88,553,148,546].indexOf(this.mid) != -1 && hasID[274] && atypes[A_AIRRADAR]) types.push(28); //Ise-class + Musashi Kai
+	if ([82,88,553,554,148,546].indexOf(this.mid) != -1 && hasID[274] && atypes[A_AIRRADAR]) types.push(28); //Ise-class Kai + Musashi Kai
 	if ((this.mid == 557 || this.mid == 558) && atypes[A_HAGUN] && atypes[A_AIRRADAR]) types.push(29); //Isokaze+Hamakaze B Kai
 	
 	if (atypes[A_HAGUN] && atypes[A_AAFD]) types.push(9);
 	
-	if(this.mid == 579 && atypes[A_HAGUN] && atypes[A_AAGUN]) types.push(33); //Gotland Kai
+	if((this.mid == 579 || this.mid == 630) && atypes[A_HAGUN] && atypes[A_AAGUN]) types.push(33); //Gotland Kai
 	
 	if (concentrated && atypes[A_AAGUN] >= 2 && atypes[A_AIRRADAR]) types.push(12);
 	// if (concentrated && atypes[A_HAFD] && atypes[A_AIRRADAR]) return 13;
@@ -944,12 +945,12 @@ Ship.prototype.getAACItype = function(atypes) {
 	if (this.mid == 487 && concentrated) types.push(20); //Kinu Kai Ni (2)
 	if (this.mid == 548 && concentrated) types.push(22); //Fumizuki Kai Ni
 	if ((this.mid == 539 || this.mid == 530) && atypes[A_AAGUN] > concentrated) types.push(23); //UIT-25, I-504
-	if (this.mid == 477) { //Tenryuu Kai Ni
+	if (this.mid == 477 || this.mid == 579 || this.mid == 630) { //Tenryuu Kai Ni + Gotland Kai
 		if (atypes[A_HAGUN] >= 3) types.push(30);
-		if (atypes[A_HAGUN] >= 2) types.push(31);
+		if (atypes[A_HAGUN] >= 2 && this.mid == 477) types.push(31);
 	}
-	if (this.mid == 478 && atypes[A_HAGUN] && atypes[A_AAGUN] > concentrated) types.push(24); //Tatsuta Kai Ni
-	if ([149,150,151,152,439,364,515,393,519,394].indexOf(this.mid) != -1 && ((hasID[191] && hasID[300]) || (hasID[301] && hasID[191]) || (hasID[301] >= 2))) types.push(32); //royal navy + Kongou-class
+	if ((this.mid == 478 || this.mid == 477) && atypes[A_HAGUN] && atypes[A_AAGUN] > concentrated) types.push(24); //Tatsuta Kai Ni + Tenryuu Kai Ni
+	if (([67,78,82,88,108].indexOf(this.sclass) != -1 || [149,150,151,152,591,592].indexOf(this.mid) != -1) && ((hasID[191] && hasID[300]) || (hasID[301] && hasID[191]) || (hasID[301] >= 2))) types.push(32); //royal navy + Kongou-class
 	
 	return types;
 }

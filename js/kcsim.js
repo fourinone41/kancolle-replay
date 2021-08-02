@@ -54,7 +54,7 @@ var AACIDATA = {
 	12:{num:3,rate:.45,mod:1.25,equip:'CGR',num1:1},
 	// 13:{num:4,rate:.35,mod:1.35,equip:'BCR',num1:1},
 	14:{num:4,rate:.63,mod:1.45,equip:'HGR',num1:1},
-	15:{num:3,rate:.53,mod:1.3,equip:'HG',num1:1},
+	15:{num:3,rate:.55,mod:1.3,equip:'HG',num1:1},
 	16:{num:4,rate:.6,mod:1.4,equip:'HGR',num1:1},
 	17:{num:2,rate:.55,mod:1.25,equip:'HG',num1:1},
 	18:{num:2,rate:.6,mod:1.2,equip:'C',num1:1},
@@ -63,7 +63,7 @@ var AACIDATA = {
 	21:{num:5,rate:.6,mod:1.45,equip:'HR',num1:1},
 	22:{num:2,rate:.6,mod:1.2,equip:'C',num1:1},
 	23:{num:1,rate:.8,mod:1.05,equip:'G',num1:1},
-	24:{num:3,rate:.55,mod:1.25,equip:'HG',num1:1},
+	24:{num:3,rate:.5,mod:1.25,equip:'HG',num1:1},
 	25:{num:7,rate:.6,mod:1.55,equip:'GRS',num1:1},
 	26:{num:8,rate:.6,mod:1.4,equip:'HR',num1:1},
 	28:{num:4,rate:.55,mod:1.4,equip:'GR',num1:1},
@@ -76,9 +76,9 @@ var AACIDATA = {
 	35:{num:6,rate:.55,mod:1.55,equip:'BH',rollIndiv:true,num1:1},
 	36:{num:6,rate:.55,mod:1.55,equip:'HHR',rollIndiv:true,num1:1},
 	37:{num:4,rate:.4,mod:1.45,equip:'HH',rollIndiv:true,num1:1},
-	39:{num:10,rate:.6,mod:1.7,equip:'BB',rollIndiv:true,num1:5},
-	40:{num:10,rate:.6,mod:1.7,equip:'BBR',rollIndiv:true,num1:5},
-	41:{num:9,rate:.6,mod:1.65,equip:'BB',rollIndiv:true,num1:5},
+	39:{num:10,rate:.57,mod:1.7,equip:'BB',rollIndiv:true,num1:5},
+	40:{num:10,rate:.56,mod:1.7,equip:'BBR',rollIndiv:true,num1:5},
+	41:{num:9,rate:.55,mod:1.65,equip:'BB',rollIndiv:true,num1:5},
 };
 
 var ARTILLERYSPOTDATA = {

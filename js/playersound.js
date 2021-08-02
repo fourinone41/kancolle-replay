@@ -101,7 +101,6 @@ SoundManager.prototype = {
 			this._sounds['V'+type+shipid] = new Howl({
 				src:[path],
 				volume:.4*this._volume,
-				html5:true
 			});
 		}
 		if (this._voices[slot] && isPlayable(shipid)) {
