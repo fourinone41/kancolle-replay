@@ -5179,6 +5179,7 @@ MAPDATA[50] =
 						y: 145,
 						distance: 8,
 						hidden: 1,
+						repair: true,
 						route: 'V'
 					},
 					'W': {
