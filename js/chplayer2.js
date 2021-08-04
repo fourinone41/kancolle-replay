@@ -1639,7 +1639,7 @@ function prepBattle(letter) {
 	// --- 1 => enemies have their normal stats
 	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
 	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
-	const RANDO_MODE = 3;
+	const RANDO_MODE = 1;
 
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
@@ -3277,4 +3277,49 @@ function chAnchorageRepair() {
 	}
 	
 	return didRepair;
+}
+
+function chPrepareSaveFile() {	
+	var text = JSON.stringify(localStorage);
+
+	var data = new Blob([text], {type: 'application/json'});
+
+	var url = window.URL.createObjectURL(data);
+
+	document.getElementById('download-button').href = url;
+
+	let date = new Date(Date.now());
+	let filename = "simSave";
+	filename += date.getDate();
+	filename += "-";
+	filename += date.getMonth();
+	filename += "-";
+	filename += date.getFullYear();
+	filename += ".json";
+
+	document.getElementById('download-button').download = filename;
+}
+
+function chLoadUploadedFile() {
+	let file = document.getElementById("save-file").files[0];
+	console.log(file);
+
+	const reader = new FileReader();
+	reader.addEventListener('load', (event) => {
+		let save = JSON.parse(event.target.result);
+		
+		localStorage.clear();
+		
+		for (const saveEntryKey in save) {
+			localStorage.setItem(saveEntryKey, save[saveEntryKey]);
+		}
+		
+		// --- Refresh after load
+		chSave = null;
+		location.reload();
+	});
+
+	reader.readAsText(file);
+
+	return;
 }

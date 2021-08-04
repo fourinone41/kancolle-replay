@@ -218,6 +218,13 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
             hasRealBoss = true;
 
             compMain.push(parseInt(shipID));
+        } 
+        else if (strongEnemiesIds.indexOf(ship_id) !== -1 && isBoss) {
+            var obj_keys = Object.keys(ennemiesBoss);
+            var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
+            hasRealBoss = true;
+
+            compMain.push(parseInt(shipID));
         } else {
             var obj_keys = Object.keys(ennemies);
             var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
@@ -267,7 +274,7 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
                 var obj_keys = Object.keys(ennemiesEscort);
                 var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 
-                if (strongEnemies.indexOf(parseInt(shipID))) {
+                if (Object.keys(strongEnemies).indexOf(parseInt(shipID))) {
                     // --- REROLL ONCE
                     shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
                 }
@@ -339,6 +346,12 @@ function chrApplyDebuff(ship) {
 
     // --- Abyssal Bamboo Princess
     ship.bonusSpecial.push({mod:1.1,on:[1988,1989,1990,1991,1992,1993]});   
+    
+    // --- Linga princess
+    ship.bonusSpecial.push({mod:1.13,on:[2000, 2001, 2002, 2003, 2004, 2005]});  
+
+    // --- New CL Princess
+    ship.bonusSpecial.push({mod:1.15,on:[2006, 2007, 2008, 2009, 2010, 2011]});
 }
 
 function chrApplyDebuffedForm(abyssal) {
@@ -379,6 +392,18 @@ function chrApplyDebuffedForm(abyssal) {
 
     // --- South pacific CV princess
     for (let mid = 1974; mid <= 1976; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackB;
+        VOICES[mid].damage = VOICES[mid].damageB;
+    }
+    
+    // --- Linga princess
+    for (let mid = 2003; mid <= 2005; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackB;
+        VOICES[mid].damage = VOICES[mid].damageB;
+    }
+    
+    // --- New CL princess
+    for (let mid = 2009; mid <= 2011; mid++) {
         VOICES[mid].attack = VOICES[mid].attackB;
         VOICES[mid].damage = VOICES[mid].damageB;
     }
@@ -425,23 +450,35 @@ function chrApplyBaseForm(abyssal) {
         VOICES[mid].attack = VOICES[mid].attackN;
         VOICES[mid].damage = VOICES[mid].damageN;
     }
+    
+    // --- Linga princess
+    for (let mid = 2003; mid <= 2005; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackN;
+        VOICES[mid].damage = VOICES[mid].damageN;
+    }
+    
+    // --- New CL princess
+    for (let mid = 2009; mid <= 2011; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackN;
+        VOICES[mid].damage = VOICES[mid].damageN;
+    }
 }
 
 const escortShipType = ['DD', 'CA', 'CL', 'CAV']
 
-var allAbyssals = [];
-var escortAbyssals = [];
-var escortAbyssalsBoss = [];
+var allAbyssals = {};
+var escortAbyssals = {};
+var escortAbyssalsBoss = {};
 
-var abyssals = [];
-var boss = [];
-var strongEnemies = [];
+var abyssals = {};
+var boss = {};
+var strongEnemies = {};
 
-var installationBoss = [];
-var installation = [];
+var installationBoss = {};
+var installation = {};
 
-var submarines = [];
-var submarinesBoss = [];
+var submarines = {};
+var submarinesBoss = {};
 
 const bossIds = [
     1548,

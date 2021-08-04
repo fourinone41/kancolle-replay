@@ -208,8 +208,8 @@ var MAPDATA = {
 				name: 'E-3',
 				nameT: 'Bay Inrush!',
 				fleetTypes: [0],
-				bgmMap: 2001,
-				bgmDN: 1,
+				bgmMap: 109,
+				bgmDN: 164,
 				bgmNN: 1000,
 				bgmDB: 1000,
 				bgmNB: 1000,
@@ -300,11 +300,11 @@ var MAPDATA = {
 				name: 'E-4',
 				nameT: 'Enemy Anchorage Assault!',
 				fleetTypes: [0],
-				bgmMap: 2001,
-				bgmDN: 1,
-				bgmNN: 1001,
-				bgmDB: 1001,
-				bgmNB: 1001,
+				bgmMap: 66,
+				bgmDN: 62,
+				bgmNN: 62,
+				bgmDB: 68,
+				bgmNB: 68,
 				bossnode: 5,
 				hpmode: 2,
 				maphp: {
@@ -701,7 +701,7 @@ var MAPDATA = {
 				name: 'E-4',
 				nameT: 'Strike the enemy super dreadnought battleship!',
 				fleetTypes: [0],
-				bgmMap: 2001,
+				bgmMap: 142,
 				bgmDN: 3,
 				bgmNN: 3,
 				bgmDB: 21,
@@ -1670,7 +1670,7 @@ var MAPDATA = {
 				name: 'E-3',
 				nameT: 'Fleet of Fog - Decisive Battle!',
 				fleetTypes: [0],
-				bgmMap: 2001,
+				bgmMap: 45,
 				bgmDN: 23,
 				bgmNN: 23,
 				bgmDB: 24,
@@ -24606,17 +24606,19 @@ var MAPDATA = {
 									if (equip.type === WG42) hasWG = true;
 								}
 
-								if (hasT3shell) bonuses.push({ mod: 1.428, on: [1827,1828,1829,1830,1831,1832] });
+								let bossmid = FLEETS2[0].ships[0].mid;
+								
+								if (hasT3shell) bonuses.push({ mod: 1.428, on: [bossmid] });
 
-								if (kamiLevel >= 0) bonuses.push({ mod: 1.4 + (0.053 * kamiLevel), on: [1827,1828,1829,1830,1831,1832] });
+								if (kamiLevel >= 0) bonuses.push({ mod: 1.4 + (0.053 * kamiLevel), on: [bossmid] });
 
-								if (hasT89) bonuses.push({ mod: 1.715, on: [1827,1828,1829,1830,1831,1832] });
+								if (hasT89) bonuses.push({ mod: 1.715, on: [bossmid] });
 
-								if (daihatsuLevel >= 0) bonuses.push({ mod: 1.22 + (0.089 * daihatsuLevel), on: [1827,1828,1829,1830,1831,1832] });
+								if (daihatsuLevel >= 0) bonuses.push({ mod: 1.22 + (0.089 * daihatsuLevel), on: [bossmid] });
 
-								if (has11thRegiment) bonuses.push({ mod: 1.75, on: [1827,1828,1829,1830,1831,1832] });
+								if (has11thRegiment) bonuses.push({ mod: 1.75, on: [bossmid] });
 
-								if (hasWG) bonuses.push({ mod: 1.46, on: [1827,1828,1829,1830,1831,1832] });
+								if (hasWG) bonuses.push({ mod: 1.46, on: [bossmid] });
 
 								if(MAPDATA[42].historical.italians.indexOf(getBaseId(ship.mid)) != -1) {
 									bonuses.push({ mod : 1.25 });
@@ -30167,7 +30169,7 @@ function isShipInList(ships,basemid) {
 	var ship = SHIPDATA[basemid];
 	var done = [];
 	while(ship) {
-		if (ships.indexOf(basemid.toString())!=-1) return true;
+		if (ships.indexOf(basemid.toString())!=-1 || ships.indexOf(basemid!=-1)) return true;
 		if (!ship.next) break;
 		basemid = ship.next;
 		ship = SHIPDATA[ship.next];

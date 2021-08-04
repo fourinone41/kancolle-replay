@@ -213,14 +213,14 @@ function chrGetRandomEquipmentId() {
 
 function chrDialogShip(callback, filter) {
 	$('#chrshipselectdialog').dialog('open');
-	chrFillDialogShip(1, callback);
+	chrFillDialogShip(1, callback, filter);
 
     $("#chrssremove").off().click(() => { callback(null); });
 
     // --- Sort buttons
-    $("#shipsorterLevel").click(() => { chrFillDialogShip(1, callback) });
-    $("#shipsortName").click(() => { chrFillDialogShip(3, callback) });
-    $("#shipsortDate").click(() => { chrFillDialogShip(0, callback) });
+    $("#shipsorterLevel").click(() => { chrFillDialogShip(1, callback, filter) });
+    $("#shipsortName").click(() => { chrFillDialogShip(3, callback, filter) });
+    $("#shipsortDate").click(() => { chrFillDialogShip(0, callback, filter) });
 
     // --- Filter 
     $("#shipfilterDD").click(() => {chrFilterDialogShip(['DD'], filter)});
@@ -231,16 +231,24 @@ function chrDialogShip(callback, filter) {
     $("#shipfilterCV").click(() => {chrFilterDialogShip(['CV','CVB'], filter)});
     $("#shipfilterOther").click(() => {chrFilterDialogShip(['SS','SSV','AV','AS','AR','AO','CT','LHA','DE'], filter)});
 
-	chrFilterDialogShip(null, filter);
 }
 
-function chrFillDialogShip(sortmethod, callback) {
+function chrFillDialogShip(sortmethod, callback, filter) {
+    new Promise(() => {
+        chrExecuteFillDialogShip(sortmethod, callback, filter);
+    })
+}
+
+function chrExecuteFillDialogShip(sortmethod, callback, filter) {
 	var table = $('#chrshipselecttable');
 	table.html('');
 	var ships = [];
 	for (var sid in CHDATA.ships) {
 		if (CHDATA.ships[sid].disabled) continue; //don't allow unreleased ships
 		if (CHDATA.ships[sid].LVL > 180 && CHDATA.fleets[3].includes(sid)) continue; //don't allow cheat ships
+
+        if (filter && !filter(sid)) continue;
+
 		ships.push(sid);
 	}
 	switch (sortmethod) {
@@ -271,15 +279,14 @@ function chrFillDialogShip(sortmethod, callback) {
 	}
 	
 	DIALOGSORT = sortmethod;
+
 }
 
 function chrFilterDialogShip(types, filter) {
 	$('#chrshipselecttable > tbody > tr').each(function() {
 		var sid = $(this).attr('id').replace('ss','');
 
-		if ((filter && !filter(sid))
-			|| types && types.indexOf(SHIPDATA[CHDATA.ships[sid].masterId].type) == -1
-		) $(this).hide();
+		if (types && types.indexOf(SHIPDATA[CHDATA.ships[sid].masterId].type) == -1) $(this).hide();
 		else $(this).show();
 	});
 }
