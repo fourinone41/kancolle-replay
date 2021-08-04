@@ -4173,7 +4173,7 @@ MAPDATA[50] =
 						unlock: function(debuff) {
 							if (CHDATA.event.maps[5].part < 3) return false;
 							if (getDiff() == 3) {
-								return debuff.B_1 >= 2 && debuff.U_1 >= 2;
+								return debuff.B_1 >= 2 && debuff.U_1 >= 2 && (debuff.AB_1 >= 2 || CHDATA.config.disableRaidReq);
 							} else {
 								return debuff.U_1 >= 2;
 							}
@@ -4213,6 +4213,8 @@ MAPDATA[50] =
 						4: {'Casual 1':40,'Casual 2':30,'Casual 3':30},
 					},
 					debuffGive: function(airState,totalHPLost) {
+						if (!checkRoute(1)) return;
+						if (airState >= 1) CHDATA.event.maps[5].debuff.AB_1 = CHDATA.event.maps[5].debuff.AB_1 + 1 || 1;
 						if (!checkRoute(2)) return;
 						if (airState >= 1) CHDATA.event.maps[5].debuff.AB = CHDATA.event.maps[5].debuff.AB + 1 || 1;
 					}
