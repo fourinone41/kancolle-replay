@@ -297,6 +297,9 @@ function chrDialogShipClose() {
 
 //#region Arsenal tab
 function chrFillArsenalTab() {
+    $('#chrSpace').hide();
+    $('#tabChr').hide();
+
     let wrap = $('<div>').addClass('ftwrap').width(1000);
     $('#chrSpace').html(wrap);
 
