@@ -30,6 +30,10 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 		if (ships2[i].isInstall) hasInstall2 = true;
 	}
 	
+	if (F2.formation.id == 4) {
+		F2.formation = SIMCONSTS.echelonOld;
+	}
+	
 	var r = Math.random();
 	if (r < .45) ENGAGEMENT = 1;
 	else if (r < .6) ENGAGEMENT = 1.2;
@@ -113,6 +117,9 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	var doShell2 = false;
 	for (var i=0; i<ships1.length; i++) {
 		if (ships1[i].enableSecondShelling) doShell2 = true;
+	}
+	for (var i=0; i<ships1C.length; i++) {
+		if (ships1C[i].enableSecondShelling) doShell2 = true;
 	}
 	for (var i=0; i<ships2.length; i++) {
 		if (ships2[i].enableSecondShelling) doShell2 = true;
@@ -625,6 +632,10 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 		if (ships2C[i].isInstall) hasInstall2C = true;
 	}
 	
+	if (F1.formation.id == 4) {
+		F1.formation = SIMCONSTS.echelonOld;
+	}
+	
 	var r = Math.random();
 	if (r < .45) ENGAGEMENT = 1;
 	else if (r < .6) ENGAGEMENT = 1.2;
@@ -703,6 +714,9 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	}
 	for (var i=0; i<ships2.length; i++) {
 		if (ships2[i].enableSecondShelling) doShell2 = true;
+	}
+	for (var i=0; i<ships2C.length; i++) {
+		if (ships2C[i].enableSecondShelling) doShell2 = true;
 	}
 	
 	//jet lbas
@@ -1140,8 +1154,14 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	for (var i=0; i<ships1.length; i++) {
 		if (ships1[i].enableSecondShelling) doShell2 = true;
 	}
+	for (var i=0; i<ships1C.length; i++) {
+		if (ships1C[i].enableSecondShelling) doShell2 = true;
+	}
 	for (var i=0; i<ships2.length; i++) {
 		if (ships2[i].enableSecondShelling) doShell2 = true;
+	}
+	for (var i=0; i<ships2C.length; i++) {
+		if (ships2C[i].enableSecondShelling) doShell2 = true;
 	}
 	
 	//jet lbas

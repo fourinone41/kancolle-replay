@@ -439,6 +439,7 @@ function chShowReward(data,tracker) {
 				351: 'assets/maps/45/i351.png',
 				355: 'assets/maps/45/i355.png',
 				402: 'assets/maps/49/i402.png',
+				413: 'assets/maps/50/i413.png',
 			};
 			var ind = tracker-numShips, id = typeof data.items[ind] === 'object' ? data.items[ind].id : data.items[ind];
 			if (imageSpecial[id]) {

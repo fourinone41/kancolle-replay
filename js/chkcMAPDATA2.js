@@ -117,9 +117,9 @@ var MAPDATA = {
 				fleetTypes: [0],
 				bgmMap: 2001,
 				bgmDN: 1,
-				bgmNN: 1000,
-				bgmDB: 1000,
-				bgmNB: 1000,
+				bgmNN: 1001,
+				bgmDB: 1001,
+				bgmNB: 1001,
 				bossnode: 7,
 				hpmode: 2,
 				maphp: {
@@ -7957,8 +7957,7 @@ var MAPDATA = {
 						type: 2,
 						x: 592,
 						y: 257,
-						resource: 1,
-						amount: [0],
+						resource: 0,
 						route: 'K'
 					},
 					'K': {
@@ -8076,8 +8075,7 @@ var MAPDATA = {
 						type: 2,
 						x: 442,
 						y: 262,
-						resource: 1,
-						amount: [0],
+						resource: 0,
 						route: 'I'
 					},
 					'H': {
@@ -21184,7 +21182,7 @@ var MAPDATA = {
 					}
 				},
 				additionalChecks: function(ships,errors) {
-					if (CHDATA.event.maps[4].diff == 1 || CHDATA.event.maps[4].diff == 4) return;
+					if (CHDATA.event.maps[4].diff == 1 || CHDATA.event.maps[4].diff == 4 || CHDATA.config.disablelock) return;
 					let lock = null, allSame = true;
 					let num = (CHDATA.fleets.combined)? 2 : 1;
 					for (let n=1; n<=num; n++) {
@@ -22072,7 +22070,7 @@ var MAPDATA = {
 				additionalChecks: function(ships,errors) {
 					if (ships.BB + ships.BBV) errors.push('No BB(V)');
 					if (ships.CV + ships.CVL + ships.CVB) errors.push('No CV(L/B)');
-					if (CHDATA.event.maps[4].diff == 1 || CHDATA.event.maps[4].diff == 4) return;
+					if (CHDATA.event.maps[6].diff == 1 || CHDATA.event.maps[6].diff == 4 || CHDATA.config.disablelock) return;
 					let lock = null, allSame = true;
 					for (let sid of CHDATA.fleets[1]) {
 						if (sid && CHDATA.ships[sid].lock) {
@@ -24821,6 +24819,8 @@ var MAPDATA = {
 					return 'Start1';
 				},
 				additionalChecks: function(ships,errors) {
+					if (CHDATA.event.maps[5].diff != 3 || CHDATA.config.disablelock) return;
+					
 					let shipsId = CHDATA.fleets[1].concat(CHDATA.fleets[2]);
 					let lock = CHDATA.fleets.combined == 1 ? 9 : 8;
 
@@ -25881,6 +25881,7 @@ var MAPDATA = {
 						shipsId = shipsId.concat(CHDATA.fleets[2]);
 						lock = 1;
 					}
+					if (CHDATA.event.maps[2].diff == 1 || CHDATA.event.maps[2].diff == 4 || CHDATA.config.disablelock) return;
 					for (shipId of shipsId) {
 						let ship = CHDATA.ships[shipId];
 						if (!ship) continue;
@@ -28875,6 +28876,7 @@ var MAPDATA = {
 					}
 				},
 				additionalChecks: function(ships,errors) {
+					if (CHDATA.event.maps[4].diff == 1 || CHDATA.event.maps[4].diff == 4 || CHDATA.config.disablelock) return;
 					let lock = (CHDATA.fleets.combined == 1)? 4 : 6;
 					let shipIds = CHDATA.fleets[1].concat(CHDATA.fleets[2]);
 					for (shipId of shipIds) {
@@ -30198,6 +30200,7 @@ function transportCalcStandard(ships,rank) {
 		"LHA": 12,
 		"AO": 15,
 		"AS": 7,
+		"SSV": 1,
 	};
 	for (let ship of ships) {
 		if (!ship) continue;
@@ -30273,4 +30276,20 @@ function checkSurfaceRadar(ships) {
 		}
 	}
 	return { flagship: flagship, num: num };
+}
+
+function checkRoute(id) {
+	return CHDATA.event.maps[MAPNUM].routes.indexOf(id) != -1;
+}
+
+function getDiff() {
+	return CHDATA.event.maps[MAPNUM].diff;
+}
+
+function getAllShips(includeFF) {
+	let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
+	if (includeFF && CHDATA.sortie.fleetFriend) {
+		ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
+	}
+	return ships;
 }

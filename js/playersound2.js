@@ -2997,6 +2997,7 @@ var VOICES = {
 		damage1: "assets/voice/Taigei-Minor_Damage_1.ogg",
 		damage2: "assets/voice/Taigei-Minor_Damage_2.ogg",
 		damage3: "assets/voice/Taigei-Major_Damage.ogg",
+		special: "assets/voice/184_900.mp3",
 	},
 	185: {
 		start: "assets/voice/Ryuuhou-Battle_Start.ogg",
@@ -6661,6 +6662,102 @@ var VOICES = {
 		damage: "assets/voice/494199130.mp3",
 		sunk: "assets/voice/494199141.mp3",
 	},
+	2000: {
+		start: "assets/voice/503200010.mp3",
+		attack: "assets/voice/503200020.mp3",
+		damage: "assets/voice/503200030.mp3",
+		sunk: "assets/voice/503200040.mp3",
+	},
+	2001: {
+		start: "assets/voice/503200010.mp3",
+		attack: "assets/voice/503200020.mp3",
+		damage: "assets/voice/503200030.mp3",
+		sunk: "assets/voice/503200040.mp3",
+	},
+	2002: {
+		start: "assets/voice/503200010.mp3",
+		attack: "assets/voice/503200020.mp3",
+		damage: "assets/voice/503200030.mp3",
+		sunk: "assets/voice/503200040.mp3",
+	},
+	2003: {
+		start: "assets/voice/503200310.mp3",
+		attack: "assets/voice/503200321.mp3",
+		attackN: "assets/voice/503200320.mp3",
+		attackB: "assets/voice/503200321.mp3",
+		damage: "assets/voice/503200331.mp3",
+		damageN: "assets/voice/503200330.mp3",
+		damageB: "assets/voice/503200331.mp3",
+		sunk: "assets/voice/503200341.mp3",
+	},
+	2004: {
+		start: "assets/voice/503200310.mp3",
+		attack: "assets/voice/503200321.mp3",
+		attackN: "assets/voice/503200320.mp3",
+		attackB: "assets/voice/503200321.mp3",
+		damage: "assets/voice/503200331.mp3",
+		damageN: "assets/voice/503200330.mp3",
+		damageB: "assets/voice/503200331.mp3",
+		sunk: "assets/voice/503200341.mp3",
+	},
+	2005: {
+		start: "assets/voice/503200310.mp3",
+		attack: "assets/voice/503200321.mp3",
+		attackN: "assets/voice/503200320.mp3",
+		attackB: "assets/voice/503200321.mp3",
+		damage: "assets/voice/503200331.mp3",
+		damageN: "assets/voice/503200330.mp3",
+		damageB: "assets/voice/503200331.mp3",
+		sunk: "assets/voice/503200341.mp3",
+	},
+	2006: {
+		start: "assets/voice/505200610.mp3",
+		attack: "assets/voice/505200620.mp3",
+		damage: "assets/voice/505200630.mp3",
+		sunk: "assets/voice/505200640.mp3",
+	},
+	2007: {
+		start: "assets/voice/505200610.mp3",
+		attack: "assets/voice/505200620.mp3",
+		damage: "assets/voice/505200630.mp3",
+		sunk: "assets/voice/505200640.mp3",
+	},
+	2008: {
+		start: "assets/voice/505200610.mp3",
+		attack: "assets/voice/505200620.mp3",
+		damage: "assets/voice/505200630.mp3",
+		sunk: "assets/voice/505200640.mp3",
+	},
+	2009: {
+		start: "assets/voice/505200910.mp3",
+		attack: "assets/voice/505200921.mp3",
+		attackN: "assets/voice/505200920.mp3",
+		attackB: "assets/voice/505200921.mp3",
+		damage: "assets/voice/505200931.mp3",
+		damageN: "assets/voice/505200930.mp3",
+		damageB: "assets/voice/505200931.mp3",
+		sunk: "assets/voice/505200941.mp3",
+	},
+	2010: {
+		start: "assets/voice/505200910.mp3",
+		attack: "assets/voice/505200921.mp3",
+		attackN: "assets/voice/505200920.mp3",
+		attackB: "assets/voice/505200921.mp3",
+		damage: "assets/voice/505200931.mp3",
+		damageN: "assets/voice/505200930.mp3",
+		damageB: "assets/voice/505200931.mp3",
+		sunk: "assets/voice/505200941.mp3",
+	},
+	2011: {
+		start: "assets/voice/505200910.mp3",
+		attack: "assets/voice/505200921.mp3",
+		attackN: "assets/voice/505200920.mp3",
+		attackB: "assets/voice/505200921.mp3",
+		damage: "assets/voice/505200931.mp3",
+		damageN: "assets/voice/505200930.mp3",
+		damageB: "assets/voice/505200931.mp3",
+		sunk: "assets/voice/505200941.mp3",
+	},
 	9001: {
 		start: "assets/voice/Iona_fog_-Battle_Start.ogg",
 		attack: "assets/voice/Iona_fog_-Attack.ogg",
@@ -7132,6 +7229,7 @@ var VOICES = {
 		damage1: "assets/voice/634_damage1.mp3",
 		damage2: "assets/voice/634_damage2.mp3",
 		damage3: "assets/voice/634_damage3.mp3",
+		special: "assets/voice/634_900.mp3",
 	},
 	639: {
 		start: "assets/voice/634_start.mp3",
@@ -7140,6 +7238,7 @@ var VOICES = {
 		damage1: "assets/voice/634_damage1.mp3",
 		damage2: "assets/voice/634_damage2.mp3",
 		damage3: "assets/voice/634_damage3.mp3",
+		special: "assets/voice/634_900.mp3",
 	},
 	636: {
 		start: "assets/voice/636_start.mp3",
@@ -7189,4 +7288,111 @@ var VOICES = {
 		damage2: "assets/voice/641_damage2.mp3",
 		damage3: "assets/voice/641_damage3.mp3",
 	},
+	514: {
+		start: "assets/voice/514_start.mp3",
+		attack: "assets/voice/514_attack.mp3",
+		nbattack: "assets/voice/514_nbattack.mp3",
+		damage1: "assets/voice/514_damage1.mp3",
+		damage2: "assets/voice/514_damage2.mp3",
+		damage3: "assets/voice/514_damage3.mp3",
+	},
+	598: {
+		start: "assets/voice/598_start.mp3",
+		attack: "assets/voice/598_attack.mp3",
+		nbattack: "assets/voice/598_nbattack.mp3",
+		damage1: "assets/voice/598_damage1.mp3",
+		damage2: "assets/voice/598_damage2.mp3",
+		damage3: "assets/voice/598_damage3.mp3",
+	},
+	642: {
+		start: "assets/voice/642_start.mp3",
+		attack: "assets/voice/642_attack.mp3",
+		nbattack: "assets/voice/642_nbattack.mp3",
+		damage1: "assets/voice/642_damage1.mp3",
+		damage2: "assets/voice/642_damage2.mp3",
+		damage3: "assets/voice/642_damage3.mp3",
+	},
+	644: {
+		start: "assets/voice/644_start.mp3",
+		attack: "assets/voice/644_attack.mp3",
+		nbattack: "assets/voice/644_nbattack.mp3",
+		damage1: "assets/voice/644_damage1.mp3",
+		damage2: "assets/voice/644_damage2.mp3",
+		damage3: "assets/voice/644_damage3.mp3",
+	},
+	653: {
+		start: "assets/voice/653_start.mp3",
+		attack: "assets/voice/653_attack.mp3",
+		nbattack: "assets/voice/653_nbattack.mp3",
+		damage1: "assets/voice/653_damage1.mp3",
+		damage2: "assets/voice/653_damage2.mp3",
+		damage3: "assets/voice/653_damage3.mp3",
+	},
+	654: {
+		start: "assets/voice/654_start.mp3",
+		attack: "assets/voice/654_attack.mp3",
+		nbattack: "assets/voice/654_nbattack.mp3",
+		damage1: "assets/voice/654_damage1.mp3",
+		damage2: "assets/voice/654_damage2.mp3",
+		damage3: "assets/voice/654_damage3.mp3",
+	},
+	655: {
+		start: "assets/voice/655_start.mp3",
+		attack: "assets/voice/655_attack.mp3",
+		nbattack: "assets/voice/655_nbattack.mp3",
+		damage1: "assets/voice/655_damage1.mp3",
+		damage2: "assets/voice/655_damage2.mp3",
+		damage3: "assets/voice/655_damage3.mp3",
+	},
+	671: {
+		start: "assets/voice/671_start.mp3",
+		attack: "assets/voice/671_attack.mp3",
+		nbattack: "assets/voice/671_nbattack.mp3",
+		damage1: "assets/voice/671_damage1.mp3",
+		damage2: "assets/voice/671_damage2.mp3",
+		damage3: "assets/voice/671_damage3.mp3",
+	},
+	675: {
+		start: "assets/voice/675_start.mp3",
+		attack: "assets/voice/675_attack.mp3",
+		nbattack: "assets/voice/675_nbattack.mp3",
+		damage1: "assets/voice/675_damage1.mp3",
+		damage2: "assets/voice/675_damage2.mp3",
+		damage3: "assets/voice/675_damage3.mp3",
+	},
+	699: {
+		start: "assets/voice/699_start.mp3",
+		attack: "assets/voice/699_attack.mp3",
+		nbattack: "assets/voice/699_nbattack.mp3",
+		damage1: "assets/voice/699_damage1.mp3",
+		damage2: "assets/voice/699_damage2.mp3",
+		damage3: "assets/voice/699_damage3.mp3",
+	},
+	882: {
+		start: "assets/voice/882_start.mp3",
+		attack: "assets/voice/882_attack.mp3",
+		nbattack: "assets/voice/882_nbattack.mp3",
+		damage1: "assets/voice/882_damage1.mp3",
+		damage2: "assets/voice/882_damage2.mp3",
+		damage3: "assets/voice/882_damage3.mp3",
+	},
+}
+
+for (let id in SHIPDATA) {
+	if (SHIPDATA[id].prev) continue;
+	let idNext = id, done = {};
+	while (idNext = SHIPDATA[idNext].next) {
+		if (done[idNext]) break;
+		if (!VOICES[idNext]) {
+			VOICES[idNext] = VOICES[id];
+		} else {
+			for (let key in VOICES[id]) {
+				if (!VOICES[idNext][key]) {
+					VOICES[idNext][key] = VOICES[id][key];
+				}
+			}
+		}
+		done[idNext] = 1;
+		id = idNext;
+	}
 }

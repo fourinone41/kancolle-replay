@@ -678,6 +678,12 @@ function processAPI(root) {
 			var letter = (window['EDGES'] && EDGES['World '+root.world+'-'+root.mapnum])? EDGES['World '+root.world+'-'+root.mapnum][root.battles[b].node][1].charCodeAt()-64 : root.battles[b].node;
 			var letterOrig = (window['EDGES'] && EDGES['World '+root.world+'-'+root.mapnum])? EDGES['World '+root.world+'-'+root.mapnum][root.battles[b].node][1] : root.battles[b].node;
 			var isboss = (Array.isArray(map.bossnode))? (map.bossnode.indexOf(letter) != -1 || map.bossnode.indexOf(letterOrig) != -1 || map.bossnode.indexOf(String.fromCharCode(+letter+64)) != -1) : (map.bossnode==letter);
+			if (map.overrideBGM && map.overrideBGM[letterOrig]) {
+				let m = {};
+				for (let key in map) m[key] = map[key];
+				for (let key in map.overrideBGM[letterOrig]) m[key] = map.overrideBGM[letterOrig][key];
+				map = m;
+			}
 			if (isboss) bgm = (NBonly)? map.bgmNB : map.bgmDB;
 			else bgm = (NBonly)? map.bgmNN : map.bgmDN;
 			var orel = false; if (root.world==2 && root.mapnum==3) { //orel cruise
@@ -1029,6 +1035,16 @@ function processAPI(root) {
 						var protects = []; for (let k=0; k<hou.api_damage[j].length; k++) protects.push(d[k+2] != hou.api_damage[j][k]);
 						var args = [attackers,defenders,d.slice(2,5),d.slice(5,8),protects];
 						eventqueue.push([shootNelsonTouch,args,getState()]); break;
+					case 300:
+					case 301:
+					case 302:
+						let f = hou.api_at_eflag && hou.api_at_eflag[j] ? f2 : f1;
+						var attackers;
+						if (hou.api_at_type[j] == 300) attackers = [f[0],f[1],f[2]];
+						if (hou.api_at_type[j] == 301) attackers = [f[0],f[2],f[3]];
+						if (hou.api_at_type[j] == 302) attackers = [f[0],f[1],f[3]];
+						var args = [attackers, defenders, hou.api_damage[j], hou.api_cl_list[j], hou.api_damage[j].map(n => Math.floor(n) != n)];
+						eventqueue.push([shootSSAttack,args,getState()]); break;
 				}
 				
 				handleRepair(fleet1);
@@ -1093,27 +1109,29 @@ function processAPI(root) {
 						eventqueue.push([shootDA,d,getState()]); break;
 					case 2:
 					case 3:
-						if (d.length >= 7) { d[2] += d[3]; d[3] = (d[4]||d[5]); d[4] = d[6]; }
-						eventqueue.push([shootBigTorp,d,getState()]); break;
+						var args = [d[0], d[1], hou.api_damage[j].reduce((a,b) => Math.floor(Math.max(0,a) + Math.max(0,b)),0), hou.api_cl_list[j].some(n => n == 2), hou.api_damage[j].some(n => n != Math.floor(n)), 1];
+						eventqueue.push([shootBigTorp,args,getState()]); break;
 					case 4:
-						if (d.length >= 7) { d[2] += Math.max(0,d[3]); d[3] = (d[4]||d[5]); d[4] = d[6]; }
-						eventqueue.push([shootBigGun,d,getState()]); break;
+						var args = [d[0], d[1], hou.api_damage[j].reduce((a,b) => Math.floor(Math.max(0,a) + Math.max(0,b)),0), hou.api_cl_list[j].some(n => n == 2), hou.api_damage[j].some(n => n != Math.floor(n))];
+						eventqueue.push([shootBigGun,args,getState()]); break;
 					case 5:
-						if (d.length >= 7) { d[2] += Math.max(0,d[3]); d[3] = (d[4]||d[5]); d[4] = d[6]; }
-						eventqueue.push([shootSpecialGun,d,getState()]); break;
+						var args = [d[0], d[1], hou.api_damage[j].reduce((a,b) => Math.floor(Math.max(0,a) + Math.max(0,b)),0), hou.api_cl_list[j].some(n => n == 2), hou.api_damage[j].some(n => n != Math.floor(n))];
+						eventqueue.push([shootSpecialGun,args,getState()]); break;
 					case 6:
-						if (d.length >= 7) { 
-							d[2] += Math.max(0,d[3]); d[2] += Math.max(0,d[4]);
-							d.splice(3,2);
-						}
-						eventqueue.push([shootPlaneCutIn,d,getState()]); break;
+						var args = [d[0], d[1], hou.api_damage[j].reduce((a,b) => Math.floor(Math.max(0,a) + Math.max(0,b)),0), hou.api_cl_list[j].some(n => n == 2), hou.api_damage[j].some(n => n != Math.floor(n))];
+						eventqueue.push([shootPlaneCutIn,args,getState()]); break;
 					case 7:
 					case 8:
-						if (d.length >= 7) { 
-							d[2] += Math.max(0,d[3]); d[2] += Math.max(0,d[4]);
-							d.splice(3,2);
-						}
-						eventqueue.push([shootBigTorp,d,getState()]); break;
+					case 9:
+					case 10:
+						var args = [d[0], d[1], hou.api_damage[j].reduce((a,b) => Math.floor(Math.max(0,a) + Math.max(0,b)),0), hou.api_cl_list[j].some(n => n == 2), hou.api_damage[j].some(n => n != Math.floor(n)), 0];
+						eventqueue.push([shootBigTorp,args,getState()]); break;
+					case 11:
+					case 12:
+					case 13:
+					case 14:
+						var args = [d[0], d[1], hou.api_damage[j].reduce((a,b) => Math.floor(Math.max(0,a) + Math.max(0,b)),0), hou.api_cl_list[j].some(n => n == 2), hou.api_damage[j].some(n => n != Math.floor(n)), 2];
+						eventqueue.push([shootBigTorp,args,getState()]); break;
 					case 100:
 						var attackers = (hou.api_at_eflag && hou.api_at_eflag[j])? [f2[0],f2[2],f2[4]] : [f1[0],f1[2],f1[4]];
 						var protects = []; for (let k=0; k<hou.api_damage[j].length; k++) protects.push(d[k+2] != hou.api_damage[j][k]);
@@ -1135,6 +1153,16 @@ function processAPI(root) {
 						var protects = []; for (let k=0; k<hou.api_damage[j].length; k++) protects.push(d[k+2] != hou.api_damage[j][k]);
 						var args = [attackers,targets,d.slice(2,4),d.slice(4,6),protects];
 						eventqueue.push([shootNelsonTouch,args,getState()]); break;
+					case 300:
+					case 301:
+					case 302:
+						let f = hou.api_at_eflag && hou.api_at_eflag[j] ? f2 : f1;
+						var attackers;
+						if (hou.api_sp_list[j] == 300) attackers = [f[0],f[1],f[2]];
+						if (hou.api_sp_list[j] == 301) attackers = [f[0],f[2],f[3]];
+						if (hou.api_sp_list[j] == 302) attackers = [f[0],f[1],f[3]];
+						var args = [attackers, targets, hou.api_damage[j], hou.api_cl_list[j], hou.api_damage[j].map(n => Math.floor(n) != n)];
+						eventqueue.push([shootSSAttack,args,getState()]); break;
 				}
 				
 				handleRepair(fleet1);
@@ -2166,6 +2194,39 @@ function shootNelsonTouch(ships,targets,damages,crits,protects) {
 	addTimeout(function(){ ecomplete = true; }, 5500);
 }
 
+function shootSSAttack(ships,targets,damages,crits,protects) {
+	SM.playVoice(ships[0].mid,'special',ships[0].id);
+	updates.push([shipMoveTo,[ships[0],ships[0].xorigin+25-50*ships[0].side,2]]);
+	addTimeout(function() {
+		updates.push([shipMoveTo,[ships[0],ships[0].xorigin,2]]);
+	},3500);
+	
+	for (let i=1; i<ships.length; i++) {
+		addTimeout(function(){ shipShake(ships[i],3,0,36); }, 1000);
+	}
+	addTimeout(function() { SM.play('torpedo'); }, 1500);
+	
+	let byTarget = {};
+	for (let i=0; i<targets.length; i++) {
+		let id = targets[i].id;
+		if (!byTarget[id]) byTarget[id] = { 'target': targets[i], 'damage': 0, 'crit': 0, 'protect': false };
+		byTarget[id].damage += Math.floor(damages[i]);
+		byTarget[id].crit = Math.max(byTarget[id].crit, crits[i]);
+		if (protects[i]) byTarget[id].protect = true;
+		
+		let ship = i % 2 == 0 ? ships[1] : ships[2];
+		let target = targets[i];
+		let speed = (Math.abs(ship.graphic.x-target.graphic.x) < 600)? 3 : 4;
+		addTimeout(function(){ createTorp(ship,target,speed); }, 1500);
+	}
+	
+	for (let id in byTarget) {
+		addTimeout(function(){ standardHit(byTarget[id].target,byTarget[id].damage,true,byTarget[id].protect,byTarget[id].crit); },3500);
+	}
+	
+	addTimeout(function(){ ecomplete = true; }, 4200);
+}
+
 function shootTorp(ship,target,damage,forcecrit,protect) {
 	shipShake(ship,3,0,36);
 	SM.playVoice(ship.mid,'nbattack',ship.id);
@@ -2177,15 +2238,33 @@ function shootTorp(ship,target,damage,forcecrit,protect) {
 	addTimeout(function(){ ecomplete = true; }, 2600);
 }
 
-function shootBigTorp(ship,target,damage,forcecrit,protect) {
+function shootBigTorp(ship,target,damage,forcecrit,protect,numExtraHit) {
 	shipShake(ship,3,0,36);
 	SM.playVoice(ship.mid,'nbattack',ship.id);
 	var speed = (Math.abs(ship.graphic.x-target.graphic.x) < 600)? 8 : 12;
 	addTimeout(function(){ createTorp(ship,target,speed,true); SM.play('torpedo');}, 500);
 	if (protect) addTimeout(function() { updates.push([shipMoveTo,[target,target.xorigin+25-50*target.side,3]]); }, 1175);
-	addTimeout(function(){ standardHit(target,damage,true,protect,forcecrit); },1300);
+	let delay = 350 * (numExtraHit || 0);
+	if (numExtraHit) {
+		addTimeout(function() {
+			standardExplosion(target,1); SM.play('fire');
+			if (protect) {
+				createShield(target.graphic.x + ((target.side==0)? 180 : -10),target.side);
+				addTimeout(function() { updates.push([shipMoveTo,[target,target.xorigin,3]]); }, 500);
+				shipShake(target,12,.5,undefined,10);
+			} else {
+				target.graphic.x = target.xorigin-25+50*target.side;
+				updates.push([shipMoveTo,[target,target.xorigin,2]]);
+				shipShake(target,5,.175/2);
+			}
+		}, 1300);
+	}
+	for (let i=1; i<numExtraHit; i++) {
+		addTimeout(function(){ standardExplosion(target,1); SM.play('fire'); },1300 + 350*i);
+	}
+	addTimeout(function(){ standardHit(target,damage,!numExtraHit,!numExtraHit && protect,forcecrit); },1300 + delay);
 	
-	addTimeout(function(){ ecomplete = true; }, 2200);
+	addTimeout(function(){ ecomplete = true; }, 2200 + delay);
 }
 
 function shootWG(ship,target,damage,forcecrit,protect) {

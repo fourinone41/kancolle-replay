@@ -73,6 +73,7 @@ SoundManager.prototype = {
 	stopBGM: function() {
 		if (!this._bgm) return;
 		this._bgm.stop();
+		this._bgm.unload();
 		this.BGMnum = 0;
 	},
 	fadeBGM: function(dur) {
@@ -100,7 +101,6 @@ SoundManager.prototype = {
 			this._sounds['V'+type+shipid] = new Howl({
 				src:[path],
 				volume:.4*this._volume,
-				html5:true
 			});
 		}
 		if (this._voices[slot] && isPlayable(shipid)) {
@@ -299,6 +299,15 @@ var BGMLIST = {
 	167: {url:'assets/music/167_1546.mp3'},
 	168: {url:'assets/music/168_9629.mp3'},
 	169: {url:'assets/music/169_2813.mp3'},
+	173: {url:'assets/music/173_7192.mp3'},
+	174: {url:'assets/music/174_7617.mp3'},
+	175: {url:'assets/music/175_5742.mp3'},
+	176: {url:'assets/music/176_8914.mp3'},
+	177: {url:'assets/music/177_6528.mp3'},
+	178: {url:'assets/music/178_7302.mp3'},
+	179: {url:'assets/music/179_8932.mp3'},
+	180: {url:'assets/music/180_1246.mp3'},
+	181: {url:'assets/music/181_2515.mp3'},
 	999: {url:'assets/music/Orel Cruising & LSC Song [ENG Sub].mp3',voldef:.3},
 	1000: {url: 'assets/music/bossold1.mp3',voldef:.6},
 	1001: {url: 'assets/music/bossold2.mp3',voldef:.6},
@@ -307,5 +316,7 @@ var BGMLIST = {
 	3002: {url:'assets/music/Sound_se_63.ogg'},
 	3003: {url:'assets/music/Sound_se_52.ogg'},
 	3004: {url:'assets/music/Sound_se_31.ogg'},
+	3010: {url:'assets/music/BGM_Old_Fanfare_Victory.mp3'},
+	3011: {url:'assets/music/BGM_Old_Fanfare_Defeat.mp3'},
 };
 

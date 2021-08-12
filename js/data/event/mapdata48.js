@@ -4362,7 +4362,7 @@ MAPDATA[48] =
 					}
 				},
 				additionalChecks: function(ships,errors) {
-					if (CHDATA.event.maps[7].diff != 3) return;
+					if (CHDATA.event.maps[7].diff != 3 || CHDATA.config.disablelock) return;
 					let allSame = true;
 					let lock = '48_8';
 					if (CHDATA.fleets.combined == 0) lock = '48_7';

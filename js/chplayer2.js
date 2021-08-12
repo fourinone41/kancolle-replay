@@ -148,9 +148,11 @@ var WORLD, MAPNUM;
 $('#battlespace').hide();
 $('#mainspace').hide();
 $(document).ready(function() {
-	if (true && localStorage.ch_file) { 
-		chLoadFile(localStorage.ch_file);
-	} else chOpenMenu();
+	initEQDATA(function() {
+		if (true && localStorage.ch_file) { 
+			chLoadFile(localStorage.ch_file);
+		} else chOpenMenu();
+	});
 });
 
 function chLoadFile(file) {
@@ -1006,6 +1008,7 @@ var ONSORTIE = false;
 var testLOS = 101;
 
 function chPlayerStart() {
+	CHDATA.sortie = {};
 	curletter = (MAPDATA[WORLD].maps[MAPNUM].startCheck)? MAPDATA[WORLD].maps[MAPNUM].startCheck(CHSHIPCOUNT) : 'Start';
 	if (started) {
 		console.log('reset');
@@ -1014,7 +1017,6 @@ function chPlayerStart() {
 		eventqueue = []; e = 0;
 		bossbar.active = false;
 	}
-	CHDATA.sortie = {};
 	node = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter];
 	var mapshipindex = stage.getChildIndex(mapship);
 	stage.removeChild(mapship);
@@ -1911,7 +1913,7 @@ function prepBattle(letter) {
 	eventqueue.push([showResults,[]]);
 	shutterTop2.y = 0; shutterBottom2.y = 210;
 	if (!MAPDATA[WORLD].maps[MAPNUM].nodes[letter].end) {
-		if (CHDATA.fleets.combined || CHDATA.fleets.sf) eventqueue.push([FCFSelect,[]]);
+		if (FLEETS1[0].ships[0].hasFCF) eventqueue.push([FCFSelect,[]]);
 		eventqueue.push([continueSelect,[]]);
 		eventqueue.push([wait,[1000]]);
 	} else {
@@ -2121,6 +2123,11 @@ function shuttersPostbattle(noshutters) {
 			}
 		}
 	}
+	if (FLEETS1[0].didSpecial && FLEETS1[0].ships[0].type == 'AS') {
+		CHDATA.event.resources.submarine = CHDATA.event.resources.submarine + 1 || 1;
+		chUIUpdateItems();
+		FLEETS1[0].didSpecial = 0;
+	}
 	chUpdateMorale();
 	chUpdateSupply();
 	pushShipStatusToUI();
@@ -2329,38 +2336,43 @@ function showResults() {
 		var rank = (!CHDATA.temp.NBonly && !NBSELECT)? CHDATA.temp.rankDay : CHDATA.temp.rank;
 		CHDATA.temp.rankT = rank;
 		var rsize;
+		let bgm;
 		switch(rank) {
 			case 'S':
 				rsize = 240;
 				rgraphic = getFromPool('rankS','assets/maps/rankS.png');
-				SM.playBGM(3001,null,true);
+				bgm = 3001;
 				break;
 			case 'A':
 				rsize = 140
 				rgraphic = getFromPool('rankA','assets/maps/rankA.png');
-				SM.playBGM(3002,null,true);
+				bgm = 3002;
 				break;
 			case 'B':
 				rsize = 140;
 				rgraphic = getFromPool('rankB','assets/maps/rankB.png');
-				SM.playBGM(3003,null,true);
+				bgm = 3003;
 				break;
 			case 'C':
 				rsize = 140;
 				rgraphic = getFromPool('rankC','assets/maps/rankC.png');
-				SM.playBGM(3004,null,true);
+				bgm = 3004;
 				break;
 			case 'D':
 				rsize = 140;
 				rgraphic = getFromPool('rankD','assets/maps/rankD.png');
-				SM.playBGM(3004,null,true);
+				bgm = 3004;
 				break;
 			case 'E':
 				rsize = 140;
 				rgraphic = getFromPool('rankE','assets/maps/rankE.png');
-				SM.playBGM(3004,null,true);
+				bgm = 3004;
 				break;
 		}
+		if (WORLD == 22 || WORLD == 23) {
+			bgm = bgm == 3004 ? 3011 : 3010;
+		}
+		SM.playBGM(bgm,null,true);
 		rgraphic.position.set(592,238);
 		rgraphic.pivot.set(121,121);
 		rgraphic.size = rsize+300;
@@ -2419,27 +2431,49 @@ function showResults() {
 
 function FCFSelect() {
 	var retreater, escorter;
-	if (CHDATA.fleets.sf) {
-		if (FLEETS1[0].ships[0].hasFCF == 272 && FLEETS1[0].ships[0].HP/FLEETS1[0].ships[0].maxHP > .25) {
-			for (let ship of FLEETS1[0].ships) {
-				if (ship.HP/ship.maxHP <= .25 && ship.HP > 0 && !ship.retreated) {
-					retreater = ship; break;
+	let fcfType = 0;
+	if (FLEETS1[0].ships[0].HP/FLEETS1[0].ships[0].maxHP > .25) {
+		if (CHDATA.fleets.combined) {
+			if (FLEETS1[0].ships[0].equips.find(eq => eq.mid == 107)) {
+				var d = getFCFShips(FLEETS1[0].ships,FLEETS1[1].ships);
+				retreater = d[0]; escorter = d[1];
+				fcfType = 107;
+			}
+			if (!(retreater && escorter)) {
+				addTimeout(function() { ecomplete = true; }, 1);
+				return;
+			}
+		} else {
+			let has272 = !!FLEETS1[0].ships[0].equips.find(eq => eq.mid == 272);
+			let has413 = !!FLEETS1[0].ships[0].equips.find(eq => eq.mid == 413);
+			let canRetreat = false;
+			if (has272 && CHDATA.fleets.sf) {
+				fcfType = 272;
+			}
+			if (has413) {
+				let isTS = true;
+				if (FLEETS1[0].ships[0].type != 'CL' && FLEETS1[0].ships[0].type != 'DD') isTS = false;
+				for (let i=1; i<FLEETS1[0].ships.length; i++) {
+					if (FLEETS1[0].ships[i].type != 'DD' && FLEETS1[0].ships[i].type != 'CLT') isTS = false;
+				}
+				if (CHSHIPCOUNT.DD <= 0) isTS = false;
+				if (CHSHIPCOUNT.CLT > 3) isTS = false;
+				if (isTS) {
+					fcfType = 413;
+				}
+			}
+			if (fcfType) {
+				for (let ship of FLEETS1[0].ships) {
+					if (ship.HP/ship.maxHP <= .25 && ship.HP > 0 && !ship.retreated) {
+						retreater = ship; break;
+					}
 				}
 			}
 		}
-		if (!retreater) {
-			addTimeout(function() { ecomplete = true; }, 1);
-			return;
-		}
-	} else if (CHDATA.fleets.combined) {
-		if (FLEETS1[0].ships[0].hasFCF == 107 && FLEETS1[0].ships[0].HP/FLEETS1[0].ships[0].maxHP > .25) {
-			var d = getFCFShips(FLEETS1[0].ships,FLEETS1[1].ships);
-			retreater = d[0]; escorter = d[1];
-		}
-		if (!(retreater && escorter)) {
-			addTimeout(function() { ecomplete = true; }, 1);
-			return;
-		}
+	}
+	if (!retreater) {
+		addTimeout(function() { ecomplete = true; }, 1);
+		return;
 	}
 	
 	stage.addChild(mapFCFyesbutton[1]);
@@ -2471,7 +2505,12 @@ function FCFSelect() {
 			retreater.retreated = true;
 			retreater.morale = 0;
 			retreater.fuelleft = 0;
-			if (CHDATA.fleets.sf) retreater.HP = Math.max(1,retreater.HP-Math.floor(.2*retreater.maxHP));
+			if (fcfType == 272 || fcfType == 413) {
+				retreater.HP = Math.max(1,retreater.HP-Math.floor(.2*retreater.maxHP));
+			}
+			if (fcfType == 413) {
+				retreater.ammoleft = 0;
+			}
 			if (escorter) {
 				escorter.retreated = true;
 				escorter.morale = 0;
@@ -2808,6 +2847,7 @@ function chUIUpdateItems() {
 	$('#resRation').text(CHDATA.event.resources.ration || 0);
 	$('#resSupply').text(CHDATA.event.resources.supply || 0);
 	$('#resRepair').text(CHDATA.event.resources.repair || 0);
+	$('#resSubmarine').text(CHDATA.event.resources.submarine || 0);
 	
 	let costs = {
 		'damecon': 200,
@@ -2815,10 +2855,11 @@ function chUIUpdateItems() {
 		'ration': 100,
 		'supply': 150,
 		'repair': 200,
+		'submarine': 166.667,
 	};
 	let yen = 0;
 	for (let key in costs) yen += (CHDATA.event.resources[key] || 0) * costs[key];
-	$('#resourcespace2').attr('title','\u00a5'+yen);
+	$('#resourcespace2').attr('title','\u00a5'+Math.round(yen));
 }
 
 function chApplySortieItems() {
@@ -2927,11 +2968,12 @@ function getLBASRange(ship) {
 function getELoS33(fleet,coef,includeCombined) {
 	coef = coef || 1;
 	var los = 0;
-	var ships = CHDATA.fleets[fleet].slice();
+	var ships = CHDATA.fleets[fleet].slice(), numShip = 0;
 	if (includeCombined) ships = ships.concat(CHDATA.fleets[2]);
 	for (var i=0; i<ships.length; i++) {
 		var ship = CHDATA.ships[ships[i]];
 		if (!ship) continue;
+		numShip++;
 		var shiplos = ship.LOS;
 		for (var j=0; j<ship.items.length; j++) {
 			if (ship.items[j] <= 0) continue;
@@ -2959,7 +3001,8 @@ function getELoS33(fleet,coef,includeCombined) {
 		los += Math.sqrt(shiplos);
 	}
 	los -= Math.ceil(CHDATA.player.level*.4);
-	los += 2*(6-ships.length);
+	let numShipMax = includeCombined ? 12 : CHDATA.fleets.sf ? 7 : 6;
+	los += 2*(numShipMax - numShip);
 	return los;
 }
 
@@ -3022,7 +3065,7 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 	for (var key in hiddenRoutes) {
 		key = parseInt(key);
 		if (CHDATA.event.maps[MAPNUM].routes.indexOf(key) != -1) continue; 
-		if (hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff)) {
+		if (hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
 			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
 			return key;
 		}
@@ -3215,6 +3258,12 @@ function chLoadFriendFleet(friendData) {
 		let los = sdata.LOSbase + Math.floor((sdata.LOS - sdata.LOSbase)*ship.LVL/99);
 		let simShip = new ShipType(ship.mid,'',0,ship.LVL,sdata.HP,ship.FP,ship.TP,ship.AA,ship.AR,ev,asw,los,sdata.LUK,sdata.RNG,sdata.SLOTS);
 		simShip.loadEquips(ship.equips,[],[],true);
+		if (CHDATA.config.mechanics.equipBonus) {
+			let bonus = getBonusStats(ship.mid,ship.equips,ship.equips.map(eq => 0));
+			for (let stat in bonus) {
+				simShip[stat] += bonus[stat];
+			}
+		}
 		
 		if (ship.damage) {
 			let percent = ship.damage[0] + Math.random()*(ship.damage[1]-ship.damage[0]);
