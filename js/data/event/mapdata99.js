@@ -167,13 +167,23 @@ function chHelpLink() {
     }
 
     if (WORLD > 47) {
-        if (WORLD == 48)
-            eventName = 'Summer_2020_Event';
-
         let suffixe = (MAPNUM < 5 ? '/Main_Operations' : '/Extra_Operations') + `#E-${MAPNUM}`;
+
+        switch (WORLD) {
+            case '48': 
+                eventName = 'Summer_2020_Event';
+                break;
+            case '50':
+                suffixe =  (MAPNUM < 5 ? "/Main_Operation" : '/Extra_Operation') + `#E-${MAPNUM}`;
+                break;
+        
+            default:
+                break;
+        }
 
         return `<a href="https://en.kancollewiki.net/${eventName}${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;
     }
+    
 
     let suffixe = `#/E-${MAPNUM}`;
     return `<a href="https://kancolle.fandom.com/wiki/${eventName}_Event${suffixe}" target="_blank">${MAPDATA[WORLD].name} </a>`;
