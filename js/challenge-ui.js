@@ -375,6 +375,20 @@ function chFilterDialogShip(types) {
 	}
 }
 
+function chFilterDialogShipSearch() {
+	let search = $("input.shipfilter").val().toUpperCase();
+	let shipname;
+
+	$('#shipselecttable > tbody > tr').each(function() {
+		var sid = $(this).attr('id').replace('ss','');
+
+		shipname = SHIPDATA[CHDATA.ships[sid].masterId].name.toUpperCase();
+
+		if (shipname.includes(search)) $(this).removeClass("filteredBySearch");
+		else $(this).addClass("filteredBySearch");
+	});
+}
+
 function chCanJoinFleet(sid,fleet,slot) {
 	for (var i=0; i<CHDATA.fleets[fleet].length; i++) {
 		if (slot == i+1) continue;

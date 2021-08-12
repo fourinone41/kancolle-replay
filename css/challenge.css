@@ -572,3 +572,7 @@ button.heartlock_button {
     background: transparent;
     cursor: pointer;
 }
+
+.filteredBySearch {
+	display: none;
+}
