@@ -28,20 +28,22 @@ function chOpenMenu(allowclose) {
 			foundfile = true;
 		}
 	}
-	// foundfile = false; //testing
 	
 	if (!foundfile) {
 		$('#menufileselect').hide();
 		$('#menuevents').show();
+		$('#menuBtnBackupSave').hide();
 	} else {
 		chMenuShowFiles();
 		$('#menufileselect').show();
 		chMenuUpdateStorageSize();
 		$('#menuevents').hide();
+		$('#menuBtnBackupSave').show();
 	}
 	$('#menuloadfile').hide();
 	$('#menusettings').hide();
 	$('#menufiledeleteprompt').hide();
+	$('#menuBackup').show();
 	
 	$('#fileKC3').val('');
 }
@@ -171,6 +173,7 @@ function chMenuClickedNewFile() {
 	}
 	$('#menufileselect').hide();
 	$('#menuevents').show();
+	$('#menuBackup').hide();
 }
 
 function chMenuSelectedEvent(eventnum) {
@@ -178,6 +181,7 @@ function chMenuSelectedEvent(eventnum) {
 	$('#menucurbanner').attr('src',MAPDATA[EVENTNUM].bannerImg);
 	chMenuDefaultSettings();
 	$('#menuevents').hide();
+	$('#menuBackup').hide();
 	$('#menuloadfile').show();
 	if (localStorage.ch_import == 1) {
 		$('#menuImportKC3').hide();
@@ -475,6 +479,74 @@ function chGetStorageLeft() {
 	delete localStorage['a'];
 	return 2*left;
 }
+
+function chSaveBackup() {	
+	let save = {};
+	for (let key in localStorage) {
+		if (key.indexOf('ch_') == 0) save[key] = localStorage[key];
+	}
+	save.kcEventSimSource = window.location.host;
+	
+	let filename = 'KanColle_Event_Simulator_Backup_' + (new Date).toISOString().slice(0,10) + '.kcevsim';
+
+	let a = window.document.createElement('a');
+	a.href = window.URL.createObjectURL(new Blob([JSON.stringify(save)], {type: 'application/json'}));
+	a.download = filename;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+}
+
+function chLoadBackup() {
+	let file = document.getElementById("menuInputBackupFile").files[0];
+	if (!file) return;
+	
+	$('#menuBackupError').hide();
+
+	const reader = new FileReader();
+	reader.addEventListener('load', (event) => {
+		let save;
+		try {
+			save = JSON.parse(event.target.result);
+		} catch (e) {
+			$('#menuBackupWarn').hide();
+			$('#menuBackupError').show();
+			return;
+		}
+		if (save.kcEventSimSource != window.location.host) {
+			$('#menuBackupWarn').hide();
+			$('#menuBackupError').show();
+			return;
+		}
+
+		for (let key in localStorage) {
+			if (key.indexOf('ch_') == 0) localStorage.removeItem(key);
+		}
+
+		for (const saveEntryKey in save) {
+			if (saveEntryKey.indexOf('ch_') == 0) localStorage.setItem(saveEntryKey, save[saveEntryKey]);
+		}
+
+		// --- Refresh after load
+		chSave = () => null;
+		location.reload();
+	});
+
+	reader.readAsText(file);
+}
+
+$('#menuBackupWarn').hide();
+$('#menuBackupError').hide();
+$('#menuBtnBackupLoad').prop('disabled',true);
+$('#menuBtnBackupSave').click(chSaveBackup);
+$('#menuBtnBackupLoad').click(chLoadBackup);
+$('#menuInputBackupFile').change(function() {
+	$('#menuBtnBackupLoad').prop('disabled',false);
+	$('#menuBackupError').hide();
+	if (localStorage.ch_file) {
+		$('#menuBackupWarn').show();
+	}
+});
 
 
 $('#btnImportOther').click(function() {

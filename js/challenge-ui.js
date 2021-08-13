@@ -140,7 +140,8 @@ function chCreateFleetTable(root,num,name,noheader) {
 	divWrap.append('<select class="presetSelect" id="presets' + num + '" name="presets' + num + '" style="width:150px" tabIndex="-1"></select>');
 	divWrap.append('<button id="presetLoad' + num + '" onclick="chLoadFleetPreset(' + num + ', true)" tabIndex="-1">Load Preset (With Equips)</button>');
 	divWrap.append('<button id="presetLoadN' + num + '" onclick="chLoadFleetPreset(' + num + ', false)" tabIndex="-1">Load Preset (Ships Only)</button>');
-	divWrap.append('<button id="presetSave' + num + '" onclick="chSaveFleetPreset(' + num + ')" style="margin-left:10px" tabIndex="-1">Save Preset</button>');
+	divWrap.append('<input id="presetSaveName' + num + '" style="margin-left:10px" tabIndex="-1" placeholder="Save Preset Name" maxlength="50" />');
+	divWrap.append('<button id="presetSave' + num + '" onclick="chSaveFleetPreset(' + num + ')" tabIndex="-1">Save Preset</button>');
 	divWrap.append('<button id="presetDelete' + num + '" onclick="chDeleteFleetPreset(' + num + ')" tabIndex="-1">Delete Preset</button>');
 }
 function chCreateFleetTableLBAS(root,num) {
@@ -271,6 +272,7 @@ function chClickedTab(tab) {
 
 function chFillDialogShip(sortmethod) {
 	if (sortmethod == DIALOGSORT) return;
+	$('input.shipfilter').val('');
 	var table = $('#shipselecttable');
 	table.html('');
 	var ships = [];
@@ -309,8 +311,8 @@ function chFilterDialogShip(types) {
 		var sid = $(this).attr('id').replace('ss','');
 		if (sid == sidnow
 			|| types && types.indexOf(SHIPDATA[CHDATA.ships[sid].masterId].type) == -1
-			|| !chCanJoinFleet(sid,DIALOGFLEETSEL,DIALOGSLOTSEL)) $(this).hide();
-		else $(this).show();
+			|| !chCanJoinFleet(sid,DIALOGFLEETSEL,DIALOGSLOTSEL)) $(this).css('display','none');
+		else $(this).css('display','');
 	});
 	if (sidnow) {
 		for (var fleetnum in CHDATA.fleets)  {
@@ -320,10 +322,24 @@ function chFilterDialogShip(types) {
 				if (!CHDATA.fleets[fleetnum][i]) continue;
 				var tr = $('#ss'+CHDATA.fleets[fleetnum][i]);
 				if (tr.css('display')=='none') continue;
-				if (!chCanJoinFleet(sidnow,fleetnum,i+1)) tr.hide();
+				if (!chCanJoinFleet(sidnow,fleetnum,i+1)) tr.css('display','none');
 			}
 		}
 	}
+}
+
+function chFilterDialogShipSearch() {
+	let search = $("input.shipfilter").val().toUpperCase();
+	let shipname;
+
+	$('#shipselecttable > tbody > tr').each(function() {
+		var sid = $(this).attr('id').replace('ss','');
+
+		shipname = SHIPDATA[CHDATA.ships[sid].masterId].name.toUpperCase();
+
+		if (shipname.includes(search)) $(this).removeClass("filteredBySearch");
+		else $(this).addClass("filteredBySearch");
+	});
 }
 
 function chCanJoinFleet(sid,fleet,slot) {
@@ -2497,9 +2513,14 @@ function chSaveFleetPreset(fleetnum){
 			CHDATA.presets[presetSlot].equips[CHDATA.presets[presetSlot].fleet[i]] = equips;
 		}
 	}
+	let name = $('#presetSaveName' + fleetnum).val();
+	if (name) {
+		CHDATA.presets[presetSlot].name = name;
+	}
+	$('#presetSaveName' + fleetnum).val('');
 
 	// update preset selection
-	let name = SHIPDATA[CHDATA.ships[sidFirst].masterId].name;
+	name = name || SHIPDATA[CHDATA.ships[sidFirst].masterId].name;
 	if (isNew) {
 		chPresetAddSelect(presetSlot,name);
 	} else {
@@ -2561,7 +2582,7 @@ function chInitPreset() {
 	for (let n of Object.keys(CHDATA.presets).sort((a,b) => a-b)) {
 		let sidFirst;
 		for (let sid of CHDATA.presets[n].fleet) if (sid) { sidFirst = sid; break; }
-		let name = SHIPDATA[CHDATA.ships[sidFirst].masterId].name;
+		let name = CHDATA.presets[n].name || SHIPDATA[CHDATA.ships[sidFirst].masterId].name;
 		chPresetAddSelect(n,name);
 	}
 }

@@ -314,13 +314,16 @@ table.dialog4 img {
 .shipfilter {
 	border:1px solid transparent;
 	border-radius:5px;
-	margin-right: 10px;
+	margin-right: 5px;
 	padding:3px;
 }
 .shipfilter:hover {
 	border:1px solid #ff0000;
 	border-radius:5px;
 	cursor:pointer;
+}
+input.shipfilter {
+	width:100px;
 }
 
 .itemfilter {
@@ -332,6 +335,10 @@ table.dialog4 img {
 	border-radius:5px;
 	cursor:pointer;
 }
+
+.filteredBySearch {
+	display: none;
+} 
 
 #sortiespace {
 	width:750px;
@@ -406,6 +413,9 @@ table.dialog4 img {
 }
 #menusettings select {
 	margin: 5px 0;
+}
+#menuBackup {
+	font-size: 12px;
 }
 .eventbutton {
 	background-repeat:no-repeat;

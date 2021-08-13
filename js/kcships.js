@@ -307,7 +307,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 	}
 	this.AACItype = this.getAACItype(atypes);
 	if (addstats) {
-		for (var i=0; i<equips.length; i++){
+		for (var i=0; i<this.equips.length; i++){
 			var eq = this.equips[i];
 			if (eq.FP) this.FP += eq.FP;
 			if (eq.TP) this.TP += eq.TP;
