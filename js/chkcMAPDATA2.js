@@ -10,6 +10,10 @@ var MAPDATA = {
 		allowLBAS: true,
 		unlockDefault: 32,
 		transportCalc: function() { return 1; },
+		overrideStats: {
+			1546: { HP: 180, AR: 90, EQUIPS: [509, 505, 520] },
+			1548: { HP: 350, AR: 120, EQUIPS: [509, 509, 520] },
+		},
 		maps: {
 			1: {
 				name: '1-1',
@@ -4345,8 +4349,12 @@ var MAPDATA = {
 			1532: { HP: 33 },
 			1533: { HP: 39 },
 			1522: { EQUIPS: [505,506,525] },
+			1524: { EQUIPS: [509,509,512] },
 			1527: { EQUIPS: [505,506,515] },
-			1529: { EQUIPS: [509,509,509,528] },
+			1529: { EQUIPS: [509,509,509] },
+			1541: { EQUIPS: [508,508,512] },
+			1542: { EQUIPS: [509,508,512] },
+			1543: { EQUIPS: [509,509,512] },
 		},
 		disableMore: { ships: [110,111] },
 		maps: {
@@ -4716,10 +4724,12 @@ var MAPDATA = {
 		subTargetSpecial: 2,
 		overrideStats: {
 			1522: { EQUIPS: [505,506,525] },
+			1524: { EQUIPS: [509,509,512] },
 			1527: { EQUIPS: [505,506,515] },
-			1529: { EQUIPS: [509,509,509,528] },
+			1529: { EQUIPS: [509,509,509] },
 			1541: { EQUIPS: [508,508,512] },
-			1543: { EQUIPS: [508,508,512,529] },
+			1542: { EQUIPS: [509,508,512] },
+			1543: { EQUIPS: [509,509,512] },
 		},
 		disableMore: { ships: [126,124,131] },
 		maps: {
@@ -5138,7 +5148,7 @@ var MAPDATA = {
 			1527: { EQUIPS: [505,506,515] },
 			1529: { EQUIPS: [509,509,509,528] },
 			1541: { EQUIPS: [508,508,512] },
-			1543: { EQUIPS: [508,508,512,529] },
+			1543: { EQUIPS: [509,509,512,529] },
 		},
 		disableMore: { ships: [191,138,128,143] },
 		maps: {
@@ -5773,7 +5783,7 @@ var MAPDATA = {
 			1527: { EQUIPS: [505,506,515] },
 			1529: { EQUIPS: [509,509,509,528] },
 			1541: { EQUIPS: [508,508,512] },
-			1543: { EQUIPS: [508,508,512,529] },
+			1543: { EQUIPS: [509,509,512,529] },
 		},
 		initReward: {
 			'ships': [9001],
@@ -10589,6 +10599,11 @@ var MAPDATA = {
 		bannerImg: 'http://i.imgur.com/2qArUXu.png',
 		bannerImgAlt: 'http://i.imgur.com/rB0Q7Z6.png',
 		disableMore: { ships: [459,460,443,422] },
+		overrideStats: {
+			1628: { AR: 273 },
+			1629: { AR: 303 },
+			1630: { AR: 333 },
+		},
 		maps: {
 			1: {
 				name: 'E-1',
@@ -12906,6 +12921,11 @@ var MAPDATA = {
 			1644: { AR: 53 },
 			1645: { AR: 73 },
 			1646: { AR: 93 },
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
 		},
 		disableMore: { ships: [423,448] },
 		maps: {
@@ -13650,6 +13670,14 @@ var MAPDATA = {
 			1644: { AR: 53 },
 			1645: { AR: 73 },
 			1646: { AR: 93 },
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
+			1687: { HP: 550 },
+			1688: { HP: 750 },
+			1689: { HP: 850 },
 		},
 		disableMore: { ships: [471,449,440] },
 		maps: {
@@ -15121,6 +15149,16 @@ var MAPDATA = {
 		allowLBAS: true,
 		ptImpSpecial: 1,
 		disableMore: { ships: [481,439] },
+		overrideStats: {
+			1700: { HP: 600 },
+			1701: { HP: 700 },
+			1702: { HP: 444 },
+			1703: { HP: 544 },
+			1704: { HP: 644 },
+			1705: { HP: 370 },
+			1706: { HP: 430, AR: 169 },
+			1707: { HP: 490, AR: 189 },
+		},
 		maps: {
 			1: {
 				name: 'E-1',
@@ -15980,6 +16018,19 @@ var MAPDATA = {
 		ptImpSpecial: 1,
 		transportCalc: transportCalcStandard,
 		disableMore: { ships: [491,433] },
+		overrideStats: {
+			1644: { AR: 49 },
+			1645: { AR: 69 },
+			1646: { AR: 89 },
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
+			1711: { AR: 140 },
+			1712: { AR: 170 },
+			1713: { AR: 190 },
+		},
 		maps: {
 			1: {
 				name: 'E-1',
@@ -18456,6 +18507,16 @@ var MAPDATA = {
 			russian: [35,511],
 		},
 		disableMore: { ships: [521,511] },
+		overrideStats: {
+			1644: { AR: 49 },
+			1645: { AR: 69 },
+			1646: { AR: 89 },
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
+		},
 		maps: {
 			1: {
 				name: 'E-1',
@@ -20033,6 +20094,16 @@ var MAPDATA = {
 			]
 		},
 		disableMore: { ships: [475,492,515] },
+		overrideStats: {
+			1700: { HP: 600 },
+			1701: { HP: 700 },
+			1702: { HP: 444 },
+			1703: { HP: 544 },
+			1704: { HP: 644 },
+			1705: { HP: 370 },
+			1706: { HP: 430, AR: 169 },
+			1707: { HP: 490, AR: 189 },
+		},
 		maps: {
 			1: {
 				name: 'E-1',
@@ -22127,6 +22198,11 @@ var MAPDATA = {
 			1628: { AR: 193 },
 			1629: { AR: 223 },
 			1630: { AR: 273 },
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
 		},
 		voiceSpecial: {
 			26: { 'nbattack': 'assets/voice/Fusou_ShoGo_2017_NightAttack.mp3' },
@@ -24149,6 +24225,13 @@ var MAPDATA = {
 			if (rank == 'A') tp *= 0.7;
 			if (rank != 'S' && rank != 'A') return 0;
 			return Math.floor(tp);
+		},
+		overrideStats: {
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
 		},
 		voiceSpecial: {
 			24: { 'attack': 'assets/voice/Ooi_Kantai_Kessen_2018_Atk.mp3' },
@@ -27344,6 +27427,22 @@ var MAPDATA = {
 		bannerImg: 'assets/maps/42/banner1.png',
 		bannerImgAlt: 'assets/maps/42/banner2.png',
 		transportCalc: transportCalcStandard,
+		overrideStats: {
+			1700: { HP: 600 },
+			1701: { HP: 700 },
+			1702: { HP: 444 },
+			1703: { HP: 544 },
+			1704: { HP: 644 },
+			1705: { HP: 370 },
+			1706: { HP: 430, AR: 169 },
+			1707: { HP: 490, AR: 189 },
+			1834: { AR: 210 },
+			1835: { AR: 240 },
+			1836: { AR: 280 },
+			1837: { AR: 225 },
+			1838: { AR: 255 },
+			1839: { AR: 305 },
+		},
 		historical: {
 			nagumo: [93,111,91,110,90, 78,79,86,85, 71,72, 114, 48,132,167,168,169,170,17,18,49],
 			ozawa: [76,125,124, 69, 23, 479,9,32,33,10],
@@ -29703,6 +29802,10 @@ var MAPDATA = {
 		bannerImg: 'assets/maps/43/banner1.jpg',
 		bannerImgAlt: 'assets/maps/43/banner2.jpg',
 		transportCalc: transportCalcStandard,
+		overrideStats: {
+			1546: { HP: 210, AR: 118, EQUIPS: [509, 505, 520, 531] },
+			1548: { HP: 380, AR: 188, EQUIPS: [509, 509, 520, 531] },
+		},
 		historical: {
 			blackett: [44,583],
 		},
@@ -29793,10 +29896,6 @@ var MAPDATA = {
 		friendFleetWaves: {
 			1: { date: '2019-01-01' },
 			2: { date: '2019-01-11' },
-		},
-		overrideStats: {
-			1546: { HP: 210, AR: 118, EQUIPS: [509, 505, 520, 531] },
-			1548: { HP: 380, AR: 188, EQUIPS: [509, 505, 520, 531] },
 		},
 		maps: {
 			1: {
@@ -31279,6 +31378,21 @@ var MAPDATA = {
 		bannerImg: 'assets/maps/44/banner1.png',
 		bannerImgAlt: 'assets/maps/44/banner2.png',
 		transportCalc: transportCalcStandard,
+		overrideStats: {
+			1660: { HP: 350 },
+			1661: { HP: 350 },
+			1662: { HP: 370 },
+			1663: { HP: 380 },
+			1664: { AR: 208 },
+			1687: { HP: 600 },
+			1688: { HP: 800 },
+			1689: { HP: 900 },
+			1711: { AR: 133 },
+			1712: { AR: 163 },
+			1713: { AR: 183 },
+			1863: { HP: 490 },
+			1864: { HP: 490 },
+		},
 		friendFleet: {
 			'E2-1': { ships: [
 				{ mid: 419, LVL: 76, FP: 58, TP: 85, AA: 81, AR: 55, equips: [63,63,101] },
@@ -31733,11 +31847,6 @@ var MAPDATA = {
 		friendFleetWaves: {
 			1: { date: '2019-06-06' },
 			2: { date: '2019-06-12' },
-		},
-		overrideStats: {
-			1687: { HP: 600 },
-			1688: { HP: 800 },
-			1689: { HP: 900 },
 		},
 		historical: {
 			'E2_1': [131,139,20,41,425,532,167,170],

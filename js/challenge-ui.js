@@ -5,6 +5,8 @@ var DIALOGSLOTSEL = -1;
 var DIALOGITEMSEL = -1;
 var DIALOGFLEETSEL = 1;
 var DIALOGSORT = -1;
+var DIALOGITEMCATEGORY = -1;
+var DIALOGITEMSHIPID = -1;
 var ITEMNODES = [];
 const CHITEMSMAX = 5; //also used as ex slot index
 
@@ -396,23 +398,14 @@ function chDialogItemInit() {
 		var equip2 = EQDATA[eqid2];
 		if (equip2 == undefined) return 1;
 		if (equip1.type != equip2.type) return (equip1.type < equip2.type)? -1:1;
-		return (eqid1 <= eqid2)? -1:1;
+		if (eqid1 != eqid2) return (eqid1 <= eqid2)? -1:1;
+		return (CHDATA.gears[b].stars || 0) - (CHDATA.gears[a].stars || 0);
 	});
 	for (var i=0; i<itemids.length; i++) {
 		var itemid = itemids[i];
 		var eqid = CHDATA.gears[itemid].masterId;
 		var equip = EQDATA[eqid];
-		//if (types.indexOf(equip.type)==-1) continue;
-		//var shiptype = SHIPDATA[CHDATA.ships[CHDATA.fleets[1][DIALOGSLOTSEL-1]].masterId].type;
-		//if (EQTDATA[equip.type].canequip.indexOf(shiptype) == -1) continue;
 		var tr = $('<tr id="'+itemid+'" value="'+itemid+'"></tr>');
-		// tr.append('<td class="left" onclick="dSetEquip('+eqid+')"><img src="assets/items/'+EQTDATA[equip.type].image+'.png"/></td>');
-		// var td = $('<td onclick="dSetEquip('+itemid+')"></td>');
-		// td.append('<span>'+equip.name+'</span><br>');
-		// for (var j=0; j<STATS.length; j++) {
-			// if (equip[STATS[j]]) td.append('<span><img class="imgstat" src="assets/stats/'+STATS[j].toLowerCase()+'.png"/>'+equip[STATS[j]]+'</span>');
-		// }
-		// tr.append(td);
 		table.append(tr);
 	}
 }
@@ -484,14 +477,16 @@ function chDialogItem(fleet,eqnum,slot) {
 	if (shipid <= 0) return;
 	if (shipid && SHIPDATA[CHDATA.ships[shipid].masterId].SLOTS.length < eqnum && eqnum != CHITEMSMAX+1) return;
 	if (eqnum == CHITEMSMAX+1 && !CHDATA.ships[shipid].ex) return;
+	let isSameShip = DIALOGITEMSHIPID == shipid || (fleet == 5 && DIALOGFLEETSEL == 5);
+	DIALOGITEMSHIPID = shipid;
 	DIALOGFLEETSEL = fleet;
 	DIALOGSLOTSEL = slot;
 	DIALOGITEMSEL = eqnum;
 	$('#dialogselequip').dialog('open');
-	var defcat;
+	var defcat = DIALOGITEMCATEGORY;
 	if (eqnum == CHITEMSMAX+1) {
 		defcat = 12;
-	} else {
+	} else if (!isSameShip) {
 		switch(SHIPDATA[CHDATA.ships[shipid].masterId].type) {
 			case 'CVL': case 'CV': case 'CVB': case 'LHA': defcat = 5; break;
 			case 'CL': case 'CLT': case 'CT': case 'CA': case 'CAV': defcat = 13; break;
@@ -506,6 +501,7 @@ function chDialogItem(fleet,eqnum,slot) {
 
 function chDialogItemFilter(category) {
 	var mid = CHDATA.ships[CHDATA.fleets[DIALOGFLEETSEL][DIALOGSLOTSEL-1]].masterId;
+	DIALOGITEMCATEGORY = category;
 	var types;
 	switch (category) {
 		default: case 1: types=[MAINGUNS,MAINGUNSAA]; break;
@@ -530,6 +526,19 @@ function chDialogItemFilter(category) {
 	
 	$('.itemfilter').each(function() { $(this).css('background-color',''); });
 	$('#itemfilter'+category).css('background-color','#78BEB5');
+}
+
+function chFilterDialogItemSearch() {
+	let search = $("#inputEquipSearch").val().toUpperCase();
+
+	$('#equipselecttable > tbody > tr').each(function() {
+		var gearId = $(this).attr('id');
+
+		let name = EQDATA[CHDATA.gears[gearId].masterId].name.toUpperCase();
+
+		if (name.includes(search)) $(this).removeClass("filteredBySearch");
+		else $(this).addClass("filteredBySearch");
+	});
 }
 
 function chSetEquip(itemid) {
