@@ -74,6 +74,7 @@ SHIPDATA[5003] = {
 $('#shipselectdialog').dialog({autoOpen:false,width:550,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
 $('#chrshipselectdialog').dialog({autoOpen:false,width:550,height:600,modal:true,open:function() {$(this).scrollTop(0);}});
 $('#dialogselequip').dialog({autoOpen:false,width:400,height:600,modal:true,open:function() {$(this).scrollTop(0);} });
+$('#chrdialogselequip').dialog({autoOpen:false,width:400,height:600,modal:true,open:function() {$(this).scrollTop(0);} });
 
 function chCreateFleetTable(root,num,name,noheader) {
 	var divWrap = $('<div class="ftwrap"></div>');
@@ -182,7 +183,6 @@ chCreateFleetTable('#escortfleetspace',2,'Escort Fleet',true);
 chCreateFleetTable('#supportfleetspace1',3,'Normal Support');
 chCreateFleetTable('#supportfleetspace2',4,'Boss Support');
 chCreateFleetTableLBAS('#lbasspace',5,'Land Base');
-chrFillArsenalTab();
 
 function chAddDragShip(fleetnum,slot) {
 	let imgPortrait = $('#fleetimg'+fleetnum+slot);
@@ -406,6 +406,8 @@ function chCanJoinFleet(sid,fleet,slot) {
 function chDialogShip(fleet,slot) {
 	DIALOGFLEETSEL = fleet;
 	DIALOGSLOTSEL = slot;
+	
+	$('input.shipfilter').val('');
 	$('#shipselectdialog').dialog('open');
 	chFillDialogShip(1);
 	chFilterDialogShip();
@@ -530,6 +532,48 @@ function chDialogItemInit() {
 			// if (equip[STATS[j]]) td.append('<span><img class="imgstat" src="assets/stats/'+STATS[j].toLowerCase()+'.png"/>'+equip[STATS[j]]+'</span>');
 		// }
 		// tr.append(td);
+		table.append(tr);
+	}
+}
+
+function chrDialogItemInit() {
+	$('#chrequipfilters').append('<img id="chritemfilter1" class="itemfilter" src="assets/items/1.png" onclick="chrDialogItemFilter(1)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter13" class="itemfilter" src="assets/items/2.png" onclick="chrDialogItemFilter(13)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter14" class="itemfilter" src="assets/items/3.png" onclick="chrDialogItemFilter(14)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter2" class="itemfilter" src="assets/items/4.png" onclick="chrDialogItemFilter(2)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter3" class="itemfilter" src="assets/items/5.png" onclick="chrDialogItemFilter(3)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter4" class="itemfilter" src="assets/items/10.png" onclick="chrDialogItemFilter(4)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter5" class="itemfilter" src="assets/items/6.png" onclick="chrDialogItemFilter(5)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter6" class="itemfilter" src="assets/items/7.png" onclick="chrDialogItemFilter(6)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter7" class="itemfilter" src="assets/items/8.png" onclick="chrDialogItemFilter(7)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter8" class="itemfilter" src="assets/items/9.png" onclick="chrDialogItemFilter(8)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter9" class="itemfilter" src="assets/items/11.png" onclick="chrDialogItemFilter(9)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter10" class="itemfilter" src="assets/items/17.png" onclick="chrDialogItemFilter(10)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter11" class="itemfilter" src="assets/items/13.png" onclick="chrDialogItemFilter(11)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter15" class="itemfilter" src="assets/items/15.png" onclick="chrDialogItemFilter(15)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter16" class="itemfilter" src="assets/items/19.png" onclick="chrDialogItemFilter(16)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter17" class="itemfilter" src="assets/items/24.png" onclick="chrDialogItemFilter(17)"/>');
+	$('#chrequipfilters').append('<img id="chritemfilter12" class="itemfilter" src="assets/items/25.png" onclick="chrDialogItemFilter(12)"/>');
+
+	var table = $('#chrequipselecttable');
+	
+	var itemids = [];
+	for (var itemid in CHDATA.gears) itemids.push(itemid);
+	itemids.sort(function(a,b) {
+		var eqid1 = CHDATA.gears[a].masterId;
+		var equip1 = EQDATA[eqid1];
+		if (equip1 == undefined) return 1;
+		var eqid2 = CHDATA.gears[b].masterId;
+		var equip2 = EQDATA[eqid2];
+		if (equip2 == undefined) return 1;
+		if (equip1.type != equip2.type) return (equip1.type < equip2.type)? -1:1;
+		return (eqid1 <= eqid2)? -1:1;
+	});
+	for (var i=0; i<itemids.length; i++) {
+		var itemid = itemids[i];
+		
+		var tr = $('<tr id="'+itemid+'" value="'+itemid+'"></tr>');
+		
 		table.append(tr);
 	}
 }

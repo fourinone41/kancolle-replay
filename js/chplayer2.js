@@ -7,7 +7,16 @@ function InitUI() {
 
 	MAPNUM = CHDATA.event.mapnum;
 	WORLD = CHDATA.event.world;
+
 	if(WORLD > 90) {
+		
+		if (WORLD == 98) {
+			$('#tabChr').show();
+		}
+		else {
+			$('#tabChr').hide();
+		}
+
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
 	
@@ -33,7 +42,10 @@ function InitUI() {
 
 	$('#equipfilters').html('');
 	$('#equipselecttable').html('');
+	$('#chrequipfilters').html('');
+	$('#chrequipselecttable').html('');
 	chDialogItemInit();
+	chrDialogItemInit();
 	DIALOGSORT = null;
 	
 	if (MAPDATA[WORLD].allowFleets.indexOf(7) != -1 && CHDATA.fleets[1].length < 7) CHDATA.fleets[1].push(null);
@@ -3326,49 +3338,4 @@ function chAnchorageRepair() {
 	}
 	
 	return didRepair;
-}
-
-function chPrepareSaveFile() {	
-	var text = JSON.stringify(localStorage);
-
-	var data = new Blob([text], {type: 'application/json'});
-
-	var url = window.URL.createObjectURL(data);
-
-	document.getElementById('download-button').href = url;
-
-	let date = new Date(Date.now());
-	let filename = "simSave";
-	filename += date.getDate();
-	filename += "-";
-	filename += date.getMonth();
-	filename += "-";
-	filename += date.getFullYear();
-	filename += ".json";
-
-	document.getElementById('download-button').download = filename;
-}
-
-function chLoadUploadedFile() {
-	let file = document.getElementById("save-file").files[0];
-	console.log(file);
-
-	const reader = new FileReader();
-	reader.addEventListener('load', (event) => {
-		let save = JSON.parse(event.target.result);
-		
-		localStorage.clear();
-		
-		for (const saveEntryKey in save) {
-			localStorage.setItem(saveEntryKey, save[saveEntryKey]);
-		}
-		
-		// --- Refresh after load
-		chSave = null;
-		location.reload();
-	});
-
-	reader.readAsText(file);
-
-	return;
 }

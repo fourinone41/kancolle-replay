@@ -293,20 +293,19 @@ table.dialog4 img {
 	vertical-align: middle;
 }
 
-
-#esremove, #chrssremove, #ssremove {
+#esremove, #chresremove, #chrssremove, #ssremove {
 	height: 40px;
 	width: 358px;
 	background-color: white;
 	border: 1px solid black;
 }
 
-#esremove:hover, #ssremove:hover, #chrssremove:hover {
+#esremove:hover, #ssremove:hover, #chrssremove:hover, #chresremove:hover {
 	background-color: #78BEB5;
 	cursor: pointer;
 }
 
-#esremove span, #ssremove span, #chrssremove span {
+#esremove span, #ssremove span, #chrssremove span, #chresremove span {
 	margin-left: 38px;
 	font-size: 14px;
 }
@@ -334,6 +333,10 @@ input.shipfilter {
 	border:1px solid #ff0000;
 	border-radius:5px;
 	cursor:pointer;
+}
+
+.filterselected {
+	background-color: #78BEB5;
 }
 
 .filteredBySearch {
@@ -569,7 +572,8 @@ tr.chfile:hover {
 	color: white;
 }
 
-.chrShipSelectionTitle {    
+.chrShipSelectionTitle,
+.chrGearSelectionTitle {    
 	text-align: center;
     margin: 5px;
     font-family: Arial, Helvetica, sans-serif;
@@ -585,4 +589,8 @@ button.heartlock_button {
 
 .filteredBySearch {
 	display: none;
+}
+
+input.chrshipfilter {
+	width:100px;
 }

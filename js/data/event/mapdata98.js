@@ -111,11 +111,11 @@ MAPDATA[98] = {
 
 		chFillDialogShip(1);
     },
-    chrCreateRandomEquipment: () => {
-        MAPDATA[98].chrAddEquipment();
+    chrCreateRandomEquipment: (displayType, gearType) => {
+        MAPDATA[98].chrAddEquipment(displayType, gearType);
     },
-    chrAddEquipment: () => {    
-        let mid = chrGetRandomEquipmentId();
+    chrAddEquipment: (displayType, gearType) => {    
+        let mid = chrGetRandomEquipmentId(gearType);
 
         if (!EQDATA[mid]) return;
         let eqid;
@@ -134,11 +134,21 @@ MAPDATA[98] = {
             CHDATA.gears[eqid] = newequip;
 
             let message = `Equipment ${EQDATA[mid].name} ${newequip.stars ? '(+'+newequip.stars +')' : ''} added`;
-            chrDisplayLog(message);
+            
+
+            if (displayType == 3) {
+                chrShowInfoPopup("Equipment added", message);
+            }
+            else {
+                chrDisplayLog(message);
+            }
 
             $('#equipfilters').html('');
             $('#equipselecttable').html('');
+            $('#chrequipfilters').html('');
+            $('#chrequipselecttable').html('');
 	        chDialogItemInit();
+	        chrDialogItemInit();
     
             return (90000+j);
         }
@@ -155,20 +165,43 @@ MAPDATA[98] = {
         
         // --- Boss always give ship
         if (result.boss) {
-            MAPDATA[98].chrCreateRandomShip();
-            
-            // --- 50% to have another drop
-            if (Math.random() > 0.5) {
-                MAPDATA[98].chrGenerateDrop(result);
+
+            // --- ships drops
+            let chances = [1, 0.4, 0.3, 0.2, 0.1];
+
+            for (let chance of chances) {
+                if (Math.random() < chance) {
+                    MAPDATA[98].chrCreateRandomShip();
+                }
             }
+
+            // --- Equipment drops
+            chances = [0.75, 0.75, 0.75, 0.25, 0.25];
+
+            for (let chance of chances) {
+                if (Math.random() < chance) {
+                    MAPDATA[98].chrCreateRandomEquipment();
+                }
+            }            
         }
         else {
-            // --- Else 25% chance for a ship
-            if (Math.random() < 0.25) {
-                MAPDATA[98].chrCreateRandomShip();
-            } else {
-                MAPDATA[98].chrCreateRandomEquipment();
+            // --- ships drops
+            let chances = [0.75, 0.05];
+
+            for (let chance of chances) {
+                if (Math.random() < chance) {
+                    MAPDATA[98].chrCreateRandomShip();
+                }
             }
+
+            // --- Equipment drops
+            chances = [0.75, 0.25];
+
+            for (let chance of chances) {
+                if (Math.random() < chance) {
+                    MAPDATA[98].chrCreateRandomEquipment();
+                }
+            }    
         }
     }
 }
@@ -198,21 +231,47 @@ function chrInitFile(name) {
 	$('#menusettings').show();
 }
 
-function chrGetRandomEquipmentId() {
-	var keys = Object.keys(EQDATA);
+function chrGetRandomEquipmentId(gearType) {
+    var types;
+    switch (parseInt(gearType)) {
+        default: case 1: types=[MAINGUNS,MAINGUNSAA]; break;
+        case 13: types=[MAINGUNM]; break;
+        case 14: types=[MAINGUNL,MAINGUNXL]; break;
+        case 2: types=[SECGUN,SECGUNAA]; break;
+        case 3: types=[TORPEDO,TORPEDOSS,MIDGETSUB]; break;
+        case 4: types=[SEAPLANE,SEAPLANEBOMBER,SEAPLANEFIGHTER,FLYINGBOAT]; break;
+        case 5: types=[FIGHTER,INTERCEPTOR]; break;
+        case 6: types=[DIVEBOMBER,LANDBOMBER,LANDBOMBERL]; break;
+        case 7: types=[TORPBOMBER]; break;
+        case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
+        case 9: types=[RADARS,RADARL,RADARXL]; break;
+        case 10: types=[DEPTHCHARGE,SONARS,SONARL]; break;
+        case 11: types=[APSHELL,TYPE3SHELL]; break;
+        case 15: types=[AAGUN]; break;
+        case 16: types=[ENGINE]; break;
+        case 17: types=[SEARCHLIGHTS,SEARCHLIGHTL,STARSHELL,PICKET]; break;
+        case 12: types=[BULGEM,BULGEL,AAFD,LANDINGCRAFT,LANDINGTANK,WG42,SRF,FCF,DRUM,SCAMP,REPAIR,SUBRADAR,TRANSPORTITEM,RATION,OILDRUM]; break;
+    }
+
+	var keys = [];
     
     let max_id = ABYSSALS_ON ? 1000 : 500;
     let min_id = ABYSSALS_ON ? 0 : 0;
-    
-    keys = keys.filter((value => {
-        return parseInt(value) < max_id && parseInt(value) > min_id;
-    }));
+
+    for (let i = min_id; i < max_id; i++) {
+        if (!EQDATA[i]) continue;
+
+        if (gearType && types.indexOf(EQDATA[i].type) == -1) continue;
+                
+        keys.push(i);
+    }
 
     return keys[keys.length * Math.random() << 0];
 }
 
 function chrDialogShip(callback, filter) {
 	$('#chrshipselectdialog').dialog('open');
+    $("#shipfilterBySearch").val("");
 	chrFillDialogShip(1, callback, filter);
 
     $("#chrssremove").off().click(() => { callback(null); });
@@ -230,7 +289,91 @@ function chrDialogShip(callback, filter) {
     $("#shipfilterCVL").click(() => {chrFilterDialogShip(['CVL'], filter)});
     $("#shipfilterCV").click(() => {chrFilterDialogShip(['CV','CVB'], filter)});
     $("#shipfilterOther").click(() => {chrFilterDialogShip(['SS','SSV','AV','AS','AR','AO','CT','LHA','DE'], filter)});
+    $("#shipfilterBySearch").change(() => {chrFilterDialogShipSearch()});
 
+}
+
+function chrDialogEquip(callback, filter) {
+
+	$('#chrdialogselequip').dialog('open');
+
+    chrDialogItemFilter.callback = callback;
+    chrDialogItemFilter.filter = filter;
+
+	chrDialogItemFilter(1);
+}
+
+function chrDialogItemFilter(category) {
+	var types;
+	switch (category) {
+		default: case 1: types=[MAINGUNS,MAINGUNSAA]; break;
+		case 13: types=[MAINGUNM]; break;
+		case 14: types=[MAINGUNL,MAINGUNXL]; break;
+		case 2: types=[SECGUN,SECGUNAA]; break;
+		case 3: types=[TORPEDO,TORPEDOSS,MIDGETSUB]; break;
+		case 4: types=[SEAPLANE,SEAPLANEBOMBER,SEAPLANEFIGHTER,FLYINGBOAT]; break;
+		case 5: types=[FIGHTER,INTERCEPTOR]; break;
+		case 6: types=[DIVEBOMBER,LANDBOMBER,LANDBOMBERL]; break;
+		case 7: types=[TORPBOMBER]; break;
+		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
+		case 9: types=[RADARS,RADARL,RADARXL]; break;
+		case 10: types=[DEPTHCHARGE,SONARS,SONARL]; break;
+		case 11: types=[APSHELL,TYPE3SHELL]; break;
+		case 15: types=[AAGUN]; break;
+		case 16: types=[ENGINE]; break;
+		case 17: types=[SEARCHLIGHTS,SEARCHLIGHTL,STARSHELL,PICKET]; break;
+		case 12: types=[BULGEM,BULGEL,AAFD,LANDINGCRAFT,LANDINGTANK,WG42,SRF,FCF,DRUM,SCAMP,REPAIR,SUBRADAR,TRANSPORTITEM,RATION,OILDRUM]; break;
+	}
+	chrDialogShowItems(types, chrDialogItemFilter.callback, chrDialogItemFilter.filter);
+	
+	$('.itemfilter').each(function() { $(this).css('background-color',''); });
+	$('#chritemfilter'+category).css('background-color','#78BEB5');
+}
+
+function chrDialogShowItems(types, callback, filter) {
+	var STATS = ['DIVEBOMB','FP','TP','AA','AR','ACC','EV','ASW','LOS'];
+    
+    $("#chresremove").off('click');
+    $("#chresremove").click(() => { callback(null) });
+    
+	$('#chrequipselecttable tr').each(function() {
+		var include = true;
+		var itemid = this.id;
+		var item = CHDATA.gears[itemid];
+		var eqid = item.masterId;
+		var equip = EQDATA[eqid];
+		if (item.disabled) include = false;
+		if (include && types.indexOf(equip.type)==-1) include = false;
+
+        if (filter && !filter(itemid)) include = false;
+						
+		if (include) {
+			$(this).css('display','');
+
+            var tr = $(this);
+
+            tr.off('click');
+            tr.click(() => { callback(itemid) });
+				
+			if (!this.innerHTML) {
+				tr.append('<td class="left" "><img src="assets/items/'+(equip.image || EQTDATA[equip.type].image)+'.png"/></td>');
+				var td = $('<td></td>');
+				td.append('<div style="position:absolute;z-index:1;margin-top:-10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:300px">'+equip.name+'</div><br>');
+				var div = $('<div style="position:absolute;z-index:1;margin-top:-10px"></div>');
+				for (var j=0; j<STATS.length; j++) {
+					if (equip[STATS[j]]) div.append('<span><img class="imgstat" src="assets/stats/'+STATS[j].toLowerCase()+'.png"/>'+equip[STATS[j]]+'</span>');
+				}
+				td.append(div);
+				if (CHDATA.config.mechanics.proficiency && item.ace>0) td.append($('<div style="position:absolute;margin-left:-5px;margin-top:-20px"><img src="assets/stats/prof'+item.ace+'.png" /></div>'));
+				if (chAllowImprovement(eqid) && item.stars>0) td.append($('<div style="position:absolute;margin-left:-30px;margin-top:-1px;font-weight:bold;color:#45A9A5">+'+item.stars+'</div>'));
+				tr.append(td);
+				
+				td.append('<img id="'+this.id+'bgimg" class="equipbgimg" />');
+			}
+		} else {
+			$(this).css('display','none');
+		}
+	});
 }
 
 function chrFillDialogShip(sortmethod, callback, filter) {
@@ -277,9 +420,6 @@ function chrExecuteFillDialogShip(sortmethod, callback, filter) {
 		tr.append(chMakeShipHeartLock(ship.heartlock, ships[i]));
 		table.append(tr);
 	}
-	
-	DIALOGSORT = sortmethod;
-
 }
 
 function chrFilterDialogShip(types, filter) {
@@ -291,26 +431,38 @@ function chrFilterDialogShip(types, filter) {
 	});
 }
 
+function chrFilterDialogShipSearch() {
+	let search = $("#shipfilterBySearch").val().toUpperCase();
+	let shipname;
+
+	$('#chrshipselecttable > tbody > tr').each(function() {
+		var sid = $(this).attr('id').replace('ss','');
+
+		shipname = SHIPDATA[CHDATA.ships[sid].masterId].name.toUpperCase();
+
+		if (shipname.includes(search)) $(this).removeClass("filteredBySearch");
+		else $(this).addClass("filteredBySearch");
+	});
+}
+
 function chrDialogShipClose() {
 	$('#chrshipselectdialog').dialog('close');
 }
 
 //#region Arsenal tab
 function chrFillArsenalTab() {
-    $('#chrSpace').hide();
-    $('#tabChr').hide();
-
     let wrap = $('<div>').addClass('ftwrap').width(1000);
     $('#chrSpace').html(wrap);
 
     wrap.append(chrFillArsenalTab.AddRerollShipGroup());
     wrap.append(chrFillArsenalTab.AddModernizationShipGroup());
+    wrap.append(chrFillArsenalTab.AddRerollEquipGroup());
 }
 
 chrFillArsenalTab.AddRerollShipGroup = function () {
     let shipReroll = $('<div>').addClass('chrArsenalGroup');
 
-    shipReroll.append($('<div>Scrap 4 ships to get a new one</div>').css({
+    shipReroll.append($('<div>Scrap two ships to get a new one</div>').css({
         "font-weight": 600,
         "font-family": "Arial",
         "margin-left": '5px',
@@ -392,13 +544,13 @@ chrFillArsenalTab.AddRerollShipGroup = function () {
                 ships.push(shipId);
         }
 
-        if (ships.length == 4)
+        if (ships.length == 2)
             buttonConfirm.show();
         else 
             buttonConfirm.hide();
     }
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
         // --- Add ship button
         let shipSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter);
         buttonsObjects.push(shipSelection);
@@ -410,6 +562,239 @@ chrFillArsenalTab.AddRerollShipGroup = function () {
     shipReroll.append(buttons);
 
     return shipReroll;	
+}
+
+chrFillArsenalTab.AddRerollEquipGroup = function () {
+    let gearReroll = $('<div>').addClass('chrArsenalGroup');
+
+    gearReroll.append($('<div>Scrap four equipment to get a new one of the selected type</div>').css({
+        "font-weight": 600,
+        "font-family": "Arial",
+        "margin-left": '5px',
+        "margin-bottom": '5px',
+        "margin-top": '5px'
+    }));
+
+    let buttons = $('<div>').css({
+        display: 'flex',
+        "flex-direction": "column"
+    });
+
+    /**
+     * @type {{
+        getSelectedGear: getSelectedGear,
+        getSelectedGearId: getSelectedGearId,
+        element: gearSelectionGroup
+    }[]}
+     */
+    let buttonsObjects = [];
+
+    let filter = (gearId) => {
+        let equippedGear = [];
+
+        // Don't includ locked equip // TODO
+        /*if (CHDATA.ships[shipId].heartlock) {
+            return false;
+        }*/
+
+        // --- Don't allow equipped gear
+        if (CHDATA && CHDATA.gears) {
+            for (let gear of Object.values(CHDATA.gears)) {
+                if (gear.heldBy) {
+                    equippedGear.push(gear.itemId);
+                }
+            }
+        }
+
+        // --- Dont allow already selected gear
+        for (let gearButton of buttonsObjects) {
+            let gearId = gearButton.getSelectedGearId();
+
+            if (gearId)
+                equippedGear.push(gearId);
+        }
+
+        if (equippedGear.includes(gearId)) return false;
+        return true;
+    }
+    
+    let scrapGearToCreateNewOne = () => {
+        for (let gearButton of buttonsObjects) {
+            // --- Remove gear
+            gearButton.getSelectedGear().disabled = true;
+        }
+
+        let gearType = null;
+
+        let elFilter = $("#filtergeartypece").find(".filterselected");
+
+        if (elFilter) {
+            gearType = $(elFilter).attr('geartype');
+        }
+        
+        MAPDATA[98].chrCreateRandomEquipment(3, gearType);
+
+        chrFillArsenalTab();
+    }
+
+    let buttonConfirm = $('<div class="chrt2name">Confirm</div>').css({
+        "margin-left": "20px",
+        "margin-top": "20px",
+        "padding": "20px 10px 10px",
+        "display": "block",
+        "width": "90px",
+        "text-align": "center",
+        "height": "28px",
+        display: "none"
+    });
+    buttonConfirm.click(scrapGearToCreateNewOne);
+
+    let callbackAfterGearSelected = () => {
+        let gears = [];
+
+        for (let gearButton of buttonsObjects) {
+            let gearId = gearButton.getSelectedGearId();
+
+            if (gearId)
+                gears.push(gearId);
+        }
+
+        if (gears.length == 4)
+            buttonConfirm.show();
+        else 
+            buttonConfirm.hide();
+    }
+
+    for (let i = 0; i < 4; i++) {
+        // --- Add gear button
+        let gearSelection = chrCreateGearSelectionArea(callbackAfterGearSelected, filter);
+        buttonsObjects.push(gearSelection);
+        buttons.append(gearSelection.element);
+    }
+    
+    buttons.append(chrCreateEquipTypeSelectionArea());
+
+    buttons.append(buttonConfirm);
+
+    gearReroll.append(buttons);
+
+    return gearReroll;	
+}
+
+/**
+ * Create a button to select a gear, callback is called when a gear is selected, returns an object that contains the element created and the methods to access selected gear
+ * @param {*} callback 
+ * @returns {{
+        getSelectedGear: getSelectedGear,
+        getSelectedGearId: getSelectedGearId,
+        getSelectedGearData: getSelectedGearData,
+        setTitle: setTitle
+        element: gearSelectionGroup
+    }}
+ */
+function chrCreateGearSelectionArea(callback, filter) {
+    let gearSelectionGroup = $("<div>");
+
+    // --- Title
+    let titleElement = $("<div>").addClass("chrGearSelectionTitle");
+
+    let setTitle = (title) => {
+        titleElement.text(title);
+    };
+
+    gearSelectionGroup.append(titleElement);
+
+    // --- Button
+    let gearSelectButton = $('<div class="chrt2name">Select an equipment</div>'); 
+
+    let selectedGearId = null;
+
+    let getSelectedGear = () => {
+        if (!selectedGearId) return null;
+
+        return CHDATA.gears[selectedGearId];
+    };
+
+    let getSelectedGearData = () => {
+        let gear = getSelectedGear();
+        if (!gear) return null;
+
+        return EQDATA[gear.masterId];
+    };
+    
+    let getSelectedGearId = () => {
+        return selectedGearId;
+    };
+
+    gearSelectButton.click(() => {
+
+        let callbackWithGearUpdate = (gearId) => {
+            // --- Update ship selected stuff
+            selectedGearId = gearId;
+
+            let ship = getSelectedGearData();
+
+            if (ship) {
+                gearSelectButton.text(ship.name);
+            } else {
+                gearSelectButton.text("Select an equipment");
+            }
+
+            $('#chrdialogselequip').dialog('close');
+
+            // --- Additionnal callback
+            if (callback)
+                callback(gearId);
+
+            chrDialogShipClose();
+        };
+
+        chrDialogEquip(callbackWithGearUpdate, filter);
+    });
+
+    gearSelectionGroup.append($('<div style="margin-left:15px"></div>').append(gearSelectButton));
+    
+    return {
+        getSelectedGear: getSelectedGear,
+        getSelectedGearId: getSelectedGearId,
+        getSelectedGearData: getSelectedGearData,
+        setTitle: setTitle,
+        element: gearSelectionGroup
+    }
+}
+
+function chrCreateEquipTypeSelectionArea() {
+
+    let elSelection = $('<div id="filtergeartypece"></div>');
+    elSelection.addClass({
+        "padding-left": "10px",
+        "padding-top": "10px",
+    })
+
+    elSelection.append('<img geartype="1"   class="itemfilter filterselected" src="assets/items/1.png"/>');
+	elSelection.append('<img geartype="13"  class="itemfilter" src="assets/items/2.png"/>');
+	elSelection.append('<img geartype="14"  class="itemfilter" src="assets/items/3.png"/>');
+	elSelection.append('<img geartype="2"   class="itemfilter" src="assets/items/4.png" />');
+	elSelection.append('<img geartype="3"   class="itemfilter" src="assets/items/5.png" />');
+	elSelection.append('<img geartype="4"   class="itemfilter" src="assets/items/10.png" />');
+	elSelection.append('<img geartype="5"   class="itemfilter" src="assets/items/6.png" />');
+	elSelection.append('<img geartype="6"   class="itemfilter" src="assets/items/7.png" />');
+	elSelection.append('<img geartype="7"   class="itemfilter" src="assets/items/8.png" />');
+	elSelection.append('<img geartype="8"   class="itemfilter" src="assets/items/9.png" />');
+	elSelection.append('<img geartype="9"   class="itemfilter" src="assets/items/11.png" "/>');
+	elSelection.append('<img geartype="10"  class="itemfilter" src="assets/items/17.png" />');
+	elSelection.append('<img geartype="11"  class="itemfilter" src="assets/items/13.png" />');
+	elSelection.append('<img geartype="15"  class="itemfilter" src="assets/items/15.png" />');
+	elSelection.append('<img geartype="16"  class="itemfilter" src="assets/items/19.png" />');
+	elSelection.append('<img geartype="17"  class="itemfilter" src="assets/items/24.png" />');
+	elSelection.append('<img geartype="12"  class="itemfilter" src="assets/items/25.png" />');
+
+    elSelection.find(".itemfilter").click(function() {
+        elSelection.find(".itemfilter").removeClass('filterselected');
+        $(this).addClass('filterselected');
+    });
+
+    return elSelection;
 }
 
 /**
