@@ -5216,6 +5216,38 @@ var EQDATA = {
 		ACC: 1,
 		EV: 3,
 	},
+	423: {
+		name: 'Fulmar (Reconnaissance Fighter/Skilled)',
+		nameJP: 'Fulmar(戦闘偵察/熟練)',
+		added: '2021-07-30',
+		type: CARRIERSCOUT,
+		FP: 2,
+		AA: 4,
+		ACC: 3,
+		EV: 3,
+		ASW: 3,
+		LOS: 4,
+	},
+	424: {
+		name: 'Barracuda Mk.II',
+		nameJP: 'Barracuda Mk.II',
+		added: '2021-07-30',
+		type: TORPBOMBER,
+		TP: 7,
+		ACC: 1,
+		ASW: 5,
+		LOS: 2,
+	},
+	425: {
+		name: 'Barracuda Mk.III',
+		nameJP: 'Barracuda Mk.III',
+		added: '2021-07-30',
+		type: TORPBOMBER,
+		TP: 6,
+		ACC: 1,
+		ASW: 9,
+		LOS: 3,
+	},
 	501: {
 		name: '5inch Single Cannon',
 		nameJP: '5inch単装砲',
@@ -6521,8 +6553,8 @@ var LBASDATA = {
 	304: { distance: 3, cost: 3 },
 	305: { distance: 4, cost: 8 },
 	306: { distance: 4, cost: 8 },
-	311: { distance: 8, cost: 5 },
-	312: { distance: 9, cost: 5 },
+	311: { distance: 8, cost: 7 },
+	312: { distance: 9, cost: 7 },
 	316: { distance: 3, cost: 6 },
 	319: { distance: 5, cost: 5 },
 	320: { distance: 5, cost: 6 },
@@ -6549,6 +6581,7 @@ var LBASDATA = {
 	369: { distance: 3, cost: 5 },
 	370: { distance: 3, cost: 5 },
 	371: { distance: 3, cost: 6 },
+	372: { distance: 5, cost: 7 },
 	373: { distance: 5, cost: 8 },
 	374: { distance: 6, cost: 8 },
 	375: { distance: 4, cost: 12 },
@@ -6572,6 +6605,9 @@ var LBASDATA = {
 	420: { distance: 5, cost: 6 },
 	421: { distance: 6, cost: 7 },
 	422: { distance: 5, cost: 9 },
+	423: { distance: 4, cost: 4 },
+	424: { distance: 4, cost: 7 },
+	425: { distance: 5, cost: 8 },
 };
 
 var EXPANSIONSLOTDATA = {
@@ -6616,7 +6652,7 @@ var EXPANSIONSLOTDATA = {
 
 
 
-var EQUIPBONUSDATA;
+var EQUIPBONUSDATA = [];
 function initEQDATA(callback) {
 	$.getJSON('js/data/mst_slotitem_bonus.json', data => {
 		$.getJSON('js/data/mst_slotitem_bonus_history.json', dataHistory => {
