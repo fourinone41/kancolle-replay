@@ -159,6 +159,16 @@ MAPDATA[98] = {
         // --- defeat ?
         if (!['S', 'A', 'B'].includes(result.rank)) return;
 
+        let modifier = 1;
+
+        if (result.rank == 'A') {
+            modifier = 0.75;
+        }
+
+        if (result.rank == 'B') {
+            modifier = 0.5;
+        } 
+
         if (result.noammo) return;
         if (result.ambush) return;
         if (result.landbomb) return;
@@ -167,38 +177,38 @@ MAPDATA[98] = {
         if (result.boss) {
 
             // --- ships drops
-            let chances = [1, 0.4, 0.3, 0.2, 0.1];
+            let chances = [2, 0.5, 0.3, 0.2, 0.1];
 
             for (let chance of chances) {
-                if (Math.random() < chance) {
+                if (Math.random() < chance * modifier) {
                     MAPDATA[98].chrCreateRandomShip();
                 }
             }
 
             // --- Equipment drops
-            chances = [0.75, 0.75, 0.75, 0.25, 0.25];
+            chances = [1.5, 0.75, 0.5, 0.13, 0.05, 0.05];
 
             for (let chance of chances) {
-                if (Math.random() < chance) {
+                if (Math.random() < chance * modifier) {
                     MAPDATA[98].chrCreateRandomEquipment();
                 }
             }            
         }
         else {
             // --- ships drops
-            let chances = [0.75, 0.05];
+            let chances = [0.5, 0.05];
 
             for (let chance of chances) {
-                if (Math.random() < chance) {
+                if (Math.random() < chance * modifier) {
                     MAPDATA[98].chrCreateRandomShip();
                 }
             }
 
             // --- Equipment drops
-            chances = [0.75, 0.25];
+            chances = [0.5, 0.05, 0.05];
 
             for (let chance of chances) {
-                if (Math.random() < chance) {
+                if (Math.random() < chance * modifier) {
                     MAPDATA[98].chrCreateRandomEquipment();
                 }
             }    
@@ -388,7 +398,7 @@ function chrExecuteFillDialogShip(sortmethod, callback, filter) {
 	var ships = [];
 	for (var sid in CHDATA.ships) {
 		if (CHDATA.ships[sid].disabled) continue; //don't allow unreleased ships
-		if (CHDATA.ships[sid].LVL > 180 && CHDATA.fleets[3].includes(sid)) continue; //don't allow cheat ships
+		//if (CHDATA.fleets[3].includes(sid)) continue; //don't allow cheat ships // TODO REMOVE
 
         if (filter && !filter(sid)) continue;
 
@@ -886,6 +896,7 @@ For each level gained, a stat will be increased beyond its maximum value between
             result[stat]++;
         }
 
+        const levelBefore = modernizedShip.LVL;
         modernizedShip.LVL = level;
 
         let shipName = modernizedShipData.name;
@@ -897,13 +908,21 @@ For each level gained, a stat will be increased beyond its maximum value between
         }
 
         // --- Also recalculate ASW & LOS & EVA (HP through marriage is ignored)
-        const EV = modernizedShipData.EVbase ? getEvasion(modernizedShipData, level) : modernizedShipData.EV;
-        const LOS = modernizedShipData.LOSbase ? getLOS(modernizedShipData, level) : modernizedShipData.LOS;
-        const ASW = modernizedShipData.ASWbase ? getASW(modernizedShipData, level) : modernizedShipData.ASW;
+        const EVafter = modernizedShipData.EVbase ? getEvasion(modernizedShipData, level) : modernizedShipData.EV;
+        const EVbefore = modernizedShipData.EVbase ? getEvasion(modernizedShipData, levelBefore) : modernizedShipData.EV;
+        const EVgain = EVafter - EVbefore;
 
-        modernizedShip.LOS = LOS;
-        modernizedShip.ASW = ASW;
-        modernizedShip.EV = EV;
+        const LOSafter = modernizedShipData.LOSbase ? getLOS(modernizedShipData, level) : modernizedShipData.LOS;
+        const LOSbefore = modernizedShipData.LOSbase ? getLOS(modernizedShipData, levelBefore) : modernizedShipData.LOS;
+        const LOSgain = LOSafter - LOSbefore;
+
+        const ASWafter = modernizedShipData.ASWbase ? getASW(modernizedShipData, level) : modernizedShipData.ASW;
+        const ASWbefore = modernizedShipData.ASWbase ? getASW(modernizedShipData, levelBefore) : modernizedShipData.ASW;
+        const ASWgain = ASWafter - ASWbefore;
+
+        modernizedShip.LOS += LOSgain;
+        modernizedShip.ASW += ASWgain;
+        modernizedShip.EV += EVgain;
 
         // --- display message
         chrShowInfoPopup("Modernization", popupMessage);

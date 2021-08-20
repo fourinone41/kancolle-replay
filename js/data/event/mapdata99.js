@@ -76,7 +76,7 @@ function randomizeMaps(){
 function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
     for(event_id in MAPDATA){
-        if(!["99", '98'].includes(event_id)){
+        if(!["99", '98', '10'].includes(event_id) && !tested[event_id][MAPNUM]){
             if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
                 let map = {};
 
@@ -229,13 +229,7 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
 
             compMain.push(parseInt(shipID));
         } 
-        else if (strongEnemiesIds.indexOf(ship_id) !== -1 && isBoss) {
-            var obj_keys = Object.keys(ennemiesBoss);
-            var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
-            hasRealBoss = true;
-
-            compMain.push(parseInt(shipID));
-        } else {
+        else {
             var obj_keys = Object.keys(ennemies);
             var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 
@@ -284,7 +278,7 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
                 var obj_keys = Object.keys(ennemiesEscort);
                 var shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
 
-                if (Object.keys(strongEnemies).indexOf(parseInt(shipID))) {
+                if (Object.keys(strongEnemies).indexOf(parseInt(shipID)) !== -1) {
                     // --- REROLL ONCE
                     shipID = obj_keys[Math.floor(Math.random() *obj_keys.length)];
                 }
@@ -565,7 +559,7 @@ function chInitAbyssalTables () {
 					escortAbyssals[ship_id] = ship;
 				}
 
-                if (strongEnemiesIds.indexOf(parseInt(ship_id))) {
+                if (strongEnemiesIds.indexOf(parseInt(ship_id)) !== -1) {
                     strongEnemies[ship_id] = ship;
                 }
 			}

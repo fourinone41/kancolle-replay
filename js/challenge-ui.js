@@ -410,6 +410,8 @@ function chDialogShip(fleet,slot) {
 	DIALOGSLOTSEL = slot;
 	
 	$('input.shipfilter').val('');
+	$('.filteredBySearch').removeClass('filteredBySearch');
+
 	$('#shipselectdialog').dialog('open');
 	chFillDialogShip(1);
 	chFilterDialogShip();
