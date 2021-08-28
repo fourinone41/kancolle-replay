@@ -110,6 +110,23 @@ $('#chkGroup').change(function() {
 });
 
 
+document.body.onload = function() {
+	let a = document.location.hash.substr(1).split('_');
+	if (!a[0]) return;
+	let selMap = document.getElementById('selMap');
+	for (let op of selMap.options) {
+		if (op.value == a[0]) {
+			selMap.value = a[0];
+			if (a[1] == 'boss') {
+				document.getElementById('inpGroupB').checked = true;
+			}
+			changeData(a[0]);
+			break;
+		}
+	}	
+}
+
+
 function getShipImagePath(mid) {
 	return 'assets/icons/'+SHIPDATA[mid].image;
 }
@@ -140,6 +157,7 @@ function changeData(map) {
 }
 
 function changeTable(prop) {
+	document.location.hash = MAP + '_' + prop;
 	if (NOTES_SPECIAL[MAP+'_'+prop]) {
 		$('#spanNoteMap').html(NOTES_SPECIAL[MAP+'_'+prop] + '<br>');
 		$('#spanNoteMap').parent().show();
@@ -159,6 +177,11 @@ function changeTable(prop) {
 			$('#imgDrops'+i).attr('src','');
 			$('#imgDropsR'+i).attr('src','');
 			$('#tdDropsName'+i).text('');
+		}
+		if (SHIPGET[prop].unclear && SHIPGET[prop].unclear.includes(i)) {
+			$('#trDrops'+i).addClass('unclear');
+		} else {
+			$('#trDrops'+i).removeClass('unclear');
 		}
 	}
 	for (let replace of SHIPGET[prop].replace) {
@@ -552,6 +575,8 @@ var NOTES_SPECIAL = {
 	'50-2_normal': 'Note: Slots 1 to 6 unclear',
 	'50-3_normal': 'Note: Slots 1 to 8 and node W offsets unclear',
 	'50-5_normal': 'Note: Low data for node Y, slots 1 to 8 unclear',
+	'51-1_normal': 'WIP (Last updated 2021-08-28)',
+	'51-1_boss': 'WIP (Last updated 2021-08-28)',
 };
 
 // })();
