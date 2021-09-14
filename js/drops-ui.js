@@ -128,10 +128,12 @@ document.body.onload = function() {
 
 
 function getShipImagePath(mid) {
+	if (mid == -1) return 'assets/icons/nodatabanner.jpg';
 	return 'assets/icons/'+SHIPDATA[mid].image;
 }
 
 function getShipName(mid) {
+	if (mid == -1) return '???';
 	return SHIPDATA[mid].nameJP;
 }
 
@@ -263,6 +265,7 @@ function changeRates() {
 	
 	let groups = [], mapGroup = {};
 	for (let replace of SHIPGET[prop].replace) {
+		if (replace.id == -1) continue;
 		let ids = {};
 		ids[replace.id] = 1;
 		for (let slot of replace.slots) {
@@ -290,6 +293,7 @@ function changeRates() {
 		if (mid != 0) shipCount++;
 	}
 	for (let replace of SHIPGET[prop].replace) {
+		if (replace.id == -1) continue;
 		for (let slot of replace.slots) {
 			if (slot < offset || slot >= offset+50) continue;
 			shipRatesR[replace.id] = shipRatesR[replace.id] + 2 || 2;
@@ -306,6 +310,7 @@ function changeRates() {
 		let n = (1 - rankAdjust)*100;
 		shipRates[0] = shipRates[0] + n || n;
 	}
+	delete shipRates[-1];
 	$('#tabRates tr.rateData').remove();
 	let classOrder = ['DE','AS','AR','AO','LHA','CT','CV','CVB','SS','SSV','FBB','BB','BBV','CVL','AV','CA','CAV','CL','CLT','DD'];
 	let mids = Object.keys(shipRates).sort(function(a,b) {
@@ -371,7 +376,7 @@ function changeRates() {
 		}
 		rateStr += '%';
 		let html = '<tr class="rateData"><td class="rateName">'+shipName+'</td><td>'+htmlImg+'</td><td>'+rateStr+'</td>';
-		let rateShipOnly; //= (mid == 0 || rate == null)? '' : Math.round(10000*rate/(100-(shipRates[0] || 0)))/10000;
+		let rateShipOnly;
 		if (mid == 0) rateShipOnly = '';
 		else if (Array.isArray(rate)) rateShipOnly = Math.round(10000*rate[0]/(100-(shipRates[0] || 0)))/10000 + '~' + Math.round(10000*rate[1]/(100-(shipRates[0] || 0)))/10000;
 		else rateShipOnly = Math.round(10000*rate/(100-(shipRates[0] || 0)))/10000;
@@ -575,8 +580,9 @@ var NOTES_SPECIAL = {
 	'50-2_normal': 'Note: Slots 1 to 6 unclear',
 	'50-3_normal': 'Note: Slots 1 to 8 and node W offsets unclear',
 	'50-5_normal': 'Note: Low data for node Y, slots 1 to 8 unclear',
-	'51-1_normal': 'WIP (Last updated 2021-08-28)',
-	'51-1_boss': 'WIP (Last updated 2021-08-28)',
+	'51-1_normal': 'WIP (Last updated 2021-09-14)',
+	'51-2_normal': 'WIP (Last updated 2021-09-14)',
+	'51-2_boss': 'WIP (Last updated 2021-09-14)<br>Note: Nelson/Kongou is limited to 1 dupe? Nelson/Naka is limited to 0 dupes?',
 };
 
 // })();
