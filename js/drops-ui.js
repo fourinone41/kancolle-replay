@@ -583,6 +583,7 @@ var NOTES_SPECIAL = {
 	'51-1_normal': 'WIP (Last updated 2021-09-14)',
 	'51-2_normal': 'WIP (Last updated 2021-09-14)',
 	'51-2_boss': 'WIP (Last updated 2021-09-14)<br>Note: Nelson/Kongou is limited to 1 dupe? Nelson/Naka is limited to 0 dupes?',
+	'51-3_boss': 'WIP (Last updated 2021-09-19)',
 };
 
 // })();
