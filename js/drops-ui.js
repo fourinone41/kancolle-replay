@@ -580,10 +580,9 @@ var NOTES_SPECIAL = {
 	'50-2_normal': 'Note: Slots 1 to 6 unclear',
 	'50-3_normal': 'Note: Slots 1 to 8 and node W offsets unclear',
 	'50-5_normal': 'Note: Low data for node Y, slots 1 to 8 unclear',
-	'51-1_normal': 'WIP (Last updated 2021-09-14)',
-	'51-2_normal': 'WIP (Last updated 2021-09-14)',
-	'51-2_boss': 'WIP (Last updated 2021-09-14)<br>Note: Nelson/Kongou is limited to 1 dupe? Nelson/Naka is limited to 0 dupes?',
-	'51-3_boss': 'WIP (Last updated 2021-09-19)',
+	'51-1_normal': 'Note: Slots 1 to 6 order unclear',
+	'51-2_normal': 'Note: Replacements unclear',
+	'51-2_boss': 'Note: Nelson/Kongou slots are limited to 1 dupe Nelson? Nelson/Naka slots are limited to 0 dupe Nelsons?',
 };
 
 // })();
