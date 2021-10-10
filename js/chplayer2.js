@@ -1763,10 +1763,8 @@ function prepBattle(letter) {
 		mapdata.setupSpecial(); //not reverted until sortie end
 	}
 
-	if (mapdata.boss) {
-		// --- Randomizer code
-		chrApplySpecial();
-	}
+	// --- Randomizer code
+	chrApplySpecial();
 	
 	if (mapdata.debuffAmount) {
 		var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;

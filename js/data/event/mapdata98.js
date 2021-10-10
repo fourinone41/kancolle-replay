@@ -114,13 +114,31 @@ MAPDATA[98] = {
     chrCreateRandomEquipment: (displayType, gearType) => {
         MAPDATA[98].chrAddEquipment(displayType, gearType);
     },
-    chrAddEquipment: (displayType, gearType) => {    
-        let mid = chrGetRandomEquipmentId(gearType);
+    chrAddEquipments: (gearType, equipId, count) => {
+
+        for (let index = 0; index < count; index++) {
+            if (index == 0) MAPDATA[98].chrAddEquipment(3, gearType, equipId);
+            else MAPDATA[98].chrAddEquipment(4, gearType, equipId);
+        }
+
+    },
+    /**
+     * 
+     * @param {*} displayType 
+     * @param {*} gearType 
+     * @param {*} equipId 
+     * @returns 
+     */
+    chrAddEquipment: (displayType, gearType, equipId) => {    
+        let mid;
+
+        if (equipId) mid = equipId;
+        else mid = chrGetRandomEquipmentId(gearType);
 
         if (!EQDATA[mid]) return;
         let eqid;
     
-        for (var j=0; j<1000; j++) {
+        for (var j=0; j<2000; j++) {
             eqid = 'x'+(90000+j);
             if (CHDATA.gears[eqid]) continue;
     
@@ -139,7 +157,10 @@ MAPDATA[98] = {
             if (displayType == 3) {
                 chrShowInfoPopup("Equipment added", message);
             }
-            else {
+            else if (displayType == 4) {
+                $("#chrdialoginfo").append("<br>");
+                $("#chrdialoginfo").append(message);
+            } else {
                 chrDisplayLog(message);
             }
 
@@ -177,7 +198,7 @@ MAPDATA[98] = {
         if (result.boss) {
 
             // --- ships drops
-            let chances = [2, 0.5, 0.3, 0.2, 0.1];
+            let chances = [2, 0.5, 0.3];
 
             for (let chance of chances) {
                 if (Math.random() < chance * modifier) {
@@ -186,7 +207,7 @@ MAPDATA[98] = {
             }
 
             // --- Equipment drops
-            chances = [1.5, 0.75, 0.5, 0.13, 0.05, 0.05];
+            chances = [1.5, 0.75, 0.25];
 
             for (let chance of chances) {
                 if (Math.random() < chance * modifier) {
@@ -196,7 +217,7 @@ MAPDATA[98] = {
         }
         else {
             // --- ships drops
-            let chances = [0.5, 0.05];
+            let chances = [0.25];
 
             for (let chance of chances) {
                 if (Math.random() < chance * modifier) {
@@ -205,7 +226,7 @@ MAPDATA[98] = {
             }
 
             // --- Equipment drops
-            chances = [0.5, 0.05, 0.05];
+            chances = [0.5];
 
             for (let chance of chances) {
                 if (Math.random() < chance * modifier) {
@@ -213,6 +234,12 @@ MAPDATA[98] = {
                 }
             }    
         }
+    },
+    /**
+     * For spring 21
+     */
+    chrGiveDrums: () => {
+        MAPDATA[98].chrAddEquipments(null, 75, 5);
     }
 }
 

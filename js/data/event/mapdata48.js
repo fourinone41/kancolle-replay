@@ -1615,6 +1615,11 @@ MAPDATA[48] =
 									ship.bonusSpecial.push({mod:1.1});
 								}
 							}
+
+							let debuffed = CHDATA.event.maps[3].debuffed || MAPDATA[48].maps[3].debuffCheck(CHDATA.event.maps[3].debuff);
+							if (debuffed) {								
+								chrApplyDebuff(true, 1);
+							}
 						},
 						compDiff: {
 							3: {'Hard 1':40,'Hard 2':60},
@@ -2515,8 +2520,9 @@ MAPDATA[48] =
 								if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
 								for (let ship of ships) {
 									if (!ship.bonusSpecial) ship.bonusSpecialAcc = ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.2,on:[1948,1949,1950]});
 								}
+								
+								chrApplyDebuff(true, 1);
 							}
 							for (let mid = 1948; mid <= 1950; mid++) {
 								SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
@@ -4177,6 +4183,9 @@ MAPDATA[48] =
 							let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
 							let debuffed = CHDATA.event.maps[6].debuffed || MAPDATA[48].maps[6].debuffCheck(CHDATA.event.maps[6].debuff);
+							
+							if (debuffed) chrApplyDebuff(true, 1);
+
 							for (let ship of ships) {
 								let mid = getBaseId(ship.mid);
 								let bonus = [];
@@ -5518,6 +5527,9 @@ MAPDATA[48] =
 							let debuffed = CHDATA.event.maps[7].debuffed || MAPDATA[48].maps[7].debuffCheck(CHDATA.event.maps[7].debuff);
 							for (let ship of ships) ship.bonusSpecial = null;
 							MAPDATA[48].maps[7].applyBonus(ships);
+
+							if (debuffed) chrApplyDebuff(true, 1);
+
 							for (let ship of ships) {
 								if (!ship.bonusSpecial) ship.bonusSpecial = ship.bonusSpecialAcc = [];
 								let mid = getBaseId(ship.mid);

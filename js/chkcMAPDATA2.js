@@ -11560,7 +11560,12 @@ var MAPDATA = {
 							}
 							if (found) CHDATA.event.maps[4].debuff.I = true;
 						},
-						debuffAmount: 35,
+						setupSpecial: function () {
+							if (MAPDATA[35].maps[4].debuffCheck(CHDATA.event.maps[4].debuff)) {
+								FLEETS2[0].ships[0].debuff = 35;
+								FLEETS2[0].ships[1].debuff = 35;
+							}
+						}
 					},
 					'J':{
 						type: 3,
@@ -11589,7 +11594,12 @@ var MAPDATA = {
 							}
 							if (found) CHDATA.event.maps[4].debuff.K = true;
 						},
-						debuffAmount: { 1696: 23, 1697: 23, 1698: 23 },
+						setupSpecial: function () {
+							if (MAPDATA[35].maps[4].debuffCheck(CHDATA.event.maps[4].debuff)) {
+								FLEETS2[0].ships[0].debuff = 23;
+								FLEETS2[0].ships[1].debuff = 23;
+							}
+						}
 					},
 					'L':{
 						type: 1,
@@ -11673,6 +11683,13 @@ var MAPDATA = {
 							2: ['Medium F'],
 							1: ['Easy F']
 						},
+						setupSpecial: function () {
+							if (MAPDATA[35].maps[4].debuffCheck(CHDATA.event.maps[4].debuff)) {
+								FLEETS2[0].ships[0].debuff = 30;
+								FLEETS2[0].ships[1].debuff = 23;
+								FLEETS2[0].ships[2].debuff = 23;
+							}
+						}
 					},
 				},
 			},
@@ -17757,6 +17774,7 @@ var MAPDATA = {
 							for (let ship of FLEETS1[0].ships.concat(FLEETS1[1].ships)) {
 								ship.bonusSpecial = [{ mod: 1.3 }];
 							}
+
 							for (let lbas of LBAS) lbas.bonusSpecial = [{ mod: 1.3 }];
 							for (let ship of FLEETS2[0].ships.concat(FLEETS2[1].ships)) {
 								ship.EV *= .35;

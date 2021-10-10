@@ -2718,15 +2718,7 @@ MAPDATA[50] =
 							
 							let debuffed = CHDATA.event.maps[3].debuffed || MAPDATA[50].maps[3].debuffCheck(CHDATA.event.maps[3].debuff);
 							if (debuffed) {
-								for (let ship of ships) {
-									if (!ship.bonusSpecial) ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.13,on:[2003,2004,2005]});
-								}
-							}
-							for (let mid = 2003; mid <= 2005; mid++) {
-								SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
-								VOICES[mid].attack = debuffed ? VOICES[mid].attackB : VOICES[mid].attackN;
-								VOICES[mid].damage = debuffed ? VOICES[mid].damageB : VOICES[mid].damageN;
+								chrApplyDebuff(false, 1);
 							}
 						},
 						compDiff: {

@@ -3099,6 +3099,12 @@ MAPDATA[46] =
 									}
 								}
 							}
+
+							let debuffed = CHDATA.event.maps[6].debuffed || MAPDATA[46].maps[6].debuffCheck(CHDATA.event.maps[6].debuff);
+
+							if (debuffed) {
+								chrApplyDebuff(true, 1);
+							}
 						},
 						compDiff: {
 							3: {'Hard 1':100},

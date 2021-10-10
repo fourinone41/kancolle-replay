@@ -76,7 +76,7 @@ function randomizeMaps(){
 function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
     for(event_id in MAPDATA){
-        if(!["99", '98', '10'].includes(event_id) && !tested[event_id][MAPNUM]){
+        if(!["99", '98', '10'].includes(event_id) && !tested[event_id][MAPNUM - 1]){
             if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
                 let map = {};
 
@@ -300,18 +300,6 @@ function chRandomizeComp(compData, mapData, nodeLetter) {
 // --- Since any boss can be find in any map, we need this to balance the game
 function chrApplySpecial() {
 
-    let ships = FLEETS1[0].ships;
-    if (FLEETS1[1]) ships = ships.concat(FLEETS1[1].ships);
-    if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships); 
-    
-    // --- For each ally ship
-    for (let ship of ships) {
-        // --- Apply map debuff
-        if (CHDATA.event.maps[MAPNUM].debuffed) {
-            chrApplyDebuff(ship);
-        }
-    }
-
     // --- For each abyssal
     for (let abyssal of  FLEETS2[0].ships) {
         // --- Change boss form if debuffed
@@ -323,8 +311,56 @@ function chrApplySpecial() {
     }
 }
 
-function chrApplyDebuff(ship) {
-    // --- Debuff on specific boss, can be cumulated to already applied debuff
+/**
+ * 
+ * @param {*} includeFF 
+ * @param {*} abyssalsIndex Abyssal index in the fleet (1 = main fleet flag, 6 = last ship of main fleet, 7 = flag of escort fleet, 12 = last ship of escort fleet)
+ */
+function chrApplyDebuff(includeFF, abyssalsIndex) {
+
+    let ships = getAllShips(includeFF);
+
+    for (const ship of ships) {
+        if (!ship.bonusSpecial) ship.bonusSpecial = [];
+    }
+
+    if (!abyssalsIndex.length) {
+        abyssalsIndex = [abyssalsIndex];
+    }
+
+    for (const abyssalIndex of abyssalsIndex) {
+        const abyssalId = abyssalIndex > 6 ? FLEETS2[1].ships[abyssalsIndex - 7].mid : FLEETS2[0].ships[abyssalsIndex - 1].mid;
+
+        if (DEBUFF_DATA[abyssalId]) {
+
+            /**
+             * @type {debuffData}
+             */
+            let debuffData = DEBUFF_DATA[abyssalId];
+
+            if (debuffData.debuffFunction) {
+                debuffData.debuffFunction(ships);
+            }
+            else if (debuffData.debuffValue) {
+                
+                for (const ship of ships) {
+                    ship.bonusSpecial.push({mod:debuffData.debuffValue,on:[abyssalId]});
+                }
+            }
+        }
+        else {
+            // --- Default value = 1.1
+            for (const ship of ships) {
+                ship.bonusSpecial.push({mod:1.1,on:[abyssalId]});
+            }
+        }
+    }
+
+    return;
+}
+
+function chrApplyDebuffOnShip(ship) {
+    // --- Debuff on specific boss
     if (!ship.bonusSpecial) ship.bonusSpecial = [];
 
     // --- Anzio Princess & Summer Anchorage Princess from summer 19
@@ -486,25 +522,34 @@ var submarinesBoss = {};
 
 const bossIds = [
     1548,
-    1556,1557,1573,1574,1581,1582,1583,1584,1585,1586,1587,
+    1556,1557,1573,1574,1581,1582,1583,1584,1585,
+    1586, 1620, 1781, 1782,                 // --- Aircraft carrier Princess
+    1587,
 	1588,1589,1590,1597,1598,1599,1600,1601,1602,1603,1604,1605,1606,1607,1608,1609,1610,1611,
-	1612,1613,1619,1620,1625,1626,1627,1628,1629,1630,1631,1632,1633,1634,1635,
-	1636,1641,1642,1643,1647,1648,1649,1650,1651,1652,1653,1654,1655,1656,1657,
-	1658,1659,1660,1661,1662,1663,1664,1668,1669,1670,1671,1672,1673,1674,1675,
-	1676,1677,1678,1679,1680,1681,1682,1683,1684,1685,1686,1687,1688,1689,1690,1691,
+	1612,1613,1619,1625,1626,1627,1628,1629,1630,1631,1632,1633,1634,1635,
+	1636,
+    1641, 1642, 1643,                       // --- Light cruiser Princess
+    1647, 1648, 1649, 1676, 1677, 1678,     // --- Destroyer Water Demon
+    1650,1651,1652,1653,1654,1655,1656,1657,1658,
+    1659, 1660, 1661, 1662, 1663, 1664,     // --- Heavy Cruiser Princess
+    1863, 1864,                             // --- Heavy Cruiser Princess (Blue)
+    1668,1669,1670,1671,1672,1673,1674,1675,
+	1679,1680,1681,1682,1683,1684,1685,1686,1687,1688,1689,1690,1691,
 	1692,1696,1697,1698,1699,1700,1701,1702,1703,1704,1705,1706,1707,1708,1709,1710,
 	1711,1712,1713,1716,1717,1718,1719,1720,1721,1722,1723,1724,1725,1726,1727,1728,
 	1729,1730,1731,1732,1733,1745,1746,1747,1748,1749,1750,1751,1752,1753,1754,1755,
-	1756,1757,1758,1759,1760,1767,1768,1769,1770,1771,1772,1773,1774,1775,1781,1782,
+	1756,1757,1758,1759,1760,1767,1768,1769,1770,1771,1772,1773,1774,1775,
 	1783,1784,1785,1786,1787,1788,1790,1791,1792,1793,1794,1795,1796,1797,1798,1799,
 	1800,1801,1802,1803,1804,1809,1810,1811,1812,1813,1814,1815,1816,1817,1818,1819,
 	1820,1821,1822,1823,1824,1825,1826,1827,1828,1829,1830,1831,1832,1834,1835,1836,
 	1837,1838,1839,1840,1841,1842,1843,1844,1845,1846,1847,1848,1849,1850,1851,1852,
 	1853,1854,1855,1856,1857,1644,1645,1646,1693,1694,1695,1736,1737,1738,1789,1805,
-	1806,1807,1808,1863,1864,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,
-	1877,1878,1879, 1880,1881,1882, 1883,1884,1885, 1886,1887,1888,
+	1806,1807,1808,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,
+	1877, 1878, 1879, 1880 ,1881, 1882,     // --- Abyssal Mediterranean Princess
+    1883,1884,1885, 1886,1887,1888,
 	1889,1890,1891,1892,1893,1894, 1897,
-	1898,1899,1900, 1901,1902,1903, 1906,1907,1908, 
+	1898,1899,1900, 1901,1902,1903, 
+    1906, 1907, 1908,                       // --- Aircraft carrier Princess Kai
 	1909,1910,1911, 1912,1913,1914,
 	1915,1916,1917, 1918,1919,1920,
 	1921, 1922, 1923, 1924, 1925, 1926,
@@ -513,7 +558,7 @@ const bossIds = [
 	1939, 1940, 1941, 1942, 1943, 1944,
 	1945, 1946, 1947, 1948, 1949, 1950,
 	1955, 1956,
-	1957, 1958, 1959, 1960, 
+	1957, 1958, 1959, 1960,                 // --- Light cruiser Princess B
 	1961, 1962, 1963, 1964,
 	1965, 1966, 1967, 1968, 1969, 1970,
 	1971, 1972, 1973, 1974, 1975, 1976,
@@ -716,4 +761,23 @@ function chrCreateRandomShip(id, randomStat) {
     ship.morale = 49;
 
     return ship;
+}
+
+
+function chrEmergencyResetStats(shipId) {
+	let shipN = CHDATA.ships[shipId];
+	let shipO = SHIPDATA[shipN.masterId];
+	
+	const EV = shipO.EVbase ? shipO.EVbase + Math.floor((shipO.EV-shipO.EVbase)*shipN.LVL/99) : shipO.EV;
+	const LOS = shipO.LOSbase ? shipO.LOSbase + Math.floor((shipO.LOS-shipO.LOSbase)*shipN.LVL/99) : shipO.LOS;
+	const ASW = shipO.ASWbase ? shipO.ASWbase + Math.floor((shipO.ASW-shipO.ASWbase)*shipN.LVL/99) : shipO.ASW;
+
+    shipN.FP = shipO.FP;
+	shipN.TP = shipO.TP;
+	shipN.AA = shipO.AA;
+	shipN.AR = shipO.AR;
+	shipN.EV = EV;
+	shipN.ASW = ASW;
+	shipN.LOS = LOS;
+	shipN.RNG = shipO.RNG;
 }

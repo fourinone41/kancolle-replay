@@ -1771,6 +1771,9 @@ var MAPDATA45 = {
 							if (FLEETS1[1]) ships = ships.concat(FLEETS1[1].ships);
 							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships); 
 							let shortcut = CHDATA.event.maps[3].routes.indexOf(3) != -1;
+
+							let debuffed = CHDATA.event.maps[3].debuffed || MAPDATA[45].maps[3].debuffCheck(CHDATA.event.maps[3].debuff);
+
 							for (let ship of ships) {
 								let mid = getBaseId(ship.mid);
 								if (MAPDATA[45].historical.german.indexOf(mid) != -1) {
@@ -1789,6 +1792,10 @@ var MAPDATA45 = {
 									if (!ship.bonusSpecial) ship.bonusSpecial = [];
 									ship.bonusSpecial.push({mod:1.07});
 								}
+							}
+							
+							if (debuffed) {
+								chrApplyDebuff(true, [1,2]);
 							}
 						},
 						compDiff: {

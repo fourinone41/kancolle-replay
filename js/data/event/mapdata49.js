@@ -1947,12 +1947,7 @@ MAPDATA[49] =
 							
 							let debuffed = CHDATA.event.maps[3].debuffed || MAPDATA[49].maps[3].debuffCheck(CHDATA.event.maps[3].debuff);
 							if (debuffed) {
-								let bossmid = FLEETS2[0].ships[0].mid;
-
-								for (let ship of ships) {
-									if (!ship.bonusSpecial) ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.06,on:[bossmid]});
-								}
+								chrApplyDebuff(true, 1);
 							}
 						},
 						compDiff: {
@@ -2846,10 +2841,7 @@ MAPDATA[49] =
 							
 							let debuffed = CHDATA.event.maps[4].debuffed || MAPDATA[49].maps[4].debuffCheck(CHDATA.event.maps[4].debuff);
 							if (debuffed) {
-								for (let ship of ships) {
-									if (!ship.bonusSpecial) ship.bonusSpecial = [];
-									ship.bonusSpecial.push({mod:1.11,on:[1991,1992,1993]});
-								}
+								chrApplyDebuff(false, 1);
 							}
 							for (let mid = 1991; mid <= 1993; mid++) {
 								SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
