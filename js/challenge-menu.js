@@ -179,11 +179,12 @@ function chMenuClickedNewFile() {
 	if (!localStorage.max) chMenuUpdateStorageSize();
 	if (localStorage.max - chGetStorageUsed()/1024/1024 < .5) {
 		$('#menustoragewarn').show();
-		return;
+		return false;
 	}
 	$('#menufileselect').hide();
 	$('#menuevents').show();
 	$('#menuBackup').hide();
+	return true;
 }
 
 function chMenuSelectedEvent(eventnum) {

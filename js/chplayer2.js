@@ -161,11 +161,42 @@ $('#battlespace').hide();
 $('#mainspace').hide();
 $(document).ready(function() {
 	initEQDATA(function() {
-		if (true && localStorage.ch_file) { 
-			chLoadFile(localStorage.ch_file);
-		} else chOpenMenu();
+		chInit();
 	});
 });
+
+function chInit() {
+	let eventInit = new URLSearchParams(window.location.search).get('loadEvent');
+	if (eventInit) {
+		window.history.replaceState(null,null,window.location.pathname);
+		if (!MAPDATA[eventInit]) eventInit = null;
+	}
+	let file = localStorage.ch_file;
+	if (file && eventInit) {
+		file = chFindFile(eventInit);
+	}
+	if (file) {
+		chLoadFile(file);
+	} else {
+		chOpenMenu();
+		if (eventInit && chMenuClickedNewFile()) {
+			chMenuSelectedEvent(eventInit);
+		}
+	}
+}
+
+function chFindFile(world) {
+	let num = null, dateMax = 0;
+	for (let key in localStorage) {
+		if (key.indexOf('ch_basic') != 0) continue;
+		let data = JSON.parse(localStorage[key]);
+		if (data.event.world == world && data.event.lasttime > dateMax) {
+			num = key.substr(8);
+			dateMax = data.event.lasttime;
+		}
+	}
+	return num;
+}
 
 function chLoadFile(file) {
 	localStorage.ch_file = FILE = file;

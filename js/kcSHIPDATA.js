@@ -14839,6 +14839,7 @@ var SHIPDATA = {
 		type: 'CL', sclass: 34,
 		nid: 424,
 		added: '2020-01-14',
+		alwaysOASW: true,
 		HP: 41, HPmax: 55,
 		FP: 56, FPbase: 14,
 		TP: 80, TPbase: 50,
