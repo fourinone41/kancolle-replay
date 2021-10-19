@@ -571,6 +571,12 @@ const bossIds = [
     1997,                                   // --- Aircraft Carrier Princess Kai 4
     2000, 2001, 2002, 2003, 2004, 2005,     // --- Lunga Point Heavy Cruiser Princess
     2006, 2007, 2008, 2009, 2010, 2011,     // --- New Light Cruiser Princess
+    2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, // --- Supply Depot Princess B Vacation Mode
+    2023, 2024, 2025, 2026, 2027, 2028,     // --- Harbour Summer Princess B
+    2029, 2030, 2031, 2032, 2033, 2034,     // --- Mediterranean Dreadnought Water Princess
+    2035, 2036, 2037, 2038, 2039, 2040,     // --- Abyssal Mediterranean Princess Vacation Mode
+    2041, 2042, 2043, 2044, 2045, 2046,     // --- European Armoured Carrier Princess
+    2047, 2048,                             // --- Airfield Princess
 
 	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
 ];
