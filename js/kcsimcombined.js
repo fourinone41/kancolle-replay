@@ -245,14 +245,14 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 		for (var i=0; i<alive1C.length; i++) {
 			if (alive1C[i].canOASW()) attackers1.push(alive1C[i]);
 		}
-		orderByRange(attackers1,order1);
+		orderByRange(attackers1,order1,false,true);
 		for (var i=0; i<alive2.length; i++) {
 			if (alive2[i].canOASW()) attackers2.push(alive2[i]);
 		}
-		orderByRange(attackers2,order2);
+		orderByRange(attackers2,order2,false,true);
 		
 		if (order1.length+order2.length) {
-			if (C) BAPI.data.api_opening_taisen = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
+			if (C) BAPI.data.api_opening_taisen = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1],api_si_list:[-1]};
 			shellPhase(order1,order2,alive1C,subsalive1C,alive2,subsalive2,(C)? BAPI.data.api_opening_taisen:undefined,true);
 		}
 	}
@@ -305,16 +305,22 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	F1C.clearFleetLoS();
 	F2.clearFleetLoS();
 	
+	
+	F1.basepowshell = COMBINEDCONSTS[type].esingle.main.shellDmgF;
+	F1.baseaccshell = COMBINEDCONSTS[type].esingle.main.shellAccF;
+	F1C.basepowshell = COMBINEDCONSTS[type].esingle.escort.shellDmgF;
+	F1C.baseaccshell = COMBINEDCONSTS[type].esingle.escort.shellAccF;
+	
 	//shelling 1
 	if (!NBonly) {
-		if (C) BAPI.data.api_hougeki1 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
+		if (C) BAPI.data.api_hougeki1 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1],api_si_list:[-1]};
 		if (type==2) {
-			F1.basepowshell = F1.formation.shellbonus; F1.baseaccshell = F1.formation.accbase;
-			F2.basepowshell = F1.formation.shellbonusE; F2.baseaccshell = 65; //guess
+			F2.basepowshell = COMBINEDCONSTS[type].esingle.main.shellDmgE;
+			F2.baseaccshell = COMBINEDCONSTS[type].esingle.main.shellAccE;
 			shellRange(false,(C)? BAPI.data.api_hougeki1 : undefined);
 		} else {
-			F1C.basepowshell = F1C.formation.shellbonus; F1C.baseaccshell = F1C.formation.accbase;
-			F2.basepowshell = F1C.formation.shellbonusE; F2.baseaccshell = F1C.formation.accbase;
+			F2.basepowshell = COMBINEDCONSTS[type].esingle.escort.shellDmgE;
+			F2.baseaccshell = COMBINEDCONSTS[type].esingle.escort.shellAccE;
 			shellRange(true,(C)? BAPI.data.api_hougeki1 : undefined);
 		}
 	}
@@ -327,12 +333,10 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	
 	//shelling 2
 	if (!NBonly) {
-		if (C) BAPI.data.api_hougeki2 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
-		F1.basepowshell = F1.formation.shellbonus; F1.baseaccshell = F1.formation.accbase;
-		F2.basepowshell = F1.formation.shellbonusE; F2.baseaccshell = F1.formation.accbase;
-		if (type == 3) F2.baseaccshell = 65;
+		if (C) BAPI.data.api_hougeki2 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1],api_si_list:[-1]};
+		F2.basepowshell = COMBINEDCONSTS[type].esingle.main.shellDmgE;
+		F2.baseaccshell = COMBINEDCONSTS[type].esingle.main.shellAccE;
 		if (type==2) {
-			F2.baseaccshell = 65; //guess
 			if (doShell2) shellOrder(false,(C)? BAPI.data.api_hougeki2 : undefined);
 		} else {
 			shellRange(false,(C)? BAPI.data.api_hougeki2 : undefined);
@@ -341,15 +345,14 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	
 	//shelling 3
 	if (!NBonly) {
-		if (C) BAPI.data.api_hougeki3 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
+		if (C) BAPI.data.api_hougeki3 = {api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1],api_si_list:[-1]};
 		if (type==2) {
-			F1C.basepowshell = F1C.formation.shellbonus; F1C.baseaccshell = F1C.formation.accbase;
-			F2.basepowshell = F1C.formation.shellbonusE; F2.baseaccshell = F1C.formation.accbase;
+			F2.basepowshell = COMBINEDCONSTS[type].esingle.escort.shellDmgE;
+			F2.baseaccshell = COMBINEDCONSTS[type].esingle.escort.shellAccE;
 			shellRange(true,(C)? BAPI.data.api_hougeki3 : undefined);
 		} else if (doShell2) {
-			F1.basepowshell = F1.formation.shellbonus; F1.baseaccshell = F1.formation.accbase;
-			F2.basepowshell = F1.formation.shellbonusE; F2.baseaccshell = F1.formation.accbase;
-			if (type == 3) F2.baseaccshell = 65;
+			F2.basepowshell = COMBINEDCONSTS[type].esingle.main.shellDmgE;
+			F2.baseaccshell = COMBINEDCONSTS[type].esingle.main.shellAccE;
 			shellOrder(false,(C)? BAPI.data.api_hougeki3 : undefined);
 		}
 	}
@@ -395,7 +398,7 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 		
 		if (C) {
 			if (!BAPI.yasen) BAPI.yasen = {};
-			BAPI.yasen.api_hougeki = {api_at_list:[-1],api_damage:[-1],api_df_list:[-1],api_sp_list:[-1],api_cl_list:[-1],api_n_mother_list:[-1]};
+			BAPI.yasen.api_hougeki = {api_at_list:[-1],api_damage:[-1],api_df_list:[-1],api_sp_list:[-1],api_cl_list:[-1],api_n_mother_list:[-1],api_si_list:[-1]};
 			if (NEWFORMAT) {
 				formatRemovePadding(BAPI.yasen.api_hougeki);
 				BAPI.yasen.api_hougeki.api_at_eflag = [];
@@ -416,8 +419,8 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	if (!noupdate) {
 		// var subonly = true;
 		// for (var j=0; j<ships2.length; j++) if (ships2[j].type != 'SS') subonly = false;
-		updateSupply(ships1,didNB,NBonly,bombing,noammo);
-		updateSupply(ships1C,didNB,NBonly,bombing,noammo);
+		// updateSupply(ships1,didNB,NBonly,bombing,noammo);
+		// updateSupply(ships1C,didNB,NBonly,bombing,noammo);
 	}
 	
 	
@@ -461,141 +464,6 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	return results;
 }
 
-function simStatsCombined(numsims,type,foptions) {
-	console.log(type);
-	var totalResult = {
-		totalnum: numsims,
-		totalFuelS: 0,
-		totalAmmoS: 0,
-		totalBauxS: 0,
-		totalFuelR: 0,
-		totalSteelR: 0,
-		totalBuckets: 0,
-		nodes: []
-	};
-	for (var i=0; i<FLEETS2.length; i++) {
-		totalResult.nodes.push({
-			num: 0,
-			didNB: 0, //used for rsammo calc
-			redded: 0,
-			redIndiv: [0,0,0,0,0,0],
-			redIndivC: [0,0,0,0,0,0],
-			undamaged: 0,
-			MVPs: [0,0,0,0,0,0],
-			MVPsC: [0,0,0,0,0,0],
-			ranks: {S:0,A:0,B:0,C:0,D:0,E:0},
-			flagsunk: 0
-		});
-	}
-	
-	//var BAPI = {data:{},yasen:{},mvp:[],rating:''};
-	C = false;
-	var formdef = FLEETS1[0].formation, formdefc = FLEETS1[1].formation;
-	for (var i=0; i<numsims; i++) {
-		for (var j=0; j<FLEETS2.length; j++) {
-			var options = foptions[j];
-			if (options.formation != '0') {
-				FLEETS1[0].formation = ALLFORMATIONS[type+options.formation];
-				FLEETS1[1].formation = ALLFORMATIONS[type+options.formation+'E'];
-			} else {
-				FLEETS1[0].formation = formdef;
-				FLEETS1[1].formation = formdefc;
-			}
-			FLEETS1[0].DMGTOTALS = [0,0,0,0,0,0]; FLEETS1[1].DMGTOTALS = [0,0,0,0,0,0];
-			var supportNum = (j == FLEETS2.length-1)? 1 : 0;
-			var LBASwaves = [];
-			for (var k=0; k<options.lbas.length; k++) LBASwaves.push(LBAS[options.lbas[k]-1]);
-			var res;
-			if (FLEETS2[j].combinedWith) res = sim12vs12(type,FLEETS1[0],FLEETS1[1],FLEETS2[j],FLEETS1S[supportNum],LBASwaves,options.NB,options.NBonly,options.aironly,options.landbomb,options.noammo);
-			else res = simCombined(type,FLEETS1[0],FLEETS1[1],FLEETS2[j],FLEETS1S[supportNum],LBASwaves,options.NB,options.NBonly,options.aironly,options.landbomb,options.noammo);//,BAPI);
-			totalResult.nodes[j].num++;
-			if (res.redded) totalResult.nodes[j].redded++;
-			for (var k=0; k<res.reddedIndiv.length; k++) if (res.reddedIndiv[k]) totalResult.nodes[j].redIndiv[k]++;
-			for (var k=0; k<res.reddedIndivC.length; k++) if (res.reddedIndivC[k]) totalResult.nodes[j].redIndivC[k]++;
-			if (res.undamaged) totalResult.nodes[j].undamaged++;
-			if (res.flagsunk) totalResult.nodes[j].flagsunk++;
-			totalResult.nodes[j].ranks[res.rank]++;
-			totalResult.nodes[j].MVPs[res.MVP]++;
-			totalResult.nodes[j].MVPsC[res.MVPC]++;
-			//if ((res.redded && DORETREAT)||res.flagredded) break;
-			if (!canContinue(FLEETS1[0].ships,FLEETS1[1].ships)) break;
-		}
-		for (var fl=0; fl<=1; fl++) {
-			for (var j=0; j<FLEETS1[fl].ships.length; j++) { //get refuel and repair costs
-				var ship = FLEETS1[fl].ships[j];
-				var r = getRepairCost(ship);
-				totalResult.totalFuelR += r[0];
-				totalResult.totalSteelR += r[1];
-				if (ship.HP/ship.maxHP <= BUCKETPERCENT || getRepairTime(ship) > BUCKETTIME) totalResult.totalBuckets++;
-				totalResult.totalFuelS += Math.floor(ship.fuel * (10-ship.fuelleft)/10);
-				totalResult.totalAmmoS += Math.floor(ship.ammo * (10-ship.ammoleft)/10);
-				for (var k=0; k<ship.PLANESLOTS.length; k++) totalResult.totalBauxS += 5*(ship.PLANESLOTS[k]-ship.planecount[k]);
-			}
-		}
-		//support
-		for (var s=0; s<=1; s++) {
-			if (FLEETS1S[s]) {
-				for (var j=0; j<FLEETS1S[s].ships.length; j++) {
-					var shipS = FLEETS1S[s].ships[j];
-					totalResult.totalFuelS += Math.floor(shipS.fuel * .5);
-					if (FLEETS1S[s].supportType == 1) totalResult.totalAmmoS += Math.floor(shipS.ammo * .4);
-					else totalResult.totalAmmoS += Math.floor(shipS.ammo * .8);
-					for (var k=0; k<shipS.PLANESLOTS.length; k++) totalResult.totalBauxS += 5*(shipS.PLANESLOTS[k]-shipS.planecount[k]);
-				}
-				FLEETS1S[s].reset();
-			}
-		}
-		//lbas
-		var alllbas = [];
-		for (var j=0; j<foptions.length; j++) {
-			for (var k=0; k<foptions[j].lbas.length; k++) {
-				if (alllbas.indexOf(foptions[j].lbas[k]) == -1) alllbas.push(foptions[j].lbas[k]);
-			}
-		}
-		for (var j=0; j<alllbas.length; j++) {
-			var cost = LBAS[alllbas[j]-1].getCost();
-			totalResult.totalFuelS += cost[0];
-			totalResult.totalAmmoS += cost[1];
-			totalResult.totalBauxS += cost[2];
-			LBAS[alllbas[j]-1].reset();
-		}
-		for (var j=0; j<FLEETS1.length; j++) FLEETS1[j].reset();
-		for (var j=0; j<FLEETS2.length; j++) {
-			FLEETS2[j].reset();
-			if (FLEETS2[j].combinedWith) FLEETS2[j].combinedWith.reset();
-		}
-	}
-	
-	// totalResult.totalFuelR/=numsims;
-	// totalResult.totalSteelR/=numsims;
-	// totalResult.totalFuelS/=numsims;
-	// totalResult.totalAmmoS/=numsims;
-	// totalResult.totalBauxS/=numsims;
-	// for (var j=0; j<FLEET2.length; j++) {
-		// totalResult.nodes[j].redded/=numsims;
-		// totalResult.nodes[j].undamaged/=numsims;
-		// totalResult.nodes[j].flagsunk/=numsims;
-		// for (rank in totalResult.nodes[j].ranks) totalResult.nodes[j].RANKS[rank]/=numsims;
-		// for (var i=0; i<totalResult.nodes[j].MVPs.length; i++) totalResult.nodes[j].MVPs[i]/=numsims;
-		// for (var i=0; i<totalResult.nodes[j].redIndiv.length; i++) totalResult.nodes[j].redIndiv[i]/=numsims;
-	// }
-	
-	updateResults(totalResult);
-	
-	console.log(totalResult);
-	// console.log('RED RATE: '+totalResult.RED);
-	// console.log('UNDAMAGED: '+totalResult.UNDAMAGED);
-	// console.log('FLAG SUNK: '+totalResult.FLAGSUNK);
-	// console.log('AVG REPAIR FUEL: '+totalResult.totalFuelR);
-	// console.log('AVG REPAIR STEEL: '+totalResult.totalSteelR);
-	// console.log('AVG SUPPLY FUEL: '+totalResult.totalFuelS);
-	// console.log('AVG SUPPLY AMMO: '+totalResult.totalAmmoS);
-	// console.log('AVG SUPPLY BAUX: '+totalResult.totalBauxS);
-	// console.log(totalResult.RANKS);
-	// console.log(totalResult.MVPS);
-	
-	return 0;
-}
 
 
 //-------------------------------
@@ -826,11 +694,11 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 		for (var i=0; i<alive1.length; i++) {
 			if (alive1[i].canOASW()) attackers1.push(alive1[i]);
 		}
-		orderByRange(attackers1,order1);
+		orderByRange(attackers1,order1,false,true);
 		for (var i=0; i<alive2C.length; i++) {
 			if (alive2C[i].canOASW()) attackers2.push(alive2C[i]);
 		}
-		orderByRange(attackers2,order2);
+		orderByRange(attackers2,order2,false,true);
 		
 		if (order1.length+order2.length) {
 			if (C) BAPI.data.api_opening_taisen = {api_at_eflag:[-1],api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
@@ -856,11 +724,16 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	F2.clearFleetLoS();
 	F2C.clearFleetLoS();
 	
+	F1.basepowshell = COMBINEDCONSTS[0].ecombined.main.shellDmgF;
+	F1.baseaccshell = COMBINEDCONSTS[0].ecombined.main.shellAccF;
+	F2.basepowshell = COMBINEDCONSTS[0].ecombined.main.shellDmgE;
+	F2.baseaccshell = COMBINEDCONSTS[0].ecombined.main.shellAccE;
+	F2C.basepowshell = COMBINEDCONSTS[0].ecombined.escort.shellDmgE;
+	F2C.baseaccshell = COMBINEDCONSTS[0].ecombined.escort.shellAccE;
+	
 	//shelling 1
 	if (C) BAPI.data.api_hougeki1 = null;
 	if (!NBonly && !aironly && alive1.length+subsalive1.length > 0 && alive2C.length+subsalive2C.length > 0) {
-		F1.basepowshell = SIMCONSTS.shellEcEF || 5; F2C.basepowshell = SIMCONSTS.shellEcEE || -5;
-		F1.baseaccshell = SIMCONSTS.accEcEF; F2C.baseaccshell = SIMCONSTS.accEcEE;
 		var order1 = [], order2 = [];
 		orderByRange(ships1,order1,hasInstall2C);
 		orderByRange(ships2C,order2,hasInstall1);
@@ -879,9 +752,6 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	
 	//shelling 2
 	if (!NBonly && !aironly && alive1.length+subsalive1.length > 0 && alive2.length+subsalive2.length > 0) {
-		F1.basepowshell = SIMCONSTS.shellEcMF || 5; F2.basepowshell = SIMCONSTS.shellEcME || 10;
-		F1.baseaccshell = SIMCONSTS.accEcMF; F2.baseaccshell = SIMCONSTS.accEcME;
-		
 		var order1 = [], order2 = [];
 		orderByRange(ships1,order1,hasInstall2);
 		orderByRange(ships2,order2,hasInstall1);
@@ -892,9 +762,6 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	
 	//shelling 3
 	if (doShell2 && !NBonly && !aironly && alive1.length+subsalive1.length > 0 && (alive2.length+subsalive2.length > 0 || alive2C.length+subsalive2C.length > 0)) {
-		F1.basepowshell = SIMCONSTS.shellEcMF || 5; F2.basepowshell = SIMCONSTS.shellEcME || 10;
-		F1.baseaccshell = SIMCONSTS.accEcMF; F2.baseaccshell = SIMCONSTS.accEcME;
-		
 		var order1 = [], order2 = [];
 		for (var i=0; i<ships1.length; i++) {
 			if (!hasInstall2 && !hasInstall2C && ships1[i].isSub) continue;
@@ -981,7 +848,7 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	
 	//results
 	if (!noupdate) {
-		updateSupply(ships1,didNB,NBonly,bombing,noammo);
+		// updateSupply(ships1,didNB,NBonly,bombing,noammo);
 	}
 	
 	
@@ -1268,11 +1135,11 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 		for (var i=0; i<alive1C.length; i++) {
 			if (alive1C[i].canOASW()) attackers1.push(alive1C[i]);
 		}
-		orderByRange(attackers1,order1);
+		orderByRange(attackers1,order1,false,true);
 		for (var i=0; i<alive2C.length; i++) {
 			if (alive2C[i].canOASW()) attackers2.push(alive2C[i]);
 		}
-		orderByRange(attackers2,order2);
+		orderByRange(attackers2,order2,false,true);
 		
 		if (order1.length+order2.length) {
 			if (C) BAPI.data.api_opening_taisen = {api_at_eflag:[-1],api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
@@ -1339,6 +1206,16 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	F2.clearFleetLoS();
 	F2C.clearFleetLoS();
 	
+	F1.basepowshell = COMBINEDCONSTS[type].ecombined.main.shellDmgF;
+	F1.baseaccshell = COMBINEDCONSTS[type].ecombined.main.shellAccF;
+	F1C.basepowshell = COMBINEDCONSTS[type].ecombined.escort.shellDmgF;
+	F1C.baseaccshell = COMBINEDCONSTS[type].ecombined.escort.shellAccF;
+	
+	F2.basepowshell = COMBINEDCONSTS[type].ecombined.main.shellDmgE;
+	F2.baseaccshell = COMBINEDCONSTS[type].ecombined.main.shellAccE;
+	F2C.basepowshell = COMBINEDCONSTS[type].ecombined.escort.shellDmgE;
+	F2C.baseaccshell = COMBINEDCONSTS[type].ecombined.escort.shellAccE;
+	
 	//shelling 1
 	var d1M = {ships1f: ships1, alive1f: alive1, subsalive1f: subsalive1, hasInstall1f: hasInstall1};
 	var d1E = {ships1f: ships1C, alive1f: alive1C, subsalive1f: subsalive1C, hasInstall1f: hasInstall1C};
@@ -1346,12 +1223,7 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	var d2E = {ships2f: ships2C, alive2f: alive2C, subsalive2f: subsalive2C, hasInstall2f: hasInstall2C};
 	if (!NBonly) {
 		if (C) BAPI.data.api_hougeki1 = {api_at_eflag:[-1],api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
-		// F1.basepowshell = F1.formation.shellbonus;
-		// F2.basepowshell = F1.formation.shellbonus;
-		F1.basepowshell = SIMCONSTS.shellEcMF || ((type==3)? -5 : 2); F2.basepowshell = SIMCONSTS.shellEcME || 10;
-		F1.baseaccshell = SIMCONSTS.accEcMF; F2.baseaccshell = SIMCONSTS.accEcME;
 		if (type==2) {
-			//F2.baseaccshell = 65; //guess
 			shellRange(d1M, d2M, (C)? BAPI.data.api_hougeki1 : undefined);
 		} else {
 			shellRange(d1M, d2M, (C)? BAPI.data.api_hougeki1 : undefined);
@@ -1368,16 +1240,8 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	if (!NBonly) {
 		if (C) BAPI.data.api_hougeki2 = {api_at_eflag:[-1],api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
 		if (type==2) {
-			// F1.basepowshell = F1.formation.shellbonus;
-			// F2.basepowshell = F1.formation.shellbonus;
-			F1.basepowshell = SIMCONSTS.shellEcMF || ((type==3)? -5 : 2); F2.basepowshell = SIMCONSTS.shellEcME || 10;
-			F1.baseaccshell = SIMCONSTS.accEcMF; F2.baseaccshell = SIMCONSTS.accEcME;
 			if (doShell2) shellOrder(d1A, d2A, (C)? BAPI.data.api_hougeki2 : undefined);
 		} else {
-			// F1C.basepowshell = F1C.formation.shellbonus;
-			// F2.basepowshell = F1C.formation.shellbonus;
-			F1C.basepowshell = SIMCONSTS.shellEcEF || -5; F2C.basepowshell = SIMCONSTS.shellEcEE || -5;
-			F1C.baseaccshell = SIMCONSTS.accEcEF; F2C.baseaccshell = SIMCONSTS.accEcEE;
 			shellRange(d1E, d2E, (C)? BAPI.data.api_hougeki2 : undefined);
 		}
 		removeSunk(alive1); removeSunk(alive1C);
@@ -1402,16 +1266,8 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	if (!NBonly) {
 		if (C) BAPI.data.api_hougeki3 = {api_at_eflag:[-1],api_at_list:[-1],api_at_type:[-1],api_damage:[-1],api_df_list:[-1],api_cl_list:[-1]};
 		if (type==2) {
-			// F1C.basepowshell = F1C.formation.shellbonus;
-			// F2.basepowshell = F1C.formation.shellbonus;
-			F1C.basepowshell = SIMCONSTS.shellEcEF || -5; F2C.basepowshell = SIMCONSTS.shellEcEE || -5;
-			F1C.baseaccshell = SIMCONSTS.accEcEF; F2C.baseaccshell = SIMCONSTS.accEcEE;
 			shellRange(d1E, d2E, (C)? BAPI.data.api_hougeki3 : undefined);
 		} else if (doShell2) {
-			// F1.basepowshell = F1.formation.shellbonus;
-			// F2.basepowshell = F1.formation.shellbonus;
-			F1.basepowshell = SIMCONSTS.shellEcMF || ((type==3)? -5 : 2); F2.basepowshell = SIMCONSTS.shellEcME || 10;
-			F1.baseaccshell = SIMCONSTS.accEcMF; F2.baseaccshell = SIMCONSTS.accEcME;
 			shellOrder(d1A, d2A, (C)? BAPI.data.api_hougeki3 : undefined);
 		}
 		removeSunk(alive1); removeSunk(alive1C);
@@ -1503,8 +1359,8 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	if (!noupdate) {
 		// var subonly = true;
 		// for (var j=0; j<ships2.length; j++) if (ships2[j].type != 'SS') subonly = false;
-		updateSupply(ships1,didNB,NBonly,bombing,noammo);
-		updateSupply(ships1C,didNB,NBonly,bombing,noammo);
+		// updateSupply(ships1,didNB,NBonly,bombing,noammo);
+		// updateSupply(ships1C,didNB,NBonly,bombing,noammo);
 	}
 	
 	
