@@ -262,16 +262,53 @@ table.dialog3 td {
 	border-left: 0;
 	height: 40px;
 }
+table.dialog3 div.itemName {
+	position:absolute;
+	z-index:1;
+	margin-top:-10px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	width:300px;
+}
+table.dialog3 div.itemName.compact {
+	margin-top:-16px;
+}
+table.dialog3 div.itemStat {
+	position:absolute;
+	z-index:1;
+	margin-top:-10px;
+	width:300px
+}
+table.dialog3 div.itemStat.compact {
+	margin-top:-20px;
+}
 table.dialog3 img.imgstat {
 	vertical-align:middle;
 	margin-left: 12px;
 	margin-right: 2px;
+}
+table.dialog3 div.itemStat.compact img.imgstat {
+	height: 15px;
+	margin-left: 14px;
+	margin-right: 3px;
 }
 table.dialog3 img.equipbgimg {
 	position: absolute;
 	left: 216px;
 	margin-top: -28px;
 	opacity:0.4;
+}
+table.dialog3 span {
+	white-space:nowrap;
+}
+table.dialog3 span.statBonusPos {
+	color: teal;
+	font-weight: bold;
+}
+table.dialog3 span.statBonusNeg {
+	color: red;
+	font-weight: bold;
 }
 
 table.dialog4 td.left {

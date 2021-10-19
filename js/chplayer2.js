@@ -1852,12 +1852,41 @@ function prepBattle(letter) {
 	}
 	
 	if (MAPDATA[WORLD].vanguardConsts) {
-		for (let key in MAPDATA[WORLD].vanguardConsts) {
-			SIMCONSTS[key] = MAPDATA[WORLD].vanguardConsts[key];
+		//temp
+		if (WORLD == 40) {
+			for (let i=0; i<=2; i++) {
+				SIMCONSTS.vanguardEvShellDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD1;
+				SIMCONSTS.vanguardEvShellOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther1;
+				SIMCONSTS.vanguardEvTorpDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD1;
+				SIMCONSTS.vanguardEvTorpOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther1;
+			}
+			for (let i=3; i<=6; i++) {
+				SIMCONSTS.vanguardEvShellDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD2;
+				SIMCONSTS.vanguardEvShellOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther2;
+				SIMCONSTS.vanguardEvTorpDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD2 + 20;
+				SIMCONSTS.vanguardEvTorpOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther2 + 20;
+			}
+		} else {
+			for (let i=0; i<=3; i++) {
+				SIMCONSTS.vanguardEvShellDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD1;
+				SIMCONSTS.vanguardEvShellOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther1;
+			}
+			for (let i=4; i<=6; i++) {
+				SIMCONSTS.vanguardEvShellDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD2;
+				SIMCONSTS.vanguardEvShellOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther2;
+			}
+			for (let i=0; i<=2; i++) {
+				SIMCONSTS.vanguardEvTorpDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD1;
+				SIMCONSTS.vanguardEvTorpOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther1;
+			}
+			for (let i=3; i<=6; i++) {
+				SIMCONSTS.vanguardEvTorpDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD2;
+				SIMCONSTS.vanguardEvTorpOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther2;
+			}
 		}
 	}
 	
-	NEWFORMAT = CHDATA.fleets.sf || mapdata.nightToDay2 || mapdata.friendFleet;
+	NEWFORMAT = true;
 	var res;
 	if (mapdata.ambush) {
 		if (CHDATA.fleets.combined) res = simAmbushCombined(FLEETS1[0],FLEETS2[0],BAPI);
@@ -1872,7 +1901,6 @@ function prepBattle(letter) {
 		if (CHDATA.fleets.combined) res = simCombined(CHDATA.fleets.combined,FLEETS1[0],FLEETS1[1],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleet);
 		else res = sim(FLEETS1[0],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleet);
 	}
-	NEWFORMAT = false;
 	if (FLEETS2[0].ships[0].debuff) {
 		if (NBonly) BAPI.yasen.api_boss_damaged = 1;
 		else BAPI.data.api_boss_damaged = 1;
@@ -2179,8 +2207,8 @@ function shuttersPostbattle(noshutters) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].debuffGive(FLEETS2,FLEETS1);
 	}
-	FLEETS1[0].reset(true);
-	if (CHDATA.fleets.combined) FLEETS1[1].reset(true);
+	FLEETS1[0].resetBattle();
+	if (CHDATA.fleets.combined) FLEETS1[1].resetBattle();
 	CHDATA.temp.done = true;
 	addTimeout(function() {
 		stage.removeChildren();
@@ -2807,7 +2835,7 @@ function chUpdateSupply() {
 	if (FLEETS1[0].didSpecial == 1) {
 		let attackSpecial = FLEETS1[0].ships[0].attackSpecial;
 		if (attackSpecial == 101 || attackSpecial == 102) costSpecial = 1.5;
-		else if (attackSpecial == 104) costSpecial = 1.3;
+		else if (attackSpecial == 104) costSpecial = MECHANICS.kongouSpecialBuff ? 1.2 : 1.3;
 		if (costSpecial) shipsSpecial = getSpecialAttackShips(FLEETS1[0].ships,attackSpecial);
 		FLEETS1[0].didSpecial = 2;
 	}
@@ -2964,21 +2992,6 @@ function chGetShips(noRetreated) {
 	return ships;
 }
 
-
-function getRankRaid(shipsF,shipsFC) {
-	let ships = (shipsFC)? shipsF.concat(shipsFC) : shipsF;
-	let hpNow = 0, hpPrev = 0;
-	for (let ship of ships) {
-		if (ship.retreated || ship.HP <= 0) continue;
-		hpPrev += ship.HPprev;
-		hpNow += ship.HP;
-	}
-	if (hpNow == hpPrev) return 'S';
-	if (hpNow/hpPrev > .9) return 'A';
-	if (hpNow/hpPrev > .8) return 'B';
-	if (hpNow/hpPrev > .5) return 'C';
-	return 'D';
-}
 
 function getLBASRange(ship) {
 	if (MAPDATA[WORLD].lbasRangeMax) {
@@ -3367,4 +3380,57 @@ function chAnchorageRepair() {
 	}
 	
 	return didRepair;
+}
+
+
+function getSpeedUp(shipId,equipIds) {
+	let sdata = SHIPDATA[shipId];
+	let speedUp = 0;
+	let numTurbine = equipIds.filter(id => id == 33).length;
+	let numBoiler = equipIds.filter(id => id == 34 || id == 87).length;
+	let numBoilerNM = equipIds.filter(id => id == 87).length;
+	
+	let group = 3;
+	if ([9,22,31,33,43,81,112].includes(sdata.sclass)) {
+		group = 1;
+	} else if ([6,17,25,37,41,65].includes(sdata.sclass) || [181,331,404].includes(getBaseId(shipId)) || [541,573].includes(shipId)) {
+		group = 2;
+	} else if (['SS','SSV'].includes(sdata.type) || (sdata.type == 'AV' && sdata.SPD >= 10) || [3,45,49,60].includes(sdata.sclass) || [115,293].includes(shipId)) {
+		group = 0;
+	}
+	
+	if (numTurbine) {
+		if (numBoiler) {
+			speedUp = 5;
+		}
+		if ((sdata.type == 'DD' || sdata.type == 'CL') && sdata.SPD <= 5) {
+			speedUp = 5;
+		}
+		if (group == 1) {
+			if (numBoilerNM || numBoiler >= 2) {
+				speedUp = 10;
+			}
+		} else if (group == 2) {
+			if (numBoilerNM >= 2 || (numBoilerNM && numBoiler >= 2)) {
+				speedUp = 10;
+			}
+			if (numBoilerNM >= 3 || (numBoilerNM && numBoiler >= 3)) {
+				speedUp = 15;
+			}
+		} else if (group == 3) {
+			if (numBoilerNM >= 2 || numBoiler >= 3) {
+				speedUp = 10;
+			}
+		}
+	}
+	if (sdata.sclass == 109) {
+		if (numBoilerNM) {
+			speedUp = 5;
+		}
+		if (numTurbine && numBoilerNM) {
+			speedUp = 10;
+		}
+	}
+	
+	return Math.min(speedUp, 20 - sdata.SPD);
 }

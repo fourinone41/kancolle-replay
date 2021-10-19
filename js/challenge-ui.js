@@ -37,6 +37,9 @@ var MECHANICDATES = {
 	divebomberInstall: '2019-03-27',
 	softCapIncrease: '2021-03-01',
 	subFleetAttack: '2021-05-08',
+	kongouSpecialBuff: '2021-08-04',
+	eqBonusTorp: '2021-08-04',
+	eqBonusASW: '2021-09-28',
 };
 
 var MECHANICDATESOTHER = {
@@ -46,6 +49,7 @@ var MECHANICDATESOTHER = {
 	marriage165: '2017-07-31',
 	hpMod: '2017-09-29',
 	marriage175: '2018-08-17',
+	warspiteSpeedReq: '2021-08-20', //2021-08-31
 };
 
 SHIPDATA[5001] = {
@@ -576,6 +580,19 @@ function chrDialogItemInit() {
 function chDialogShowItems(shipmid,types) {
 	var STATS = ['DIVEBOMB','FP','TP','AA','AR','ACC','EV','ASW','LOS'];
 	var shiptype = SHIPDATA[shipmid].type;
+	
+	let bonusesInit = null, eqidsBonus = [], improvesBonus = [];
+	if (CHDATA.config.mechanics.equipBonus) {
+		let ship = CHDATA.ships[CHDATA.fleets[DIALOGFLEETSEL][DIALOGSLOTSEL-1]]
+		for (let iid in ship.items) {
+			if (ship.items[iid] <= 0 || iid === DIALOGITEMSEL-1) continue;
+			eqidsBonus.push(CHDATA.gears['x'+ship.items[iid]].masterId);
+			improvesBonus.push(CHDATA.gears['x'+ship.items[iid]].stars);
+		}
+		bonusesInit = getBonusStats(shipmid,eqidsBonus,improvesBonus);
+	}
+	
+	let eqidPrev = null, improvePrev = null, htmlStatsCache = '', itemidsChanged = [];
 	$('#equipselecttable tr').each(function() {
 		var include = true;
 		var itemid = this.id;
@@ -610,21 +627,52 @@ function chDialogShowItems(shipmid,types) {
 			$(this).css('display','');
 			if (!this.innerHTML) {
 				var tr = $(this);
-				
 				tr.append('<td class="left" onclick="chSetEquip(\''+itemid+'\')"><img src="assets/items/'+(equip.image || EQTDATA[equip.type].image)+'.png"/></td>');
 				var td = $('<td onclick="chSetEquip(\''+itemid+'\')"></td>');
-				td.append('<div style="position:absolute;z-index:1;margin-top:-10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:300px">'+equip.name+'</div><br>');
-				var div = $('<div style="position:absolute;z-index:1;margin-top:-10px"></div>');
-				for (var j=0; j<STATS.length; j++) {
-					if (equip[STATS[j]]) div.append('<span><img class="imgstat" src="assets/stats/'+STATS[j].toLowerCase()+'.png"/>'+equip[STATS[j]]+'</span>');
-				}
-				td.append(div);
+				td.append('<div id="'+itemid+'name" class="itemName">'+equip.name+'</div><br>');
+				td.append('<div id="'+itemid+'stat" class="itemStat"></div>');
 				if (CHDATA.config.mechanics.proficiency && item.ace>0) td.append($('<div style="position:absolute;margin-left:-5px;margin-top:-20px"><img src="assets/stats/prof'+item.ace+'.png" /></div>'));
 				if (chAllowImprovement(eqid) && item.stars>0) td.append($('<div style="position:absolute;margin-left:-30px;margin-top:-1px;font-weight:bold;color:#45A9A5">+'+item.stars+'</div>'));
 				tr.append(td);
 				
 				td.append('<img id="'+this.id+'bgimg" class="equipbgimg" />');
 			}
+			
+			if (eqidPrev != eqid || improvePrev != item.stars) {
+				let bonuses = null;
+				if (CHDATA.config.mechanics.equipBonus) {
+					eqidsBonus.push(eqid); improvesBonus.push(item.stars);
+					bonuses = getBonusStats(shipmid,eqidsBonus,improvesBonus);
+					for (let stat in bonuses) {
+						bonuses[stat] = (bonuses[stat] || 0) - (bonusesInit[stat] || 0);
+					}
+					eqidsBonus.pop(); improvesBonus.pop();
+					eqidPrev = eqid;
+					improvePrev = item.stars;
+				}
+				htmlStatsCache = '';
+				for (let i=0; i<STATS.length; i++) {
+					let strStat = '';
+					if (equip[STATS[i]]) {
+						strStat += equip[STATS[i]];
+					}
+					if (bonuses && bonuses[STATS[i]]) {
+						if (bonuses[STATS[i]] > 0) {
+							strStat += '<span class="statBonusPos">+' + bonuses[STATS[i]] + '</span>';
+						} else {
+							strStat += '<span class="statBonusNeg">' + bonuses[STATS[i]] + '</span>';
+						}
+					}
+					if (!strStat) continue;
+					htmlStatsCache += '<span><img class="imgstat" src="assets/stats/'+STATS[i].toLowerCase()+'.png">'+strStat+'</span>';
+				}
+			}
+			
+			if (htmlStatsCache != $('#'+itemid+'stat').html()) {
+				$('#'+itemid+'stat').html(htmlStatsCache);
+				itemidsChanged.push(itemid);
+			}
+			
 			if (item.heldBy) { 
 				$('#'+this.id+'bgimg').attr('src','assets/icons/'+SHIPDATA[CHDATA.ships[item.heldBy].masterId].image);
 			} else {
@@ -634,6 +682,24 @@ function chDialogShowItems(shipmid,types) {
 			$(this).css('display','none');
 		}
 	});
+	
+	let ro = new ResizeObserver(function(entries) {
+		for (let e of entries) {
+			let spanName = document.getElementById(e.target.id.replace('stat','name'));
+			// console.log(e.target.id + ' ' + e.contentRect.height + ' ' + e.contentRect.width);
+			if (e.contentRect.height > 18 || e.contentRect.width > 300) {
+				e.target.classList.add('compact');
+				spanName.classList.add('compact');
+			} else {
+				e.target.classList.remove('compact');
+				spanName.classList.remove('compact');
+			}
+			ro.unobserve(e.target);
+		}
+	});
+	for (let itemid of itemidsChanged) {
+		ro.observe(document.getElementById(itemid+'stat'));
+	}
 }
 
 function chDialogItem(fleet,eqnum,slot) {
@@ -785,23 +851,21 @@ function chShipEquipItem(shipid,itemid,slot) {
 	ship.items[slot] = itemid;
 	
 	ship.RNG = SHIPDATA[ship.masterId].RNG || 1;
-	var hasTurbine = false, hasBoiler = false;
+	let equipIds = [];
 	for (let item of ship.items) {
 		if (item < 0 || !item) continue;
 		if (!EQDATA[CHDATA.gears['x'+item].masterId]) continue;
 		if (EQDATA[CHDATA.gears['x'+item].masterId].RNG > ship.RNG) ship.RNG = EQDATA[CHDATA.gears['x'+item].masterId].RNG;
-		
-		if (CHDATA.config.mechanics.engineSynergy) {
-			if (CHDATA.gears['x'+item].masterId == 33) hasTurbine = true;
-			else if (EQDATA[CHDATA.gears['x'+item].masterId].type == ENGINE) hasBoiler = true;
-		}
+		equipIds.push(CHDATA.gears['x'+item].masterId);
 	}
 	ship.RNG += bonusRange;
-	if (SHIPDATA[ship.masterId].SPD <= 5 && ['DD','CL'].indexOf(SHIPDATA[ship.masterId].type) != -1) hasBoiler = true;
-	if (hasTurbine && hasBoiler) {
-		ship.SPD = SHIPDATA[ship.masterId].SPD + 5;
-	} else if (ship.SPD != undefined) {
-		delete ship.SPD;
+	
+	delete ship.SPD;
+	if (CHDATA.config.mechanics.engineSynergy) {
+		let speedUp = getSpeedUp(ship.masterId,equipIds);
+		if (speedUp) {
+			ship.SPD = SHIPDATA[ship.masterId].SPD + speedUp;
+		}
 	}
 }
 
@@ -1166,8 +1230,9 @@ function chProcessKC3File2() {
 			else if (stat == 'EV') numC = Math.floor(shipd.EVbase + (shipd.EV - shipd.EVbase)*shipN.LVL/99);
 			else numC = shipd[stat];
 			if (num != numC) {
-				if (num > numC) console.log(stat + ' ' + num + ' ' + numC + ' ' + shipd.name);
+				// if (num > numC) console.log(stat + ' ' + num + ' ' + numC + ' ' + shipd.name);
 				let base = (stat == 'ASW' || stat == 'LOS' || stat == 'EV')? numC : Math.min(num,numC);
+				if (numC > num && shipO.stars >= 4) base = numC;
 				shipN[stat] = base + (shipN[stat]-num);
 			}
 		}
@@ -1369,6 +1434,7 @@ function chDoStartChecks() {
 	chDoStartChecksFleet(1,errors);
 	
 	var counts = chNewShipCount();
+	counts.CVE = 0;
 	var flag = null
 	for (var i=0; i<CHDATA.fleets[1].length; i++) {
 		if (!CHDATA.fleets[1][i]) continue;
@@ -1377,7 +1443,8 @@ function chDoStartChecks() {
 		counts[sdata.type]++;
 		if (['BB','FBB','BBV'].indexOf(sdata.type) != -1) counts.aBB++;
 		if (['CV','CVL','CVB'].indexOf(sdata.type) != -1) counts.aCV++;
-		if (sdata.type == 'CVL' && sdata.CVEtype) counts.CVE++;
+		let asw = sdata.ASWbase === undefined ? sdata.ASW : sdata.ASWbase;
+		if (sdata.type == 'CVL' && (sdata.CVEtype || asw > 0)) counts.CVE++;
 		counts.ids.push(CHDATA.ships[CHDATA.fleets[1][i]].masterId);
 		counts.total++;
 	}
@@ -1391,6 +1458,17 @@ function chDoStartChecks() {
 			countsE[sdata.type]++;
 			if (['BB','FBB','BBV'].indexOf(sdata.type) != -1) countsE.aBB++;
 			if (['CV','CVL','CVB'].indexOf(sdata.type) != -1) countsE.aCV++;
+			let speedReq = 15;
+			if (sdata.sclass == 67) {
+				let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[WORLD].date)? MAPDATA[WORLD].date : CHDATA.config.mechanicsdate;
+				if (dataDate >= MECHANICDATESOTHER.warspiteSpeedReq) {
+					speedReq = 10;
+				}
+			}
+			if (['BB','BBV'].includes(sdata.type) && CHDATA.ships[CHDATA.fleets[2][i]].SPD >= speedReq) {
+				countsE[sdata.type]--;
+				countsE.FBB++;
+			}
 			countsE.ids.push(CHDATA.ships[CHDATA.fleets[2][i]].masterId);
 			countsE.total++;
 		}
@@ -1427,7 +1505,7 @@ function chDoStartChecks() {
 			if (countsE.DD < 2) errors.push('Escort Fleet: Min 2 DD');
 			if (countsE.CA + countsE.CAV > 2) errors.push('Escort Fleet: Max 2 CA(V)');
 			if (countsE.FBB > 2) errors.push('Escort Fleet: Max 2 FBB');
-			if (countsE.BB + countsE.BBV > 0) errors.push('Escort Fleet: BB(V) not allowed');
+			if (countsE.BB + countsE.BBV > 0) errors.push('Escort Fleet: BB(V) must be Fast+');
 			if (countsE.CV + countsE.CVB > 0) errors.push('Escort Fleet: CV not allowed');
 			if (countsE.CVL > 1) errors.push('Escort Fleet: Max 1 CVL');
 			if (countsE.AV > 1) errors.push('Escort Fleet: Max 1 AV');
@@ -1526,6 +1604,33 @@ function chStart() {
 		MECHANICS[mechanic] = CHDATA.config.mechanics[mechanic];
 	}
 	chSetupVita(MECHANICS.vita);
+	MECHANICS.morale = true;
+	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA;
+	MECHANICS.hayabusa65Buff = CHDATA.config.mechanics.softCapIncrease;
+	MECHANICS.eqBonus = CHDATA.config.mechanics.equipBonus;
+	MECHANICS.anchorageTorpNerf = false;//MAPDATA[WORLD].date >= MAPDATA[51].date;
+	SIMCONSTS.shellDmgCap = 150;
+	SIMCONSTS.aswDmgCap = 100;
+	SIMCONSTS.torpedoDmgCap = 150;
+	SIMCONSTS.nightDmgCap = 300;
+	SIMCONSTS.airDmgCap = 150;
+	SIMCONSTS.supportDmgCap = 150;
+	if (CHDATA.config.mechanics.shellingSoftCap) {
+		SIMCONSTS.shellDmgCap = 180;
+	}
+	if (CHDATA.config.mechanics.aswSoftCap) {
+		SIMCONSTS.aswDmgCap = 150;
+	}
+	if (CHDATA.config.mechanics.softCapIncrease) {
+		SIMCONSTS.shellDmgCap = 220;
+		SIMCONSTS.aswDmgCap = 170;
+		SIMCONSTS.torpedoDmgCap = 180;
+		SIMCONSTS.nightDmgCap = 360;
+		SIMCONSTS.airDmgCap = 170;
+		SIMCONSTS.supportDmgCap = 170;
+	}
+	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
+	toggleDDCIBuff(MECHANICS.subFleetAttack);
 
 	chLoadMainFleet();
 	if (CHDATA.fleets.combined) chLoadEscortFleet();
@@ -1565,35 +1670,10 @@ function chStart() {
 		chUIUpdateResources();
 	}
 	
-	MECHANICS.morale = true;
-	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA;
-	MECHANICS.hayabusa65Buff = CHDATA.config.mechanics.softCapIncrease;
-	SIMCONSTS.shellDmgCap = 150;
-	SIMCONSTS.aswDmgCap = 100;
-	SIMCONSTS.torpedoDmgCap = 150;
-	SIMCONSTS.nightDmgCap = 300;
-	SIMCONSTS.airDmgCap = 150;
-	SIMCONSTS.supportDmgCap = 150;
-	if (CHDATA.config.mechanics.shellingSoftCap) {
-		SIMCONSTS.shellDmgCap = 180;
-	}
-	if (CHDATA.config.mechanics.aswSoftCap) {
-		SIMCONSTS.aswDmgCap = 150;
-	}
-	if (CHDATA.config.mechanics.softCapIncrease) {
-		SIMCONSTS.shellDmgCap = 220;
-		SIMCONSTS.aswDmgCap = 170;
-		SIMCONSTS.torpedoDmgCap = 180;
-		SIMCONSTS.nightDmgCap = 360;
-		SIMCONSTS.airDmgCap = 170;
-		SIMCONSTS.supportDmgCap = 170;
-	}
-	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
-	toggleDDCIBuff(MECHANICS.subFleetAttack);
 	if (WORLD >= 45) { //unknown when/if changed
-		TTFCOMBINED1E.accbase = TTFCOMBINED2E.accbase = TTFCOMBINED3E.accbase = TTFCOMBINED4E.accbase = 50;
+		COMBINEDCONSTS[3].esingle.escort.shellAccF = 45;
 	} else {
-		TTFCOMBINED1E.accbase = TTFCOMBINED2E.accbase = TTFCOMBINED3E.accbase = TTFCOMBINED4E.accbase = 75;
+		COMBINEDCONSTS[3].esingle.escort.shellAccF = 67;
 	}
 	
 	if (MAPDATA[CHDATA.event.world].ptImpSpecial == 2) { BREAKPTIMPS = true; NERFPTIMPS = false; }
@@ -1601,13 +1681,13 @@ function chStart() {
 	else { BREAKPTIMPS = NERFPTIMPS = false; }
 	
 	if (MAPDATA[WORLD].subTargetSpecial == 1) { //CV can ASW
-		BBVT.prototype.canASW = BBV.prototype.canASW = CAV.prototype.canASW;
+		BBV.prototype.canASW = CAV.prototype.canASW;
 		CVB.prototype.canASW = CV.prototype.canASW = CVL.prototype.canASW;
 	} else if (MAPDATA[WORLD].subTargetSpecial == 2) { //BBV cannot ASW
-		BBVT.prototype.canASW = BBV.prototype.canASW = Ship.prototype.canASW;
+		BBV.prototype.canASW = Ship.prototype.canASW;
 		CVB.prototype.canASW = CV.prototype.canASW = Ship.prototype.canASW;
 	} else { //normal
-		BBVT.prototype.canASW = BBV.prototype.canASW = CAV.prototype.canASW;
+		BBV.prototype.canASW = CAV.prototype.canASW;
 		CVB.prototype.canASW = CV.prototype.canASW = Ship.prototype.canASW;
 	}
 	if (CHDATA.config.mechanicsdate < '2013-08-01' && MAPDATA[WORLD].date < '2013-08-01') {
