@@ -637,7 +637,7 @@ function chInitAbyssalTables () {
     if (!EQDATA[mid]) return;
     let eqid;
 
-    for (var j=0; j<1000; j++) {
+    for (var j=0; j<10000; j++) {
         eqid = 'x'+(90000+j);
         if (CHDATA.gears[eqid]) continue;
 
@@ -664,7 +664,7 @@ function chInitAbyssalTables () {
     if (!SHIPDATA[mid]) return;
     let sid;
 
-    for (var j=0; j<1000; j++) {
+    for (var j=0; j<10000; j++) {
         sid = 'x'+(90000+j);
         if (CHDATA.ships[sid]) continue;
         var sdata = SHIPDATA[mid];

@@ -2052,7 +2052,6 @@ function endMap() {
 			if (MAPDATA[WORLD].maps[CHDATA.event.unlocked] && MAPDATA[WORLD].maps[CHDATA.event.unlocked].hpRegenTick) {
 				CHHPREGENTIMER.start(CHDATA.event.unlocked);
 			}
-			onMapClear();
 		}
 	}
 	

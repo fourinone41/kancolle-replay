@@ -252,7 +252,7 @@ MAPDATA[98] = {
 
         for (const eventKey in MAPDATA) {
             if (eventKey > 90) continue;
-            
+
             let event = MAPDATA[eventKey];
 
             if (!event.maps) continue;
