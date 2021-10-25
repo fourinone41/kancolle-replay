@@ -73,10 +73,17 @@ function randomizeMaps(){
     return CHDATA.maps;
 }
 
+function chrIsMapDone(event_id, map_number) {
+    if (!CHDATA.event.mapClearData) return false;
+    if (!CHDATA.event.mapClearData[event_id]) return false;
+
+    return !!CHDATA.event.mapClearData[event_id][map_number];
+}
+
 function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
     for(event_id in MAPDATA){
-        if(!["99", '98', '10'].includes(event_id) && !tested[event_id][MAPNUM - 1]){
+        if(!["99", '98', '10'].includes(event_id) && !chrIsMapDone(event_id, MAPNUM)){
             if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
                 let map = {};
 

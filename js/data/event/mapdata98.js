@@ -198,7 +198,7 @@ MAPDATA[98] = {
         if (result.boss) {
 
             // --- ships drops
-            let chances = [2, 0.5, 0.3];
+            let chances = [2, 0.5, 0.1];
 
             for (let chance of chances) {
                 if (Math.random() < chance * modifier) {
@@ -236,10 +236,93 @@ MAPDATA[98] = {
         }
     },
     /**
-     * For spring 21
+     * Loaded dynamically
      */
-    chrGiveDrums: () => {
-        MAPDATA[98].chrAddEquipments(null, 75, 5);
+    chrMapCount : null,
+    chrLoadMapCount: () => {
+        MAPDATA[98].chrMapCount = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+        };
+
+        for (const eventKey in MAPDATA) {
+            if (eventKey > 90) continue;
+            
+            let event = MAPDATA[eventKey];
+
+            if (!event.maps) continue;
+
+            for (let index = 0; index <= 7; index++) {
+                
+                if (event.maps[index]) {
+                    MAPDATA[98].chrMapCount[index]++;
+                }               
+            }
+
+        }
+    },
+    /**
+     * Returns true if the map is cleared
+     */
+    chrGetClearedMap : () => {
+        if (!CHDATA.event.mapClearData) return false;
+        if (!CHDATA.config.REQUIRED_CLEAR_COUNT) {
+            CHDATA.config.REQUIRED_CLEAR_COUNT = 1;
+        }
+
+        if (!MAPDATA[98].chrMapCount) {
+            MAPDATA[98].chrLoadMapCount();
+        }
+        
+        let requiredClearCount = Math.min(CHDATA.config.REQUIRED_CLEAR_COUNT, MAPDATA[98].chrMapCount[MAPNUM]);    
+
+        let clearCount = 0;
+
+        for (const eventKey in CHDATA.event.mapClearData) {
+            if (CHDATA.event.mapClearData[eventKey][MAPNUM]) {
+                clearCount++;
+            }
+        }
+
+        return clearCount >= requiredClearCount;   
+    },
+    chrRerollMap : () => {
+        CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
+        
+        chSortieStartChangeDiff();
+        CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
+        chLoadSortieInfo(MAPNUM);
+    
+        chRerollComps();
+    
+        InitUI();
+
+        MAPDATA[98].chrApplySpecialItemsOnMapUnlock();
+    },
+    chrApplySpecialItemsOnMapUnlock : () => {
+        switch (MAPNUM) {
+            case 3:
+                switch (parseInt(WORLD)) {
+                    case 50:
+                        /**
+                         * For spring 21, give drums to the player
+                         */
+                        MAPDATA[98].chrAddEquipments(null, 75, 5);
+                        break;
+                
+                    default:
+                        break;
+                }
+                break;
+        
+            default:
+                break;
+        }
     }
 }
 

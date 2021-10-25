@@ -2003,6 +2003,26 @@ function prepMap() {
 	addTimeout(function() { ecomplete = true; }, 1);
 }
 
+function increaseNumberOfMapCleared() {
+	if (CHDATA.event.world >= 98) {
+		if (!CHDATA.event.mapClearData) {
+			CHDATA.event.mapClearData = {}
+		}
+
+		if (!CHDATA.event.mapClearData[WORLD]) {
+			CHDATA.event.mapClearData[WORLD] = [];
+		}
+
+		CHDATA.event.mapClearData[WORLD][MAPNUM] = MAPNUM;
+
+		if (MAPDATA[98].chrGetClearedMap()) {
+			CHDATA.event.unlocked++;
+		}
+	} else {
+		CHDATA.event.unlocked++;
+	}
+}
+
 function endMap() {
 	chReturnSortie();
 	ONSORTIE = false;
@@ -2027,11 +2047,12 @@ function endMap() {
 			}
 		} else if (CHDATA.event.unlocked == MAPNUM || (CHDATA.config.unlockAll && !CHDATA.event.maps[MAPNUM].clear)) {
 			if (CHDATA.config.unlockAll) CHDATA.event.maps[MAPNUM].clear = 1;
-			else CHDATA.event.unlocked++;
+			else increaseNumberOfMapCleared();
 			cleared = true;
 			if (MAPDATA[WORLD].maps[CHDATA.event.unlocked] && MAPDATA[WORLD].maps[CHDATA.event.unlocked].hpRegenTick) {
 				CHHPREGENTIMER.start(CHDATA.event.unlocked);
 			}
+			onMapClear();
 		}
 	}
 	
@@ -2082,7 +2103,11 @@ function endMap() {
 				}
 			}
 		}
-		
+
+		if (cleared && CHDATA.event.world >= 98 && !MAPDATA[98].chrGetClearedMap()) {
+			MAPDATA[98].chrRerollMap();
+		}
+
 		chSave();
 	}, endTime);
 }

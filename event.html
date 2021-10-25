@@ -16,7 +16,6 @@
 		<script src="js/data/event/mapdata48.js"></script>
 		<script src="js/data/event/mapdata49.js"></script>
 		<script src="js/data/event/mapdata50.js"></script>
-		<script src="js/data/event/mapdata10.js"></script>
 		<script src="js/data/event/mapdata98.js"></script>
 		<script src="js/data/event/mapdata99.js"></script>
 		<script src="js/kcENEMYCOMP.js"></script>
@@ -334,7 +333,7 @@
 			</div>
 			<div id="menuevents">
 			    <div class="eventbutton" style="background-image:url(assets/maps/20/banner1.png)"><img src="assets/maps/20/banner2.png" alt="RANDOM FIESTA" title="RANDOM FIESTA" onclick="chMenuSelectedEvent(99)"/></div>
-			    <!--<div class="eventbutton" style="background-image:url(assets/maps/98/banner.png)"><img src="assets/maps/98/banner.png" alt="RANDOM FIESTA" title="Start with only 20 ships and 50 randomized equipments, you'll be able to get more while playing" onclick="chMenuSelectedEvent(98)"/></div-->
+			    <div class="eventbutton" style="background-image:url(assets/maps/98/banner.png)"><img src="assets/maps/98/banner.png" alt="RANDOM FIESTA" title="Start with only 50 randomized ships and 200 randomized equipments, you'll be able to get more while playing" onclick="chMenuSelectedEvent(98)"/></div>
 			</div>
 			<div id="menuloadfile">
 				<img src="" id="menucurbanner" /><br>
@@ -382,6 +381,11 @@
 				<span style="font-weight:bold">Settings</span><br>
 				<input type="checkbox" id="menusships" /><label for="menusships">Disable unreleased ships?</label><br>
 				<input type="checkbox" id="menusequips" /><label for="menusequips">Disable unreleased equipment?</label><br>
+
+				<label for="menusmapclearcount">Number of clear required per map: </label>
+				<input id="menusmapclearcount" type="number" min="1" max="99" step="1" style="width:50px" /><br>
+				<div style="font-size: smaller;">Exemple: If you set it to 3, you will have to clear three E1 maps before being able to move to E2 maps.</div><br>
+
 				<label for="menusmechanics">Mechanics: </label>
 				<select id="menusmechanics">
 					<option value="2013-04-23">2013-04-23: Initial</option>

@@ -7376,6 +7376,42 @@ var VOICES = {
 		damage2: "assets/voice/882_damage2.mp3",
 		damage3: "assets/voice/882_damage3.mp3",
 	},
+	2023: {
+		start: "assets/voice/Harbour_Summer_Princess_Intro.ogg",
+		attack: "assets/voice/Harbour_Summer_Princess_Attack.ogg",
+		damage: "assets/voice/Harbour_Summer_Princess_Damaged.ogg",
+		sunk: "assets/voice/Harbour_Summer_Princess_Destroyed.ogg",
+	},
+	2024: {
+		start: "assets/voice/Harbour_Summer_Princess_Intro.ogg",
+		attack: "assets/voice/Harbour_Summer_Princess_Attack.ogg",
+		damage: "assets/voice/Harbour_Summer_Princess_Damaged.ogg",
+		sunk: "assets/voice/Harbour_Summer_Princess_Destroyed.ogg",
+	},
+	2025: {
+		start: "assets/voice/Harbour_Summer_Princess_Intro.ogg",
+		attack: "assets/voice/Harbour_Summer_Princess_Attack.ogg",
+		damage: "assets/voice/Harbour_Summer_Princess_Damaged.ogg",
+		sunk: "assets/voice/Harbour_Summer_Princess_Destroyed.ogg",
+	},
+	2026: {
+		start: "assets/voice/Harbour_Summer_Princess_Intro.ogg",
+		attack: "assets/voice/Harbour_Summer_Princess_Attack.ogg",
+		damage: "assets/voice/Harbour_Summer_Princess_Damaged.ogg",
+		sunk: "assets/voice/Harbour_Summer_Princess_Destroyed.ogg",
+	},
+	2027: {
+		start: "assets/voice/Harbour_Summer_Princess_Intro.ogg",
+		attack: "assets/voice/Harbour_Summer_Princess_Attack.ogg",
+		damage: "assets/voice/Harbour_Summer_Princess_Damaged.ogg",
+		sunk: "assets/voice/Harbour_Summer_Princess_Destroyed.ogg",
+	},
+	2028: {
+		start: "assets/voice/Harbour_Summer_Princess_Intro.ogg",
+		attack: "assets/voice/Harbour_Summer_Princess_Attack.ogg",
+		damage: "assets/voice/Harbour_Summer_Princess_Damaged.ogg",
+		sunk: "assets/voice/Harbour_Summer_Princess_Destroyed.ogg",
+	},
 }
 
 for (let id in SHIPDATA) {
