@@ -7447,6 +7447,42 @@ var VOICES = {
 		attack: "assets/voice/512203220.mp3",
 		damage: "assets/voice/512203230.mp3",
 		sunk: "assets/voice/512203241.mp3",
+	},	
+	2041: {
+		start: "assets/voice/513204110.mp3",
+		attack: "assets/voice/513204120.mp3",
+		damage: "assets/voice/513204130.mp3",
+		sunk: "assets/voice/513204140.mp3",
+	},
+	2042: {
+		start: "assets/voice/513204110.mp3",
+		attack: "assets/voice/513204120.mp3",
+		damage: "assets/voice/513204130.mp3",
+		sunk: "assets/voice/513204140.mp3",
+	},
+	2043: {
+		start: "assets/voice/513204110.mp3",
+		attack: "assets/voice/513204120.mp3",
+		damage: "assets/voice/513204130.mp3",
+		sunk: "assets/voice/513204140.mp3",
+	},
+	2044: {
+		start: "assets/voice/513204410.mp3",
+		attack: "assets/voice/513204420.mp3",
+		damage: "assets/voice/513204430.mp3",
+		sunk: "assets/voice/513204441.mp3",
+	},
+	2045: {
+		start: "assets/voice/513204410.mp3",
+		attack: "assets/voice/513204420.mp3",
+		damage: "assets/voice/513204430.mp3",
+		sunk: "assets/voice/513204441.mp3",
+	},
+	2046: {
+		start: "assets/voice/513204410.mp3",
+		attack: "assets/voice/513204420.mp3",
+		damage: "assets/voice/513204430.mp3",
+		sunk: "assets/voice/513204441.mp3",
 	},
 }
 
