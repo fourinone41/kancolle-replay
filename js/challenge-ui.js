@@ -906,15 +906,41 @@ function chProcessImportOther(ships,equipments,name,level){
 	CHDATA.kcdata.player.name = name;
 	CHDATA.kcdata.player.level = level;
 
+	// Adding short format cause it was added to kancolle-fleetanalysis format (to counter character limits)
+	let shortFormat = ships[0] && ships[0].id;
+
+	let properties = {}
+
+	if (shortFormat) {
+		properties = {
+			equipmentId: "id",
+			equipmentLvl: "lv",
+
+			shipId: "id",
+			shipLvl: "lv",
+			mods: "st"
+		}
+	}
+	else {
+		properties = {
+			equipmentId: "api_slotitem_id",
+			equipmentLvl: "api_level",
+
+			shipId: "api_ship_id",
+			shipLvl: "api_lv",
+			mods: "api_kyouka"
+		}
+	}
+
 	CHDATA.kcdata.gears = {};
 	var equip = {};
 	var id = 1;
 	for (let equipment of equipments){
 		equip = {};
 		equip.itemId = id;
-		equip.masterId = equipment.api_slotitem_id;
+		equip.masterId = equipment[properties.equipmentId];
 		if (!EQDATA[equip.masterId]) continue;
-		equip.stars = equipment.api_level;
+		equip.stars = equipment[properties.equipmentLvl];
 		equip.lock = 1;
 		
 		if(EQTDATA[EQDATA[equip.masterId].type].isPlane && EQDATA[equip.masterId].type != AUTOGYRO && EQDATA[equip.masterId].type != ASWPLANE){
@@ -941,9 +967,9 @@ function chProcessImportOther(ships,equipments,name,level){
 		};
 		
 		ship.rosterId = id;
-		ship.masterId = ship_data.api_ship_id;
-		ship.level = ship_data.api_lv;
-		ship.mod = ship_data.api_kyouka
+		ship.masterId = ship_data[properties.shipId];
+		ship.level = ship_data[properties.shipLvl];
+		ship.mod = ship_data[properties.mods];
 
 		var ship_base_data = SHIPDATA[ship.masterId];
 		if (!ship_base_data) continue;
