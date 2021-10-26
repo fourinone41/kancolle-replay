@@ -263,7 +263,7 @@ function chMenuExtractSettings() {
 	CHDATA.config.disablelock = $('#menuslock').prop('checked');
 	CHDATA.config.disableRaidReq = $('#menusraidreq').prop('checked');
 	CHDATA.config.unlockAll = $('#menusunlock').prop('checked');
-	CHDATA.config.REQUIRED_CLEAR_COUNT = $('#menusmapclearcount').val();
+	CHDATA.config.REQUIRED_CLEAR_COUNT = $('#menusmapclearcount').val() ?  parseInt($('#menusmapclearcount').val()) : 1;
 }
 
 function chMenuDone() {
