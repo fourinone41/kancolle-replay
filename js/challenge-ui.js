@@ -48,7 +48,10 @@ var MECHANICDATESOTHER = {
 	marriage165: '2017-07-31',
 	hpMod: '2017-09-29',
 	marriage175: '2018-08-17',
-	warspiteSpeedReq: '2021-08-20', //2021-08-31
+	cfNoBBEscort: '2015-02-06',
+	cfNoSSFlag: '2015-04-28',
+	cfAnchorageRepair: '2019-08-30',
+	cfWarspiteSpeedReq: '2021-08-20', //2021-08-31
 };
 
 SHIPDATA[5001] = {
@@ -1200,6 +1203,7 @@ function chDoStartChecks() {
 	
 	chDoStartChecksFleet(1,errors);
 	
+	let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[WORLD].date)? MAPDATA[WORLD].date : CHDATA.config.mechanicsdate;
 	var counts = chNewShipCount();
 	counts.CVE = 0;
 	var flag = null
@@ -1227,8 +1231,7 @@ function chDoStartChecks() {
 			if (['CV','CVL','CVB'].indexOf(sdata.type) != -1) countsE.aCV++;
 			let speedReq = 15;
 			if (sdata.sclass == 67) {
-				let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[WORLD].date)? MAPDATA[WORLD].date : CHDATA.config.mechanicsdate;
-				if (dataDate >= MECHANICDATESOTHER.warspiteSpeedReq) {
+				if (dataDate >= MECHANICDATESOTHER.cfWarspiteSpeedReq) {
 					speedReq = 10;
 				}
 			}
@@ -1248,14 +1251,18 @@ function chDoStartChecks() {
 			if (counts.BB + counts.BBV + counts.FBB > 2) errors.push('Main Fleet: Max 2 BB');
 			if (counts.CV + counts.CVL + counts.CVB < 2) errors.push('Main Fleet: Min 2 carriers');
 			if (counts.CV + counts.CVL + counts.CVB > 4) errors.push('Main Fleet: Max 4 carriers');
-			if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flag].masterId].type) != -1) errors.push('Main Fleet: Flagship cannot be SS(V)');
+			if (dataDate >= MECHANICDATESOTHER.cfNoSSFlag) {
+				if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flag].masterId].type) != -1) errors.push('Main Fleet: Flagship cannot be SS(V)');
+			}
 		} else if (CHDATA.fleets.combined == 2) {
 			if (counts.CL + counts.CLT + counts.CA + counts.CAV + counts.FBB + counts.BB + counts.BBV < 2) errors.push('Main Fleet: Min 2 surface ships');
 			var numCV = counts.CV + counts.CVB;
 			if ((numCV && numCV + counts.CVL > 1) || (!numCV && counts.CVL > 2)) errors.push('Main Fleet: Max 1 CV or 2 CVL');
 			if (counts.FBB + counts.BB + counts.BBV > 4) errors.push('Main Fleet: Max 4 (F)BB(V)');
 			if (counts.CA + counts.CAV > 4) errors.push('Main Fleet: Max 4 CA(V)');
-			if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flag].masterId].type) != -1) errors.push('Main Fleet: Flagship cannot be SS(V)');
+			if (dataDate >= MECHANICDATESOTHER.cfNoSSFlag) {
+				if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flag].masterId].type) != -1) errors.push('Main Fleet: Flagship cannot be SS(V)');
+			}
 		} else if (CHDATA.fleets.combined == 3) {
 			if (counts.DD + counts.DE < 4) errors.push('Main Fleet: Min 4 DD/DE');
 			if (counts.CLT) errors.push('Main Fleet: CLT not allowed');
@@ -1265,19 +1272,33 @@ function chDoStartChecks() {
 			if (counts.CVL > counts.CVE) errors.push('Main Fleet: Non-escort CVL not allowed');
 			if (counts.CVE > 1) errors.push('Main Fleet: Max 1 CVE');
 			if (counts.SS+counts.SSV) errors.push('Main Fleet: SS(V) not allowed');
-			if (counts.AR) errors.push('Main Fleet: AR not allowed');
+			if (dataDate >= MECHANICDATESOTHER.cfAnchorageRepair) {
+				if (counts.AR > 1) errors.push('Main Fleet: Max 1 AR');
+			} else {
+				if (counts.AR) errors.push('Main Fleet: AR not allowed');
+			}
 		}
 		
 		if (CHDATA.fleets.combined == 1 || CHDATA.fleets.combined == 2) {
 			if (countsE.CL != 1) errors.push('Escort Fleet: Must have exactly 1 CL');
 			if (countsE.DD < 2) errors.push('Escort Fleet: Min 2 DD');
 			if (countsE.CA + countsE.CAV > 2) errors.push('Escort Fleet: Max 2 CA(V)');
-			if (countsE.FBB > 2) errors.push('Escort Fleet: Max 2 FBB');
-			if (countsE.BB + countsE.BBV > 0) errors.push('Escort Fleet: BB(V) must be Fast+');
+			if (dataDate >= MECHANICDATESOTHER.cfNoBBEscort) {
+				if (countsE.FBB > 2) errors.push('Escort Fleet: Max 2 FBB');
+				if (CHDATA.config.mechanics.engineSynergy) {
+					if (countsE.BB + countsE.BBV > 0) errors.push('Escort Fleet: BB(V) must be Fast+');
+				} else {
+					if (countsE.BB + countsE.BBV > 0) errors.push('Escort Fleet: No BB(V)');
+				}
+			} else {
+				if (countsE.FBB + countsE.BB + countsE.BBV > 2) errors.push('Escort Fleet: Max 2 (F)BB(V)');
+			}
 			if (countsE.CV + countsE.CVB > 0) errors.push('Escort Fleet: CV not allowed');
 			if (countsE.CVL > 1) errors.push('Escort Fleet: Max 1 CVL');
 			if (countsE.AV > 1) errors.push('Escort Fleet: Max 1 AV');
-			if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flagE].masterId].type) != -1) errors.push('Escort Fleet: Flagship cannot be SS(V)');
+			if (dataDate >= MECHANICDATESOTHER.cfNoSSFlag) {
+				if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flagE].masterId].type) != -1) errors.push('Escort Fleet: Flagship cannot be SS(V)');
+			}
 		} else if (CHDATA.fleets.combined == 3) {
 			if (['CL','CT'].indexOf(SHIPDATA[CHDATA.ships[flagE].masterId].type) == -1) errors.push('Escort Fleet: Flagship must be CL/CT');
 			if (countsE.CL + countsE.CT < 1) errors.push('Escort Fleet: Min 1 CL/CT');
