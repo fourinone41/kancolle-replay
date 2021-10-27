@@ -1558,6 +1558,8 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 	} else {
 		let n = (mapdata.compName)? mapdata.compName : letter;
 		compd = CHDATA.event.comps['E-'+MAPNUM][n][comp];
+
+		compd.originalComp = ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
 	}
 	return compd;
 }
@@ -1684,7 +1686,8 @@ function prepBattle(letter) {
 	// --- 1 => enemies have their normal stats
 	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
 	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
-	const RANDO_MODE = 1;
+	// --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
+	const RANDO_MODE = 4;
 
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
@@ -1692,6 +1695,24 @@ function prepBattle(letter) {
 		
 		if (RANDO_MODE == 1) {
 			enemies.push(createDefaultShip(sid,overrideStats));
+		}
+
+		if (RANDO_MODE == 4) {
+
+			if (i == 0 && MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter) {
+				let oldShip = {};
+
+				Object.assign(oldShip, SHIPDATA[sid]);
+
+				SHIPDATA[sid].HP = SHIPDATA[compd.originalComp.c[0]].HP;
+		
+				enemies.push(createDefaultShip(sid,overrideStats));
+		
+				SHIPDATA[sid] = oldShip;
+			}
+			else {				
+				enemies.push(createDefaultShip(sid,overrideStats));
+			}
 		}
 		
 		if (RANDO_MODE == 2 || RANDO_MODE == 3) {
@@ -1719,7 +1740,7 @@ function prepBattle(letter) {
 			var sid = compd.ce[i];
 			var overrideStats = (MAPDATA[WORLD].overrideStats)? MAPDATA[WORLD].overrideStats[sid] : null;
 						
-			if (RANDO_MODE == 1) {
+			if (RANDO_MODE == 1 || RANDO_MODE == 4) {
 				enemiesC.push(createDefaultShip(sid,overrideStats));
 			}
 
