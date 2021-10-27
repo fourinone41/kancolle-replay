@@ -1540,7 +1540,7 @@ function chDoStartChecks() {
 			if (['CL','CT'].indexOf(SHIPDATA[CHDATA.ships[flagE].masterId].type) == -1) errors.push('Escort Fleet: Flagship must be CL/CT');
 			if (countsE.CL + countsE.CT < 1) errors.push('Escort Fleet: Min 1 CL/CT');
 			if (countsE.CL + countsE.CT > 2) errors.push('Escort Fleet: Max 2 CL/CT');
-			if (countsE.DD < 3) errors.push('Escort Fleet: Min 3 DD');
+			if (countsE.DD + countsE.DE < 3) errors.push('Escort Fleet: Min 3 DD');
 			if (countsE.CA + countsE.CAV > 2) errors.push('Escort Fleet: Max 2 CA(V)');
 			if (countsE.CLT) errors.push('Escort Fleet: CLT not allowed');
 			if (countsE.FBB + countsE.BB + countsE.BBV) errors.push('Escort Fleet: (F)BB(V) not allowed');
