@@ -1257,12 +1257,13 @@ function chDoStartChecks() {
 			if (counts.CA + counts.CAV > 4) errors.push('Main Fleet: Max 4 CA(V)');
 			if (['SS','SSV'].indexOf(SHIPDATA[CHDATA.ships[flag].masterId].type) != -1) errors.push('Main Fleet: Flagship cannot be SS(V)');
 		} else if (CHDATA.fleets.combined == 3) {
-			if (counts.DD < 4) errors.push('Main Fleet: Min 4 DD');
+			if (counts.DD + counts.DE < 4) errors.push('Main Fleet: Min 4 DD/DE');
 			if (counts.CLT) errors.push('Main Fleet: CLT not allowed');
 			if (counts.CA) errors.push('Main Fleet: CA not allowed');
 			if (counts.FBB + counts.BB) errors.push('Main Fleet: (F)BB not allowed');
 			if (counts.CV+counts.CVB) errors.push('Main Fleet: CV(B) not allowed');
 			if (counts.CVL > counts.CVE) errors.push('Main Fleet: Non-escort CVL not allowed');
+			if (counts.CVE > 1) errors.push('Main Fleet: Max 1 CVE');
 			if (counts.SS+counts.SSV) errors.push('Main Fleet: SS(V) not allowed');
 			if (counts.AR) errors.push('Main Fleet: AR not allowed');
 		}
@@ -1281,7 +1282,7 @@ function chDoStartChecks() {
 			if (['CL','CT'].indexOf(SHIPDATA[CHDATA.ships[flagE].masterId].type) == -1) errors.push('Escort Fleet: Flagship must be CL/CT');
 			if (countsE.CL + countsE.CT < 1) errors.push('Escort Fleet: Min 1 CL/CT');
 			if (countsE.CL + countsE.CT > 2) errors.push('Escort Fleet: Max 2 CL/CT');
-			if (countsE.DD < 3) errors.push('Escort Fleet: Min 3 DD');
+			if (countsE.DD + countsE.DE < 3) errors.push('Escort Fleet: Min 3 DD/DE');
 			if (countsE.CA + countsE.CAV > 2) errors.push('Escort Fleet: Max 2 CA(V)');
 			if (countsE.CLT) errors.push('Escort Fleet: CLT not allowed');
 			if (countsE.FBB + countsE.BB + countsE.BBV) errors.push('Escort Fleet: (F)BB(V) not allowed');
