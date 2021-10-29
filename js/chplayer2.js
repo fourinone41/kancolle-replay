@@ -1699,7 +1699,7 @@ function prepBattle(letter) {
 
 		if (RANDO_MODE == 4) {
 
-			if (i == 0 && MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter) {
+			if (i == 0 && mapdata.boss) {
 				let oldShip = {};
 
 				Object.assign(oldShip, SHIPDATA[sid]);
