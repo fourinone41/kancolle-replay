@@ -150,9 +150,12 @@ function chRandomizeComps() {
         for (let nodeIndex in event['E-'+map]) {
             let nodeComps = {};
             let node = event['E-'+map][nodeIndex];
-            
+            let comp = {};
+
             for (let compIndex in node) {
-                nodeComps[compIndex] = chRandomizeComp(node[compIndex], mapData, nodeIndex);
+                Object.assign(comp, node[compIndex]);
+
+                nodeComps[compIndex] = chRandomizeComp(comp, mapData, nodeIndex);
             }
 
             eventNodes[nodeIndex] = nodeComps;

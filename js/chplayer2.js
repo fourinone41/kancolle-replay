@@ -1541,7 +1541,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		if (mapdata.compDiffC && CHDATA.event.maps[MAPNUM].hp <= 0) comps = mapdata.compDiffC[diff];
 		if (mapdata.compDiffC && MAPDATA[WORLD].maps[MAPNUM].currentBoss && MAPDATA[WORLD].maps[MAPNUM].currentBoss != letter) comps = mapdata.compDiffC[diff];
 	}
-	var comp, compd;
+	var comp, compd = {};
 	if (Array.isArray(comps)) {
 		comp = comps[Math.floor(Math.random()*comps.length)];
 	} else {
@@ -1557,7 +1557,8 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		compd = ENEMYCOMPS['World '+MAPDATA[WORLD].maps[MAPNUM].world][MAPDATA[WORLD].maps[MAPNUM].name][n][comp];
 	} else {
 		let n = (mapdata.compName)? mapdata.compName : letter;
-		compd = CHDATA.event.comps['E-'+MAPNUM][n][comp];
+
+		Object.assign(compd, CHDATA.event.comps['E-'+MAPNUM][n][comp]);
 
 		compd.originalComp = ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
 	}
