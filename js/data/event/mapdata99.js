@@ -33,7 +33,45 @@ MAPDATA[99] = {
     },
     get maps (){
         return randomizeMaps();
-    } 
+    },
+    giveLock: (lockId) => {
+        let ships = CHDATA.fleets[1];
+
+        if (CHDATA.fleets.combined) ships = ships.concat(CHDATA.fleets[2]);
+
+        for (let ship of ships) {
+            if (!CHDATA.ships[ship].lock) CHDATA.ships[ship].lock = lockId;
+        }
+
+        InitUI();
+    },
+    giveSpecialLock: () => {
+        MAPDATA[99].giveLock(MAPDATA[99].specialLocks[WORLD][MAPNUM].lockId);
+    },
+    getSpecialLockName: () => {
+        return MAPDATA[99].specialLocks[WORLD][MAPNUM].lockName;
+    },
+    /**
+     * List of special locks that can be applied manually by the player
+     * ex : Winter 18 E6 requries Kurita fleet to clear the map
+     */
+    specialLocks: {
+        41 : {
+            6 : {
+                lockId: 4,
+                lockName: "Kurita"
+            }
+        }
+    },
+    displayGiveSpecialLock: () => {
+        if (MAPDATA[99].specialLocks[WORLD]) {
+            if (MAPDATA[99].specialLocks[WORLD][MAPNUM]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 var banners = [];
@@ -201,7 +239,7 @@ function chHelpLink() {
 
 // --- debug
 function chLowerHP() {
-    CHDATA.event.maps[MAPNUM].hp = CHDATA.event.maps[MAPNUM].hp * 0.25;
+    CHDATA.event.maps[MAPNUM].hp = CHDATA.event.maps[MAPNUM].hp * 0.5;
     chLoadSortieInfo(MAPNUM);
 }
 
@@ -369,41 +407,6 @@ function chrApplyDebuff(includeFF, abyssalsIndex) {
     return;
 }
 
-function chrApplyDebuffOnShip(ship) {
-    // --- Debuff on specific boss
-    if (!ship.bonusSpecial) ship.bonusSpecial = [];
-
-    // --- Anzio Princess & Summer Anchorage Princess from summer 19
-    ship.bonusSpecial.push({mod:1.15,on:[1815,1816,1817,1818,1819,1820,1883,1884,1885,1886,1887,1888]});
-
-    // --- Batavia Princess
-    ship.bonusSpecial.push({mod:1.15,on:[1898,1899,1900,1901,1902,1903]});
-
-    // --- Anti-Air Cruiser Princess
-    ship.bonusSpecial.push({mod:1.15,on:[1909,1910,1911,1912,1913,1914]});
-
-    // --- New Southern Battleship Princess
-    ship.bonusSpecial.push({mod:1.1,on:[1965,1966,1967,1968,1969,1970]});
-
-    // --- Gotou princess
-    ship.bonusSpecial.push({mod:1.08,on:[1939,1940,1941,1942,1943,1944]});
-
-    // --- South pacific CV princess
-    ship.bonusSpecial.push({mod:1.1,type:2,on:[1971,1972,1973,1974,1975,1976]});
-    
-    // --- New Battleship Princess
-    ship.bonusSpecial.push({mod:1.1,on:[1979,1980,1981,1982,1983,1984]});
-
-    // --- Abyssal Bamboo Princess
-    ship.bonusSpecial.push({mod:1.1,on:[1988,1989,1990,1991,1992,1993]});   
-    
-    // --- Linga princess
-    ship.bonusSpecial.push({mod:1.13,on:[2000, 2001, 2002, 2003, 2004, 2005]});  
-
-    // --- New CL Princess
-    ship.bonusSpecial.push({mod:1.15,on:[2006, 2007, 2008, 2009, 2010, 2011]});
-}
-
 function chrApplyDebuffedForm(abyssal) {
     let idBoss = abyssal.mid;
 
@@ -557,7 +560,8 @@ const bossIds = [
 	1806,1807,1808,1865,1866,1867,1868,1869,1870,1871,1872,1873,1874,1875,1876,
 	1877, 1878, 1879, 1880 ,1881, 1882,     // --- Abyssal Mediterranean Princess
     1883,1884,1885, 1886,1887,1888,
-	1889,1890,1891,1892,1893,1894, 1897,
+	1889,1890,1891,1892,1893,1894, 
+    1896, 1897,                             // --- Ne kai 2 and 3
 	1898,1899,1900, 1901,1902,1903, 
     1906, 1907, 1908,                       // --- Aircraft carrier Princess Kai
 	1909,1910,1911, 1912,1913,1914,
@@ -567,7 +571,7 @@ const bossIds = [
 	1933, 1934, 1935, 1936, 1937, 1938,
 	1939, 1940, 1941, 1942, 1943, 1944,
 	1945, 1946, 1947, 1948, 1949, 1950,
-	1955, 1956,
+	1954, 1955, 1956,                       // --- Summer Ne kai 2, 3 and B
 	1957, 1958, 1959, 1960,                 // --- Light cruiser Princess B
 	1961, 1962, 1963, 1964,
 	1965, 1966, 1967, 1968, 1969, 1970,

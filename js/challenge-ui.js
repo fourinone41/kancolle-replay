@@ -2267,6 +2267,10 @@ function chLoadSortieInfo(mapnum) {
 		$('#srtDiffCasual').hide();
 		$('#srtDiffBack').hide();
 		$('#srtDiffReroll').show();
+		if (MAPDATA[99].displayGiveSpecialLock()) {
+			$('#srtGiveSpecialLock').val(`Give ${MAPDATA[99].getSpecialLockName()} lock`);
+			$('#srtGiveSpecialLock').show();
+		}
 		$('#srtDiffChange').hide();
 		chRemoveSortieError(1);
 		$('#srtStart').prop('disabled',!unlocked);
@@ -2300,6 +2304,7 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtDiffEasy').hide();
 			$('#srtDiffCasual').hide();
 			$('#srtDiffReroll').hide();
+			$('#srtGiveSpecialLock').hide();
 			$('#srtDiffChange').hide();
 			chAddSortieError(1);
 		} else if (!CHDATA.event.maps[mapnum].diff) {
@@ -2312,7 +2317,12 @@ function chLoadSortieInfo(mapnum) {
 			if (MAPDATA[world].allowDiffs.indexOf(4) == -1) $('#srtDiffCasual').hide();
 			else $('#srtDiffCasual').show();
 			$('#srtDiffReroll').hide();
-			$('#srtDiffReroll').show();
+			if (MAPDATA[99].displayGiveSpecialLock()) {
+				$('#srtGiveSpecialLock').value(MAPDATA[99].getSpecialLockName());
+				$('#srtGiveSpecialLock').show();
+			}
+			$('#srtGiveSpecialLock').hide();
+			$('#srtGiveSpecialLock').show();
 			$('#srtDiffChange').hide();
 			chAddSortieError(1);
 		} else {
@@ -2321,6 +2331,10 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtDiffEasy').hide();
 			$('#srtDiffCasual').hide();
 			$('#srtDiffReroll').show();
+			if (MAPDATA[99].displayGiveSpecialLock()) {
+				$('#srtGiveSpecialLock').val(`Give ${MAPDATA[99].getSpecialLockName()} lock`);
+				$('#srtGiveSpecialLock').show();
+			}
 			$('#srtDiffBack').hide();
 			if (nowhp) $('#srtDiffChange').show();
 			else $('#srtDiffChange').hide();
@@ -2431,6 +2445,10 @@ function chSortieStartChangeDiff() {
 	if (MAPDATA[WORLD].allowDiffs.indexOf(4) == -1) $('#srtDiffCasual').hide();
 	else $('#srtDiffCasual').show();
 	$('#srtDiffReroll').show();
+	if (MAPDATA[99].displayGiveSpecialLock()) {
+		$('#srtGiveSpecialLock').val(`Give ${MAPDATA[99].getSpecialLockName()} lock`);
+		$('#srtGiveSpecialLock').show();
+	}
 	$('#srtDiffBack').show();
 	$('#srtDiffChange').hide();
 }
@@ -2443,6 +2461,7 @@ function chSortieEndChangeDiff() {
 	$('#srtDiffEasy').hide();
 	$('#srtDiffCasual').hide();
 	$('#srtDiffReroll').hide();
+	$('#srtGiveSpecialLock').hide();
 	$('#srtDiffBack').hide();
 	$('#srtDiffChange').show();
 	
