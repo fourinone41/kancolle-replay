@@ -142,6 +142,9 @@ MAPDATA[98] = {
             eqid = 'x'+(90000+j);
             if (CHDATA.gears[eqid]) continue;
     
+            console.log("eqid: "+eqid);
+            console.log("mid: "+mid);
+
             var newequip = {
                 itemId: eqid,
                 masterId: mid,
@@ -389,17 +392,17 @@ function chrGetRandomEquipmentId(gearType) {
     return keys[keys.length * Math.random() << 0];
 }
 
-function chrDialogShip(callback, filter) {
+function chrDialogShip(callback, filter, getBannedShips) {
 	$('#chrshipselectdialog').dialog('open');
     $("#shipfilterBySearch").val("");
-	chrFillDialogShip(1, callback, filter);
+	chrFillDialogShip(1, callback, filter, getBannedShips());
 
     $("#chrssremove").off().click(() => { callback(null); });
 
     // --- Sort buttons
-    $("#shipsorterLevel").click(() => { chrFillDialogShip(1, callback, filter) });
-    $("#shipsortName").click(() => { chrFillDialogShip(3, callback, filter) });
-    $("#shipsortDate").click(() => { chrFillDialogShip(0, callback, filter) });
+    $("#shipsorterLevel").click(() => { chrFillDialogShip(1, callback, filter, getBannedShips()) });
+    $("#shipsortName").click(() => { chrFillDialogShip(3, callback, filter, getBannedShips()) });
+    $("#shipsortDate").click(() => { chrFillDialogShip(0, callback, filter, getBannedShips()) });
 
     // --- Filter 
     $("#shipfilterDD").click(() => {chrFilterDialogShip(['DD'], filter)});
@@ -413,12 +416,13 @@ function chrDialogShip(callback, filter) {
 
 }
 
-function chrDialogEquip(callback, filter) {
+function chrDialogEquip(callback, filter, getBannedGears) {
 
 	$('#chrdialogselequip').dialog('open');
 
     chrDialogItemFilter.callback = callback;
     chrDialogItemFilter.filter = filter;
+    chrDialogItemFilter.getBannedGears = getBannedGears;
 
 	chrDialogItemFilter(1);
 }
@@ -444,13 +448,13 @@ function chrDialogItemFilter(category) {
 		case 17: types=[SEARCHLIGHTS,SEARCHLIGHTL,STARSHELL,PICKET]; break;
 		case 12: types=[BULGEM,BULGEL,AAFD,LANDINGCRAFT,LANDINGTANK,WG42,SRF,FCF,DRUM,SCAMP,REPAIR,SUBRADAR,TRANSPORTITEM,RATION,OILDRUM]; break;
 	}
-	chrDialogShowItems(types, chrDialogItemFilter.callback, chrDialogItemFilter.filter);
+	chrDialogShowItems(types, chrDialogItemFilter.callback, chrDialogItemFilter.filter, chrDialogItemFilter.getBannedGears());
 	
 	$('.itemfilter').each(function() { $(this).css('background-color',''); });
 	$('#chritemfilter'+category).css('background-color','#78BEB5');
 }
 
-function chrDialogShowItems(types, callback, filter) {
+function chrDialogShowItems(types, callback, filter, bannedGears) {
 	var STATS = ['DIVEBOMB','FP','TP','AA','AR','ACC','EV','ASW','LOS'];
     
     $("#chresremove").off('click');
@@ -466,6 +470,7 @@ function chrDialogShowItems(types, callback, filter) {
 		if (include && types.indexOf(equip.type)==-1) include = false;
 
         if (filter && !filter(itemid)) include = false;
+        if (bannedGears.indexOf(itemid) != -1) include = false;
 						
 		if (include) {
 			$(this).css('display','');
@@ -496,13 +501,13 @@ function chrDialogShowItems(types, callback, filter) {
 	});
 }
 
-function chrFillDialogShip(sortmethod, callback, filter) {
+function chrFillDialogShip(sortmethod, callback, filter, bannedShips) {
     new Promise(() => {
-        chrExecuteFillDialogShip(sortmethod, callback, filter);
+        chrExecuteFillDialogShip(sortmethod, callback, filter, bannedShips);
     })
 }
 
-function chrExecuteFillDialogShip(sortmethod, callback, filter) {
+function chrExecuteFillDialogShip(sortmethod, callback, filter, bannedShips) {
 	var table = $('#chrshipselecttable');
 	table.html('');
 	var ships = [];
@@ -511,6 +516,7 @@ function chrExecuteFillDialogShip(sortmethod, callback, filter) {
 		//if (CHDATA.fleets[3].includes(sid)) continue; //don't allow cheat ships // TODO REMOVE
 
         if (filter && !filter(sid)) continue;
+        if (bannedShips.indexOf(sid) != -1) continue;
 
 		ships.push(sid);
 	}
@@ -603,34 +609,37 @@ chrFillArsenalTab.AddRerollShipGroup = function () {
      */
     let buttonsObjects = [];
 
-    let filter = (shipId) => {
-        let shipsInFleet = [];
-
-        // Don't includ locked ships
-        if (CHDATA.ships[shipId].heartlock) {
-            return false;
-        }
+    let getBannedShips = () => {
+        let bannedShips = [];
 
         // --- Don't allow ships in fleet
         if (CHDATA && CHDATA.fleets) {
             for (let i = 1; i < 5; i++) {
                 for (let ship of (CHDATA.fleets[i])) {
                     if (ship) {
-                        shipsInFleet.push(ship);
+                        bannedShips.push(ship);
                     }
                 }
             }
         }
-
+        
         // --- Dont allow already selected ships
         for (let shipButton of buttonsObjects) {
             let shipId = shipButton.getSelectedShipId();
 
             if (shipId)
-                shipsInFleet.push(shipId);
+                bannedShips.push(shipId);
         }
 
-        if (shipsInFleet.includes(shipId)) return false;
+        return bannedShips;
+    }
+
+    let filter = (shipId) => {
+        // Don't includ locked ships
+        if (CHDATA.ships[shipId].heartlock) {
+            return false;
+        }
+
         return true;
     }
     
@@ -672,7 +681,7 @@ chrFillArsenalTab.AddRerollShipGroup = function () {
 
     for (let i = 0; i < 2; i++) {
         // --- Add ship button
-        let shipSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter);
+        let shipSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter, getBannedShips);
         buttonsObjects.push(shipSelection);
         buttons.append(shipSelection.element);
     }
@@ -709,8 +718,8 @@ chrFillArsenalTab.AddRerollEquipGroup = function () {
      */
     let buttonsObjects = [];
 
-    let filter = (gearId) => {
-        let equippedGear = [];
+    let bannedGears = () => {
+        let bannedGearsList = [];
 
         // Don't includ locked equip // TODO
         /*if (CHDATA.ships[shipId].heartlock) {
@@ -719,10 +728,8 @@ chrFillArsenalTab.AddRerollEquipGroup = function () {
 
         // --- Don't allow equipped gear
         if (CHDATA && CHDATA.gears) {
-            for (let gear of Object.values(CHDATA.gears)) {
-                if (gear.heldBy) {
-                    equippedGear.push(gear.itemId);
-                }
+            for (let gear of Object.values(CHDATA.gears).filter(x => x.heldBy)) {
+                bannedGearsList.push(gear.itemId);
             }
         }
 
@@ -731,10 +738,13 @@ chrFillArsenalTab.AddRerollEquipGroup = function () {
             let gearId = gearButton.getSelectedGearId();
 
             if (gearId)
-                equippedGear.push(gearId);
+                bannedGearsList.push(gearId);
         }
 
-        if (equippedGear.includes(gearId)) return false;
+        return bannedGearsList;
+    }
+
+    let filter = (gearId) => {
         return true;
     }
     
@@ -787,7 +797,7 @@ chrFillArsenalTab.AddRerollEquipGroup = function () {
 
     for (let i = 0; i < 4; i++) {
         // --- Add gear button
-        let gearSelection = chrCreateGearSelectionArea(callbackAfterGearSelected, filter);
+        let gearSelection = chrCreateGearSelectionArea(callbackAfterGearSelected, filter, bannedGears);
         buttonsObjects.push(gearSelection);
         buttons.append(gearSelection.element);
     }
@@ -812,7 +822,7 @@ chrFillArsenalTab.AddRerollEquipGroup = function () {
         element: gearSelectionGroup
     }}
  */
-function chrCreateGearSelectionArea(callback, filter) {
+function chrCreateGearSelectionArea(callback, filter, getBannedGears) {
     let gearSelectionGroup = $("<div>");
 
     // --- Title
@@ -869,7 +879,7 @@ function chrCreateGearSelectionArea(callback, filter) {
             chrDialogShipClose();
         };
 
-        chrDialogEquip(callbackWithGearUpdate, filter);
+        chrDialogEquip(callbackWithGearUpdate, filter, getBannedGears);
     });
 
     gearSelectionGroup.append($('<div style="margin-left:15px"></div>').append(gearSelectButton));
@@ -1096,7 +1106,11 @@ For each level gained, a stat will be increased beyond its maximum value between
         return (fodderId != shipId);
     }
 
-    let shipSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter);
+    let getBannedShips = () => {
+        return [];
+    }
+
+    let shipSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter, getBannedShips);
     shipSelection.setTitle("Ship to modernize");
     buttonsObjects.buttonModernized = shipSelection;
 
@@ -1106,7 +1120,7 @@ For each level gained, a stat will be increased beyond its maximum value between
     buttons.append(shipSelection.element);
 
     // --- Add fodder button
-    filter = (shipId) => {
+    let filter2 = (shipId) => {
         let shipsInFleet = [];
 
         // Don't includ locked ships
@@ -1135,8 +1149,31 @@ For each level gained, a stat will be increased beyond its maximum value between
 
         return true;
     }
+
+    let getBannedShips2 = () => {
+        let shipsInFleet = [];
+
+        // --- Don't allow ships in fleet
+        if (CHDATA && CHDATA.fleets) {
+            for (let i = 1; i < 5; i++) {
+                for (let ship of (CHDATA.fleets[i])) {
+                    if (ship) {
+                        shipsInFleet.push(ship);
+                    }
+                }
+            }
+        }
+
+        // --- Dont allow already selected ships
+        let shipModernizedId = buttonsObjects.buttonModernized.getSelectedShipId();
+
+        if (shipModernizedId)
+            shipsInFleet.push(shipModernizedId);
+
+        return shipsInFleet;
+    }
     
-    let fodderSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter);
+    let fodderSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter2, getBannedShips2);
     fodderSelection.setTitle("Fodder");
     buttonsObjects.buttonFodder = fodderSelection;
     buttons.append(fodderSelection.element);
@@ -1160,7 +1197,7 @@ For each level gained, a stat will be increased beyond its maximum value between
         element: shipSelectionGroup
     }}
  */
-function chrCreateShipSelectionArea(callback, filter) {
+function chrCreateShipSelectionArea(callback, filter, getBannedShips) {
     let shipSelectionGroup = $("<div>");
 
     // --- Title
@@ -1219,7 +1256,7 @@ function chrCreateShipSelectionArea(callback, filter) {
             chrDialogShipClose();
         };
 
-        chrDialogShip(callbackWithShipUpdate, filter);
+        chrDialogShip(callbackWithShipUpdate, filter, getBannedShips);
     });
 
     shipSelectionGroup.append($('<div style="text-align:center"></div>').append(shipSelectButton));

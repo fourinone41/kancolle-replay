@@ -2318,7 +2318,7 @@ function chLoadSortieInfo(mapnum) {
 			else $('#srtDiffCasual').show();
 			$('#srtDiffReroll').hide();
 			if (MAPDATA[99].displayGiveSpecialLock()) {
-				$('#srtGiveSpecialLock').value(MAPDATA[99].getSpecialLockName());
+				$('#srtGiveSpecialLock').val(`Give ${MAPDATA[99].getSpecialLockName()} lock`);
 				$('#srtGiveSpecialLock').show();
 			}
 			$('#srtGiveSpecialLock').hide();

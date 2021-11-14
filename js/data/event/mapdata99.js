@@ -600,6 +600,7 @@ const strongEnemiesIds = [
     1561, 1562,                         // --- Re class 
     1895, 1896,                         // --- Ne kai 1 & 2
     1953, 1954,                         // --- Summer Ne kai 1 & 2
+    2013, 2014,                         // --- Wa-Class B
 ];
     
 function chInitAbyssalTables () {
