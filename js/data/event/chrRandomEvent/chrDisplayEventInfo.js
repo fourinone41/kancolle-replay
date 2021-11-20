@@ -37,12 +37,16 @@ class ChrDisplayEventInfo {
             let button = $(`<div class="mapButton">E-${mapNum + 1}</div>`);
 
             button.click(() => {
-                this.map.LoadMap(this.Worlds[mapNum + 1].world, mapNum + 1);
                 this.currentMap = mapNum + 1;
+                this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1);
             });
 
             $("#mapButtons").append(button)
         }
+    }
+
+    GetCurrentWorld() {
+        return this.Worlds[this.currentMap].world;
     }
 
     DisplayComps (mapnum, node) {
@@ -50,10 +54,12 @@ class ChrDisplayEventInfo {
 
         let compRoot = $(`<table>`)
 
+        let nodeRange = MAPDATA[this.GetCurrentWorld()].maps[mapnum].nodes[node].distance;
+
         compRoot.append($(`
             <tr>
                 <th>Formation</th>
-                <th>Type TODO</th>
+                <th>Node range : ${nodeRange ? nodeRange : 0}</th>
                 <th>AD/AP
                 AS/AS+</th>
             </tr>
@@ -103,11 +109,61 @@ class ChrDisplayEventInfo {
         return table;
     }
 
+    GetFormation(formation) {
+        if (this.FORMATIONS_NAMES[formation]) return this.FORMATIONS_NAMES[formation];
+
+        return "unknown";
+    }
+
+    FORMATIONS_NAMES = {
+        1: "Line ahead",
+        2: "Double line",
+        3: "Diamond",
+        4: "Echelon",
+        5: "Line abreast",
+        6: "Vanguard", 
+
+        11: "Cruising Formation 1 (Combined LA)", 
+        12: "Cruising Formation 2 (Combined DL)", 
+        13: "Cruising Formation 3 (Combined diamond)", 
+        14: "Cruising Formation 4 (Combined LAb)",
+
+        '111': "Cruising Formation 1 <br>(Combined LAb)",
+        '111E': "Cruising Formation 1 <br>(Combined LAb)",
+        '112': "Cruising Formation 2 <br>(Combined DL)",
+        '112E': "Cruising Formation 2 <br>(Combined DL)",
+        '113': "Cruising Formation 3 <br>(Combined diamond)",
+        '113E': "Cruising Formation 3 <br>(Combined diamond)",
+        '114': "Cruising Formation 4 <br>(Combined LA)",
+        '114E': "Cruising Formation 4 <br>(Combined LA)",
+
+        '211': "Cruising Formation 1 <br>(Combined LAb)",     
+        '211E': "Cruising Formation 1 <br>(Combined LAb)",
+        '212': "Cruising Formation 2 <br>(Combined DL)",
+        '212E': "Cruising Formation 2 <br>(Combined DL)",
+        '213': "Cruising Formation 3 <br>(Combined diamond)",
+        '213E': "Cruising Formation 3 <br>(Combined diamond)",
+        '214': "Cruising Formation 4 <br>(Combined LA)",
+        '214E': "Cruising Formation 4 <br>(Combined LA)",
+
+        '311': "Cruising Formation 1 <br>(Combined LAb)",     
+        '311E': "Cruising Formation 1 <br>(Combined LAb)",
+        '312': "Cruising Formation 2 <br>(Combined DL)",
+        '312E': "Cruising Formation 2 <br>(Combined DL)",
+        '313': "Cruising Formation 3 <br>(Combined diamond)",
+        '313E': "Cruising Formation 3 <br>(Combined diamond)",
+        '314': "Cruising Formation 4 <br>(Combined LA)",
+        '314E': "Cruising Formation 4 <br>(Combined LA)",
+    };
+
     DisplayComp(comp, compKey) {
         let line = $("<tr>");
 
         // --- comp name
         let column = $("<td></td>").append(compKey);
+        column.append("<br>");
+        column.append(this.GetFormation(comp.f));
+
         line.append(column);
 
         column = $("<td>").append(this.GetTableFromComp(comp.c));
