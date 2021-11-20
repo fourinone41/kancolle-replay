@@ -631,3 +631,72 @@ button.heartlock_button {
 input.chrshipfilter {
 	width:100px;
 }
+
+.combineBG {
+	background-color: #DDEEFF;
+}
+
+@media (prefers-color-scheme: dark) {
+
+	body {
+		background-color: #3c3c3c;
+		color: rgb(235, 235, 235);
+	}
+
+	#btnMenu{
+		color:rgb(235, 235, 235);
+	}
+	.mainbutton {
+		background-color: #6c6c6c;
+	}
+	
+	.tabfleet {
+		background-color: #6c6c6c;
+	}
+	div.ftwrap {
+		background-color: #6c6c6c;
+	}
+	.tabfleet {
+		background-color: #6c6c6c;
+	}
+
+	.combineBG {
+		background-color: #6c6c6c;
+	}
+	
+	div.ftinfo {
+		background-color: #525252;
+	}
+	
+	table.t2 div.t2hpouter {
+		background-color: #525252;
+	}
+	
+	table.t2 div.t2resouter {
+		background-color:#525252;
+	}
+	
+	.hoverbox {
+		background-color:#525252;
+	}
+
+	.tabfleet[value^="1"] {
+		background-color: #8d8c8c;
+	}
+
+	table.t2 {
+		background-color: #8d8c8c;
+	}
+
+	div.t2morale {
+		color: #101010;
+	}
+
+	table.t2 div.t2equip {
+		background-color: #525252;
+	}
+	
+	.chrArsenalGroup {
+		background-color: #525252;
+	}
+}
