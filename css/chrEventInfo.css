@@ -1,0 +1,53 @@
+body {
+    background-color: #3c3c3c;
+    color: rgb(235, 235, 235);
+    margin: 0;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+div#mapButtons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.mapButton {
+    background-color: #646464;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    line-height: 50px;
+}
+
+.mapButton:hover {
+    background-color: #a1a1a1;
+}
+
+.comp-table {
+    display: flex;
+}
+
+.ship-stat-column {
+    width: 160px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.stat-line-HP {
+    width: 160px;
+}
+
+.stat-line-FP,
+.stat-line-TP,
+.stat-line-AR,
+.stat-line-AA {
+    width: 80px;
+}
+
+div#comp th,
+div#comp td {
+    padding: 5px;
+    border-color: #898989;
+    border-style: solid;
+    border-width: thin;
+}
