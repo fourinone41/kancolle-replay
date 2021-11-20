@@ -17,6 +17,11 @@ class ChrDisplayEventInfo {
     Init () {
         $('body').append(this.root);
 
+        // --- load comps 
+        let FILE = localStorage.ch_file;
+        this.Comps = JSON.parse(localStorage['ch_basic'+FILE]).event.comps;
+        this.Worlds =  JSON.parse(localStorage['ch_basic'+FILE]).maps;
+
         // --- Map 
         /**
          * @type {ChrMap}
@@ -32,7 +37,7 @@ class ChrDisplayEventInfo {
             let button = $(`<div class="mapButton">E-${mapNum + 1}</div>`);
 
             button.click(() => {
-                this.map.LoadMap(50, mapNum + 1);
+                this.map.LoadMap(this.Worlds[mapNum + 1].world, mapNum + 1);
                 this.currentMap = mapNum + 1;
             });
 
@@ -105,7 +110,11 @@ class ChrDisplayEventInfo {
         let column = $("<td></td>").append(compKey);
         line.append(column);
 
-        column = $("<td></td>").append(this.GetTableFromComp(comp.c));
+        column = $("<td>").append(this.GetTableFromComp(comp.c));
+        if (comp.ce) {
+            column.append(this.GetTableFromComp(comp.ce));
+        }
+
         line.append(column);
         
         column = $("<td></td>");
@@ -117,12 +126,6 @@ class ChrDisplayEventInfo {
 
     GetComps(mapnum, node) {
         let mapName = 'E-' + mapnum;
-
-        if (!this.Comps[mapName]) {
-            // --- load comps 
-            let FILE = localStorage.ch_file;
-            this.Comps = JSON.parse(localStorage['ch_basic'+FILE]).event.comps;
-        }
         
         let comps = this.Comps[mapName][node];
     
