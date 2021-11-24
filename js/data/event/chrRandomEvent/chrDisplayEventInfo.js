@@ -143,8 +143,7 @@ class ChrDisplayEventInfo {
             <tr>
                 <th>Formation</th>
                 <th>Node range : ${nodeRange ? nodeRange : 0}</th>
-                <th>AD/AP
-                AS/AS+</th>
+                <th>AD/AP<br>AS/AS+</th>
             </tr>
             `));
 
@@ -256,7 +255,7 @@ class ChrDisplayEventInfo {
 
         line.append(column);
         
-        column = $("<td></td>");
+        column = $(`<td>${this.GetAS(comp)}</td>`);
         line.append(column);
 
         return line;
@@ -271,6 +270,23 @@ class ChrDisplayEventInfo {
         if (!comps) throw 'Node not found';
     
         return comps;
+    }
+
+    GetAS(compd) {
+        var enemies = [];
+		var overrideStats = (MAPDATA[this.GetCurrentWorld()].overrideStats)? MAPDATA[this.GetCurrentWorld()].overrideStats[sid] : null;
+
+        for (var i=0; i<compd.c.length; i++) {
+            var sid = compd.c[i];
+			enemies.push(createDefaultShip(sid, overrideStats));
+        }
+
+        let fleet = new Fleet(1);
+        fleet.loadShips(enemies);
+
+        let ap = fleet.fleetAirPower(false, false);
+
+        return `${Math.floor(ap/3)} / ${Math.floor(ap/1.5)}<br>${Math.floor(ap*1.5)} / ${Math.floor(ap*3)}`;
     }
 }
 

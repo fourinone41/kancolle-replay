@@ -36,7 +36,10 @@ MAPDATA[97] = {
 }
 
 MAPDATA[97].initializeAllMaps = function () {
-    MAPDATA[97].initializeMap(22, 1);
+
+    for (const mapNumber in CHDATA.maps) {
+        MAPDATA[97].initializeMap(CHDATA.maps[mapNumber].world, mapNumber);
+    }
 }
 
 MAPDATA[97].initializeMap = function (worldNum, mapNum) {
