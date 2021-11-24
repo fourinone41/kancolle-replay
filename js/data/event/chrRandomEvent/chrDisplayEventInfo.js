@@ -104,8 +104,7 @@ class ChrDisplayEventInfo {
                     nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
                     break;
             
-                case 'shipType':
-                case 'shipCount':
+                default:
                     if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
                     if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
 

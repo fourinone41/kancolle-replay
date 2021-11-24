@@ -6,7 +6,12 @@ function ChRule () {
     this.operator = "=";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount"}
+     * @type {"AND" | "OR"}
+     */
+    this.logicOperator = "OR";
+
+    /**
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules"}
      */
     this.type = "fixed";
 
@@ -14,6 +19,11 @@ function ChRule () {
      * @type {string[]}
      */
     this.shipTypes = [];
+
+    /**
+     * @type {ChRule[]} 
+     */
+    this.rules = [];
 
     this.count = 0;
 
@@ -50,13 +60,58 @@ function ChRule () {
                     count += ships[shipType];
                 }
 
-                if (count >= this.count) return this.conditionCheckedNode;
+                switch (this.operator) {
+                    case "<":
+                        if (count < this.count) return this.conditionCheckedNode;
+                        break;
+                    case "<=":
+                        if (count <= this.count) return this.conditionCheckedNode;
+                        break;
+                    case "=":
+                        if (count = this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">":
+                        if (count > this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">=":
+                        if (count >= this.count) return this.conditionCheckedNode;
+                        break;
+                }
+                
                 return this.conditionFailedNode;
             }
 
             case 'shipCount' : {
-                if (ships.total < this.count) return this.conditionCheckedNode;
+                switch (this.operator) {
+                    case "<":
+                        if (ships.total < this.count) return this.conditionCheckedNode;
+                        break;
+                    case "<=":
+                        if (ships.total <= this.count) return this.conditionCheckedNode;
+                        break;
+                    case "=":
+                        if (ships.total = this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">":
+                        if (ships.total > this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">=":
+                        if (ships.total >= this.count) return this.conditionCheckedNode;
+                        break;
+                }
+
                 return this.conditionFailedNode;
+            }
+
+            case 'multiRules' : {
+                for (const rule of this.rules) {
+                    let routingIsOk = !!rule.getRouting(ships);
+
+                    if (!routingIsOk && this.logicOperator == "AND") return this.conditionFailedNode;
+                    if (routingIsOk && this.logicOperator == "OR") return this.conditionCheckedNode;
+                }
+
+                return this.conditionCheckedNode;
             }
 
             default:
@@ -81,6 +136,16 @@ function ChRule () {
 
             case 'shipCount' : {
                 return `Number of ship in fleet ${this.operator} ${this.count}`;
+            }
+
+            case 'multiRules' : {
+                let descriptions = [];
+
+                for (const rule of this.rules) {
+                    descriptions.push(`<span style="margin-left:20px;">${rule.getDescription()}</span>`);
+                }
+
+                return `Meet all of the following requirements : <br>` + descriptions.join(`<br>`);
             }
 
             default:
@@ -133,6 +198,27 @@ function ChFixedRoutingRule(fixedNode) {
     rule.type = "shipCount";
     rule.operator = operator;
     rule.count = count;
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {ChRule[]} ruleArray 
+ * @param {"AND" | "OR"} logicOperator
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ */
+function ChMultipleRulesRule(ruleArray, logicOperator, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "multiRules";
+
+    rule.logicOperator = logicOperator;
+    rule.rules = ruleArray;
+
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
 

@@ -101,9 +101,11 @@ var MAPDATA = {
                             2: ['1','2','2b','3'],
                         },
                         rules: [
-                            ChShipTypeRoutingRule(["AV", "CVL"], "=", 0, "G"),
-                            ChShipTypeRoutingRule(["DD"], "<", 2, "G"),
-                            ChShipCountRoutingRule("<", 6, "G", "F"),
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(["AV", "CVL"], ">", 0, "F"),
+								ChShipTypeRoutingRule(["DD"], ">=", 2, "F"),
+								ChShipCountRoutingRule(">=", 6, "F"),
+							], "AND", "F", "G")
                         ]
                     },
                     'F': {
