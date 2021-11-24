@@ -150,7 +150,9 @@ var MAPDATA = {
 						type: 0,
 						x: 73,
 						y: 148,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule("A"),
+						]
 					},
 					'A': {
 						type: 1,
@@ -159,7 +161,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule("B"),
+						]
 					},
 					'B': {
 						type: 1,
@@ -169,14 +173,18 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule("C"),
+						]
 					},
 					'C': {
 						type: 4,
 						x: 320,
 						y: 277,
 						resource: 2,
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule("D"),
+						]
 					},
 					'D': {
 						type: 1,
@@ -186,17 +194,22 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule("E"),
+						]
 					},
 					'E': {
 						type: 4,
 						x: 552,
 						y: 184,
 						resource: 1,
-						routeC: function(ships) {
-							if (ships.total >= 6 && ships.CA + ships.CAV >= 2 && ships.CL >= 1) return 'G';
-							return 'F';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipCountRoutingRule(">=", 6, "G"),
+								ChShipTypeRoutingRule(["CAV", "CA"], ">=", 2, "G"),
+								ChShipTypeRoutingRule(["CL"], ">=", 1, "G")
+							], "AND", "G", "F"),
+						]
 					},
 					'F': {
 						type: 2,
@@ -245,7 +258,9 @@ var MAPDATA = {
 						type: 0,
 						x: 81,
 						y: 211,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule("A"),
+						]
 					},
 					'A': {
 						type: 1,
@@ -254,7 +269,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1']
 						},
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule("B"),
+						]
 					},
 					'B': {
 						type: 1,
@@ -264,14 +281,18 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1']
 						},
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule("C"),
+						]
 					},
 					'C': {
 						type: 4,
 						x: 342,
 						y: 191,
 						resource: 2,
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule("D"),
+						]
 					},
 					'D': {
 						type: 1,
@@ -281,17 +302,18 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1']
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule("E"),
+						]
 					},
 					'E': {
 						type: 4,
 						x: 495,
 						y: 171,
 						resource: 1,
-						routeC: function(ships) {
-							if (ships.BBV >= 2) return 'G';
-							return 'F';
-						}
+						rules: [
+							ChShipTypeRoutingRule(["BBV"], ">=", 2, "G", "F"),
+						]
 					},
 					'F': {
 						type: 2,
@@ -339,7 +361,9 @@ var MAPDATA = {
 						type: 0,
 						x: 236,
 						y: 76,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule("A"),
+						]
 					},
 					'A': {
 						type: 1,
@@ -349,7 +373,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule("B"),
+						]
 					},
 					'B': {
 						type: 1,
@@ -359,7 +385,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C'),
+						]
 					},
 					'C': {
 						type: 1,
@@ -368,7 +396,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule('D'),
+						]
 					},
 					'D': {
 						type: 2,
@@ -376,7 +406,9 @@ var MAPDATA = {
 						y: 259,
 						resource: 3,
 						amount: [150,235,360,425],
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E'),
+						]
 					},
 					'E': {
 						type: 1,

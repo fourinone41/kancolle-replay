@@ -212,6 +212,8 @@ function chRandomizeComps() {
 
 // --- Todo
 function chHelpLink() {
+    return `<a href="./eventinfo" target="_blank">${MAPDATA[WORLD].name} </a>`;
+
     let eventName = MAPDATA[WORLD].name.replace(' ', '_');
     
     if (WORLD == 47) {
