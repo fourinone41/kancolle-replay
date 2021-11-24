@@ -1170,22 +1170,46 @@ function mapPhase(first) {
 		eventqueue.push([endMap,[]]);
 		return;
 	}
-	var nextletter, nextnode;
-	if (curnode.route) nextletter = curnode.route;
-	else if (curnode.routeC) nextletter = curnode.routeC(CHSHIPCOUNT);
-	else if (curnode.routeR) {
-		var r = Math.random(), sum = 0;
-		for (var letter in curnode.routeR) {
-			sum += curnode.routeR[letter];
-			if (r < sum) { nextletter = letter; break; }
-		}
-	} else if (curnode.routeL) {
-		nextletter = checkELoS33(getELoS33(1,curnode.routeLC || 1,CHDATA.fleets.combined),curnode.routeL);
-	} else if (curnode.routeS) {
-		eventqueue.push([selectNode,[curnode.routeS]]);
-	}
+
+	var nextletter = "";
+	var index = 0;
+	var nextnode;
+
+	if (curnode.rules) {
+		let rules = curnode.rules;
+
+		while (nextletter == '') {
+			
+			let rule = rules[index];
 	
-	if (!curnode.routeS) mapPhase2(nextletter);
+			nextletter = rule.getRouting(CHSHIPCOUNT);
+	
+			if (!rule) {
+				alert("error in branching");
+				return;
+			}
+	
+			index++;
+		}
+	
+		mapPhase2(nextletter);
+	} else {
+		if (curnode.route) nextletter = curnode.route;
+		else if (curnode.routeC) nextletter = curnode.routeC(CHSHIPCOUNT);
+		else if (curnode.routeR) {
+			var r = Math.random(), sum = 0;
+			for (var letter in curnode.routeR) {
+				sum += curnode.routeR[letter];
+				if (r < sum) { nextletter = letter; break; }
+			}
+		} else if (curnode.routeL) {
+			nextletter = checkELoS33(getELoS33(1,curnode.routeLC || 1,CHDATA.fleets.combined),curnode.routeL);
+		} else if (curnode.routeS) {
+			eventqueue.push([selectNode,[curnode.routeS]]);
+		}
+		
+		if (!curnode.routeS) mapPhase2(nextletter);
+	}
 }
 
 function mapPhase2(nextletter) {

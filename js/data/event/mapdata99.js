@@ -143,6 +143,11 @@ function chRandomizeMaps() {
 }
 
 function chLoadRandomFile() {
+    if (RANDOMAPS) {
+        // --- Load map data
+        MAPDATA[97].loadFromChData();
+    }
+
     if (CHDATA.event.comps == undefined) {
         CHDATA.event.comps = chRandomizeComps();
     }

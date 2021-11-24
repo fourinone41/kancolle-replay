@@ -51,3 +51,28 @@ div#comp td {
     border-style: solid;
     border-width: thin;
 }
+
+div#mapAndCompsContainer {
+    width: 65%;
+}
+
+div#pageContent {
+    display: flex;
+}
+
+.routingLine {
+    display: flex;
+    padding: 10px;
+}
+
+#routingContainer th,
+#routingContainer td {
+    padding: 5px;
+    border-color: #898989;
+    border-style: solid;
+    border-width: thin;
+}
+
+.routingLine .node-battle {
+    margin-right: 20px;
+}

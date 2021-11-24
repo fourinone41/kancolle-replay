@@ -4,8 +4,14 @@ class ChrDisplayEventInfo {
         this.root = $(`
         <div>
             <div id="mapButtons"></div>
-            <div id="map"></div>
-            <div id="comp"></div>
+
+            <div id="pageContent">
+                <div id="mapAndCompsContainer">
+                    <div id="map"></div>
+                    <div id="comp"></div>
+                </div>
+                <div id="routingContainer"></div>
+            </div>
         
         </div>`);
     
@@ -39,6 +45,9 @@ class ChrDisplayEventInfo {
             button.click(() => {
                 this.currentMap = mapNum + 1;
                 this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1);
+
+                // --- Routing
+                this.DisplayRouting();
             });
 
             $("#mapButtons").append(button)
@@ -49,6 +58,81 @@ class ChrDisplayEventInfo {
         return this.Worlds[this.currentMap].world;
     }
 
+
+    DisplayRouting () {
+        let nodes = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].nodes;
+
+        let routingEl = $("<table>");
+        routingEl.addClass("routingTable");
+
+        routingEl.append($(`
+        <tr>
+            <th>Node</th>
+            <th>Routing</th>
+        </tr>`));
+
+        for (const nodeKey in nodes) {
+            let rules = nodes[nodeKey].rules;
+
+            if (!rules) continue;
+
+            let line = $("<tr>");
+
+            line.append(`<td class="node-battle">${nodeKey}</td>`)
+
+                line.append(this.MakeRoutingEl(rules));
+
+            routingEl.append(line);
+        }
+
+        $("#routingContainer").html(routingEl);
+    }
+
+    MakeRoutingEl(rules) {
+        let root = $("<td>");
+
+        let nodeRulesTranslated = {};
+        
+        /**
+        * @type {ChRule}
+        */
+        let rule;
+
+        for (rule of rules) {
+            switch (rule.type) {
+                case "fixed":
+                    nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
+                    break;
+            
+                case 'shipType':
+                case 'shipCount':
+                    if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
+                    if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
+
+                    nodeRulesTranslated[rule.conditionCheckedNode] += rule.getDescription();
+                    nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
+                    break;
+            }
+        }
+
+        for (const nodeKey in nodeRulesTranslated) {
+            let routingLine = $("<div>");
+            routingLine.addClass("routingLine");
+
+            let description = nodeRulesTranslated[nodeKey];
+            if (!description) description = "Other requirements not met";
+
+            routingLine.append($(`
+                <div class="node-battle">${nodeKey}</div>
+                <div>${description}</div>
+            `));
+
+            root.append(routingLine);
+        }
+
+        return root;
+    }
+    
     DisplayComps (mapnum, node) {
         let comps = this.GetComps(mapnum, node);
 

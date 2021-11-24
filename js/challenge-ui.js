@@ -1425,6 +1425,11 @@ function chSave() {
 	basic.event = CHDATA.event;
 	basic.config = CHDATA.config;
 	basic.player = CHDATA.player;
+
+	if (CHDATA.customMaps) {
+		basic.customMaps = CHDATA.customMaps;
+	}
+
 	data.ships = CHDATA.ships;
 	data.gears = CHDATA.gears;
 	basic.maps = CHDATA.maps;

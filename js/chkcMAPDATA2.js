@@ -26,95 +26,106 @@ var MAPDATA = {
 		disableMore: { ships: [110,111] },
 		maps: {
 			1: {
-				name: 'E-1',
-				nameT: 'Preliminary Encounter',
-				fleetTypes: [0],
-				bgmMap: 2001,
-				bgmDN: 1,
-				bgmNN: 1000,
-				bgmDB: 1000,
-				bgmNB: 1000,
-				bossnode: 6,
-				hpmode: 2,
-				maphp: {
-					2: { 1: 420 },
-				},
-				finalhp: {
-					2: 0,
-				},
-				nodes: {
-					'Start': {
-						type: 0,
-						x: 74,
-						y: 167,
-						route: 'A',
-					},
-					'A': {
-						type: 1,
-						x: 161,
-						y: 149,
-						compDiff: {
-							2: ['1','1b','2'],
-						},
-						route: 'B',
-					},
-					'B': {
-						type: 4,
-						x: 257,
-						y: 137,
-						resource: 2,
-						route: 'C',
-					},
-					'C': {
-						type: 2,
-						x: 330,
-						y: 131,
-						resource: 1,
-						amount: [20,25,30,40,45,60],
-						route: 'D',
-					},
-					'D': {
-						type: 1,
-						x: 427,
-						y: 132,
-						subonly: true,
-						compDiff: {
-							2: ['1','1b','2'],
-						},
-						route: 'E',
-					},
-					'E': {
-						type: 1,
-						x: 521,
-						y: 152,
-						compDiff: {
-							2: ['1','2','2b','3'],
-						},
-						routeC: function(ships) {
-							if (ships.AV + ships.CVL && ships.DD >= 2 && ships.total >= 6) return 'F';
-							return 'G';
-						}
-					},
-					'F': {
-						type: 1,
-						x: 668,
-						y: 179,
-						boss: true,
-						compDiff: {
-							2: ['1','1b','2'],
-						},
-						end: true,
-					},
-					'G': {
-						type: 2,
-						x: 462,
-						y: 277,
-						resource: 1,
-						amount: [80,150,195,240],
-						end: true,
-					},
-				}
-			},
+                name: 'E-1',
+                nameT: 'Preliminary Encounter',
+                fleetTypes: [0],
+                bgmMap: 2001,
+                bgmDN: 1,
+                bgmNN: 1000,
+                bgmDB: 1000,
+                bgmNB: 1000,
+                bossnode: 6,
+                hpmode: 2,
+                maphp: {
+                    2: { 1: 420 },
+                },
+                finalhp: {
+                    2: 0,
+                },
+                nodes: {
+                    'Start': {
+                        type: 0,
+                        x: 74,
+                        y: 167,
+                        rules: [
+                            ChFixedRoutingRule("A")
+                        ]
+                    },
+                    'A': {
+                        type: 1,
+                        x: 161,
+                        y: 149,
+                        compDiff: {
+                            2: ['1','1b','2'],
+                        },
+                        rules: [
+                            ChFixedRoutingRule("B")
+                        ]
+                    },
+                    'B': {
+                        type: 4,
+                        x: 257,
+                        y: 137,
+                        resource: 2,
+                        rules: [
+                            ChFixedRoutingRule("C")
+                        ]
+                    },
+                    'C': {
+                        type: 2,
+                        x: 330,
+                        y: 131,
+                        resource: 1,
+                        amount: [20,25,30,40,45,60],
+                        rules: [
+                            ChFixedRoutingRule("D")
+                        ]
+                    },
+                    'D': {
+                        type: 1,
+                        x: 427,
+                        y: 132,
+                        subonly: true,
+                        compDiff: {
+                            2: ['1','1b','2'],
+                        },
+                        rules: [
+                            ChFixedRoutingRule("E")
+                        ]
+                    },
+                    'E': {
+                        type: 1,
+                        x: 521,
+                        y: 152,
+                        compDiff: {
+                            2: ['1','2','2b','3'],
+                        },
+                        rules: [
+                            ChShipTypeRoutingRule(["AV", "CVL"], "=", 0, "G"),
+                            ChShipTypeRoutingRule(["DD"], "<", 2, "G"),
+                            ChShipCountRoutingRule("<", 6, "G", "F"),
+                        ]
+                    },
+                    'F': {
+                        type: 1,
+                        x: 668,
+                        y: 179,
+                        boss: true,
+                        compDiff: {
+                            2: ['1','1b','2'],
+                        },
+                        end: true,
+                    },
+                    'G': {
+                        type: 2,
+                        x: 462,
+                        y: 277,
+                        resource: 1,
+                        amount: [80,150,195,240],
+                        end: true,
+                    },
+                }
+            },
 			2: {
 				name: 'E-2',
 				nameT: 'Cordon Breakthrough',
