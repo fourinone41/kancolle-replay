@@ -103,6 +103,18 @@ class ChrDisplayEventInfo {
                 case "fixed":
                     nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
                     break;
+
+                case "random": 
+                    let descriptions = rule.getDescription();
+
+                    for (const node in descriptions) {
+                        if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                        nodeRulesTranslated[node] += descriptions[node];
+                        nodeRulesTranslated[node] += "<br>";
+                    }
+
+                    break;
             
                 default:
                     if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";

@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random"}
      */
     this.type = "fixed";
 
@@ -42,6 +42,11 @@ function ChRule () {
      * if empty, routing will try to apply next rule
      */
     this.conditionFailedNode = "";
+
+    /**
+     * For random branching, array of chances per nodes
+     */
+    this.randomNodes = {};
 
     /**
      * Returns the node where you'll route
@@ -111,7 +116,21 @@ function ChRule () {
                     if (routingIsOk && this.logicOperator == "OR") return this.conditionCheckedNode;
                 }
 
-                return this.conditionCheckedNode;
+                if (this.logicOperator == "AND") return this.conditionCheckedNode;
+                if (this.logicOperator == "OR") return this.conditionFailedNode;
+            }
+
+            case 'random' : {
+                let nextletter = '';
+
+                var r = Math.random(), sum = 0;
+
+                for (var letter in this.randomNodes) {
+                    sum += this.randomNodes[letter];
+                    if (r < sum) { nextletter = letter; break; }
+                }
+
+                return nextletter;
             }
 
             default:
@@ -140,12 +159,37 @@ function ChRule () {
 
             case 'multiRules' : {
                 let descriptions = [];
+                let randomDesc = "";
 
                 for (const rule of this.rules) {
-                    descriptions.push(`<span style="margin-left:20px;">${rule.getDescription()}</span>`);
+                    if (rule.type == 'random') {
+                        let rd = [];
+
+                        for (var letter in rule.randomNodes) {
+                            rd.push(`${letter} (${rule.randomNodes[letter] * 100}%)`);
+                        }
+
+                        randomDesc = `<br>else random ${rd.join(", ")}`;
+                    }
+                    else descriptions.push(`<span style="margin-left:20px;">${rule.getDescription()}</span>`);
                 }
 
-                return `Meet all of the following requirements : <br>` + descriptions.join(`<br>`);
+                
+                let AnyOrAll = "";
+                if (this.logicOperator == "AND") AnyOrAll = "all";
+                if (this.logicOperator == "OR") AnyOrAll = "any";
+                
+                return `Meet ${AnyOrAll} of the following requirements : <br>${descriptions.join(`<br>`)}${randomDesc}`;
+            }
+
+            case 'random' : {
+                let description = {};
+
+                for (const node in this.randomNodes) {
+                    description[node] = `Random (${this.randomNodes[node] * 100}%)`;
+                }
+
+                return description;
             }
 
             default:
@@ -221,6 +265,20 @@ function ChMultipleRulesRule(ruleArray, logicOperator, conditionCheckedNode, con
 
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {any} chances 
+ */
+ function ChRandomRule(chances) {
+    let rule = new ChRule();
+
+    rule.type = "random";
+
+    rule.randomNodes = chances;
 
     return rule;
 }

@@ -468,7 +468,9 @@ var MAPDATA = {
 						type: 0,
 						x: 76,
 						y: 212,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule('A'),
+						]
 					},
 					'A': {
 						type: 1,
@@ -477,7 +479,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeR: { 'B': .5, 'D': .5 }
+						rules: [
+							ChRandomRule({ 'B': .5, 'D': .5 })
+						]
 					},
 					'B': {
 						type: 2,
@@ -485,7 +489,9 @@ var MAPDATA = {
 						y: 162,
 						resource: 1,
 						amount: [35, 40, 45, 55, 65, 70, 75, 80, 85, 90, 95, 100, 105],
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C'),
+						]
 					},
 					'C': {
 						type: 1,
@@ -494,7 +500,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E'),
+						]
 					},
 					'D': {
 						type: 1,
@@ -504,7 +512,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E'),
+						]
 					},
 					'E': {
 						type: 1,
@@ -513,7 +523,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeR: { 'F': .5, 'G': .5 }
+						rules: [
+							ChRandomRule({ 'F': .5, 'G': .5 })
+						]
 					},
 					'F': {
 						type: 1,
@@ -559,10 +571,12 @@ var MAPDATA = {
 						type: 0,
 						x: 64,
 						y: 116,
-						routeC: function(ships) {
-							if (ships.AV) return 'A';
-							return (Math.random() < .5)? 'A' : 'E';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(["AV"], ">", 0, "A"),
+								ChRandomRule({ 'A': .5, 'E': .5 }),
+							], "OR", 'A', 'E')
+						]
 					},
 					'A': {
 						type: 1,
@@ -571,7 +585,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule('B'),
+						]
 					},
 					'B': {
 						type: 1,
@@ -581,7 +597,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3','4']
 						},
-						routeR: { 'C': .5, 'D': .5 }
+						rules: [
+							ChRandomRule({ 'C': .5, 'D': .5 }),
+						]
 					},
 					'C': {
 						type: 2,
@@ -596,7 +614,9 @@ var MAPDATA = {
 						x: 559,
 						y: 236,
 						resource: 1,
-						route: 'H'
+						rules: [
+							ChFixedRoutingRule('H'),
+						]
 					},
 					'E': {
 						type: 1,
@@ -605,7 +625,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F'),
+						]
 					},
 					'F': {
 						type: 1,
@@ -614,7 +636,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeR: { 'B': .5, 'G': .5 }
+						rules: [
+							ChRandomRule({ 'B': .5, 'G': .5 }),
+						]
 					},
 					'G': {
 						type: 1,
@@ -624,7 +648,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3','4']
 						},
-						route: 'H'
+						rules: [
+							ChFixedRoutingRule('H'),
+						]
 					},
 					'H': {
 						type: 1,
@@ -662,10 +688,12 @@ var MAPDATA = {
 						type: 0,
 						x: 64,
 						y: 244,
-						routeC: function(ships) {
-							if (ships.DD >= 2) return 'D';
-							return (Math.random() < .5)? 'A' : 'D';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(["DD"], ">=", 2, "D"),
+								ChRandomRule({ 'A': .5, 'D': .5 }),
+							], "OR", 'D', 'A')
+						]
 					},
 					'A': {
 						type: 1,
@@ -674,7 +702,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule('B')
+						]
 					},
 					'B': {
 						type: 1,
@@ -683,14 +713,18 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C')
+						]
 					},
 					'C': {
 						type: 4,
 						x: 334,
 						y: 159,
 						resource: 2,
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'D': {
 						type: 1,
@@ -699,7 +733,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeR: { 'E': .5, 'F': .5 }
+						rules: [
+							ChRandomRule({ 'E': .5, 'F': .5 })
+						]
 					},
 					'E': {
 						type: 1,
@@ -709,7 +745,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'F': {
 						type: 1,
@@ -718,7 +756,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeR: { 'G': .4, 'H': .3, 'I': .3 }
+						rules: [
+							ChRandomRule({ 'G': .4, 'H': .3, 'I': .3 })
+						]
 					},
 					'G': {
 						type: 1,
@@ -774,7 +814,9 @@ var MAPDATA = {
 						type: 0,
 						x: 64,
 						y: 186,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule('A')
+						]
 					},
 					'A': {
 						type: 1,
@@ -783,7 +825,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule('B')
+						]
 					},
 					'B': {
 						type: 1,
@@ -792,17 +836,21 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeC: function(ships) {
-							if (ships.DD >= 2) return 'D';
-							return (Math.random() < .5)? 'D' : 'C';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(["DD"], ">=", 2, "D"),
+								ChRandomRule({ 'C': .5, 'D': .5 }),
+							], "OR", 'D', 'C')
+						]
 					},
 					'C': {
 						type: 4,
 						x: 367,
 						y: 221,
 						resource: 1,
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'D': {
 						type: 1,
@@ -811,7 +859,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2']
 						},
-						route: 'G'
+						rules: [
+							ChFixedRoutingRule('G')
+						]
 					},
 					'E': {
 						type: 1,
@@ -821,7 +871,9 @@ var MAPDATA = {
 						compDiff: {
 							2: ['1','2','3']
 						},
-						routeR: { 'F': .5, 'G': .5 }
+						rules: [
+							ChRandomRule({ 'F': .5, 'G': .5 })
+						]
 					},
 					'F': {
 						type: 2,
