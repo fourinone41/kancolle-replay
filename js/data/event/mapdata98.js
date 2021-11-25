@@ -1,3 +1,5 @@
+const ABYSSALS_ON = false;
+
 MAPDATA[98] = {
     name: 'Random Fiesta',
     date: '2025-02-02',
