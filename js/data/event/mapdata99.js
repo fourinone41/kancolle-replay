@@ -158,6 +158,8 @@ function chLoadRandomFile() {
 
 function chRerollComps() {
     CHDATA.event.comps = chRandomizeComps();
+    
+    chSave();
 }
 
 // --- Debug only

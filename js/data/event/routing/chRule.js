@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed"}
      */
     this.type = "fixed";
 
@@ -47,6 +47,11 @@ function ChRule () {
      * For random branching, array of chances per nodes
      */
     this.randomNodes = {};
+
+    /**
+     * Speed of fleet
+     */
+    this.speed = 10;
 
     /**
      * Returns the node where you'll route
@@ -133,6 +138,28 @@ function ChRule () {
                 return nextletter;
             }
 
+            case 'speed': {
+                switch (this.operator) {
+                    case "<":
+                        if (ships.speed < this.speed) return this.conditionCheckedNode;
+                        break;
+                    case "<=":
+                        if (ships.speed <= this.speed) return this.conditionCheckedNode;
+                        break;
+                    case "=":
+                        if (ships.speed = this.speed) return this.conditionCheckedNode;
+                        break;
+                    case ">":
+                        if (ships.speed > this.speed) return this.conditionCheckedNode;
+                        break;
+                    case ">=":
+                        if (ships.speed >= this.speed) return this.conditionCheckedNode;
+                        break;
+                }
+
+                return this.conditionFailedNode;
+            }
+
             default:
                 alert("routing error 2");
                 return;
@@ -148,7 +175,15 @@ function ChRule () {
                 return "Fixed routing";
         
             case "shipType": {
-                let shipList = this.shipTypes.join(" + ");
+                let shipTypesTranslated = [];
+
+                for (const shipType of this.shipTypes) {
+                    if (shipType == "aBB") shipTypesTranslated.push("(F)BB(V)");
+                    else if (shipType == "aCV") shipTypesTranslated.push("CV(L/B)");
+                    else shipTypesTranslated.push(shipType);
+                }
+
+                let shipList = shipTypesTranslated.join(" + ");
 
                 return `Number of ${shipList} ${this.operator} ${this.count}`;
             }
@@ -190,6 +225,41 @@ function ChRule () {
                 }
 
                 return description;
+            }
+
+            case 'speed' : {
+                let speed = {
+                    5: {
+                        "<": "Slow fleet",
+                        "<=": "Slow fleet",
+                        "=": "Slow fleet",
+                        ">": "Fast fleet",
+                        ">=": "Slow fleet or faster",
+                    },
+                    10: {
+                        "<": "Slow fleet",
+                        "<=": "Fast fleet or slower",
+                        "=": "Fast fleet",
+                        ">": "Fast+ fleet",
+                        ">=": "Fast fleet or faster",
+                    },
+                    15: {
+                        "<": "Fast fleet or slower",
+                        "<=": "Fast+ fleet or slower",
+                        "=": "Fast+ fleet",
+                        ">": "Fastest fleet",
+                        ">=": "Fast+ fleet or faster",
+                    },
+                    15: {
+                        "<": "Fast+ fleet or slower",
+                        "<=": "Fastest fleet or slower",
+                        "=": "Fastest fleet",
+                        ">": "Fastest fleet",
+                        ">=": "Fastest fleet",
+                    },
+                };
+
+                return speed[this.speed][this.operator];
             }
 
             default:
@@ -279,6 +349,26 @@ function ChMultipleRulesRule(ruleArray, logicOperator, conditionCheckedNode, con
     rule.type = "random";
 
     rule.randomNodes = chances;
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {*} operator 
+ * @param {*} speed 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ */
+function ChSpeedRule(operator, speed, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "speed";
+
+    rule.speed = speed;
+    rule.operator = operator;
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
 
     return rule;
 }
