@@ -123,8 +123,6 @@ function chrIsMapDone(event_id, map_number) {
 function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
 
-    return Math.random() > 0.5 ? { world: 23 } : { world: 50 };
-
     for (event_id in MAPDATA) {
         if(!["99", '98', '10'].includes(event_id) && !chrIsMapDone(event_id, MAPNUM)){
             if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
