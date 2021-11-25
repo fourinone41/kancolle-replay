@@ -298,6 +298,8 @@ MAPDATA[98] = {
     },
     chrRerollMap : () => {
         CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
+
+        if (RANDOMAPS) MAPDATA[97].initializeMap(WORLD, MAPNUM);
         
         chSortieStartChangeDiff();
         CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}

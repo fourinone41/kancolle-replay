@@ -97,6 +97,8 @@ function randomizeMaps(){
     if(CHDATA.maps === undefined) {
         // randomize
         CHDATA.maps = chRandomizeMaps();
+        
+        if (RANDOMAPS) MAPDATA[97].initializeAllMaps();
     } else {
         if(Array.isArray(CHDATA.maps)) {
             var newObjMap = {};
@@ -120,7 +122,10 @@ function chrIsMapDone(event_id, map_number) {
 
 function chRandomizeMap(MAPNUM) {
     let possible_maps = [];
-    for(event_id in MAPDATA){
+
+    return Math.random() > 0.5 ? { world: 23 } : { world: 50 };
+
+    for (event_id in MAPDATA) {
         if(!["99", '98', '10'].includes(event_id) && !chrIsMapDone(event_id, MAPNUM)){
             if(MAPDATA[event_id].maps[MAPNUM] !== undefined){
                 let map = {};
@@ -170,6 +175,8 @@ function chRemoveLocks() {
 function chRerollMap() {
     CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
     
+    if (RANDOMAPS) MAPDATA[97].initializeMap(WORLD, MAPNUM);
+
 	chSortieStartChangeDiff();
 	CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
     chLoadSortieInfo(MAPNUM);
@@ -246,7 +253,7 @@ function chHelpLink() {
 
 // --- debug
 function chLowerHP() {
-    CHDATA.event.maps[MAPNUM].hp = CHDATA.event.maps[MAPNUM].hp * 0.5;
+    CHDATA.event.maps[MAPNUM].hp = CHDATA.event.maps[MAPNUM].hp * 0.1;
     chLoadSortieInfo(MAPNUM);
 }
 

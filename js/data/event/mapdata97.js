@@ -92,8 +92,10 @@ MAPDATA[97].initializeMap = function (worldNum, mapNum) {
 
     MAPDATA[97].initializeNodes(oriMapData, mapData);
 
-    MAPDATA[worldNum].maps[mapNum] = mapData;
     CHDATA.customMaps[mapNum] = mapData; 
+    
+
+    MAPDATA[97].loadFromChData(mapNum); 
 }
 
 MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
@@ -105,39 +107,42 @@ MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
     }
 }
 
-MAPDATA[97].loadFromChData = function () {
+MAPDATA[97].loadFromChData = function (mapNum) {
     if (CHDATA.customMaps) {
 
-        for (const mapKey in CHDATA.maps) { 
+        let maps = mapNum ? { world : mapNum } : CHDATA.maps;
+
+        for (const mapKey in maps) { 
             // --- init map 
 
             for (const property in CHDATA.customMaps[mapKey]) {
                 if (property == "nodes") continue;
                 MAPDATA[CHDATA.maps[mapKey].world].maps[mapKey][property] = CHDATA.customMaps[mapKey][property];
             }
+
+            for (const mapKey in CHDATA.maps) {
+                MAPDATA[97].loadNodesFromChData(CHDATA.maps[mapKey].world, mapKey);
+            }
         }
     }
     else {
         CHDATA.customMaps = {};
         MAPDATA[97].initializeAllMaps();
-    }
-
-    for (const mapKey in CHDATA.customMaps) {
-        MAPDATA[97].loadNodesFromChData(22, mapKey);
+        MAPDATA[97].loadFromChData();
     }
 }
 
 
 MAPDATA[97].loadNodesFromChData = function (worldNum, mapNum) {
     
-    for (const nodeKey in CHDATA.customMaps[mapNum].nodes) {
+    /*for (const nodeKey in CHDATA.customMaps[mapNum].nodes) {
         
         // --- For each nodes:
 
         // --- Load original map for now :(
-        MAPDATA[worldNum].maps[mapNum].nodes[nodeKey] = MAPDATA[worldNum].maps[mapNum].nodes[nodeKey];
+        //MAPDATA[worldNum].maps[mapNum].nodes[nodeKey] = MAPDATA[worldNum].maps[mapNum].nodes[nodeKey];
 
-    }
+    }*/
 }
 
 /**
