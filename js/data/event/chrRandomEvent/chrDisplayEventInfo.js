@@ -105,7 +105,7 @@ class ChrDisplayEventInfo {
                     break;
 
                 case "random": 
-                    let descriptions = rule.getDescription();
+                    let descriptions = rule.GetRandomDescription();
 
                     for (const node in descriptions) {
                         if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";

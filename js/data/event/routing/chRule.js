@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse"}
      */
     this.type = "fixed";
 
@@ -52,6 +52,15 @@ function ChRule () {
      * Speed of fleet
      */
     this.speed = 10;
+
+    /**
+     * @type {{if: ChRule,then: ChRule,else: ChRule}} 
+     */
+    this.ifthenelse = {
+        if: null,
+        then: null,
+        else: null,
+    };
 
     /**
      * Returns the node where you'll route
@@ -160,6 +169,15 @@ function ChRule () {
                 return this.conditionFailedNode;
             }
 
+            case "ifthenelse": {
+                if (this.ifthenelse.if.getRouting(ships)) {
+                    return this.ifthenelse.then.getRouting(ships);
+                }
+                else {
+                    return this.ifthenelse.else.getRouting(ships);
+                }
+            }
+
             default:
                 alert("routing error 2");
                 return;
@@ -218,13 +236,13 @@ function ChRule () {
             }
 
             case 'random' : {
-                let description = {};
+                let description = [];
 
                 for (const node in this.randomNodes) {
-                    description[node] = `Random (${this.randomNodes[node] * 100}%)`;
+                    description.push(`${node} ${this.randomNodes[node] * 100}%`);
                 }
 
-                return description;
+                return "Random " + description.join(", ");
             }
 
             case 'speed' : {
@@ -262,9 +280,26 @@ function ChRule () {
                 return speed[this.speed][this.operator];
             }
 
+            case "ifthenelse": {
+                return `If ${this.ifthenelse.if.getDescription()}<br>then ${this.ifthenelse.then.getDescription()}<br>else ${this.ifthenelse.else.getDescription()}`;
+            }
+
             default:
                 return "???";
         }
+    }
+
+    /**
+     * Return the description of a random routing rule as an object
+     */
+    this.GetRandomDescription = function() {
+        let description = {};
+
+        for (const node in this.randomNodes) {
+            description[node] = `Random (${this.randomNodes[node] * 100}%)`;
+        }
+
+        return description;
     }
 }
 
@@ -369,6 +404,30 @@ function ChSpeedRule(operator, speed, conditionCheckedNode, conditionFailedNode)
     rule.operator = operator;
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * if rule A is valid then apply rule B else apply rule C
+ * @param {ChRule} ruleIf 
+ * @param {ChRule} ruleThen 
+ * @param {ChRule} ruleElse 
+ * @returns 
+ */
+function ChIfThenElseRule(ruleIf, ruleThen, ruleElse) {
+    let rule = new ChRule();
+
+    rule.type = "ifthenelse";
+
+    ruleIf.conditionCheckedNode = true;
+    ruleIf.conditionFailedNode = true;
+
+    rule.ifthenelse = {
+        if: ruleIf,
+        then: ruleThen,
+        else: ruleElse,
+    };
 
     return rule;
 }
