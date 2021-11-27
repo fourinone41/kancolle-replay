@@ -186,6 +186,7 @@ function ChRule () {
                     return this.ifthenelse.then.getRouting(ships);
                 }
                 else {
+                    if (!this.ifthenelse.else) return '';
                     return this.ifthenelse.else.getRouting(ships);
                 }
             }
@@ -340,7 +341,11 @@ function ChRule () {
             }
 
             case "ifthenelse": {
-                return `If ${this.ifthenelse.if.getDescription()}<br>then ${this.ifthenelse.then.getDescription()}<br>else ${this.ifthenelse.else.getDescription()}`;
+                let desc = `If ${this.ifthenelse.if.getDescription()}<br>then ${this.ifthenelse.then.getDescription()}`;
+                
+                if (this.ifthenelse.else) desc += `<br>else ${this.ifthenelse.else.getDescription()}`;
+
+                return desc;
             }
 
             case "allShipsMustBe": {
@@ -368,13 +373,13 @@ function ChRule () {
                 var nodes = Object.values(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
                 
                 for (var i=0; i<LOSs.length; i++) {
-                    description[nodes[i]] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
+                    description[nodes[i]] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i - 1]}`;
 
-                    if (LOSs[i+1]) {
-                        description[nodes[i]] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i+1]} and ${LOSs[i]}`;
+                    if (LOSs[i-1]) {
+                        description[nodes[i]] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i]} and ${LOSs[i - 1]}`;
                     }
                     else {
-                        description[nodes[i]] =  `LOS Cn${this.LOSCoef} < ${LOSs[i-1]}`;
+                        description[nodes[i]] =  `LOS Cn${this.LOSCoef} < ${LOSs[i]}`;
                     }
                 }
 
@@ -418,7 +423,13 @@ function ChRule () {
      * @returns true if LOS plane need to be shown
      */
     this.getShowLosPlane = function () {
-        return false;
+        switch (this.type) {
+            case "los":
+                return true;
+        
+            default:
+                return false;
+        }
     } 
 }
 
