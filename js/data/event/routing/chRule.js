@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType"}
      */
     this.type = "fixed";
 
@@ -20,12 +20,20 @@ function ChRule () {
      */
     this.shipTypes = [];
 
+    this.equipData = {
+        equipIds: [],
+        equipTypes: [],
+        LOS: 0,
+    };
+
     /**
      * @type {ChRule[]} 
      */
     this.rules = [];
 
     this.count = 0;
+
+    this.shipWithEquipCount = 0;
 
     /**
      * if fixed routing, this is the node where you will route
@@ -192,6 +200,35 @@ function ChRule () {
             case "isLastDance": {
                 return chGetLastDance() ? this.conditionCheckedNode : this.conditionFailedNode;
             }
+            
+            case 'equipType': {
+                let numEquips = 0;
+                let numShipsWithEquip = 0;
+
+                let ships = (FLEETS1[1])? FLEETS1[0].ships.concat(FLEETS1[1].ships) : FLEETS1[0].ships;
+
+                let equipTypes = this.equipData.equipTypes && this.equipData.equipTypes.length ? this.equipData.equipTypes : null;
+                let equipIds = this.equipData.equipIds && this.equipData.equipIds.length ? this.equipData.equipIds : null;
+
+                for (let ship of ships) {
+
+                    let found = false;
+
+                    for (let eq of ship.equips) {
+                        if (equipTypes && !equipTypes.includes(eq.type)) continue;
+                        if (equipIds && !equipIds.includes(eq.mid)) continue;
+                        if (this.equipData.LOS && (!eq.LOS || eq.LOS < this.equipData.LOS)) continue;
+                        {
+                            numEquips++;
+                            found = true;
+                        }
+                    }
+                    if (found) numShipsWithEquip++;
+                }
+
+                if (numEquips >= this.count && numShipsWithEquip >= this.shipWithEquipCount) return this.conditionCheckedNode;
+                return this.conditionFailedNode;
+            }
 
             default:
                 alert("routing error 2");
@@ -305,6 +342,16 @@ function ChRule () {
 
             case "isLastDance": {
                 return 'Map is on last dance';
+            }
+
+            case 'equipType': {
+                let description = `Have ${this.count} ${this.equipData.equipTypes.map(x => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name).join(" + ")} equipped`;
+
+                if (this.shipWithEquipCount) {
+                    description += ` on ${this.shipWithEquipCount} different ships`;
+                }
+
+                return description;
             }
 
             default:
@@ -510,6 +557,30 @@ function ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFa
 
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * Rule valid if [shipWithEquipCount] ships have the required equipments and there's a total of [count] equipment in the fleet
+ * @param {{equipIds: [],equipTypes: [],LOS: number}} equipData 
+ * @param {*} count 
+ * @param {*} shipWithEquipCount 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ */
+function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "equipType";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.count = count;
+    rule.shipWithEquipCount = shipWithEquipCount;
+
+    rule.equipData = equipData;
 
     return rule;
 }

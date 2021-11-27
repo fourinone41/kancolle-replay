@@ -442,6 +442,7 @@ EQTDATA[FCF] = {
 };
 EQTDATA[DRUM] = {
 	name: 'Misc',
+	dname: 'Drum',
 	image: 25,
 	canequip: ['DD','CL','CAV','AV','AO','LHA'],
 	canequipS: [530, 539, 605, 707],
