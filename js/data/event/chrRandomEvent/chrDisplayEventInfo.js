@@ -117,11 +117,25 @@ class ChrDisplayEventInfo {
                     break;
             
                 default:
-                    if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
-                    if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
+                    let description = rule.getDescription();
 
-                    nodeRulesTranslated[rule.conditionCheckedNode] += rule.getDescription();
-                    nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
+                    if (typeof(description) == "string") {
+                        if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
+                        if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
+
+                        nodeRulesTranslated[rule.conditionCheckedNode] += description;
+                        nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
+                    } 
+                    else {
+                        for (const node in description) {
+                            if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+    
+                            nodeRulesTranslated[node] += description[node];
+                            nodeRulesTranslated[node] += "<br>";
+                        }
+                    }
+
+
                     break;
             }
         }

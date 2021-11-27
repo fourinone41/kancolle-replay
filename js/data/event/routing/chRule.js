@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance'}
      */
     this.type = "fixed";
 
@@ -74,6 +74,7 @@ function ChRule () {
         
             case "shipType": {
                 let count = 0;
+                ships.CVN = ships.CVN ? ships.CVN : 0;
 
                 for (const shipType of this.shipTypes) {
                     count += ships[shipType];
@@ -176,6 +177,20 @@ function ChRule () {
                 else {
                     return this.ifthenelse.else.getRouting(ships);
                 }
+            }
+
+            case "allShipsMustBe": {
+                let count = 0;
+
+                for (const shipType of this.shipTypes) {
+                    count += ships[shipType];
+                }
+
+                return count == ships.total ? this.conditionCheckedNode : this.conditionFailedNode;
+            }
+
+            case "isLastDance": {
+                return chGetLastDance() ? this.conditionCheckedNode : this.conditionFailedNode;
             }
 
             default:
@@ -282,6 +297,14 @@ function ChRule () {
 
             case "ifthenelse": {
                 return `If ${this.ifthenelse.if.getDescription()}<br>then ${this.ifthenelse.then.getDescription()}<br>else ${this.ifthenelse.else.getDescription()}`;
+            }
+
+            case "allShipsMustBe": {
+                return `All ships must be ${this.shipTypes.join(" OR ")}`;
+            }
+
+            case "isLastDance": {
+                return 'Map is on last dance';
             }
 
             default:
@@ -428,6 +451,43 @@ function ChIfThenElseRule(ruleIf, ruleThen, ruleElse) {
         then: ruleThen,
         else: ruleElse,
     };
+
+    return rule;
+}
+
+/**
+ * All ships of the fleet must be of the types in shipTypes
+ * @param {*} shipTypes 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+function ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "allShipsMustBe";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.shipTypes = shipTypes;
+
+    return rule;
+}
+
+/**
+ * Condition checked if its last dance
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+ function ChIsLastDance(conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "isLastDance";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
 
     return rule;
 }

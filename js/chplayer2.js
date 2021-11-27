@@ -1178,7 +1178,7 @@ function mapPhase(first) {
 	if (curnode.rules) {
 		let rules = curnode.rules;
 
-		while (nextletter == '') {
+		while (!nextletter) {
 			
 			let rule = rules[index];
 	
@@ -1190,6 +1190,11 @@ function mapPhase(first) {
 			}
 	
 			index++;
+		}
+
+		if (!nextletter) {
+			alert("error in branching");
+			nextletter = 'A';
 		}
 	
 		mapPhase2(nextletter);
