@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los"}
      */
     this.type = "fixed";
 
@@ -55,6 +55,9 @@ function ChRule () {
      * For random branching, array of chances per nodes
      */
     this.randomNodes = {};
+
+    this.LOS = {};
+    this.LOSCoef = null;
 
     /**
      * Speed of fleet
@@ -230,6 +233,10 @@ function ChRule () {
                 return this.conditionFailedNode;
             }
 
+            case 'los': {
+                return checkELoS33(getELoS33(1, this.LOSCoef || 1, CHDATA.fleets.combined), this.LOS);
+            }
+
             default:
                 alert("routing error 2");
                 return;
@@ -276,7 +283,7 @@ function ChRule () {
 
                         randomDesc = `<br>else random ${rd.join(", ")}`;
                     }
-                    else descriptions.push(`<span style="margin-left:20px;">${rule.getDescription()}</span>`);
+                    else descriptions.push(`<div style="margin-left:20px;">${rule.getDescription()}</div>`);
                 }
 
                 
@@ -284,7 +291,7 @@ function ChRule () {
                 if (this.logicOperator == "AND") AnyOrAll = "all";
                 if (this.logicOperator == "OR") AnyOrAll = "any";
                 
-                return `Meet ${AnyOrAll} of the following requirements : <br>${descriptions.join(`<br>`)}${randomDesc}`;
+                return `Meet ${AnyOrAll} of the following requirements : <br>${descriptions.join(``)}${randomDesc}`;
             }
 
             case 'random' : {
@@ -349,6 +356,26 @@ function ChRule () {
 
                 if (this.shipWithEquipCount) {
                     description += ` on ${this.shipWithEquipCount} different ships`;
+                }
+
+                return description;
+            }
+
+            case 'los': {
+                let description = {};
+                
+                var LOSs = Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+                var nodes = Object.values(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+                
+                for (var i=0; i<LOSs.length; i++) {
+                    description[nodes[i]] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
+
+                    if (LOSs[i+1]) {
+                        description[nodes[i]] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i+1]} and ${LOSs[i]}`;
+                    }
+                    else {
+                        description[nodes[i]] =  `LOS Cn${this.LOSCoef} < ${LOSs[i-1]}`;
+                    }
                 }
 
                 return description;
@@ -581,6 +608,23 @@ function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedN
     rule.shipWithEquipCount = shipWithEquipCount;
 
     rule.equipData = equipData;
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {*} losArray 
+ * @param {*} coef 
+ * @returns 
+ */
+ function ChLOSRule(losArray, coef) {
+    let rule = new ChRule();
+
+    rule.type = "los";
+
+    rule.LOS = losArray;
+    rule.LOSCoef = coef ? coef : 1;
 
     return rule;
 }
