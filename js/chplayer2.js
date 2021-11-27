@@ -1172,6 +1172,7 @@ function mapPhase(first) {
 	}
 
 	var nextletter = "";
+	let rule = null;
 	var index = 0;
 	var nextnode;
 
@@ -1180,7 +1181,7 @@ function mapPhase(first) {
 
 		while (!nextletter) {
 			
-			let rule = rules[index];
+			rule = rules[index];
 	
 			nextletter = rule.getRouting(CHSHIPCOUNT);
 	
@@ -1197,7 +1198,7 @@ function mapPhase(first) {
 			nextletter = 'A';
 		}
 	
-		mapPhase2(nextletter);
+		mapPhase2(nextletter, rule);
 	} else {
 		if (curnode.route) nextletter = curnode.route;
 		else if (curnode.routeC) nextletter = curnode.routeC(CHSHIPCOUNT);
@@ -1217,25 +1218,45 @@ function mapPhase(first) {
 	}
 }
 
-function mapPhase2(nextletter) {
+/**
+ * 
+ * @param {*} nextletter 
+ * @param {ChRule} rule 
+ */
+function mapPhase2(nextletter, rule) {
 	var curnode = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter];
 	var nextnode = MAPDATA[WORLD].maps[MAPNUM].nodes[nextletter];
 	if (CHDATA.event.maps[MAPNUM].visited.indexOf(nextletter) == -1) CHDATA.event.maps[MAPNUM].visited.push(nextletter);
 	
 	eventqueue.push([wait,[1000]]);
-	if ((curnode.routeC && !curnode.showNoCompass) || curnode.routeR) {
-		var dir = Math.atan2(curnode.x-nextnode.x,curnode.y-nextnode.y);
-		eventqueue.push([spinCompass,[dir]]);
-	}
-	if (curnode.routeL || curnode.showLoSPlane) {
-		var targetLetter;
-		if (curnode.showLoSPlane) {
-			targetLetter = curnode.showLoSPlane;
-		} else {
-			var LOSs = Object.keys(curnode.routeL).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
-			targetLetter = curnode.routeL[LOSs[0]];
+	
+
+	if (rule) {
+		if (rule.getSpinCompass()) {
+			var dir = Math.atan2(curnode.x-nextnode.x,curnode.y-nextnode.y);
+			eventqueue.push([spinCompass,[dir]]);
 		}
-		eventqueue.push([mapSendScout,[mapship,MAPDATA[WORLD].maps[MAPNUM].nodes[targetLetter],(nextletter==targetLetter)]]);
+		if (rule.getShowLosPlane()) {
+			var targetLetter = rule.conditionCheckedNode;
+			
+			eventqueue.push([mapSendScout,[mapship,MAPDATA[WORLD].maps[MAPNUM].nodes[targetLetter],(nextletter==targetLetter)]]);
+		}
+	}
+	else {
+		if ((curnode.routeC && !curnode.showNoCompass) || curnode.routeR) {
+			var dir = Math.atan2(curnode.x-nextnode.x,curnode.y-nextnode.y);
+			eventqueue.push([spinCompass,[dir]]);
+		}
+		if (curnode.routeL || curnode.showLoSPlane) {
+			var targetLetter;
+			if (curnode.showLoSPlane) {
+				targetLetter = curnode.showLoSPlane;
+			} else {
+				var LOSs = Object.keys(curnode.routeL).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+				targetLetter = curnode.routeL[LOSs[0]];
+			}
+			eventqueue.push([mapSendScout,[mapship,MAPDATA[WORLD].maps[MAPNUM].nodes[targetLetter],(nextletter==targetLetter)]]);
+		}
 	}
 
 	eventqueue.push([mapMoveShip,[mapship,nextnode.x+MAPOFFX,nextnode.y+MAPOFFY]]);

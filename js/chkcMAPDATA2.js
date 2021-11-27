@@ -1902,7 +1902,7 @@ var MAPDATA = {
 								ChSpeedRule(">=", 10, 'D'),
 							], "AND", 'D'),
 							ChMultipleRulesRule([
-								ChIsLastDance('C'),
+								ChIsLastDanceRule('C'),
 								ChRandomRule({ 'B': .75, 'C': .25 })
 							], "OR", 'C', 'B'),
 						]

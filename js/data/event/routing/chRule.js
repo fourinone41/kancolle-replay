@@ -324,6 +324,28 @@ function ChRule () {
 
         return description;
     }
+
+    /**
+     * Returns if the compass should be spinned or not
+     * @returns true if compass need to be spined
+     */
+    this.getSpinCompass = function () {
+        switch (this.type) {
+            case "fixed":
+                return false;
+        
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Returns if LOS plane should be shown or not
+     * @returns true if LOS plane need to be shown
+     */
+    this.getShowLosPlane = function () {
+        return false;
+    } 
 }
 
 /**
@@ -481,7 +503,7 @@ function ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFa
  * @param {*} conditionFailedNode 
  * @returns 
  */
- function ChIsLastDance(conditionCheckedNode, conditionFailedNode) {
+ function ChIsLastDanceRule(conditionCheckedNode, conditionFailedNode) {
     let rule = new ChRule();
 
     rule.type = "isLastDance";
