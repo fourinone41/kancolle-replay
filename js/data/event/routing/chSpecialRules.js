@@ -72,3 +72,51 @@ function ChRandomAffectedByShipTypes(shipTypes, baseChance, conditionCheckedNode
 
     return rule;
 }
+
+function ChShipTypeRoutingRuleEscortOnly(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipTypeRoutingRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        let shipTypesTranslated = [];
+
+        for (const shipType of this.shipTypes) {
+            if (shipType == "aBB") shipTypesTranslated.push("(F)BB(V)");
+            else if (shipType == "aCV") shipTypesTranslated.push("CV(L/B)");
+            else shipTypesTranslated.push(shipType);
+        }
+
+        let shipList = shipTypesTranslated.join(" + ");
+
+        return `Number of ${shipList} in escort ${this.operator} ${this.count}`;
+    };
+
+    rule.getRouting = function (ships) {
+        let count = 0;
+
+        for (const shipType of this.shipTypes) {
+            count += ships.escort[shipType];
+        }
+
+        switch (this.operator) {
+            case "<":
+                if (count < this.count) return this.conditionCheckedNode;
+                break;
+            case "<=":
+                if (count <= this.count) return this.conditionCheckedNode;
+                break;
+            case "=":
+                if (count = this.count) return this.conditionCheckedNode;
+                break;
+            case ">":
+                if (count > this.count) return this.conditionCheckedNode;
+                break;
+            case ">=":
+                if (count >= this.count) return this.conditionCheckedNode;
+                break;
+        }
+        
+        return this.conditionFailedNode;
+    }
+
+    return rule;
+}

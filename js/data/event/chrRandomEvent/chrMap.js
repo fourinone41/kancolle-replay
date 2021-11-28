@@ -19,7 +19,7 @@ class ChrMap  {
 
     AddMapNode(letter, type, world, mapnum) {
         var node = MAPDATA[world].maps[mapnum].nodes[letter];
-        if (node.aironly && world <= 27 && world > 20) return; //already drawn on Summer 2014 map
+        //if (node.aironly && world <= 27 && world > 20) return; //already drawn on Summer 2014 map
         
         var nodeG = null;
         if (node.aironly) {

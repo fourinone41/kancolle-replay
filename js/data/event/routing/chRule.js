@@ -85,10 +85,10 @@ function ChRule () {
         
             case "shipType": {
                 let count = 0;
-                ships.CVN = ships.CVN ? ships.CVN : 0;
+                ships.c.CVN = ships.c.CVN ? ships.c.CVN : 0;
 
                 for (const shipType of this.shipTypes) {
-                    count += ships[shipType];
+                    count += ships.c[shipType];
                 }
 
                 switch (this.operator) {
@@ -553,7 +553,7 @@ function ChIfThenElseRule(ruleIf, ruleThen, ruleElse) {
     rule.type = "ifthenelse";
 
     ruleIf.conditionCheckedNode = true;
-    ruleIf.conditionFailedNode = true;
+    ruleIf.conditionFailedNode = false;
 
     rule.ifthenelse = {
         if: ruleIf,
