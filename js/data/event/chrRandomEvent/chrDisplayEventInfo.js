@@ -19,6 +19,8 @@ class ChrDisplayEventInfo {
     }
 
     Comps = {};
+
+    selectedDiff = null;
     
     Init () {
         $('body').append(this.root);
@@ -163,17 +165,38 @@ class ChrDisplayEventInfo {
 
         let compRoot = $(`<table>`)
 
-        let nodeRange = MAPDATA[this.GetCurrentWorld()].maps[mapnum].nodes[node].distance;
+        let nodeData = MAPDATA[this.GetCurrentWorld()].maps[mapnum].nodes[node];
+
+        let nodeInfos = [];
+        
+        if (nodeData.night) {
+            nodeInfos.push(`Night node`);
+        }
+
+        if (nodeData.distance) {
+            nodeInfos.push(`Node range : ${nodeData.distance ? nodeData.distance : 0}`);
+        }
 
         compRoot.append($(`
             <tr>
                 <th>Formation</th>
-                <th>Node range : ${nodeRange ? nodeRange : 0}</th>
+                <th>${nodeInfos.join(' - ')}</th>
                 <th>AD/AP<br>AS/AS+</th>
             </tr>
             `));
 
+        let compsKeys = null;
+        
+        if (this.selectedDiff) {
+            let nodeData = MAPDATA[this.GetCurrentWorld()].maps[mapnum].nodes[node];
+
+            compsKeys = nodeData.compDiff[this.selectedDiff];
+            if (nodeData.compDiffF) compsKeys = compsKeys.concat(nodeData.compDiffF[this.selectedDiff]);
+        }
+
         for (const compKey in comps) {
+            if (compsKeys && !compsKeys.includes(compKey)) continue;
+
             if (Object.hasOwnProperty.call(comps, compKey)) {
                 const comp = comps[compKey];
 
@@ -181,7 +204,47 @@ class ChrDisplayEventInfo {
             }
         }
 
-        $("#comp").html(compRoot);
+        $("#comp").html("<div>");
+
+        if (MAPDATA[this.GetCurrentWorld()].diffMode == 1) {
+            
+            let diffButtons = $("<div>");
+
+            for (const diff of MAPDATA[this.GetCurrentWorld()].allowDiffs) {
+
+                let diffTexte = this.GetDiffText(diff);                
+
+                let classes = `diff-button` + (this.selectedDiff == diff ? ` diff-button-selected` : '');
+                let button = $(`<button class="${classes}">${diffTexte}</button>`);
+
+                button.click(() => { this.selectedDiff = diff; this.DisplayComps(mapnum, node) });
+
+                diffButtons.append(button)
+            }
+
+            $("#comp").append(diffButtons);
+        }
+
+        $("#comp").append(compRoot);
+    }
+
+    GetDiffText(diff) {
+        switch (diff) {
+            case 4:
+                return "Casual";
+
+            case 1:
+                return "Easy";
+        
+            case 2:
+                return "Medium";
+                
+            case 3:
+                return "Hard";
+            
+            default: 
+                return "???";
+        }
     }
 
     STAT_KEYS = ["HP", "FP", "TP", "AA", "AR"];

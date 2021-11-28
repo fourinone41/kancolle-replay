@@ -370,16 +370,18 @@ function ChRule () {
                 let description = {};
                 
                 var LOSs = Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
-                var nodes = Object.values(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
                 
                 for (var i=0; i<LOSs.length; i++) {
-                    description[nodes[i]] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i - 1]}`;
+                    let node = this.LOS[LOSs[i]];
+                    let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
 
-                    if (LOSs[i-1]) {
-                        description[nodes[i]] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i]} and ${LOSs[i - 1]}`;
+                    description[node] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
+
+                    if (nodeAfter) {
+                        description[node] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i + 1]} and ${LOSs[i]}`;
                     }
                     else {
-                        description[nodes[i]] =  `LOS Cn${this.LOSCoef} < ${LOSs[i]}`;
+                        description[node] =  `LOS Cn${this.LOSCoef} < ${LOSs[i]}`;
                     }
                 }
 
