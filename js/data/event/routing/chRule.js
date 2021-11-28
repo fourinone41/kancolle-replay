@@ -634,8 +634,21 @@ function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedN
 
     rule.type = "los";
 
+    rule.conditionCheckedNode = losArray[Math.max(...Object.keys(losArray))];
+
     rule.LOS = losArray;
     rule.LOSCoef = coef ? coef : 1;
+
+    return rule;
+}
+
+/**
+ * Returns the rule and making it so that LOS plane wont show up if the rule is validated
+ * @param {ChRule} rule 
+ * @returns {ChRule}
+ */
+function ChDontShowLOSPlane(rule) {
+    rule.getShowLosPlane = () => { return false; }
 
     return rule;
 }
