@@ -186,12 +186,16 @@ class ChrDisplayEventInfo {
             `));
 
         let compsKeys = null;
+        let compsKeysFinal = null;
         
         if (this.selectedDiff) {
             let nodeData = MAPDATA[this.GetCurrentWorld()].maps[mapnum].nodes[node];
 
             compsKeys = nodeData.compDiff[this.selectedDiff];
-            if (nodeData.compDiffF) compsKeys = compsKeys.concat(nodeData.compDiffF[this.selectedDiff]);
+            if (nodeData.compDiffF) {
+                compsKeys = compsKeys.concat(nodeData.compDiffF[this.selectedDiff]);
+                compsKeysFinal = nodeData.compDiffF[this.selectedDiff];
+            }
         }
 
         for (const compKey in comps) {
@@ -200,7 +204,7 @@ class ChrDisplayEventInfo {
             if (Object.hasOwnProperty.call(comps, compKey)) {
                 const comp = comps[compKey];
 
-                compRoot.append(this.DisplayComp(comp, compKey));
+                compRoot.append(this.DisplayComp(comp, compKey, compsKeysFinal && compsKeysFinal.includes(compKey)));
             }
         }
 
@@ -327,13 +331,17 @@ class ChrDisplayEventInfo {
         '314E': "Cruising Formation 4 <br>(Combined LA)",
     };
 
-    DisplayComp(comp, compKey) {
+    DisplayComp(comp, compKey, isLastDance) {
         let line = $("<tr>");
 
         // --- comp name
         let column = $("<td></td>").append(compKey);
         column.append("<br>");
         column.append(this.GetFormation(comp.f));
+
+        if (isLastDance) { 
+            column.append(`<br><span class="last-dance-text">Final</span>`)
+        }
 
         line.append(column);
 

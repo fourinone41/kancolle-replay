@@ -90,3 +90,8 @@ button.diff-button.diff-button-selected {
     font-weight: 700;
     color: #e3e3e3;
 }
+
+span.last-dance-text {
+    color: red;
+    font-weight: 600;
+}
