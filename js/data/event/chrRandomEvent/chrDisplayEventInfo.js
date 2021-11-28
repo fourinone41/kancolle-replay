@@ -6,6 +6,9 @@ class ChrDisplayEventInfo {
             <div id="mapButtons"></div>
 
             <div id="pageContent">
+                <div id="mapInfo">
+                    <div id="mapInfoMapInfo"></div>
+                </div>
                 <div id="mapAndCompsContainer">
                     <div id="map"></div>
                     <div id="comp"></div>
@@ -47,6 +50,9 @@ class ChrDisplayEventInfo {
             button.click(() => {
                 this.currentMap = mapNum + 1;
                 this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1);
+
+                // --- Display map infos
+                this.DisplayMapInfos();
 
                 // --- Routing
                 this.DisplayRouting();
@@ -385,6 +391,20 @@ class ChrDisplayEventInfo {
 
         return `${Math.floor(ap/3)} / ${Math.floor(ap/1.5)}<br>${Math.floor(ap*1.5)} / ${Math.floor(ap*3)}`;
     }
+
+    //#region Map infos
+    DisplayMapInfos() {
+        let map = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap];
+
+        let mapInfos = map.mapInfo ? map.mapInfo : "";
+
+        if (mapInfos) {
+            mapInfos = $(`<div class="mapInfoTitle">Informations about this map :</div><div class="mapInfoContent">${mapInfos}</div>`);
+        }
+
+        $("#mapInfoMapInfo").html(mapInfos);
+    } 
+    //#endregion
 }
 
 ChrDisplayEventInfo.MAP_COUNT = 7;
