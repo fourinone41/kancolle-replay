@@ -120,3 +120,112 @@ function ChShipTypeRoutingRuleEscortOnly(shipTypes, operator, count, conditionCh
 
     return rule;
 }
+
+/**
+ * Ship type routing but some ship have different weight
+ * @param {*} shipTypes 
+ * @param {*} operator 
+ * @param {*} count 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+function ChShipTypeRoutingWithWeightRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipTypeRoutingRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        let shipTypesTranslated = [];
+
+        for (const coef in this.shipTypes) {
+            let desc = coef != 1 ? '(' : '';
+            let types = [];
+
+            for (const shipType of this.shipTypes[coef]) {
+                if (shipType == "aBB") types.push("(F)BB(V)");
+                else if (shipType == "aCV") types.push("CV(L/B)");
+                else types.push(shipType);
+            }
+
+            desc += types.join(' + ');
+            desc += coef != 1 ? `) * ${coef}` : '';
+
+            shipTypesTranslated.push(desc);
+        }
+
+        let shipList = shipTypesTranslated.join(" + ");
+
+        return `Number of ${shipList} in escort ${this.operator} ${this.count}`;
+    };
+
+    rule.getRouting = function (ships) {
+        let count = 0;
+
+        for (const coef in this.shipTypes) {
+            for (const shipType of this.shipTypes[coef]) {
+                count += ships.escort[shipType] * coef;
+            }
+        }
+
+        switch (this.operator) {
+            case "<":
+                if (count < this.count) return this.conditionCheckedNode;
+                break;
+            case "<=":
+                if (count <= this.count) return this.conditionCheckedNode;
+                break;
+            case "=":
+                if (count = this.count) return this.conditionCheckedNode;
+                break;
+            case ">":
+                if (count > this.count) return this.conditionCheckedNode;
+                break;
+            case ">=":
+                if (count >= this.count) return this.conditionCheckedNode;
+                break;
+        }
+        
+        return this.conditionFailedNode;
+    }
+
+    return rule;
+}
+
+function ChShipHistoricalRoutingRuleEscortOnly(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        return `${this.count} ship from ${this.shipsIdsListName} in escort`;
+    };
+
+    rule.getRouting = function (ships) {
+        let count = 0;
+
+        for (const shipId of this.shipsIds) {
+            if (isShipInList(ships.escort.ids, shipId)) count++;
+        }
+
+        return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
+    }
+
+    return rule;
+}
+
+function ChShipHistoricalRoutingRuleMainFleetOnly(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        return `${this.count} ship from ${this.shipsIdsListName} in main fleet`;
+    };
+
+    rule.getRouting = function (ships) {
+        let count = 0;
+
+        for (const shipId of this.shipsIds) {
+            if (isShipInList(ships.ids, shipId)) count++;
+        }
+
+        return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
+    }
+
+    return rule;
+}

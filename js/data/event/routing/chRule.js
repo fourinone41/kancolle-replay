@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds"}
      */
     this.type = "fixed";
 
@@ -19,6 +19,13 @@ function ChRule () {
      * @type {string[]}
      */
     this.shipTypes = [];
+
+    /**
+     * @type {number[]}
+     */
+    this.shipsIds = [];
+
+    this.shipsIdsListName = "";
 
     this.equipData = {
         equipIds: [],
@@ -82,6 +89,9 @@ function ChRule () {
         switch (this.type) {
             case "fixed":
                 return this.fixedNode;
+                
+            case "default":
+                return this.conditionCheckedNode;
         
             case "shipType": {
                 let count = 0;
@@ -110,6 +120,16 @@ function ChRule () {
                 }
                 
                 return this.conditionFailedNode;
+            }
+
+            case 'shipIds': {
+                let count = 0;
+
+                for (const shipId of this.shipsIds) {
+                    if (isShipInList(ships.c.ids, shipId)) count++;
+                }
+
+                return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
             }
 
             case 'shipCount' : {
@@ -251,7 +271,10 @@ function ChRule () {
         switch (this.type) {
             case "fixed":
                 return "Fixed routing";
-        
+
+            case "default":
+                return "Does not meet the other requirements";
+
             case "shipType": {
                 let shipTypesTranslated = [];
 
@@ -264,6 +287,10 @@ function ChRule () {
                 let shipList = shipTypesTranslated.join(" + ");
 
                 return `Number of ${shipList} ${this.operator} ${this.count}`;
+            }
+
+            case "shipIds": {
+                return `${this.count} ship from ${this.shipsIdsListName} in the fleet`;
             }
 
             case 'shipCount' : {
@@ -445,6 +472,28 @@ function ChFixedRoutingRule(fixedNode) {
 
     rule.fixedNode = fixedNode;
     rule.type = "fixed";
+
+    return rule;
+}
+
+/**
+ * Rule that check if ships are in fleet
+ * @param {number[]} shipsIds 
+ * @param {"=", ">=", "<=", "<", ">"} operator
+ * @returns 
+ */
+ function ChShipHistoricalRoutingRule(groupName, shipsIds, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "shipIds";
+
+    rule.shipsIds = shipsIds;
+    rule.shipsIdsListName = groupName;
+
+    rule.count = count;
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
 
     return rule;
 }
@@ -651,6 +700,16 @@ function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedN
  */
 function ChDontShowLOSPlane(rule) {
     rule.getShowLosPlane = () => { return false; }
+
+    return rule;
+}
+
+function ChDefaultRouteRule(node) {
+    let rule = new ChRule();
+
+    rule.type = "default";
+
+    rule.conditionCheckedNode = node;
 
     return rule;
 }

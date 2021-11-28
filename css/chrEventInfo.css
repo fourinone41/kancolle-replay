@@ -113,3 +113,15 @@ span.last-dance-text {
     border-style: solid;
     border-width: thin;
 }
+
+div#routingContainer {
+    max-width: 28%;
+}
+
+.mapInfoContentGroupTitle {
+    margin: 5px 10px;
+}
+
+.mapInfoContentGroupContainer {
+    margin: 10px;
+}

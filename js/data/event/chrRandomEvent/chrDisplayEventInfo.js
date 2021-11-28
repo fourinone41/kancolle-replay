@@ -403,6 +403,55 @@ class ChrDisplayEventInfo {
         }
 
         $("#mapInfoMapInfo").html(mapInfos);
+
+        // --- Historical routing
+
+        /**
+         * @type {ChRule[]}
+         */
+        let historicalRoutingRules = [];
+        let histoGroups = [];
+
+        for (const nodeKey in map.nodes) {
+            let node =  map.nodes[nodeKey];
+            if (!node.rules) continue;
+
+            for (const rule of node.rules) {
+                if (rule.type == 'shipIds' && !histoGroups.includes(rule.shipsIdsListName)) {
+                    historicalRoutingRules.push(rule);
+                    histoGroups.push(rule.shipsIdsListName);
+                }
+            }
+        }
+
+        if (historicalRoutingRules.length) {
+            $("#mapInfoMapInfo").append($(`<div class="mapInfoTitle">Historical groups for routing :</div>`));
+
+            let groups = $("<div>").addClass("mapInfoContent");
+
+            for (const rule of historicalRoutingRules) {
+                let group = $("<div>");
+
+                let groupTitle = $("<div>").addClass("mapInfoContentGroupTitle");
+                groupTitle.append(rule.shipsIdsListName)
+
+                let groupContainer = $("<div>").addClass("mapInfoContentGroupContainer");
+
+                for (const shipMid of rule.shipsIds) {
+                    let shipImg = $("<img>");
+                    shipImg.attr("src", 'assets/icons/' + SHIPDATA[shipMid].image);
+
+                    groupContainer.append(shipImg);
+                }
+
+                group.append(groupTitle);
+                group.append(groupContainer);
+
+                groups.append(group);
+            }
+
+            $("#mapInfoMapInfo").append(groups);
+        }
     } 
     //#endregion
 }
