@@ -6049,7 +6049,7 @@ var MAPDATA = {
 						},
 						routeC: function(ships) {
 							if (ships.SS+ships.SSV >= 4) return 'C';
-							if (ships.aBB + ships.CV + ships.CVB + ships.CVN <= 0 && ships.speed >= 10) return 'D';
+							if (ships.aBB + ships.CV + ships.CVB <= 0 && ships.speed >= 10) return 'D';
 							if (CHDATA.event.maps[3].hp <= 1) return 'C';
 							return (Math.random() < .75)? 'B':'C';
 						},
@@ -6067,7 +6067,7 @@ var MAPDATA = {
 							1: ['3'],
 						},
 						routeC: function(ships) {
-							return (Math.random() < .2*(ships.CV+ships.CVB+ships.CVN))? 'E':'H';
+							return (Math.random() < .2*(ships.CV+ships.CVB))? 'E':'H';
 						},
 					},
 					'C': {
@@ -7226,7 +7226,7 @@ var MAPDATA = {
 						y: 327,
 						routeC: function(ships) {
 							if (ships.DD >= 4) return 'C';
-							if (ships.aBB||(ships.CV+ships.CVB+ships.CVN)||ships.SS||ships.SSV) return 'A';
+							if (ships.aBB||(ships.CV+ships.CVB)||ships.SS||ships.SSV) return 'A';
 							if (ships.DD >=2 && ships.CVL <= 2 && ships.CA+ships.CAV <= 2) return 'C';
 							return 'A';
 						}
