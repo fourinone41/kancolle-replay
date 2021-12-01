@@ -1898,7 +1898,7 @@ var MAPDATA = {
 						rules: [
 							ChShipTypeRoutingRule(['SS', 'SSV'], '>=', 4, 'C'),
 							ChMultipleRulesRule([
-								ChShipTypeRoutingRule(['aBB', 'CV', 'CVB', 'CVN'], '<=', 0, 'D'),
+								ChShipTypeRoutingRule(['aBB', 'CV', 'CVB'], '<=', 0, 'D'),
 								ChSpeedRule(">=", 10, 'D'),
 							], "AND", 'D'),
 							ChMultipleRulesRule([
@@ -1920,7 +1920,7 @@ var MAPDATA = {
 							1: ['3'],
 						},
 						rules: [
-							ChRandomAffectedByShipTypes(["CV", 'CVB', 'CVN'], 0.2, 'E', 'H')
+							ChRandomAffectedByShipTypes(["CV", 'CVB'], 0.2, 'E', 'H')
 						]
 					},
 					'C': {

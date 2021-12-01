@@ -336,8 +336,11 @@ function changeRates() {
 				if (compShips[i] != +ids[i]) { found = true; break; }
 			}
 			if (found) continue;
-			let form = comp.substr(comp.lastIndexOf('(')+1).replace(')','');
-			if (FORMATIONMAP[form] != compData.formation) continue;
+			let form = FORMATIONMAP[comp.substr(comp.lastIndexOf('(')+1).replace(')','')];
+			if (!form) {
+				form = +comp.substr(comp.lastIndexOf('/')+1);
+			}
+			if (form != compData.formation) continue;
 			poiComp = comp;
 			break;
 		}
@@ -504,6 +507,10 @@ function poiLoadData(map,cellId,diff) {
 	let letter = (!+cellId)? cellId : String.fromCharCode(+cellId+64);
 	let url = 'https://db.kcwiki.org/drop/map/'+map.replace('-','')+'/'+letter+'-SAB.json';
 	if (diff) url = url.replace('/'+letter,'/'+diff+'/'+letter);
+	if (map >= '52') {
+		url = 'https://db.kcwiki.org/api/cache/drop_map_' + map.replace('-','') + '_' + letter + '-SAB'
+		if (diff) url = url.replace('_'+letter,'_'+letter+'-'+diff);
+	}
 	$('#linkPoi').attr('href',url.replace('.json','.html'));
 	if (POIDATA[map] && POIDATA[map][cellId] && (!diff || diff == 4)) return;
 	if (!POIDATA[map]) POIDATA[map] = {};
@@ -512,7 +519,7 @@ function poiLoadData(map,cellId,diff) {
 	$('#spanHL').hide();
 	$('#spanGroup').hide();
 	$('#linkExport').hide();
-	if (window.location.hostname == 'fourinone41.github.io') url = 'https://cors.bridged.cc/' + url;
+	if (window.location.hostname == 'fourinone41.github.io') url = 'https://salty-brushlands-75370.herokuapp.com/' + url;
 	$.getJSON(url,function(data) {
 		if (!POIDATA[map][cellId]) {
 			POIDATA[map][cellId] = { 'orig': data, 'counts': {} };
