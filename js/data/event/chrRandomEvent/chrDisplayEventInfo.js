@@ -175,7 +175,7 @@ class ChrDisplayEventInfo {
 
         let nodeInfos = [];
         
-        if (nodeData.night) {
+        if (nodeData.night || (Object.values(comps).map(x => x.NB ? 1 : 0).includes(1))) {
             nodeInfos.push(`Night node`);
         }
 

@@ -105,7 +105,7 @@ function ChShipTypeRoutingRuleEscortOnly(shipTypes, operator, count, conditionCh
                 if (count <= this.count) return this.conditionCheckedNode;
                 break;
             case "=":
-                if (count = this.count) return this.conditionCheckedNode;
+                if (count == this.count) return this.conditionCheckedNode;
                 break;
             case ">":
                 if (count > this.count) return this.conditionCheckedNode;
@@ -174,7 +174,7 @@ function ChShipTypeRoutingWithWeightRule(shipTypes, operator, count, conditionCh
                 if (count <= this.count) return this.conditionCheckedNode;
                 break;
             case "=":
-                if (count = this.count) return this.conditionCheckedNode;
+                if (count == this.count) return this.conditionCheckedNode;
                 break;
             case ">":
                 if (count > this.count) return this.conditionCheckedNode;

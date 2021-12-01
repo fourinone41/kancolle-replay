@@ -109,7 +109,7 @@ function ChRule () {
                         if (count <= this.count) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (count = this.count) return this.conditionCheckedNode;
+                        if (count == this.count) return this.conditionCheckedNode;
                         break;
                     case ">":
                         if (count > this.count) return this.conditionCheckedNode;
@@ -141,7 +141,7 @@ function ChRule () {
                         if (ships.total <= this.count) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (ships.total = this.count) return this.conditionCheckedNode;
+                        if (ships.total == this.count) return this.conditionCheckedNode;
                         break;
                     case ">":
                         if (ships.total > this.count) return this.conditionCheckedNode;
@@ -188,7 +188,7 @@ function ChRule () {
                         if (ships.speed <= this.speed) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (ships.speed = this.speed) return this.conditionCheckedNode;
+                        if (ships.speed == this.speed) return this.conditionCheckedNode;
                         break;
                     case ">":
                         if (ships.speed > this.speed) return this.conditionCheckedNode;
