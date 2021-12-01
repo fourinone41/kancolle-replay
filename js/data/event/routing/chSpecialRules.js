@@ -229,3 +229,49 @@ function ChShipHistoricalRoutingRuleMainFleetOnly(groupName, shipTypes, count, c
 
     return rule;
 }
+
+/**
+ * 
+ * @param {ChRule} LOSRule 
+ * @param {ChRule} randomRule 
+ * @returns 
+ */
+function ChIfLosThenElseRandomRule(LOSRule, randomRule) {
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.getRouting = () => {
+        let node = LOSRule.getRouting();
+        if (node) return node;
+
+        return randomRule.getRouting();
+    };
+    
+    rule.getDescription = () => {
+        let description = {};
+        
+        let losDesc = LOSRule.getDescription();
+        for (const node in losDesc) {
+            
+            if (node) description[node] = `${losDesc[node]}`;
+            else {
+                let nodeCombined = Object.keys(randomRule.randomNodes).join("/");
+
+                description[nodeCombined] = `${losDesc[node]}`;
+            }
+
+        }
+
+        let randomDesc = randomRule.GetRandomDescription();
+        for (const node in randomDesc) {
+            description[node] = randomDesc[node];
+        }
+
+        return description;
+    };
+
+    rule.getShowLosPlane = () => { return true; }
+
+    return rule;
+}

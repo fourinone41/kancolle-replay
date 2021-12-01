@@ -400,6 +400,9 @@ function ChRule () {
                 
                 for (var i=0; i<LOSs.length; i++) {
                     let node = this.LOS[LOSs[i]];
+
+                    if (!node) continue;
+
                     let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
 
                     description[node] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
@@ -700,6 +703,17 @@ function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedN
  */
 function ChDontShowLOSPlane(rule) {
     rule.getShowLosPlane = () => { return false; }
+
+    return rule;
+}
+
+/**
+ * Returns the rule and making it so that LOS plane show up if the rule is validated
+ * @param {ChRule} rule 
+ * @returns {ChRule}
+ */
+ function ChShowLOSPlane(rule) {
+    rule.getShowLosPlane = () => { return true; }
 
     return rule;
 }
