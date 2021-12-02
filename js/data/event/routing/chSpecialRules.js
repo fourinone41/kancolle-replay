@@ -121,6 +121,54 @@ function ChShipTypeRoutingRuleEscortOnly(shipTypes, operator, count, conditionCh
     return rule;
 }
 
+function ChShipTypeRoutingRuleMainFleetOnly(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipTypeRoutingRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        let shipTypesTranslated = [];
+
+        for (const shipType of this.shipTypes) {
+            if (shipType == "aBB") shipTypesTranslated.push("(F)BB(V)");
+            else if (shipType == "aCV") shipTypesTranslated.push("CV(L/B)");
+            else shipTypesTranslated.push(shipType);
+        }
+
+        let shipList = shipTypesTranslated.join(" + ");
+
+        return `Number of ${shipList} in main fleet ${this.operator} ${this.count}`;
+    };
+
+    rule.getRouting = function (ships) {
+        let count = 0;
+
+        for (const shipType of this.shipTypes) {
+            count += ships[shipType];
+        }
+
+        switch (this.operator) {
+            case "<":
+                if (count < this.count) return this.conditionCheckedNode;
+                break;
+            case "<=":
+                if (count <= this.count) return this.conditionCheckedNode;
+                break;
+            case "=":
+                if (count == this.count) return this.conditionCheckedNode;
+                break;
+            case ">":
+                if (count > this.count) return this.conditionCheckedNode;
+                break;
+            case ">=":
+                if (count >= this.count) return this.conditionCheckedNode;
+                break;
+        }
+        
+        return this.conditionFailedNode;
+    }
+
+    return rule;
+}
+
 /**
  * Ship type routing but some ship have different weight
  * @param {*} shipTypes 
@@ -243,9 +291,16 @@ function ChIfLosThenElseRandomRule(LOSRule, randomRule) {
 
     rule.getRouting = () => {
         let node = LOSRule.getRouting();
-        if (node) return node;
 
-        return randomRule.getRouting();
+        if (node) {
+            rule.conditionCheckedNode = LOSRule.LOS[Math.max(...Object.keys(losArray))];
+            return node;
+        }
+
+        node = randomRule.getRouting();
+        rule.conditionCheckedNode = node;
+
+        return node;
     };
     
     rule.getDescription = () => {
@@ -271,7 +326,7 @@ function ChIfLosThenElseRandomRule(LOSRule, randomRule) {
         return description;
     };
 
-    rule.getShowLosPlane = () => { return true; }
+    rule.getShowLosPlane = () => { return !!rule.conditionCheckedNode; }
 
     return rule;
 }

@@ -4737,11 +4737,11 @@ var MAPDATA = {
 							ChShipTypeRoutingRuleEscortOnly(['CLT'], '>=', 3, 'E'),
 							ChShipTypeRoutingRule(['aBB'], '>=', 5, 'E'),
 							ChIfThenElseRule(
-								ChShipTypeRoutingRuleEscortOnly(['aBB'], '==', 4, 'G'),
+								ChShipTypeRoutingRule(['aBB'], '==', 4, 'G'),
 								ChRandomRule({ 'E': .75, 'G': .25 })
 							),
 							ChIfThenElseRule(
-								ChShipTypeRoutingRuleEscortOnly(['aBB'], '==', 3, 'G'),
+								ChShipTypeRoutingRule(['aBB'], '==', 3, 'G'),
 								ChRandomRule({ 'E': .25, 'G': .75 })
 							),
 							ChDefaultRouteRule('G')
@@ -4784,25 +4784,25 @@ var MAPDATA = {
 							ChLOSRule({ 90: '', 87: 'F' }),
 
 							ChShowLOSPlane(ChMultipleRulesRule([
-								ChShipTypeRoutingRule(["aCV"], '<=', 2, 'J'),
-								ChShipTypeRoutingRule(["LHA", 'CL'], '>', 0, 'J'),
+								ChShipTypeRoutingRuleMainFleetOnly(["aCV"], '<=', 2, 'J'),
+								ChShipTypeRoutingRuleMainFleetOnly(["LHA", 'CL'], '>', 0, 'J'),
 							], "AND", 'J')),
 
 							ChShowLOSPlane(ChMultipleRulesRule([
-								ChShipTypeRoutingRule(["aCV"], '>=', 3, 'I'),
-								ChShipTypeRoutingRule(["aBB"], '>=', 2, 'I'),
+								ChShipTypeRoutingRuleMainFleetOnly(["aCV"], '>=', 3, 'I'),
+								ChShipTypeRoutingRuleMainFleetOnly(["aBB"], '>=', 2, 'I'),
 							], "AND", 'I')),
 							
-							ChShowLOSPlane(ChShipTypeRoutingRule(["CV", "CVB"], '>=', 3, 'I')),
+							ChShowLOSPlane(ChShipTypeRoutingRuleMainFleetOnly(["CV", "CVB"], '>=', 3, 'I')),
 
 							ChShowLOSPlane(ChIfThenElseRule(
-								ChShipTypeRoutingRule(["CVL"], '>=', 4, 'J'),
+								ChShipTypeRoutingRuleMainFleetOnly(["CVL"], '>=', 4, 'J'),
 								ChRandomRule({ 'J': .9, 'I': .1 })
 							)),
 							
 							ChShowLOSPlane(ChMultipleRulesRule([
-								ChShipTypeRoutingRule(["aCV"], '<=', 3, 'J'),
-								ChShipTypeRoutingRule(["CV", "CVB"], '<=', 2, 'J')
+								ChShipTypeRoutingRuleMainFleetOnly(["aCV"], '<=', 3, 'J'),
+								ChShipTypeRoutingRuleMainFleetOnly(["CV", "CVB"], '<=', 2, 'J')
 							], "AND", 'J')),
 
 							ChShowLOSPlane(ChRandomRule({ 'J': .5, 'H': .5 }))

@@ -152,7 +152,7 @@ MAPDATA[97].loadNodesFromChData = function (worldNum, mapNum) {
 function chrGetRandomBgm(type) {
     let bannedMap = [2001, 2, 1];
     let bannedBattle = [2001, 2, 1];
-    let bannedBoss = [2001, 2, 1, 96, 36, 35, 34, 33, 32];
+    let bannedBoss = [2001, 2, 1, 96, 36, 35, 34, 33, 32, 1001];
 
     if (!chrGetRandomBgm.possibleBGM) {
 
