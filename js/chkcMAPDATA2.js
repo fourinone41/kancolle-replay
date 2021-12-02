@@ -4900,12 +4900,15 @@ var MAPDATA = {
 				additionalChecks: function(ships,errors) {
 					if (ships.total > ships.CL + ships.DD) errors.push('CL and DD only');
 				},
+				mapInfo: 'You can only sortie CLs and DDs',
 				nodes: {
 					'Start': {
 						type: 0,
 						x: 355,
 						y: 238,
-						routeR: { 'A': .5, 'B': .5 }
+						rules: [
+							ChRandomRule({ 'A': .5, 'B': .5 }),
+						]
 					},
 					'A': {
 						type: 1,
@@ -4917,19 +4920,25 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C')
+						]
 					},
 					'B': {
 						type: 3,
 						x: 252,
 						y: 305,
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'C': {
 						type: 3,
 						x: 481,
 						y: 340,
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule('D')
+						]
 					},
 					'D': {
 						type: 1,
@@ -4941,7 +4950,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						route: 'G'
+						rules: [
+							ChFixedRoutingRule('G')
+						]
 					},
 					'E': {
 						type: 1,
@@ -4953,13 +4964,17 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'F': {
 						type: 3,
 						x: 160,
 						y: 147,
-						routeL: { 3: 'H', 0: 'J' }
+						rules: [
+							ChLOSRule({ 3: 'H', 0: 'J' })
+						]
 					},
 					'G': {
 						type: 1,
@@ -4970,10 +4985,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeC: function(ships) {
-							if (ships.CL >= 5) return 'K';
-							return 'I';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['CL'], '<', 5, 'I', 'K'),
+						]
 					},
 					'H': {
 						type: 1,
@@ -4985,18 +4999,12 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5'],
 						},
-						routeC: function(ships) {
-							if (ships.CL >= 4) {
-								this.showLoSPlane = null;
-								return 'J';
-							}
-							if (ships.CL > 1) {
-								this.showLoSPlane = null;
-								return 'G';
-							}
-							this.showLoSPlane = 'I';
-							return checkELoS33(getELoS33(1,1),{ 8: 'I', 5: 'G' });
-						}
+						rules: [
+							ChShipTypeRoutingRule(['CL'], '>=', 4, 'J'),
+							ChShipTypeRoutingRule(['CL'], '>', 1, 'G'),
+							ChLOSRule({ 8: 'I', 5: 'G' })
+						]
+						
 					},
 					'I': {
 						type: 1,
@@ -5061,7 +5069,14 @@ var MAPDATA = {
 							if (ships.CLT > 1) return 'B';
 							if (ships.DD + ships.CL + ships.CVL + ships.LHA + ships.AR >= 2) return 'A';
 							return 'B';
-						}
+						},
+						rules: [
+							ChShipTypeRoutingRule(['aBB'], '>', 2, 'B'),
+							ChShipTypeRoutingRule(['CV', 'CVB'], '>', 2, 'B'),
+							ChShipTypeRoutingRule(['CLT'], '>', 1, 'B'),
+							ChShipTypeRoutingRule(['DD','CL','CVL','LHA','AR'], '>=', 2, 'A'),
+							ChDefaultRouteRule('B')
+						]
 					},
 					'A': {
 						type: 1,
@@ -5072,21 +5087,24 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeC: function(ships) {
-							if (ships.speed >= 10 && ships.CL >= 1 && ships.CAV <= 1 && ships.DD+ships.CAV >= 4) return 'D';
-							return 'F';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChSpeedRule(">=", 10, 'D'),
+								ChShipTypeRoutingRule(['CL'], '>=', 1, 'D'),
+								ChShipTypeRoutingRule(['CAV'], '<=', 1, 'D'),
+								ChShipTypeRoutingRule(['CAV','DD'], '>=', 4, 'D'),
+							], 'AND', 'D', 'F')
+						]
 					},
 					'B': {
 						type: 4,
 						x: 210,
 						y: 108,
 						resource: 1,
-						routeC: function(ships) {
-							if (ships.SS + ships.SSV >= 3) return 'J';
-							if (ships.DD + ships.CL + ships.CVL + ships.LHA + ships.AR <= 0) return 'J';
-							return 'C';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['SS', 'SSV'], '>=', 3, 'J'),
+							ChShipTypeRoutingRule(['DD','CL','CVL','LHA','AR'], '<=', 0, 'J', 'C'),
+						]
 					},
 					'C': {
 						type: 1,
@@ -5097,13 +5115,17 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'D': {
 						type: 3,
 						x: 247,
 						y: 307,
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'E': {
 						type: 1,
@@ -5114,7 +5136,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						route: 'G'
+						rules: [
+							ChFixedRoutingRule('G')
+						]
 					},
 					'F': {
 						type: 1,
@@ -5125,10 +5149,15 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeC: function(ships) {
-							if (ships.DD >= 1 && ships.aCV <= 4 && ships.CV + ships.CVB <= 1 && ships.aBB + ships.CV + ships.CVB <= 2 && ships.CLT <= 1) return 'G';
-							return 'H';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['DD'], '>=', 1, 'G'),
+								ChShipTypeRoutingRule(['aCV'], '<=', 4, 'G'),
+								ChShipTypeRoutingRule(['CV', 'CVB'], '<=', 1, 'G'),
+								ChShipTypeRoutingRule(['CV', 'CVB', 'aBB'], '<=', 2, 'G'),
+								ChShipTypeRoutingRule(['CLT'], '<=', 1, 'G'),
+							], 'AND', 'G', 'H')
+						]
 					},
 					'G': {
 						type: 1,
@@ -5139,7 +5168,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeL: { 20: 'I', 17: 'L' }
+						rules: [
+							ChLOSRule({ 20: 'I', 17: 'L' })
+						]
 					},
 					'H': {
 						type: 1,
@@ -5150,7 +5181,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeL: { 20: 'I', 17: 'K' }
+						rules: [
+							ChLOSRule({ 20: 'I', 17: 'K' })
+						]
 					},
 					'I': {
 						type: 1,
@@ -5215,17 +5248,19 @@ var MAPDATA = {
 						type: 0,
 						x: 103,
 						y: 152,
-						routeC: function(ships) {
-							if (isShipInList(ships.escort.ids,56) && isShipInList(ships.escort.ids,137)) return 'C';
-							if (ships.CAV == 2) return 'C';
-							return (Math.random() < .7)? 'A' : 'C';
-						}
+						rules: [
+							ChShipHistoricalRoutingRuleEscortOnly('Naka and Noshiro', [56, 137], 2, 'C'),
+							ChShipTypeRoutingRuleMainFleetOnly(['CAV'], '=', 2, 'C'),
+							ChRandomRule({ 'A': .7, 'C': .3 }),
+						]
 					},
 					'A': {
 						type: 3,
 						x: 235,
 						y: 112,
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule('B')
+						]
 					},
 					'B': {
 						type: 1,
@@ -5236,14 +5271,14 @@ var MAPDATA = {
 							2: ['3'],
 							1: ['4'],
 						},
-						routeC: function(ships) {
-							if (ships.aBB + ships.CV + ships.CVB >= 5) return 'F';
-							if (ships.escort.aBB + ships.escort.CLT) return 'F';
-							if (ships.escort.DD >= 4) return 'C';
-							if (ships.aBB >= 4) return 'F';
-							if (ships.aCV >= 4) return 'F';
-							return 'C';
-						}
+						rules: [
+							ChShipTypeRoutingRuleMainFleetOnly(['aBB', 'CV', 'CVB'], '>=', 5, 'F'),
+							ChShipTypeRoutingRuleEscortOnly(['aBB', 'CLT'], '>', 0, 'F'),
+							ChShipTypeRoutingRuleEscortOnly(['DD'], '>=', 4, 'C'),
+							ChShipTypeRoutingRuleMainFleetOnly(['aBB'], '>=', 4, 'F'),
+							ChShipTypeRoutingRuleMainFleetOnly(['aCV'], '>=', 4, 'F'),
+							ChDefaultRouteRule('C')
+						]
 					},
 					'C': {
 						type: 1,
@@ -5254,9 +5289,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeC: function(ships) {
-							return 'E';
-						}
+						rules: [
+							ChShowCompass(ChFixedRoutingRule('E'))
+						]
 					},
 					'D': {
 						type: 3,
@@ -5269,14 +5304,14 @@ var MAPDATA = {
 						x: 418,
 						y: 330,
 						resource: 1,
-						routeC: function(ships) {
-							if (ships.aBB + ships.CV + ships.CVB >= 5) return 'F';
-							if (ships.escort.aBB + ships.escort.CLT) return 'F';
-							if (ships.escort.DD >= 4) return 'H';
-							if (ships.aBB >= 4) return 'F';
-							if (ships.aCV >= 4) return 'F';
-							return 'H';
-						}
+						rules: [
+							ChShipTypeRoutingRuleMainFleetOnly(['aBB', 'CV', 'CVB'], '>=', 5, 'F'),
+							ChShipTypeRoutingRuleEscortOnly(['aBB', 'CLT'], '>', 0, 'F'),
+							ChShipTypeRoutingRuleEscortOnly(['DD'], '>=', 4, 'H'),
+							ChShipTypeRoutingRuleMainFleetOnly(['aBB'], '>=', 4, 'F'),
+							ChShipTypeRoutingRuleMainFleetOnly(['aCV'], '>=', 4, 'F'),
+							ChDefaultRouteRule('H')
+						]
 					},
 					'F': {
 						type: 1,
@@ -5287,10 +5322,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						routeC: function(ships) {
-							if (ships.escort.CLT >= 2) return 'G';
-							return 'H';
-						}
+						rules: [
+							ChShipTypeRoutingRuleEscortOnly(['CLT'], '>=', 2, 'G', 'H'),
+						]
 					},
 					'G': {
 						type: 1,
@@ -5301,7 +5335,9 @@ var MAPDATA = {
 							2: ['1','2'],
 							1: ['1','2'],
 						},
-						routeL: { 80: 'I', 77: 'J' }
+						rules: [
+							ChLOSRule({ 80: 'I', 77: 'J' })
+						]
 					},
 					'H': {
 						type: 1,
@@ -5312,7 +5348,9 @@ var MAPDATA = {
 							2: ['3','4'],
 							1: ['5','6'],
 						},
-						route: 'K'
+						rules: [
+							ChFixedRoutingRule('K')
+						]
 					},
 					'I': {
 						type: 1,
@@ -5323,7 +5361,9 @@ var MAPDATA = {
 							2: ['1'],
 							1: ['1'],
 						},
-						route: 'K'
+						rules: [
+							ChFixedRoutingRule('K')
+						]
 					},
 					'J': {
 						type: 3,

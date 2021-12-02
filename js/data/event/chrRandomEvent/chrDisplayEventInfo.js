@@ -216,7 +216,7 @@ class ChrDisplayEventInfo {
 
         $("#comp").html("<div>");
 
-        if (MAPDATA[this.GetCurrentWorld()].diffMode == 1) {
+        if (MAPDATA[this.GetCurrentWorld()].diffMode == 1 || MAPDATA[this.GetCurrentWorld()].diffMode == 2) {
             
             let diffButtons = $("<div>");
 

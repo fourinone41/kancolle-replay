@@ -727,3 +727,25 @@ function ChDefaultRouteRule(node) {
 
     return rule;
 }
+
+/**
+ * Returns the rule and making it so that compass show up if the rule is validated
+ * @param {ChRule} rule 
+ * @returns {ChRule}
+ */
+function ChShowCompass(rule) {
+    rule.getSpinCompass = () => { return true; }
+
+    return rule;
+}
+
+/**
+ * Returns the rule and making it so that compass doesn't show up if the rule is validated
+ * @param {ChRule} rule 
+ * @returns {ChRule}
+ */
+ function ChDontShowCompass(rule) {
+    rule.getSpinCompass = () => { return false; }
+
+    return rule;
+}
