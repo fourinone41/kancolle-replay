@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds"}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType'}
      */
     this.type = "fixed";
 
@@ -70,6 +70,8 @@ function ChRule () {
      * Speed of fleet
      */
     this.speed = 10;
+
+    this.fleetType = 0;
 
     /**
      * @type {{if: ChRule,then: ChRule,else: ChRule}} 
@@ -258,6 +260,12 @@ function ChRule () {
                 return checkELoS33(getELoS33(1, this.LOSCoef || 1, CHDATA.fleets.combined), this.LOS);
             }
 
+            case 'fleetType': {
+                if (this.fleetType == 0) return !CHDATA.fleets.combined;
+                
+                return CHDATA.fleets.combined == this.fleetType;
+            }
+
             default:
                 alert("routing error 2");
                 return;
@@ -416,6 +424,21 @@ function ChRule () {
                 }
 
                 return description;
+            }
+
+            case 'fleetType': {
+                switch (this.fleetType) {
+                    case 0:
+                        return 'Single fleet';
+                    case 1:
+                        return 'Carrier Task Force';
+                    case 2:
+                        return 'Surface Task Force';
+                    case 3:
+                        return 'Transport Task Force';
+                    case 7:
+                        return 'Strike force';
+                }
             }
 
             default:
@@ -746,6 +769,19 @@ function ChShowCompass(rule) {
  */
  function ChDontShowCompass(rule) {
     rule.getSpinCompass = () => { return false; }
+
+    return rule;
+}
+
+function ChFleetTypeRule(fleetType, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "fleetType";
+
+    rule.fleetType = fleetType;
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
 
     return rule;
 }
