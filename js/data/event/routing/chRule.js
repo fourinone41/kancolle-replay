@@ -192,21 +192,23 @@ function ChRule () {
             }
 
             case 'speed': {
+                let speed = ships.c.speed;
+
                 switch (this.operator) {
                     case "<":
-                        if (ships.speed < this.speed) return this.conditionCheckedNode;
+                        if (speed < this.speed) return this.conditionCheckedNode;
                         break;
                     case "<=":
-                        if (ships.speed <= this.speed) return this.conditionCheckedNode;
+                        if (speed <= this.speed) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (ships.speed == this.speed) return this.conditionCheckedNode;
+                        if (speed == this.speed) return this.conditionCheckedNode;
                         break;
                     case ">":
-                        if (ships.speed > this.speed) return this.conditionCheckedNode;
+                        if (speed > this.speed) return this.conditionCheckedNode;
                         break;
                     case ">=":
-                        if (ships.speed >= this.speed) return this.conditionCheckedNode;
+                        if (speed >= this.speed) return this.conditionCheckedNode;
                         break;
                 }
 
