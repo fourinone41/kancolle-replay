@@ -1182,13 +1182,19 @@ function mapPhase(first) {
 		while (!nextletter) {
 			
 			rule = rules[index];
+
+			if (!rule) {
+				alert("error in branching 3");
+				return;
+			}
+
+			if (rule.type == 'routeSelect') {
+				eventqueue.push([selectNode,[rule.routeSelect]]);
+				return;
+			}
 	
 			nextletter = rule.getRouting(CHSHIPCOUNT);
 	
-			if (!rule) {
-				alert("error in branching");
-				return;
-			}
 	
 			index++;
 		}

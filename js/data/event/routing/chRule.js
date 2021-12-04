@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect'}
      */
     this.type = "fixed";
 
@@ -62,6 +62,11 @@ function ChRule () {
      * For random branching, array of chances per nodes
      */
     this.randomNodes = {};
+
+    /**
+     * Nodes that can be selected
+     */
+    this.routeSelect = [];
 
     this.LOS = {};
     this.LOSCoef = null;
@@ -263,7 +268,7 @@ function ChRule () {
             case 'fleetType': {
                 if (this.fleetType == 0) return !CHDATA.fleets.combined;
                 
-                return CHDATA.fleets.combined == this.fleetType;
+                return CHDATA.fleets.combined == this.fleetType ? this.conditionCheckedNode : this.conditionFailedNode;
             }
 
             default:
@@ -334,7 +339,7 @@ function ChRule () {
                 let description = [];
 
                 for (const node in this.randomNodes) {
-                    description.push(`${node} ${this.randomNodes[node] * 100}%`);
+                    if (node) description.push(`${node} ${this.randomNodes[node] * 100}%`);
                 }
 
                 return "Random " + description.join(", ");
@@ -439,6 +444,10 @@ function ChRule () {
                     case 7:
                         return 'Strike force';
                 }
+            }
+
+            case 'routeSelect': {
+                return `Choose between ${this.routeSelect.join(" and ")}`;
             }
 
             default:
@@ -782,6 +791,16 @@ function ChFleetTypeRule(fleetType, conditionCheckedNode, conditionFailedNode) {
 
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+function ChSelectRouteRule(routeSelection) {
+    let rule = new ChRule();
+
+    rule.type = "routeSelect";
+
+    rule.routeSelect = routeSelection;
 
     return rule;
 }
