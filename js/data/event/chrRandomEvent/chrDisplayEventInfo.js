@@ -13,7 +13,10 @@ class ChrDisplayEventInfo {
                     <div id="map"></div>
                     <div id="comp"></div>
                 </div>
-                <div id="routingContainer"></div>
+                <div class="foldable-element" id="routing">
+                    <div class="foldable-element-title mapInfoTitle">Routing infos</div>
+                    <div id="routingContainer"></div>
+                </div>
             </div>
         
         </div>`);
@@ -56,6 +59,8 @@ class ChrDisplayEventInfo {
 
                 // --- Routing
                 this.DisplayRouting();
+
+                this.InitFoldableElement();
             });
 
             $("#mapButtons").append(button)
@@ -71,7 +76,7 @@ class ChrDisplayEventInfo {
         let nodes = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].nodes;
 
         let routingEl = $("<table>");
-        routingEl.addClass("routingTable");
+        routingEl.addClass("routingTable foldable-element");
 
         routingEl.append($(`
         <tr>
@@ -176,7 +181,7 @@ class ChrDisplayEventInfo {
         let nodeInfos = [];
         
         if (nodeData.night || (Object.values(comps).map(x => x.NB ? 1 : 0).includes(1))) {
-            nodeInfos.push(`Night node`);
+            nodeInfos.push(`<span class="yasen-text">Night node</span>`);
         }
 
         if (nodeData.distance) {
@@ -392,6 +397,28 @@ class ChrDisplayEventInfo {
         return `${Math.floor(ap/3)} / ${Math.floor(ap/1.5)}<br>${Math.floor(ap*1.5)} / ${Math.floor(ap*3)}`;
     }
 
+    
+    InitFoldableElement() {
+        $(".foldable-element-title").off('click');
+
+        $(".foldable-element-title").click((e) => {
+
+            let element = $(e.target);
+
+            if (element.hasClass('foldable-element-hidden')) {
+                element.removeClass('foldable-element-hidden');
+
+                let parent = element.parent();
+                parent.find(":not(.foldable-element-title)").show();
+            } else {
+                element.addClass('foldable-element-hidden');
+                
+                let parent = element.parent();
+                parent.find(":not(.foldable-element-title)").hide();
+            }
+        });
+    }
+
     //#region Map infos
     DisplayMapInfos() {
         let map = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap];
@@ -399,7 +426,7 @@ class ChrDisplayEventInfo {
         let mapInfos = map.mapInfo ? map.mapInfo : "";
 
         if (mapInfos) {
-            mapInfos = $(`<div class="mapInfoTitle">Informations about this map :</div><div class="mapInfoContent">${mapInfos}</div>`);
+            mapInfos = $(`<div class="foldable-element"><div class="mapInfoTitle foldable-element-title">Informations about this map :</div><div class="mapInfoContent">${mapInfos}</div></div>`);
         }
 
         $("#mapInfoMapInfo").html(mapInfos);
@@ -412,20 +439,36 @@ class ChrDisplayEventInfo {
         let historicalRoutingRules = [];
         let histoGroups = [];
 
+        /**
+         * 
+         * @param {ChRule} rule 
+         */
+        function getHistoGroupes (rule) {
+            if (rule.type == 'shipIds' && !histoGroups.includes(rule.shipsIdsListName) && rule.historicalGroups) {
+                historicalRoutingRules.push(rule);
+                histoGroups.push(rule.shipsIdsListName);
+            }
+
+            if (rule.type == 'multiRules') {
+                for (const rule2 of rule.rules) {
+                    getHistoGroupes(rule2);
+                }
+            }
+        }
+
         for (const nodeKey in map.nodes) {
             let node =  map.nodes[nodeKey];
             if (!node.rules) continue;
 
             for (const rule of node.rules) {
-                if (rule.type == 'shipIds' && !histoGroups.includes(rule.shipsIdsListName)) {
-                    historicalRoutingRules.push(rule);
-                    histoGroups.push(rule.shipsIdsListName);
-                }
+                getHistoGroupes(rule);
             }
         }
 
         if (historicalRoutingRules.length) {
-            $("#mapInfoMapInfo").append($(`<div class="mapInfoTitle">Historical groups for routing :</div>`));
+            let groupsInfo = $('<div>').addClass("foldable-element");
+
+            groupsInfo.append($(`<div class="mapInfoTitle foldable-element-title">Historical groups for routing :</div>`));
 
             let groups = $("<div>").addClass("mapInfoContent");
 
@@ -450,10 +493,13 @@ class ChrDisplayEventInfo {
                 groups.append(group);
             }
 
-            $("#mapInfoMapInfo").append(groups);
+            groupsInfo.append(groups);
+
+            $("#mapInfoMapInfo").append(groupsInfo);
         }
     } 
     //#endregion
 }
 
 ChrDisplayEventInfo.MAP_COUNT = 7;
+

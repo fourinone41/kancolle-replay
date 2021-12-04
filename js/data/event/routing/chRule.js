@@ -27,6 +27,11 @@ function ChRule () {
 
     this.shipsIdsListName = "";
 
+    /**
+     * True if the rule should display the historical group in the event info page
+     */
+    this.historicalGroups = false;
+
     this.equipData = {
         equipIds: [],
         equipTypes: [],
@@ -303,7 +308,27 @@ function ChRule () {
             }
 
             case "shipIds": {
-                return `${this.count} ship from ${this.shipsIdsListName} in the fleet`;
+                let names;
+
+                if (!this.historicalGroups) {
+                    names = '';
+
+                    for (let index = 0; index < this.shipsIds.length; index++) {
+                        let shipId = this.shipsIds[index];
+
+                        if (index > 0) names += ', ';
+                        if (this.shipsIds.length > 1 && index ==  this.shipsIds.length - 1) names += ' and ';
+
+                        names += SHIPDATA[shipId].name;
+                    }
+                }
+                else {
+                    names = this.shipsIdsListName;
+                }
+
+                if (this.shipsIds.length == 1) return `${names} in the fleet`
+
+                return `${this.count} ship from ${names} in the fleet`;
             }
 
             case 'shipCount' : {
@@ -518,12 +543,20 @@ function ChFixedRoutingRule(fixedNode) {
  * @returns 
  */
  function ChShipHistoricalRoutingRule(groupName, shipsIds, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.shipsIdsListName = groupName;
+    rule.historicalGroups = true;
+
+    return rule;
+}
+
+function ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode) {
     let rule = new ChRule();
 
     rule.type = "shipIds";
 
     rule.shipsIds = shipsIds;
-    rule.shipsIdsListName = groupName;
 
     rule.count = count;
 

@@ -103,19 +103,25 @@ span.last-dance-text {
 }
 
 .mapInfoTitle {
+    padding: 10px;
     font-size: larger;
+    border: solid 1px gray;
+    background-color: #646464;
+    cursor: pointer;
+    line-height: 30px;
+    margin-top: 10px;
 }
 
 .mapInfoContent {
     padding: 10px;
-    margin-top: 10px;
     border-color: #898989;
     border-style: solid;
     border-width: thin;
 }
 
-div#routingContainer {
-    max-width: 28%;
+div#routing {
+    width: 28%;
+    
 }
 
 .mapInfoContentGroupTitle {
@@ -124,4 +130,8 @@ div#routingContainer {
 
 .mapInfoContentGroupContainer {
     margin: 10px;
+}
+
+.yasen-text {
+    color: #ca84d3;
 }
