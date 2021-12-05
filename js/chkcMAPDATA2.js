@@ -11793,7 +11793,7 @@ var MAPDATA = {
 							let ships = fleetsE[0].ships;
 							let found = true;
 							for (var i=0; i<ships.length; i++) {
-								if ([1513,1536,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
+								if ([1513,1526,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
 							}
 							if (found) CHDATA.event.maps[7].debuff.C = true;
 						},
@@ -11946,7 +11946,7 @@ var MAPDATA = {
 							let ships = fleetsE[0].ships;
 							let found = true;
 							for (var i=0; i<ships.length; i++) {
-								if ([1513,1536,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
+								if ([1513,1526,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
 							}
 							if (found) CHDATA.event.maps[7].debuff.X = true;
 						},
@@ -11968,7 +11968,7 @@ var MAPDATA = {
 							let ships = fleetsE[0].ships;
 							let found = true;
 							for (var i=0; i<ships.length; i++) {
-								if ([1513,1536,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
+								if ([1513,1526,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
 							}
 							if (found) CHDATA.event.maps[7].debuff.Y = true;
 						},
