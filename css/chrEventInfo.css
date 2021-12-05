@@ -45,11 +45,19 @@ div#mapButtons {
 }
 
 div#comp th,
-div#comp td {
+div#comp td,
+.gimmick-table th,
+.gimmick-table td {
     padding: 5px;
     border-color: #898989;
     border-style: solid;
     border-width: thin;
+}
+
+.gimmick-table,
+.routingTable,
+#comp table  {
+    border-collapse: collapse;
 }
 
 div#mapAndCompsContainer {
@@ -134,4 +142,13 @@ div#routing {
 
 .yasen-text {
     color: #ca84d3;
+}
+
+.gimmick-table {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.debuff-step-done {
+    background-color: #487c35;
 }

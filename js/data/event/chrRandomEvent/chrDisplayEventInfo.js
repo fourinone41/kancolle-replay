@@ -1,3 +1,6 @@
+var CHDATA;
+var MAPNUM;
+
 class ChrDisplayEventInfo {
 
     constructor () {
@@ -34,6 +37,7 @@ class ChrDisplayEventInfo {
         // --- load comps 
         let FILE = localStorage.ch_file;
         this.Comps = JSON.parse(localStorage['ch_basic'+FILE]).event.comps;
+        CHDATA = JSON.parse(localStorage['ch_basic'+FILE]);
         this.Worlds =  JSON.parse(localStorage['ch_basic'+FILE]).maps;
 
         // --- Map 
@@ -52,6 +56,8 @@ class ChrDisplayEventInfo {
 
             button.click(() => {
                 this.currentMap = mapNum + 1;
+                MAPNUM = this.currentMap;
+                
                 this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1);
 
                 // --- Display map infos
@@ -497,7 +503,95 @@ class ChrDisplayEventInfo {
 
             $("#mapInfoMapInfo").append(groupsInfo);
         }
+
+        if (map.debuffRules) {
+            $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map));
+        }
     } 
+
+    /**
+     * 
+     * @param {ChGimmickList} rules 
+     * @returns 
+     */
+    DisplayDebuffInfos(rules, map) {
+        let debuffInfoRoot = $('<div>').addClass("foldable-element");
+        
+        debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Debuff</div>`));
+
+        let debuffInfoContent = $("<div>").addClass("mapInfoContent");
+        debuffInfoContent.append("This map can be debuffed after completing the following steps :")
+
+        let debuffInfoTable = $('<table>').addClass('gimmick-table');
+        debuffInfoTable.append($(`
+            <tr>
+                <th>Difficulty</th>
+                <th>Casual</th>
+                <th>Easy</th>
+                <th>Medium</th>
+                <th>Hard</th>
+            </tr>`
+        ));
+
+        for (const rule of rules.gimmicks) {
+            let debuffLine = $("<tr>");
+
+            debuffLine.append($(`<td>${rule.node}</td>`));
+
+            let previousDesc = ""
+            let descTd = $('<td>');
+            let colSpan = 1;
+
+            for (let diff = 1; diff < 5; diff++) {
+
+                let desc = rule.getDescription();
+
+                if (desc.length < 10 || desc != previousDesc) {
+                    descTd = $('<td>');
+                    descTd.append(rule.getDescription());
+                    debuffLine.append(descTd);
+
+                    if (rule.gimmickDone()) {
+                        descTd.addClass('debuff-step-done');
+                    }
+                } else {
+                    descTd.attr('colspan', ++colSpan);
+                }
+                
+                previousDesc = desc;
+            }
+            
+            debuffInfoTable.append(debuffLine);
+            
+        }
+
+        debuffInfoContent.append(debuffInfoTable);
+        debuffInfoRoot.append(debuffInfoContent);
+
+        debuffInfoContent.append('Debuff effects : ')
+
+        let debuffEffects = $('<ul>').addClass('debuff-effects');
+
+        // --- Debuff amount ?
+        for (const node in map.nodes) {
+
+            if (!map.nodes[node].debuffAmount) continue;
+
+            let debuffAmount = map.nodes[node].debuffAmount;
+
+            if (typeof debuffAmount === 'object') {                
+                for (const mid in debuffAmount) {
+                    debuffEffects.append(`<li>On node ${node}, any ${SHIPDATA[mid].name} will receive an armor break of ${debuffAmount[mid]}</li>`);
+                }
+            } else {
+                debuffEffects.append(`<li>On node ${node}, the flagship will receive an armor break of ${debuffAmount}</li>`);
+            }
+        }
+            
+        debuffInfoContent.append(debuffEffects);
+
+        return debuffInfoRoot;
+    }
     //#endregion
 }
 

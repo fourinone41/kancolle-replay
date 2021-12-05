@@ -1159,6 +1159,9 @@ function mapPhase(first) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
 			}
+			if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+				MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+			}
 		}
 		if (curnode.dropoff) {
 			if (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == curletter) {
@@ -1845,8 +1848,18 @@ function prepBattle(letter) {
 	chrApplySpecial();
 	
 	if (mapdata.debuffAmount) {
-		var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;
-		if (debuffCheck && debuffCheck(CHDATA.event.maps[MAPNUM].debuff)) {
+
+		let debuffed = false;
+
+		if (mapdata.debuffRules) {
+			debuffed = mapdata.debuffRules.gimmickDone();
+		}
+		else {
+			var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;
+			debuffed = debuffCheck && debuffCheck(CHDATA.event.maps[MAPNUM].debuff);
+		}
+
+		if (debuffed) {
 			if (typeof mapdata.debuffAmount === 'object') {
 				for (var i=0; i<FLEETS2[0].ships.length; i++) {
 					var ship = FLEETS2[0].ships[i];
@@ -2171,6 +2184,11 @@ function endMap() {
 		for (var mapnum in MAPDATA[WORLD].maps) {
 			if (mapnum < MAPNUM) continue;
 			if (mapnum > CHDATA.event.unlocked) continue;
+			
+			if (MAPDATA[WORLD].maps[mapnum].debuffRules) {
+				MAPDATA[WORLD].maps[mapnum].debuffRules.checkIfDebuffed();
+			}
+
 			if (MAPDATA[WORLD].maps[mapnum].debuffCheck && !CHDATA.event.maps[mapnum].debuffed) {
 				if (!CHDATA.event.maps[mapnum].debuff) CHDATA.event.maps[mapnum].debuff = {};
 				if (MAPDATA[WORLD].maps[mapnum].debuffCheck(CHDATA.event.maps[mapnum].debuff)) {
@@ -2309,6 +2327,11 @@ function shuttersPostbattle(noshutters) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].debuffGive(FLEETS2,FLEETS1);
 	}
+	
+	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+	}
+
 	FLEETS1[0].resetBattle();
 	if (CHDATA.fleets.combined) FLEETS1[1].resetBattle();
 	CHDATA.temp.done = true;
@@ -3309,6 +3332,10 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 	if (MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive(airState,totalHPLost);
+	}
+	
+	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps('AB');
 	}
 	
 	CHAPI.battles.push(BAPI);

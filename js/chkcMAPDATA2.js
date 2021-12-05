@@ -8060,10 +8060,74 @@ var MAPDATA = {
 					1: 255,
 				},
 				checkLock: [4],
-				debuffCheck: function(debuff) {
-					if (!debuff) return false;
-					return (debuff.C && debuff.X && debuff.Y);
-				},
+				debuffRules: new ChGimmickList("debuff", null, 7, [
+					new ChGimmick({
+						node: 'C',
+						timesRequiredPerDiff: {
+							4: 1,
+							1: 1,
+							2: 1,
+							3: 1,
+						},
+						shouldCountBeIncreased: () => {
+							let ships = FLEETS2[0].ships;
+							let found = true;
+
+							for (var i=0; i<ships.length; i++) {
+								if ([1513,1526,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
+							}
+
+							return found;
+						},
+						getDescription: (diff) => {
+							return 'No Wa-class remaining after the battle'
+						} 
+					}),
+					new ChGimmick({
+						node: 'X',
+						timesRequiredPerDiff: {
+							4: 1,
+							1: 1,
+							2: 1,
+							3: 1,
+						},
+						shouldCountBeIncreased: () => {
+							let ships = FLEETS2[0].ships;
+							let found = true;
+
+							for (var i=0; i<ships.length; i++) {
+								if ([1513,1526,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
+							}
+
+							return found;
+						},
+						getDescription: (diff) => {
+							return 'No Wa-class remaining after the battle'
+						} 
+					}),
+					new ChGimmick({
+						node: 'Y',
+						timesRequiredPerDiff: {
+							4: 1,
+							1: 1,
+							2: 1,
+							3: 1,
+						},
+						shouldCountBeIncreased: () => {
+							let ships = FLEETS2[0].ships;
+							let found = true;
+
+							for (var i=0; i<ships.length; i++) {
+								if ([1513,1526,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
+							}
+
+							return found;
+						},
+						getDescription: (diff) => {
+							return 'No Wa-class remaining after the battle'
+						} 
+					}),
+				]),
 				reward: {
 					'ships': [422],
 				},
@@ -8123,14 +8187,6 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2'],
 						},
 						end: true,
-						debuffGive: function(fleetsE,fleetsF) {
-							let ships = fleetsE[0].ships;
-							let found = true;
-							for (var i=0; i<ships.length; i++) {
-								if ([1513,1536,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
-							}
-							if (found) CHDATA.event.maps[7].debuff.C = true;
-						},
 					},
 					'D': {
 						type: 2,
@@ -8307,14 +8363,6 @@ var MAPDATA = {
 						rules: [
 							ChFixedRoutingRule('D')
 						],
-						debuffGive: function(fleetsE,fleetsF) {
-							let ships = fleetsE[0].ships;
-							let found = true;
-							for (var i=0; i<ships.length; i++) {
-								if ([1513,1536,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
-							}
-							if (found) CHDATA.event.maps[7].debuff.X = true;
-						},
 					},
 					'Y': {
 						type: 1,
@@ -8328,14 +8376,6 @@ var MAPDATA = {
 						rules: [
 							ChShipTypeRoutingRuleEscortOnly(['CLT'], '>', 0, 'O', 'L'),
 						],
-						debuffGive: function(fleetsE,fleetsF) {
-							let ships = fleetsE[0].ships;
-							let found = true;
-							for (var i=0; i<ships.length; i++) {
-								if ([1513,1536,1558].indexOf(ships[i].mid) != -1 && ships[i].HP > 0) found = false;
-							}
-							if (found) CHDATA.event.maps[7].debuff.Y = true;
-						},
 					},
 					'Z': {
 						type: 1,
