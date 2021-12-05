@@ -1,4 +1,3 @@
-
 /**
  * 
  * @param {'debuff' | 'mapPart'} type 
@@ -49,9 +48,18 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
      */
     this.checkGimmickSteps = (node) => {
         for (const gimmick of this.gimmicks) {
-            if (gimmick.node == node && gimmick.shouldCountBeIncreased()) {
-                if (!CHDATA.event.maps[mapNum].debuff[gimmick.id]) CHDATA.event.maps[mapNum].debuff[gimmick.id] = 1;
-                else CHDATA.event.maps[mapNum].debuff[gimmick.id]++;
+
+            let isGimmickForThisNode = gimmick.node == node || gimmick.node == 'MapWide';
+            if (!isGimmickForThisNode) continue;
+
+            if (gimmick.mapPartNumber && gimmick.mapPartNumber < CHDATA.event.maps[mapNum]) continue;
+
+            let shouldCountBeIncreased = gimmick.shouldCountBeIncreased();
+
+            if (shouldCountBeIncreased) {
+                if (!CHDATA.event.maps[mapNum].debuff[gimmick.id]) CHDATA.event.maps[mapNum].debuff[gimmick.id] = 0;
+                
+                CHDATA.event.maps[mapNum].debuff[gimmick.id] += shouldCountBeIncreased;
 
                 if (this.playSoundOnStepDone) {
                     SM.play('done');
@@ -105,7 +113,7 @@ let ChGimmickParameters = {
 
 
 /**
- * 
+ * Base gimick type : S rank / A rank / ... a node 
  * @param {ChGimmickParameters} parameters 
  */
 function ChGimmick(parameters) {
@@ -117,9 +125,9 @@ function ChGimmick(parameters) {
 
     this.mapnum = parameters.mapnum;
 
-    this.mapPartNumber = parameters.mapPartNumber ?? 'D';
+    this.mapPartNumber = parameters.mapPartNumber;
 
-    this.id = `E${this.mapnum}-${this.mapPartNumber}-${this.node}`
+    this.id = `E${this.mapnum}-${this.mapPartNumber ?? 'D'}-${this.node}`
 
     this.timesRequiredPerDiff = parameters.timesRequiredPerDiff;
 
@@ -141,10 +149,11 @@ function ChGimmick(parameters) {
     }
 
     /**
-     * Returns true if count should be increased
+     * If count should be increased returns 1
+     * If you want to increase count multiple time at once you can return the number you want
      */
     this.shouldCountBeIncreased = () => {
-        if (this.gimmickDone()) return false;
+        if (this.gimmickDone()) return 0;
 
         if (parameters.shouldCountBeIncreased) {
             return parameters.shouldCountBeIncreased();
@@ -158,10 +167,10 @@ function ChGimmick(parameters) {
         for (const rank of ranks) {
             if (rank == requiredRank) return aquiredRank == rank;
             
-            if (rank == aquiredRank) return true;
+            if (rank == aquiredRank) return 1;
         }
 
-        return false;
+        return 0;
     }
 
     this.getDescription = (diff) => {

@@ -533,6 +533,22 @@ class ChrDisplayEventInfo {
             </tr>`
         ));
 
+        // --- Map part
+        if (rules.mapPartNumber) {
+            let debuffLine = $("<tr>");
+
+            let descTd = $('<td>').attr('colspan', 5);
+
+            descTd.append(`Reach part ${rules.mapPartNumber}`);
+            debuffLine.append(descTd);
+
+            if (rules.mapPartNumber >= CHDATA.event.maps[rules.mapNum]) {
+                descTd.addClass('debuff-step-done');
+            }
+            
+            debuffInfoTable.append(debuffLine);
+        }
+
         for (const rule of rules.gimmicks) {
             let debuffLine = $("<tr>");
 
@@ -562,7 +578,6 @@ class ChrDisplayEventInfo {
             }
             
             debuffInfoTable.append(debuffLine);
-            
         }
 
         debuffInfoContent.append(debuffInfoTable);
