@@ -8137,7 +8137,10 @@ var MAPDATA = {
 						x: 162,
 						y: 112,
 						rules: [
-							ChShipTypeRoutingRule(['LHA', 'aCV'], '>', 0, 'B'),
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['LHA'], '>', 0, 'B'),
+								ChShipTypeRoutingRule(['aCV'], '>', 0, 'B'),
+							], 'AND', 'B'),
 							ChShipTypeRoutingRule(['SS', 'SSV'], '>', 0, 'B'),
 							ChIfThenElseRule(
 								ChFleetTypeRule(2, 'B'),

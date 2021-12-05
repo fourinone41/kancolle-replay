@@ -1851,8 +1851,8 @@ function prepBattle(letter) {
 
 		let debuffed = false;
 
-		if (mapdata.debuffRules) {
-			debuffed = mapdata.debuffRules.gimmickDone();
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+			debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
 		}
 		else {
 			var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;
