@@ -77,9 +77,26 @@ class ChrDisplayEventInfo {
         return this.Worlds[this.currentMap].world;
     }
 
+    GetRoutingRules() {
+        let rules = {};
+
+        if (MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].startCheckRule) {
+            rules.Start = {
+                rules: MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].startCheckRule
+            };
+        }
+
+        let nodes = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].nodes;
+
+        for (const node in nodes) {
+            rules[node] = nodes[node];
+        }
+
+        return rules;
+    }
 
     DisplayRouting () {
-        let nodes = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].nodes;
+        let nodes = this.GetRoutingRules();
 
         let routingEl = $("<table>");
         routingEl.addClass("routingTable foldable-element");
@@ -90,6 +107,7 @@ class ChrDisplayEventInfo {
             <th>Routing</th>
         </tr>`));
 
+        //--- nodes routing
         for (const nodeKey in nodes) {
             let rules = nodes[nodeKey].rules;
 
@@ -542,7 +560,7 @@ class ChrDisplayEventInfo {
             descTd.append(`Reach part ${rules.mapPartNumber}`);
             debuffLine.append(descTd);
 
-            if (rules.mapPartNumber >= CHDATA.event.maps[rules.mapNum]) {
+            if (rules.mapPartNumber >= CHDATA.event.maps[rules.mapNum].part) {
                 descTd.addClass('debuff-step-done');
             }
             

@@ -1052,7 +1052,28 @@ var testLOS = 101;
 
 function chPlayerStart() {
 	CHDATA.sortie = {};
+	
 	curletter = (MAPDATA[WORLD].maps[MAPNUM].startCheck)? MAPDATA[WORLD].maps[MAPNUM].startCheck(CHSHIPCOUNT) : 'Start';
+	if (MAPDATA[WORLD].maps[MAPNUM].startCheckRule) {
+		curletter = '';
+		let index = 0;
+		let rules = MAPDATA[WORLD].maps[MAPNUM].startCheckRule;
+
+		while (!curletter) {
+			
+			rule = rules[index];
+
+			if (!rule) {
+				alert("error in branching 4");
+				return;
+			}
+	
+			curletter = rule.getRouting(CHSHIPCOUNT);
+	
+			index++;
+		}
+	}
+
 	if (started) {
 		console.log('reset');
 		SM.stopBGM();

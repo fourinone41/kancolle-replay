@@ -76,47 +76,7 @@ function ChRandomAffectedByShipTypes(shipTypes, baseChance, conditionCheckedNode
 function ChShipTypeRoutingRuleEscortOnly(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
     let rule = ChShipTypeRoutingRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
 
-    rule.getDescription = function () {
-        let shipTypesTranslated = [];
-
-        for (const shipType of this.shipTypes) {
-            if (shipType == "aBB") shipTypesTranslated.push("(F)BB(V)");
-            else if (shipType == "aCV") shipTypesTranslated.push("CV(L/B)");
-            else shipTypesTranslated.push(shipType);
-        }
-
-        let shipList = shipTypesTranslated.join(" + ");
-
-        return `Number of ${shipList} in escort ${this.operator} ${this.count}`;
-    };
-
-    rule.getRouting = function (ships) {
-        let count = 0;
-
-        for (const shipType of this.shipTypes) {
-            count += ships.escort[shipType];
-        }
-
-        switch (this.operator) {
-            case "<":
-                if (count < this.count) return this.conditionCheckedNode;
-                break;
-            case "<=":
-                if (count <= this.count) return this.conditionCheckedNode;
-                break;
-            case "=":
-                if (count == this.count) return this.conditionCheckedNode;
-                break;
-            case ">":
-                if (count > this.count) return this.conditionCheckedNode;
-                break;
-            case ">=":
-                if (count >= this.count) return this.conditionCheckedNode;
-                break;
-        }
-        
-        return this.conditionFailedNode;
-    }
+    rule.escortOnly = true;
 
     return rule;
 }
@@ -124,47 +84,7 @@ function ChShipTypeRoutingRuleEscortOnly(shipTypes, operator, count, conditionCh
 function ChShipTypeRoutingRuleMainFleetOnly(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
     let rule = ChShipTypeRoutingRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
 
-    rule.getDescription = function () {
-        let shipTypesTranslated = [];
-
-        for (const shipType of this.shipTypes) {
-            if (shipType == "aBB") shipTypesTranslated.push("(F)BB(V)");
-            else if (shipType == "aCV") shipTypesTranslated.push("CV(L/B)");
-            else shipTypesTranslated.push(shipType);
-        }
-
-        let shipList = shipTypesTranslated.join(" + ");
-
-        return `Number of ${shipList} in main fleet ${this.operator} ${this.count}`;
-    };
-
-    rule.getRouting = function (ships) {
-        let count = 0;
-
-        for (const shipType of this.shipTypes) {
-            count += ships[shipType];
-        }
-
-        switch (this.operator) {
-            case "<":
-                if (count < this.count) return this.conditionCheckedNode;
-                break;
-            case "<=":
-                if (count <= this.count) return this.conditionCheckedNode;
-                break;
-            case "=":
-                if (count == this.count) return this.conditionCheckedNode;
-                break;
-            case ">":
-                if (count > this.count) return this.conditionCheckedNode;
-                break;
-            case ">=":
-                if (count >= this.count) return this.conditionCheckedNode;
-                break;
-        }
-        
-        return this.conditionFailedNode;
-    }
+    rule.mainFleetOnly = true;
 
     return rule;
 }
@@ -241,19 +161,7 @@ function ChShipTypeRoutingWithWeightRule(shipTypes, operator, count, conditionCh
 function ChShipHistoricalRoutingRuleEscortOnly(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode) {
     let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode);
 
-    rule.getDescription = function () {
-        return `${this.count} ship from ${this.shipsIdsListName} in escort`;
-    };
-
-    rule.getRouting = function (ships) {
-        let count = 0;
-
-        for (const shipId of this.shipsIds) {
-            if (isShipInList(ships.escort.ids, shipId)) count++;
-        }
-
-        return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
-    }
+    rule.escortOnly = true;
 
     return rule;
 }
@@ -261,19 +169,7 @@ function ChShipHistoricalRoutingRuleEscortOnly(groupName, shipTypes, count, cond
 function ChShipHistoricalRoutingRuleMainFleetOnly(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode) {
     let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode);
 
-    rule.getDescription = function () {
-        return `${this.count} ship from ${this.shipsIdsListName} in main fleet`;
-    };
-
-    rule.getRouting = function (ships) {
-        let count = 0;
-
-        for (const shipId of this.shipsIds) {
-            if (isShipInList(ships.ids, shipId)) count++;
-        }
-
-        return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
-    }
+    rule.mainFleetOnly = true;
 
     return rule;
 }
@@ -327,6 +223,35 @@ function ChIfLosThenElseRandomRule(LOSRule, randomRule) {
     };
 
     rule.getShowLosPlane = () => { return !!rule.conditionCheckedNode; }
+
+    return rule;
+}
+
+function ChFlagshipIdRoutingRule(shipId, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipIdsRoutingRule([shipId], 1, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        return `Have ${SHIPDATA[shipId].name} as flagship`;
+    };
+
+    rule.getRouting = function (ships) {
+        return isShipInList([ships.ids[0]], shipId) ? this.conditionCheckedNode : this.conditionFailedNode;
+    }
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {*} operator 
+ * @param {*} speed 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ */
+ function ChSpeedRuleEscortOnly(operator, speed, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChSpeedRule(operator, speed, conditionCheckedNode, conditionFailedNode);
+
+    rule.escortOnly = true;
 
     return rule;
 }

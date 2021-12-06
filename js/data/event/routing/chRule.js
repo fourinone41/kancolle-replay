@@ -83,6 +83,9 @@ function ChRule () {
 
     this.fleetType = 0;
 
+    this.escortOnly = false;
+    this.mainFleetOnly = false;
+
     /**
      * @type {{if: ChRule,then: ChRule,else: ChRule}} 
      */
@@ -107,10 +110,14 @@ function ChRule () {
         
             case "shipType": {
                 let count = 0;
-                ships.c.CVN = ships.c.CVN ? ships.c.CVN : 0;
+
+                let shipsToCheck = ships.c;
+
+                if (this.escortOnly) shipsToCheck = ships.e;
+                if (this.mainFleetOnly) shipsToCheck = ships;
 
                 for (const shipType of this.shipTypes) {
-                    count += ships.c[shipType];
+                    count += shipsToCheck[shipType];
                 }
 
                 switch (this.operator) {
@@ -137,8 +144,13 @@ function ChRule () {
             case 'shipIds': {
                 let count = 0;
 
+                let shipsToCheck = ships.c.ids;
+
+                if (this.escortOnly) shipsToCheck = ships.e.ids;
+                if (this.mainFleetOnly) shipsToCheck = ships.ids;
+
                 for (const shipId of this.shipsIds) {
-                    if (isShipInList(ships.c.ids, shipId)) count++;
+                    if (isShipInList(shipsToCheck, shipId)) count++;
                 }
 
                 return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
@@ -193,6 +205,9 @@ function ChRule () {
 
             case 'speed': {
                 let speed = ships.c.speed;
+
+                if (this.escortOnly) speed = ships.e.speed;
+                if (this.mainFleetOnly) speed = ships.speed;
 
                 switch (this.operator) {
                     case "<":
@@ -306,6 +321,9 @@ function ChRule () {
 
                 let shipList = shipTypesTranslated.join(" + ");
 
+                if (this.escortOnly) return `Number of ${shipList} in escort fleet ${this.operator} ${this.count}`;
+                if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.count}`;
+
                 return `Number of ${shipList} ${this.operator} ${this.count}`;
             }
 
@@ -328,7 +346,15 @@ function ChRule () {
                     names = this.shipsIdsListName;
                 }
 
-                if (this.shipsIds.length == 1) return `${names} in the fleet`
+                if (this.shipsIds.length == 1) {
+                    if (this.escortOnly) return `${names} in the escort fleet`;
+                    if (this.mainFleetOnly) return `${names} in the main fleet`;
+
+                    return `${names} in the fleet`
+                }
+
+                if (this.escortOnly) return `${this.count} ship from ${names} in the escort fleet`;
+                if (this.mainFleetOnly) return `${this.count} ship from ${names} in the main fleet`;
 
                 return `${this.count} ship from ${names} in the fleet`;
             }
@@ -375,36 +401,39 @@ function ChRule () {
             case 'speed' : {
                 let speed = {
                     5: {
-                        "<": "Slow fleet",
-                        "<=": "Slow fleet",
-                        "=": "Slow fleet",
-                        ">": "Fast fleet",
-                        ">=": "Slow fleet or faster",
+                        "<": "Slow",
+                        "<=": "Slow",
+                        "=": "Slow",
+                        ">": "Fast",
+                        ">=": "Slow or faster",
                     },
                     10: {
-                        "<": "Slow fleet",
-                        "<=": "Fast fleet or slower",
-                        "=": "Fast fleet",
-                        ">": "Fast+ fleet",
-                        ">=": "Fast fleet or faster",
+                        "<": "Slow",
+                        "<=": "Fast or slower",
+                        "=": "Fast",
+                        ">": "Fast+",
+                        ">=": "Fast or faster",
                     },
                     15: {
-                        "<": "Fast fleet or slower",
-                        "<=": "Fast+ fleet or slower",
-                        "=": "Fast+ fleet",
-                        ">": "Fastest fleet",
-                        ">=": "Fast+ fleet or faster",
+                        "<": "Fast or slower",
+                        "<=": "Fast+ or slower",
+                        "=": "Fast+",
+                        ">": "Fastest",
+                        ">=": "Fast+ or faster",
                     },
                     15: {
-                        "<": "Fast+ fleet or slower",
-                        "<=": "Fastest fleet or slower",
-                        "=": "Fastest fleet",
-                        ">": "Fastest fleet",
-                        ">=": "Fastest fleet",
+                        "<": "Fast+ or slower",
+                        "<=": "Fastest or slower",
+                        "=": "Fastest",
+                        ">": "Fastest",
+                        ">=": "Fastest",
                     },
                 };
 
-                return speed[this.speed][this.operator];
+                if (this.escortOnly) return `${speed[this.speed][this.operator]} escort fleet`;
+                if (this.mainFleetOnly) return `${speed[this.speed][this.operator]} main fleet`;
+
+                return `${speed[this.speed][this.operator]} fleet`;
             }
 
             case "ifthenelse": {

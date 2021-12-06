@@ -10,7 +10,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
      */
     this.type = type;
 
-    this.mapPartNumber = mapPartNumber ?? 'D';
+    this.mapPartNumber = mapPartNumber;
 
     this.mapNum = mapNum;
 
