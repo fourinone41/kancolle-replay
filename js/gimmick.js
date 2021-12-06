@@ -47,6 +47,10 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
      * Check if gimmick steps have progressed
      */
     this.checkGimmickSteps = (node) => {
+        if (!CHDATA.event.maps[mapNum].debuff) {
+            CHDATA.event.maps[mapNum].debuff = {};
+        }
+
         for (const gimmick of this.gimmicks) {
 
             let isGimmickForThisNode = gimmick.node == node || gimmick.node == 'MapWide';

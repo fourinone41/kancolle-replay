@@ -113,7 +113,7 @@ function ChRule () {
 
                 let shipsToCheck = ships.c;
 
-                if (this.escortOnly) shipsToCheck = ships.e;
+                if (this.escortOnly) shipsToCheck = ships.escort;
                 if (this.mainFleetOnly) shipsToCheck = ships;
 
                 for (const shipType of this.shipTypes) {
@@ -146,7 +146,7 @@ function ChRule () {
 
                 let shipsToCheck = ships.c.ids;
 
-                if (this.escortOnly) shipsToCheck = ships.e.ids;
+                if (this.escortOnly) shipsToCheck = ships.escort.ids;
                 if (this.mainFleetOnly) shipsToCheck = ships.ids;
 
                 for (const shipId of this.shipsIds) {
@@ -206,7 +206,7 @@ function ChRule () {
             case 'speed': {
                 let speed = ships.c.speed;
 
-                if (this.escortOnly) speed = ships.e.speed;
+                if (this.escortOnly) speed = ships.escort.speed;
                 if (this.mainFleetOnly) speed = ships.speed;
 
                 switch (this.operator) {

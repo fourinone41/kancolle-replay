@@ -9689,10 +9689,10 @@ var MAPDATA = {
 							ChShipHistoricalRoutingRule('Rei-Gō', [49, 425, 410, 64, 183], 4, 'E'),
 							ChMultipleRulesRule([
 								ChShipTypeRoutingRule(['CA'], '=', 1, 'E'), 
-								ChShipTypeRoutingRule(['CA'], '=', 1, 'E'), 
+								ChShipTypeRoutingRule(['CL'], '=', 1, 'E'), 
 								ChShipTypeRoutingRule(['CLT'], '=', 1, 'E'), 
 								ChShipTypeRoutingRule(['DD'], '=', 3, 'E'), 
-							], 'AND', 'Start1'),
+							], 'AND', 'E'),
 							ChIfThenElseRule(
 								ChShipTypeRoutingRule(['CA', 'CAV'], '>', 0, 'E'), 
 								ChRandomRule({ 'E': .5, 'B': .5 })
