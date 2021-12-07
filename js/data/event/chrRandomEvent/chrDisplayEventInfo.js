@@ -523,7 +523,7 @@ class ChrDisplayEventInfo {
         }
 
         if (map.debuffRules) {
-            $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map));
+            $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map, MAPDATA[this.GetCurrentWorld()]));
         }
     } 
 
@@ -532,7 +532,10 @@ class ChrDisplayEventInfo {
      * @param {ChGimmickList} rules 
      * @returns 
      */
-    DisplayDebuffInfos(rules, map) {
+    DisplayDebuffInfos(rules, map, event) {
+
+        let diffs = event.allowDiffs ? event.allowDiffs : [4,1,2,3];
+
         let debuffInfoRoot = $('<div>').addClass("foldable-element");
         
         debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Debuff</div>`));
@@ -541,15 +544,15 @@ class ChrDisplayEventInfo {
         debuffInfoContent.append("This map can be debuffed after completing the following steps :")
 
         let debuffInfoTable = $('<table>').addClass('gimmick-table');
-        debuffInfoTable.append($(`
-            <tr>
-                <th>Difficulty</th>
-                <th>Casual</th>
-                <th>Easy</th>
-                <th>Medium</th>
-                <th>Hard</th>
-            </tr>`
-        ));
+
+        let debuffInfoColumns = $('<tr>');
+        debuffInfoColumns.append($(`<th>Difficulties</th>`));
+
+        for (const diff of diffs) {
+            debuffInfoColumns.append($(`<th>${this.GetDiffText(diff)}</th>`))
+        }
+
+        debuffInfoTable.append(debuffInfoColumns);
 
         // --- Map part
         if (rules.mapPartNumber) {
@@ -570,19 +573,26 @@ class ChrDisplayEventInfo {
         for (const rule of rules.gimmicks) {
             let debuffLine = $("<tr>");
 
-            debuffLine.append($(`<td>${rule.node}</td>`));
+            let nodeName = rule.node;
+
+            // --- Case of mapnum defined in each rule (eg spring 16 with multi map debuff)
+            if (!rules.mapNum) {
+                nodeName = `E-${rule.mapnum} ${rule.node}`
+            }
+
+            debuffLine.append($(`<td>${nodeName}</td>`));
 
             let previousDesc = ""
             let descTd = $('<td>');
             let colSpan = 1;
 
-            for (let diff = 1; diff < 5; diff++) {
+            for (let diff of diffs) {
 
-                let desc = rule.getDescription();
+                let desc = rule.getDescription(diff);
 
                 if (desc.length < 10 || desc != previousDesc) {
                     descTd = $('<td>');
-                    descTd.append(rule.getDescription());
+                    descTd.append(desc);
                     debuffLine.append(descTd);
 
                     if (rule.gimmickDone()) {

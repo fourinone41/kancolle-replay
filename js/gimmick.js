@@ -13,6 +13,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
     this.mapPartNumber = mapPartNumber;
 
     this.mapNum = mapNum;
+    this.mapIdForChdata = mapNum ?? 'multimap';
 
     /**
      * Set this to true to play sound on every step done
@@ -25,10 +26,15 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
     this.gimmicks = [];
 
     for (const gimmick of gimmickData) {
-        gimmick.mapnum = mapNum;
+        if (mapNum) gimmick.mapnum = mapNum;
+
         gimmick.mapPartNumber = mapPartNumber;
 
-        this.gimmicks.push(new ChGimmick(gimmick));
+        let gimmickObject = new ChGimmick(gimmick);
+
+        if (!mapNum) gimmickObject.mapIdForChdata = this.mapIdForChdata;
+
+        this.gimmicks.push(gimmickObject);
     }
 
     /**
@@ -47,8 +53,12 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
      * Check if gimmick steps have progressed
      */
     this.checkGimmickSteps = (node) => {
-        if (!CHDATA.event.maps[mapNum].debuff) {
-            CHDATA.event.maps[mapNum].debuff = {};
+        if (!CHDATA.event.maps[this.mapIdForChdata]) {
+            CHDATA.event.maps[this.mapIdForChdata] = {};
+        }
+
+        if (!CHDATA.event.maps[this.mapIdForChdata].debuff) {
+            CHDATA.event.maps[this.mapIdForChdata].debuff = {};
         }
 
         for (const gimmick of this.gimmicks) {
@@ -56,16 +66,16 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
             let isGimmickForThisNode = gimmick.node == node || gimmick.node == 'MapWide';
             if (!isGimmickForThisNode) continue;
 
-            if (gimmick.mapPartNumber && gimmick.mapPartNumber < CHDATA.event.maps[mapNum]) continue;
+            if (gimmick.mapPartNumber && gimmick.mapPartNumber < CHDATA.event.maps[gimmick.mapnum].part) continue;
 
             let shouldCountBeIncreased = gimmick.shouldCountBeIncreased();
 
             if (shouldCountBeIncreased) {
-                if (!CHDATA.event.maps[mapNum].debuff[gimmick.id]) CHDATA.event.maps[mapNum].debuff[gimmick.id] = 0;
+                if (!CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id]) CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id] = 0;
                 
-                CHDATA.event.maps[mapNum].debuff[gimmick.id] += shouldCountBeIncreased;
+                CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id] += shouldCountBeIncreased;
 
-                if (this.playSoundOnStepDone) {
+                if (this.playSoundOnStepDone && gimmick.gimmickDone()) {
                     SM.play('done');
                     // --- Missing the message here
                 }
@@ -79,6 +89,26 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
      */
     this.checkIfDebuffed = () => {
         if (!this.gimmickDone()) return;
+
+        if (!mapNum) {
+            let atleastOne = false;
+
+            for (const gimmick of this.gimmicks) {
+                if (CHDATA.event.maps[gimmick.mapnum].debuffed) continue;
+
+                CHDATA.event.maps[gimmick.mapnum].debuffed = true;
+
+                atleastOne = true;
+            }
+
+            if (atleastOne && !this.playSoundOnStepDone) {
+                SM.play('done');
+                alert('DEBUFF');
+            }
+
+            return;
+        }
+
         if (CHDATA.event.maps[mapNum].debuffed) return;
 
         if (!this.playSoundOnStepDone) {
@@ -129,6 +159,8 @@ function ChGimmick(parameters) {
 
     this.mapnum = parameters.mapnum;
 
+    this.mapIdForChdata = this.mapnum;
+
     this.mapPartNumber = parameters.mapPartNumber;
 
     this.id = `E${this.mapnum}-${this.mapPartNumber ?? 'D'}-${this.node}`
@@ -141,9 +173,9 @@ function ChGimmick(parameters) {
      * Returns true if this part of the gimmick is done
      */
     this.gimmickDone = () => {
-        if (!CHDATA.event.maps[this.mapnum].debuff) return false;
+        if (!CHDATA.event.maps[this.mapIdForChdata].debuff) return false;
 
-        let count = CHDATA.event.maps[this.mapnum].debuff[this.id];
+        let count = CHDATA.event.maps[this.mapIdForChdata].debuff[this.id];
         let requiredCount = this.timesRequiredPerDiff[getDiff()];
 
         if (!requiredCount) return true;

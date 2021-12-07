@@ -2353,6 +2353,15 @@ function shuttersPostbattle(noshutters) {
 		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
 	}
 
+	for (const map in MAPDATA[WORLD].maps) {
+		if (map == MAPNUM) continue;
+		if (!MAPDATA[WORLD].maps[map].debuffRules) continue;
+		if (MAPDATA[WORLD].maps[map].debuffRules.mapNum) continue;
+
+		// --- Gimmick rules without map number = multi map debuff (eg : Spring 16 E5 E6)
+		MAPDATA[WORLD].maps[map].debuffRules.checkGimmickSteps(curletter);
+	}
+
 	FLEETS1[0].resetBattle();
 	if (CHDATA.fleets.combined) FLEETS1[1].resetBattle();
 	CHDATA.temp.done = true;
