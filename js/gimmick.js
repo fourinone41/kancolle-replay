@@ -97,6 +97,9 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
             let isGimmickForThisNode = gimmick.node == node || gimmick.node == 'MapWide';
             if (!isGimmickForThisNode) continue;
 
+            let isGimmickForThisMap = gimmick.mapnum == MAPNUM;
+            if (!isGimmickForThisMap) continue;
+
             if (gimmick.mapPartNumber && gimmick.mapPartNumber < CHDATA.event.maps[gimmick.mapnum].part) continue;
 
             let shouldCountBeIncreased = gimmick.shouldCountBeIncreased(checkGimmickParameters);
