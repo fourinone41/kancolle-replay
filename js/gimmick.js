@@ -6,7 +6,7 @@
  *  numberOfStepRequired: number
  * }} additionnalParameters Additionnal parameters to handle special cases
  */
-function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
+function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters, mapPartUnlockingData) {
 
     /**
      * @type {'debuff' | 'mapPart'}
@@ -43,6 +43,15 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
         let gimmickObject = new ChGimmick(gimmick);
 
         if (!mapNum) gimmickObject.mapIdForChdata = this.mapIdForChdata;
+
+        if (type == 'debuff') {
+            gimmickObject.id += '-D';
+        }
+
+        if (type == 'mapPart') {
+            // --- To finish
+            gimmickObject.id += '-U' + mapPartUnlockingData.part;
+        }
 
         this.gimmicks.push(gimmickObject);
     }
@@ -188,7 +197,7 @@ function ChGimmick(parameters) {
 
     this.mapPartNumber = parameters.mapPartNumber;
 
-    this.id = `E${this.mapnum}-${this.mapPartNumber ?? 'D'}-${this.node}`
+    this.id = `E${this.mapnum}-${this.node}`
 
     this.timesRequiredPerDiff = parameters.timesRequiredPerDiff;
 
@@ -227,11 +236,11 @@ function ChGimmick(parameters) {
      * If count should be increased returns 1
      * If you want to increase count multiple time at once you can return the number you want
      */
-    this.shouldCountBeIncreased = () => {
+    this.shouldCountBeIncreased = (checkGimmickParameters) => {
         if (this.gimmickDone()) return 0;
 
         if (parameters.shouldCountBeIncreased) {
-            return parameters.shouldCountBeIncreased();
+            return parameters.shouldCountBeIncreased(checkGimmickParameters);
         }
 
         let requiredRank = this.ranksRequiredPerDiff[getDiff()];
