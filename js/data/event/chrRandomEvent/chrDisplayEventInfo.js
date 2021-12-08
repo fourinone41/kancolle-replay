@@ -541,7 +541,12 @@ class ChrDisplayEventInfo {
         debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Debuff</div>`));
 
         let debuffInfoContent = $("<div>").addClass("mapInfoContent");
-        debuffInfoContent.append("This map can be debuffed after completing the following steps :")
+
+        if (rules.additionnalParameters && rules.additionnalParameters.numberOfStepRequired) {
+            debuffInfoContent.append(`This map can be debuffed after completing ${rules.additionnalParameters.numberOfStepRequired} of the following steps :`);
+        } else {
+            debuffInfoContent.append("This map can be debuffed after completing the following steps :");
+        }
 
         let debuffInfoTable = $('<table>').addClass('gimmick-table');
 

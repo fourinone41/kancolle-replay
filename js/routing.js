@@ -85,6 +85,7 @@ function ChRule () {
 
     this.escortOnly = false;
     this.mainFleetOnly = false;
+    this.notOfType = false;
 
     /**
      * @type {{if: ChRule,then: ChRule,else: ChRule}} 
@@ -120,6 +121,10 @@ function ChRule () {
                     count += shipsToCheck[shipType];
                 }
 
+                if (this.notOfType) {
+                    count = shipsToCheck.total - count;
+                }
+
                 switch (this.operator) {
                     case "<":
                         if (count < this.count) return this.conditionCheckedNode;
@@ -151,6 +156,11 @@ function ChRule () {
 
                 for (const shipId of this.shipsIds) {
                     if (isShipInList(shipsToCheck, shipId)) count++;
+                }
+
+                // --- Count = 0 means no ship must be in the fleet
+                if (this.count == 0) {
+                    return count == 0;
                 }
 
                 return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
@@ -321,6 +331,16 @@ function ChRule () {
 
                 let shipList = shipTypesTranslated.join(" + ");
 
+                if (this.notOfType) {
+
+                    shipList = shipTypesTranslated.join(', ');
+
+                    if (this.escortOnly) return `Number of ships that are not ${shipList} in escort fleet ${this.operator} ${this.count}`;
+                    if (this.mainFleetOnly) return `Number of ships that are not ${shipList} in main fleet ${this.operator} ${this.count}`;
+
+                    return `Number of ships that are not ${shipList} ${this.operator} ${this.count}`;
+                }
+
                 if (this.escortOnly) return `Number of ${shipList} in escort fleet ${this.operator} ${this.count}`;
                 if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.count}`;
 
@@ -347,10 +367,12 @@ function ChRule () {
                 }
 
                 if (this.shipsIds.length == 1) {
-                    if (this.escortOnly) return `${names} in the escort fleet`;
-                    if (this.mainFleetOnly) return `${names} in the main fleet`;
+                    let not = this.count != 0 ? '' : 'NOT ';
 
-                    return `${names} in the fleet`
+                    if (this.escortOnly) return `${names} ${not}in the escort fleet`;
+                    if (this.mainFleetOnly) return `${names} ${not}in the main fleet`;
+
+                    return `${names} ${not}in the fleet`
                 }
 
                 if (this.escortOnly) return `${this.count} ship from ${names} in the escort fleet`;
@@ -582,6 +604,14 @@ function ChFixedRoutingRule(fixedNode) {
     return rule;
 }
 
+/**
+ * 
+ * @param {*} shipsIds 
+ * @param {*} count 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns {ChRule}
+ */
 function ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode) {
     let rule = new ChRule();
 
@@ -612,6 +642,27 @@ function ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFa
     rule.count = count;
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * Count the ships that are not of the ship types provided
+ * @param {string[]} shipTypes 
+ * @param {"=", ">=", "<=", "<", ">"} operator
+ * @returns 
+ */
+ function ChShipNotOfTypeRoutingRule(shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "shipType";
+    rule.shipTypes = shipTypes;
+    rule.operator = operator;
+    rule.count = count;
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.notOfType = true;
 
     return rule;
 }

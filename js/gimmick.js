@@ -2,8 +2,11 @@
  * 
  * @param {'debuff' | 'mapPart'} type 
  * @param {ChGimmickParameters[]} gimmickData 
+ * @param {{
+ *  numberOfStepRequired: number
+ * }} additionnalParameters Additionnal parameters to handle special cases
  */
-function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
+function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
 
     /**
      * @type {'debuff' | 'mapPart'}
@@ -14,6 +17,13 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
 
     this.mapNum = mapNum;
     this.mapIdForChdata = mapNum ?? 'multimap';
+
+    /**
+     * @type {{
+    *   numberOfStepRequired: number
+     * }}
+     */
+    this.additionnalParameters = additionnalParameters;
 
     /**
      * Set this to true to play sound on every step done
@@ -42,6 +52,18 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
      * @returns Returns true if gimmick is done
      */
     this.gimmickDone = () => {
+
+        // --- Only X steps required instead of all of them (Summer 16 E4)
+        if (additionnalParameters && additionnalParameters.numberOfStepRequired) {
+            let count = 0;
+
+            for (const gimmick of this.gimmicks) {
+                if (gimmick.gimmickDone()) count++;
+            }
+
+            return count >= additionnalParameters.numberOfStepRequired;
+        }
+
         for (const gimmick of this.gimmicks) {
             if (!gimmick.gimmickDone()) return false;
         }
@@ -52,7 +74,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
     /**
      * Check if gimmick steps have progressed
      */
-    this.checkGimmickSteps = (node) => {
+    this.checkGimmickSteps = (node, checkGimmickParameters) => {
         if (!CHDATA.event.maps[this.mapIdForChdata]) {
             CHDATA.event.maps[this.mapIdForChdata] = {};
         }
@@ -68,7 +90,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
 
             if (gimmick.mapPartNumber && gimmick.mapPartNumber < CHDATA.event.maps[gimmick.mapnum].part) continue;
 
-            let shouldCountBeIncreased = gimmick.shouldCountBeIncreased();
+            let shouldCountBeIncreased = gimmick.shouldCountBeIncreased(checkGimmickParameters);
 
             if (shouldCountBeIncreased) {
                 if (!CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id]) CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id] = 0;
@@ -121,6 +143,10 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData) {
 
 let ChGimmickParameters = {
     node: '',
+    /**
+     * @type {'battle' | 'NoHPLoss' | 'AirState'}
+     */
+    type: 'battle',
     timesRequiredPerDiff: {
         4: 0,
         1: 0,
@@ -138,7 +164,7 @@ let ChGimmickParameters = {
     /**
      * Allows to implement custom logic on debuff count increase
      */
-    shouldCountBeIncreased: () => { return false; },
+    shouldCountBeIncreased: (parameters) => { return false; },
     /**
      * Allows to implement description for the rule
      */
@@ -147,7 +173,6 @@ let ChGimmickParameters = {
 
 
 /**
- * Base gimick type : S rank / A rank / ... a node 
  * @param {ChGimmickParameters} parameters 
  */
 function ChGimmick(parameters) {
@@ -175,6 +200,8 @@ function ChGimmick(parameters) {
     this.gimmickDone = () => {
         if (!CHDATA.event.maps[this.mapIdForChdata].debuff) return false;
 
+        if (this.node == 'AB' && CHDATA.config.disableRaidReq) return true;
+
         let count = CHDATA.event.maps[this.mapIdForChdata].debuff[this.id];
         let requiredCount = this.timesRequiredPerDiff[getDiff()];
 
@@ -182,6 +209,18 @@ function ChGimmick(parameters) {
         if (!count) return false;
 
         return count >= requiredCount;
+    }
+
+    switch (parameters.type) {
+        case 'NoHPLoss': {
+            parameters.shouldCountBeIncreased = (checkGimmickParameters) => {
+                return checkGimmickParameters.totalHPLost <= 0;
+            }
+
+            parameters.getDescription = () => {
+                return 'Take no damage';
+            }
+        }
     }
 
     /**

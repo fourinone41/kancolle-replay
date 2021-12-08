@@ -3365,7 +3365,10 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 	}
 	
 	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
-		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps('AB');
+		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps('AB', {
+			airstate: airState,
+			totalHPLost: totalHPLost
+		});
 	}
 	
 	CHAPI.battles.push(BAPI);
