@@ -173,16 +173,16 @@ function ChShipTypeRoutingWithWeightRule(shipTypes, operator, count, conditionCh
     return rule;
 }
 
-function ChShipHistoricalRoutingRuleEscortOnly(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode) {
-    let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode);
+function ChShipHistoricalRoutingRuleEscortOnly(groupName, shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
 
     rule.escortOnly = true;
 
     return rule;
 }
 
-function ChShipHistoricalRoutingRuleMainFleetOnly(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode) {
-    let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, count, conditionCheckedNode, conditionFailedNode);
+function ChShipHistoricalRoutingRuleMainFleetOnly(groupName, shipTypes, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipHistoricalRoutingRule(groupName, shipTypes, operator, count, conditionCheckedNode, conditionFailedNode);
 
     rule.mainFleetOnly = true;
 
@@ -278,22 +278,22 @@ function ChFlagshipIdRoutingRule(shipId, conditionCheckedNode, conditionFailedNo
  * @param {*} conditionCheckedNode 
  * @param {*} conditionFailedNode 
  */
-function ChShipIdsRoutingRuleMainFleetOnly(shipsIds, count, conditionCheckedNode, conditionFailedNode) {
+function ChShipIdsRoutingRuleMainFleetOnly(shipsIds, operator, count, conditionCheckedNode, conditionFailedNode) {
     /**
      * @type {ChRule}
      */
-    let rule = new ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode);
+    let rule = new ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, conditionFailedNode);
 
     rule.mainFleetOnly = true;
 
     return rule;
 }
 
-function ChShipIdsRoutingRuleEscortOnly(shipsIds, count, conditionCheckedNode, conditionFailedNode) {
+function ChShipIdsRoutingRuleEscortOnly(shipsIds, operator, count, conditionCheckedNode, conditionFailedNode) {
     /**
      * @type {ChRule}
      */
-     let rule = new ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode);
+     let rule = new ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, conditionFailedNode);
 
      rule.escortOnly = true;
  

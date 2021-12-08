@@ -24,6 +24,14 @@ function ChRule () {
      * @type {number[]}
      */
     this.shipsIds = [];
+    
+    /**
+     * this.shipsIds shouldn't be read directly, you have to use this accessor
+     * @returns {number[]} The list of ship ids
+     */
+    this.getShipIds = () => {
+        return this.shipsIds;
+    };
 
     this.shipsIdsListName = "";
 
@@ -154,16 +162,29 @@ function ChRule () {
                 if (this.escortOnly) shipsToCheck = ships.escort.ids;
                 if (this.mainFleetOnly) shipsToCheck = ships.ids;
 
-                for (const shipId of this.shipsIds) {
+                for (const shipId of this.getShipIds()) {
                     if (isShipInList(shipsToCheck, shipId)) count++;
                 }
 
-                // --- Count = 0 means no ship must be in the fleet
-                if (this.count == 0) {
-                    return count == 0;
+                switch (this.operator) {
+                    case "<":
+                        if (count < this.count) return this.conditionCheckedNode;
+                        break;
+                    case "<=":
+                        if (count <= this.count) return this.conditionCheckedNode;
+                        break;
+                    case "=":
+                        if (count == this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">":
+                        if (count > this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">=":
+                        if (count >= this.count) return this.conditionCheckedNode;
+                        break;
                 }
-
-                return (count >= this.count) ? this.conditionCheckedNode : this.conditionFailedNode;
+                
+                return this.conditionFailedNode;
             }
 
             case 'shipCount' : {
@@ -349,15 +370,16 @@ function ChRule () {
 
             case "shipIds": {
                 let names;
+                let shipsIds = this.getShipIds();
 
                 if (!this.historicalGroups) {
                     names = '';
 
-                    for (let index = 0; index < this.shipsIds.length; index++) {
-                        let shipId = this.shipsIds[index];
+                    for (let index = 0; index < this.getShipIds().length; index++) {
+                        let shipId = shipsIds[index];
 
-                        if (index > 0) names += ', ';
-                        if (this.shipsIds.length > 1 && index ==  this.shipsIds.length - 1) names += ' and ';
+                        if (shipsIds.length > 1 && index ==  shipsIds.length - 1) names += ' and ';
+                        else if (index > 0) names += ', ';
 
                         names += SHIPDATA[shipId].name;
                     }
@@ -365,9 +387,29 @@ function ChRule () {
                 else {
                     names = this.shipsIdsListName;
                 }
+                
+                let operator = '???';
 
-                if (this.shipsIds.length == 1) {
-                    let not = this.count != 0 ? '' : 'NOT ';
+                switch (this.operator) {
+                    case "<":
+                        operator = `Less than ${this.count} ship`;
+                        break;
+                    case "<=":
+                        operator = `${this.count} or less ship`;
+                        break;
+                    case "=":
+                        operator = `Exactly ${this.count} ship`;
+                        break;
+                    case ">":
+                        operator = `More than ${this.count} ship`;
+                        break;
+                    case ">=":
+                        operator = `${this.count} or more ship`;
+                        break;
+                }
+
+                if (shipsIds.length == 1) {
+                    let not = (this.count == 0 && this.operator == '=') ? 'NOT ' : '';
 
                     if (this.escortOnly) return `${names} ${not}in the escort fleet`;
                     if (this.mainFleetOnly) return `${names} ${not}in the main fleet`;
@@ -375,10 +417,10 @@ function ChRule () {
                     return `${names} ${not}in the fleet`
                 }
 
-                if (this.escortOnly) return `${this.count} ship from ${names} in the escort fleet`;
-                if (this.mainFleetOnly) return `${this.count} ship from ${names} in the main fleet`;
+                if (this.escortOnly) return `${operator} from ${names} in the escort fleet`;
+                if (this.mainFleetOnly) return `${operator} from ${names} in the main fleet`;
 
-                return `${this.count} ship from ${names} in the fleet`;
+                return `${operator} from ${names} in the fleet`;
             }
 
             case 'shipCount' : {
@@ -540,7 +582,7 @@ function ChRule () {
         let description = {};
 
         for (const node in this.randomNodes) {
-            description[node] = `Random (${this.randomNodes[node] * 100}%)`;
+            if (node) description[node] = `Random (${this.randomNodes[node] * 100}%)`;
         }
 
         return description;
@@ -591,12 +633,12 @@ function ChFixedRoutingRule(fixedNode) {
 
 /**
  * Rule that check if ships are in fleet
- * @param {number[]} shipsIds 
+ * @param {number[] | 'map.property' | 'event.property'} shipsIds 
  * @param {"=", ">=", "<=", "<", ">"} operator
  * @returns 
  */
- function ChShipHistoricalRoutingRule(groupName, shipsIds, count, conditionCheckedNode, conditionFailedNode) {
-    let rule = ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode);
+ function ChShipHistoricalRoutingRule(groupName, shipsIds, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, conditionFailedNode);
 
     rule.shipsIdsListName = groupName;
     rule.historicalGroups = true;
@@ -606,20 +648,40 @@ function ChFixedRoutingRule(fixedNode) {
 
 /**
  * 
- * @param {*} shipsIds 
+ * @param {number[] | 'map.property' | 'event.property'} shipsIds 
  * @param {*} count 
  * @param {*} conditionCheckedNode 
  * @param {*} conditionFailedNode 
  * @returns {ChRule}
  */
-function ChShipIdsRoutingRule(shipsIds, count, conditionCheckedNode, conditionFailedNode) {
+function ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, conditionFailedNode) {
     let rule = new ChRule();
 
     rule.type = "shipIds";
 
     rule.shipsIds = shipsIds;
 
+    if (typeof(shipsIds) == 'string') {
+
+        // --- [0] = type
+        // --- [1] = the property of the object having the id list
+        let accessToShipIds = shipsIds.split('.');
+
+        if (accessToShipIds[0] == 'map') {
+            rule.getShipIds = () => {
+                return MAPDATA[WORLD].maps[MAPNUM][accessToShipIds[1]];
+            }
+        }
+
+        if (accessToShipIds[0] == 'event') {
+            rule.getShipIds = () => {
+                return MAPDATA[WORLD][accessToShipIds[1]];
+            }
+        }
+    }
+
     rule.count = count;
+    rule.operator = operator;
 
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;

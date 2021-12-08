@@ -226,8 +226,8 @@ function ChGimmick(parameters) {
                 return checkGimmickParameters.totalHPLost <= 0;
             }
 
-            parameters.getDescription = () => {
-                return 'Take no damage';
+            parameters.getDescription = (diff) => {
+                return 'Take no damage' + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
             }
         }
     }
@@ -259,7 +259,7 @@ function ChGimmick(parameters) {
 
     this.getDescription = (diff) => {
         if (parameters.getDescription) {
-            return parameters.getDescription();
+            return parameters.getDescription(diff);
         }
 
         return this.ranksRequiredPerDiff[diff] + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');

@@ -1,5 +1,6 @@
 var CHDATA;
 var MAPNUM;
+var WORLD;
 
 class ChrDisplayEventInfo {
 
@@ -57,6 +58,7 @@ class ChrDisplayEventInfo {
             button.click(() => {
                 this.currentMap = mapNum + 1;
                 MAPNUM = this.currentMap;
+                WORLD = this.GetCurrentWorld();
                 
                 this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1);
 
@@ -504,7 +506,7 @@ class ChrDisplayEventInfo {
 
                 let groupContainer = $("<div>").addClass("mapInfoContentGroupContainer");
 
-                for (const shipMid of rule.shipsIds) {
+                for (const shipMid of rule.getShipIds()) {
                     let shipImg = $("<img>");
                     shipImg.attr("src", 'assets/icons/' + SHIPDATA[shipMid].image);
 
@@ -595,7 +597,7 @@ class ChrDisplayEventInfo {
 
                 let desc = rule.getDescription(diff);
 
-                if (desc.length < 10 || desc != previousDesc) {
+                if (desc.length < 20 || desc != previousDesc) {
                     descTd = $('<td>');
                     descTd.append(desc);
                     debuffLine.append(descTd);
