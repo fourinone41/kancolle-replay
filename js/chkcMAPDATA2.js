@@ -13844,7 +13844,7 @@ var MAPDATA = {
 							1: ['Easy 1', 'Easy 2', 'Easy 3']
 						},
 						rules: [
-							ChLOSRule({ 3: 'Q', 0: 'O' })
+							ChLOSRule({ 3: 'L', 0: 'P' })
 						]
 					},
 					'L': {
