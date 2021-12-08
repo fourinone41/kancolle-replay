@@ -3370,6 +3370,18 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 			totalHPLost: totalHPLost
 		});
 	}
+
+	for (const map in MAPDATA[WORLD].maps) {
+		if (map == MAPNUM) continue;
+		if (!MAPDATA[WORLD].maps[map].debuffRules) continue;
+		if (MAPDATA[WORLD].maps[map].debuffRules.mapNum) continue;
+
+		// --- Gimmick rules without map number = multi map debuff (eg : Spring 16 E5 E6)
+		MAPDATA[WORLD].maps[map].debuffRules.checkGimmickSteps('AB', {
+			airstate: airState,
+			totalHPLost: totalHPLost
+		});
+	}
 	
 	CHAPI.battles.push(BAPI);
 	CHAPI.fleet1 = [];
