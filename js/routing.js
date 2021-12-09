@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked'}
      */
     this.type = "fixed";
 
@@ -94,6 +94,7 @@ function ChRule () {
     this.escortOnly = false;
     this.mainFleetOnly = false;
     this.notOfType = false;
+    this.not = false;
 
     /**
      * @type {{if: ChRule,then: ChRule,else: ChRule}} 
@@ -322,6 +323,44 @@ function ChRule () {
                 if (this.fleetType == 0) return !CHDATA.fleets.combined;
                 
                 return CHDATA.fleets.combined == this.fleetType ? this.conditionCheckedNode : this.conditionFailedNode;
+            }
+
+            case 'mapPart': {
+                let currentPart = CHDATA.event.maps[MAPNUM].part;
+
+                switch (this.operator) {
+                    case "<":
+                        if (currentPart < this.count) return this.conditionCheckedNode;
+                        break;
+                    case "<=":
+                        if (currentPart <= this.count) return this.conditionCheckedNode;
+                        break;
+                    case "=":
+                        if (currentPart == this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">":
+                        if (currentPart > this.count) return this.conditionCheckedNode;
+                        break;
+                    case ">=":
+                        if (currentPart >= this.count) return this.conditionCheckedNode;
+                        break;
+                }
+
+                return this.conditionFailedNode;
+            }
+            
+            case "isRouteUnlocked": {
+                if (this.not) {
+                    if (!CHDATA.event.maps[MAPNUM].routes) return this.conditionCheckedNode;
+                    if (!CHDATA.event.maps[MAPNUM].routes.length) return this.conditionCheckedNode;
+                    
+                    return !CHDATA.event.maps[MAPNUM].routes.indexOf(this.count) == -1 ? this.conditionCheckedNode : this.conditionFailedNode;
+                }
+
+                if (!CHDATA.event.maps[MAPNUM].routes) return this.conditionFailedNode;
+                if (!CHDATA.event.maps[MAPNUM].routes.length) return this.conditionFailedNode;
+                
+                return CHDATA.event.maps[MAPNUM].routes.indexOf(this.count) != -1 ? this.conditionCheckedNode : this.conditionFailedNode;
             }
 
             default:
@@ -568,6 +607,26 @@ function ChRule () {
 
             case 'routeSelect': {
                 return `Choose between ${this.routeSelect.join(" and ")}`;
+            }
+
+            case "mapPart": {
+                switch (this.operator) {
+                    case "<":
+                        return `Part ${this.count} not reached`;
+                    case "<=":
+                        return `Part ${this.count} or before`;
+                    case "=":
+                        return `Be on part ${this.count}`;
+                    case ">":
+                        return `After part ${this.count} has been cleared`;
+                    case ">=":
+                        return `Part ${this.count} or after`;
+                }
+            }
+
+            case "isRouteUnlocked": {
+                if (this.not) return `Unlock ${this.count} is not done`;
+                return `Unlock ${this.count} is done`;
             }
 
             default:
@@ -978,6 +1037,41 @@ function ChSelectRouteRule(routeSelection) {
     rule.type = "routeSelect";
 
     rule.routeSelect = routeSelection;
+
+    return rule;
+}
+
+function ChMapPartRule(operator, part, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "mapPart";
+
+    rule.count = part;
+    rule.operator = operator;
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+function ChIsRouteUnlockedRule(routeNumber, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "isRouteUnlocked";
+
+    rule.count = routeNumber;
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+function ChIsRouteNotUnlockedRule(routeNumber, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChIsRouteUnlockedRule(routeNumber, conditionCheckedNode, conditionFailedNode);
+
+    rule.not = true;
 
     return rule;
 }

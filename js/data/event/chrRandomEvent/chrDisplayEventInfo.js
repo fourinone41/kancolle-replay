@@ -524,8 +524,18 @@ class ChrDisplayEventInfo {
             $("#mapInfoMapInfo").append(groupsInfo);
         }
 
+        if (map.hiddenRoutes) {
+            for (const part in map.hiddenRoutes) {
+                if (map.hiddenRoutes[part].unlockRules) $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.hiddenRoutes[part].unlockRules, map, MAPDATA[this.GetCurrentWorld()]));
+            }
+        }
+
         if (map.debuffRules) {
             $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map, MAPDATA[this.GetCurrentWorld()]));
+        }
+
+        if (Object.values(map.nodes).find(x => x.bonuses)) {
+            $("#mapInfoMapInfo").append(this.DisplayBonusInfos(map));
         }
     } 
 
@@ -537,17 +547,37 @@ class ChrDisplayEventInfo {
     DisplayDebuffInfos(rules, map, event) {
 
         let diffs = event.allowDiffs ? event.allowDiffs : [4,1,2,3];
+        let nodeList = [];
 
         let debuffInfoRoot = $('<div>').addClass("foldable-element");
         
-        debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Debuff</div>`));
+        if (rules.type == 'debuff') {
+            debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Debuff</div>`));
+        }
+        
+        if (rules.type == 'mapPart') {
+            for (const node in map.nodes) {
+                if (map.nodes[node].hidden && map.nodes[node].hidden == rules.additionnalParameters.partToUnlock) nodeList.push(node);
+            }
+
+            debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Unlock ${rules.additionnalParameters.partToUnlock} - Node${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')}</div>`));
+        }
 
         let debuffInfoContent = $("<div>").addClass("mapInfoContent");
 
+        if (rules.type == 'debuff') {
+            debuffInfoContent.append(`This map can be debuffed after completing `);
+        }
+
+        if (rules.type == 'mapPart') {
+
+            debuffInfoContent.append(`You can unlock node${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')} after completing `);
+        }
+
         if (rules.additionnalParameters && rules.additionnalParameters.numberOfStepRequired) {
-            debuffInfoContent.append(`This map can be debuffed after completing ${rules.additionnalParameters.numberOfStepRequired} of the following steps :`);
+            debuffInfoContent.append(`${rules.additionnalParameters.numberOfStepRequired} of the following steps :`);
         } else {
-            debuffInfoContent.append("This map can be debuffed after completing the following steps :");
+            debuffInfoContent.append("the following steps :");
         }
 
         let debuffInfoTable = $('<table>').addClass('gimmick-table');
@@ -558,6 +588,8 @@ class ChrDisplayEventInfo {
         for (const diff of diffs) {
             debuffInfoColumns.append($(`<th>${this.GetDiffText(diff)}</th>`))
         }
+        
+        debuffInfoColumns.append($(`<th>Notes</th>`))
 
         debuffInfoTable.append(debuffInfoColumns);
 
@@ -611,6 +643,14 @@ class ChrDisplayEventInfo {
                 
                 previousDesc = desc;
             }
+
+            let notes = [];
+
+            if (rule.routeUnlockRequired) {
+                notes.push(`You need to do unlock ${rule.routeUnlockRequired} before doing this requirement`);
+            }
+
+            debuffLine.append($(`<td>${notes.join('<br>')}</td>`));
             
             debuffInfoTable.append(debuffLine);
         }
@@ -618,29 +658,139 @@ class ChrDisplayEventInfo {
         debuffInfoContent.append(debuffInfoTable);
         debuffInfoRoot.append(debuffInfoContent);
 
-        debuffInfoContent.append('Debuff effects : ')
+        
+        if (rules.type == 'debuff') { 
+            debuffInfoContent.append('Debuff effects : ')
 
-        let debuffEffects = $('<ul>').addClass('debuff-effects');
+            let debuffEffects = $('<ul>').addClass('debuff-effects');
 
-        // --- Debuff amount ?
-        for (const node in map.nodes) {
+            // --- Debuff amount ?
+            for (const node in map.nodes) {
 
-            if (!map.nodes[node].debuffAmount) continue;
+                if (!map.nodes[node].debuffAmount) continue;
 
-            let debuffAmount = map.nodes[node].debuffAmount;
+                let debuffAmount = map.nodes[node].debuffAmount;
 
-            if (typeof debuffAmount === 'object') {                
-                for (const mid in debuffAmount) {
-                    debuffEffects.append(`<li>On node ${node}, any ${SHIPDATA[mid].name} will receive an armor break of ${debuffAmount[mid]}</li>`);
+                if (typeof debuffAmount === 'object') {                
+                    for (const mid in debuffAmount) {
+                        debuffEffects.append(`<li>On node ${node}, any ${SHIPDATA[mid].name} will receive an armor break of ${debuffAmount[mid]}</li>`);
+                    }
+                } else {
+                    debuffEffects.append(`<li>On node ${node}, the flagship will receive an armor break of ${debuffAmount}</li>`);
                 }
-            } else {
-                debuffEffects.append(`<li>On node ${node}, the flagship will receive an armor break of ${debuffAmount}</li>`);
             }
+                
+            debuffInfoContent.append(debuffEffects);
         }
-            
-        debuffInfoContent.append(debuffEffects);
+       
 
         return debuffInfoRoot;
+    }
+
+    /**
+     * 
+     * @param {ChBonuses} rules 
+     * @returns 
+     */
+    DisplayBonusInfos(map) {
+
+        let bonusInfoRoot = $('<div>').addClass("foldable-element");
+        
+        bonusInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Bonuses</div>`));
+
+        let bonusInfoContent = $("<div>").addClass("mapInfoContent");
+
+        let bonusInfoTable = $('<table>').addClass('gimmick-table');
+
+        let bonusInfoColumns = $('<tr>');
+        bonusInfoColumns.append($(`<th>Groups</th>`));
+
+        let bonusesPerNode = {};
+        let bonusesGroupedByGroups = [];
+
+        for (const node in map.nodes) {
+            if (map.nodes[node].bonuses) {
+                bonusesPerNode[node] = map.nodes[node].bonuses;
+                bonusInfoColumns.append($(`<th>${node}</th>`));
+            }
+        }
+
+        bonusInfoTable.append(bonusInfoColumns);
+
+        let compareGroups = (bonus, group) => {
+            if (group.type != bonus.bonusType) return false;
+
+            let ids = bonus.getShipIds();
+            if (group.ids.length != ids.length) return false;
+
+            for (let index in group.ids) {
+                if (group.ids[index] != ids[index]) return false;
+            }
+
+            return true;
+        }
+
+        for (const node in bonusesPerNode) {
+
+            let bonuses = bonusesPerNode[node];
+            
+            for (const bonus of bonuses) {
+
+                bonus.node = node;
+
+                if (bonus.bonusType == 'ChShipIdsBonuses') {
+                    let groupExists = null;
+                    
+                    for (let group of bonusesGroupedByGroups)
+                    {
+                        if (compareGroups(bonus, group)) {
+                            groupExists = group;
+                            break;
+                        }
+                    }
+
+                    if (groupExists) {
+                        groupExists.bonuses.push(bonus);
+                    }
+                    else {
+                        bonusesGroupedByGroups.push({
+                            type: bonus.bonusType,
+                            ids: bonus.getShipIds(),
+                            bonuses: [bonus]
+                        });
+                    }
+                }
+            }
+        }
+
+        for (let group of bonusesGroupedByGroups) {
+            let bonusLine = $("<tr>");
+
+            bonusLine.append($(`<td class="bonus-group">${group.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}">`; }).join("")}</td>`));
+
+            for (let node in bonusesPerNode) {
+
+                let bonus = group.bonuses.find(x => x.node == node);
+
+                if (!bonus) bonusLine.append($(`<td> / </td>`));
+                else {
+                    if (bonus.parameters.type == "set") {
+                        bonusLine.append($(`<td>x${bonus.amount}</td>`));
+                    }
+                    
+                    if (bonus.parameters.type == "add") {
+                        bonusLine.append($(`<td class="bonus-stacks" title="Stacks with other bonuses">x${bonus.amount}</td>`));
+                    }
+                }
+            }
+
+            bonusInfoTable.append(bonusLine);
+        }
+
+        bonusInfoContent.append(bonusInfoTable);
+        bonusInfoRoot.append(bonusInfoContent);
+
+        return bonusInfoRoot;
     }
     //#endregion
 }

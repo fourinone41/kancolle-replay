@@ -4,9 +4,10 @@
  * @param {ChGimmickParameters[]} gimmickData 
  * @param {{
  *  numberOfStepRequired: number
+ *  partToUnlock: number
  * }} additionnalParameters Additionnal parameters to handle special cases
  */
-function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters, mapPartUnlockingData) {
+function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
 
     /**
      * @type {'debuff' | 'mapPart'}
@@ -21,6 +22,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
     /**
      * @type {{
     *   numberOfStepRequired: number
+     *  partToUnlock: number
      * }}
      */
     this.additionnalParameters = additionnalParameters;
@@ -50,7 +52,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
 
         if (type == 'mapPart') {
             // --- To finish
-            gimmickObject.id += '-U' + mapPartUnlockingData.part;
+            gimmickObject.id += '-U' + additionnalParameters.partToUnlock;
         }
 
         this.gimmicks.push(gimmickObject);
@@ -181,6 +183,10 @@ let ChGimmickParameters = {
      * Allows to implement description for the rule
      */
     getDescription: (difficulty) => { return ''; },
+    /**
+     * You can specify if a certain route unlock must be done before
+     */
+    routeUnlockRequired: 0
 }
 
 
@@ -205,6 +211,8 @@ function ChGimmick(parameters) {
     this.timesRequiredPerDiff = parameters.timesRequiredPerDiff;
 
     this.ranksRequiredPerDiff = parameters.ranksRequiredPerDiff;
+
+    this.routeUnlockRequired = parameters.routeUnlockRequired;
 
     /**
      * Returns true if this part of the gimmick is done
@@ -241,6 +249,13 @@ function ChGimmick(parameters) {
      */
     this.shouldCountBeIncreased = (checkGimmickParameters) => {
         if (this.gimmickDone()) return 0;
+
+        if (this.routeUnlockRequired) {
+            if (!CHDATA.event.maps[MAPNUM].routes) return 0;
+            if (!CHDATA.event.maps[MAPNUM].routes.length) return 0;
+
+            if (CHDATA.event.maps[MAPNUM].routes.indexOf(this.routeUnlockRequired) == -1) return 0;
+        }
 
         if (parameters.shouldCountBeIncreased) {
             return parameters.shouldCountBeIncreased(checkGimmickParameters);

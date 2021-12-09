@@ -152,3 +152,12 @@ div#routing {
 .debuff-step-done {
     background-color: #487c35;
 }
+
+.bonus-group {
+    width: 500px;
+}
+
+.bonus-stacks {
+    font-weight: 700;
+    font-style: italic;
+}

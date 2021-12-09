@@ -1865,6 +1865,12 @@ function prepBattle(letter) {
 		mapdata.setupSpecial(); //not reverted until sortie end
 	}
 
+	if (mapdata.bonuses) {
+		for (const bonus of mapdata.bonuses) {
+			bonus.applyBonuses();
+		}
+	}
+
 	// --- Randomizer code
 	chrApplySpecial();
 	
@@ -2351,6 +2357,16 @@ function shuttersPostbattle(noshutters) {
 	
 	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
 		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+	}
+
+	if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+		let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+
+		for (var key in hiddenRoutes) {
+			key = parseInt(key);
+	
+			hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
+		}
 	}
 
 	for (const map in MAPDATA[WORLD].maps) {
@@ -3274,7 +3290,12 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 	for (var key in hiddenRoutes) {
 		key = parseInt(key);
 		if (CHDATA.event.maps[MAPNUM].routes.indexOf(key) != -1) continue; 
-		if (hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+		if (hiddenRoutes[key].unlock && hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
+			return key;
+		}
+
+		if (hiddenRoutes[key].unlockRules && hiddenRoutes[key].unlockRules.gimmickDone()) {
 			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
 			return key;
 		}
@@ -3369,6 +3390,19 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 			airstate: airState,
 			totalHPLost: totalHPLost
 		});
+	}
+
+	if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+		let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+
+		for (var key in hiddenRoutes) {
+			key = parseInt(key);
+	
+			hiddenRoutes[key].unlockRules.checkGimmickSteps('AB', {
+				airstate: airState,
+				totalHPLost: totalHPLost
+			});
+		}
 	}
 
 	for (const map in MAPDATA[WORLD].maps) {
