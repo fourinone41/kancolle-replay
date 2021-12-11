@@ -130,10 +130,10 @@ function ChShipTypeRoutingWithWeightRule(shipTypes, operator, count, conditionCh
 
         let shipList = shipTypesTranslated.join(" + ");
 
-        if (this.escortOnly) return `Number of ${shipList} in escort ${this.operator} ${this.count}`;
-        if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.count}`;
+        if (this.escortOnly) return `Number of ${shipList} in escort ${this.operator} ${this.getCountAsText()}`;
+        if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.getCountAsText()}`;
 
-        return `Number of ${shipList} ${this.operator} ${this.count}`;
+        return `Number of ${shipList} ${this.operator} ${this.getCountAsText()}`;
     };
 
     rule.getRouting = function (ships) {
@@ -151,19 +151,19 @@ function ChShipTypeRoutingWithWeightRule(shipTypes, operator, count, conditionCh
 
         switch (this.operator) {
             case "<":
-                if (count < this.count) return this.conditionCheckedNode;
+                if (count < this.getCount()) return this.conditionCheckedNode;
                 break;
             case "<=":
-                if (count <= this.count) return this.conditionCheckedNode;
+                if (count <= this.getCount()) return this.conditionCheckedNode;
                 break;
             case "=":
-                if (count == this.count) return this.conditionCheckedNode;
+                if (count == this.getCount()) return this.conditionCheckedNode;
                 break;
             case ">":
-                if (count > this.count) return this.conditionCheckedNode;
+                if (count > this.getCount()) return this.conditionCheckedNode;
                 break;
             case ">=":
-                if (count >= this.count) return this.conditionCheckedNode;
+                if (count >= this.getCount()) return this.conditionCheckedNode;
                 break;
         }
         
@@ -298,4 +298,107 @@ function ChShipIdsRoutingRuleEscortOnly(shipsIds, operator, count, conditionChec
      rule.escortOnly = true;
  
      return rule;
+}
+
+function ChIsMapClearedRule(conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.getRouting = (ships) => {
+        if (rule.not) return CHDATA.event.maps[MAPNUM].hp > 0;
+
+        return CHDATA.event.maps[MAPNUM].hp <= 0;
+    }
+
+    rule.getDescription = () => {
+        if (rule.not) return "Map isn't cleared yet";
+
+        return "Map is cleared";
+    }
+
+    return rule;
+}
+
+function ChIsMapNotClearedRule(conditionCheckedNode, conditionFailedNode) {
+    /**
+     * @type {ChRule}
+     */
+    let rule = ChIsMapClearedRule(conditionCheckedNode, conditionFailedNode);
+
+    rule.not = true;
+
+    return rule;
+}
+
+/**
+ * Allows to create a fully custom rule dirrectly in branching rules
+ * @param {ChRule} ruleProperties
+ */
+function ChCreateCustomRule(ruleProperties) {
+    let rule = new ChRule();
+
+    if (ruleProperties.type) rule.type = ruleProperties.type;
+    rule.conditionCheckedNode = ruleProperties.conditionCheckedNode;
+    rule.conditionFailedNode = ruleProperties.conditionFailedNode;
+
+    rule.getRouting = ruleProperties.getRouting;
+    rule.getDescription = ruleProperties.getDescription;
+
+    rule.shipsIds = ruleProperties.shipsIds;
+    rule.shipsIdsListName = ruleProperties.shipsIdsListName;
+    rule.historicalGroups = ruleProperties.historicalGroups;
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {*} operator 
+ * @param {*} percentage percentage in decimal (0.25 => 25%)
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+function ChMapHpPercentageRule(operator, percentage, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.getRouting = (ships) => {
+        let m = CHDATA.event.maps[MAPNUM];
+
+        return ChRule.CompareNumbers(m.hp/getMapHP(WORLD,MAPNUM,m.diff), percentage, operator, conditionCheckedNode, conditionFailedNode);
+    }
+
+    rule.getDescription = () => {
+        return `Map HP/TP ${operator} ${percentage * 100}%`;
+    }
+
+    return rule;
+}
+
+function ChFleetBeenThroughRule(node, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.getRouting = (ships) => {
+        return !!CHDATA.sortie[node] ? conditionCheckedNode: conditionFailedNode;
+    }
+
+    rule.getDescription = () => {
+        return `Fleet been through node ${node}`;
+    }
+
+    return rule;
 }

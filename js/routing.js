@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount'}
      */
     this.type = "fixed";
 
@@ -51,7 +51,41 @@ function ChRule () {
      */
     this.rules = [];
 
+    /**
+     * Count of the rule
+     * Can be an object with a value for each difficulty
+     * @type {number | { 1: number, 2: number, 3: number, 4: number }} 
+     */
     this.count = 0;
+
+    this.getCountAsText = () => {
+
+        if (typeof(this.count) == 'number') return this.count;
+
+        let countPerDiff = [];
+
+        let diffName = {
+            4: 'Casual',
+            1: 'Easy',
+            2: 'Medium',
+            3: 'Hard',
+        }
+
+        for (const diff in diffName) {
+            if (this.count[diff] != undefined) {
+                countPerDiff.push(`${this.count[diff]} on ${diffName[diff]}`);
+            }
+        }
+
+        return countPerDiff.join(', ');
+    };
+
+    this.getCount = () => {
+        if (typeof(this.count) == 'number') return this.count;
+
+        let diff = getDiff();
+        return this.count[diff];
+    }
 
     this.shipWithEquipCount = 0;
 
@@ -136,19 +170,19 @@ function ChRule () {
 
                 switch (this.operator) {
                     case "<":
-                        if (count < this.count) return this.conditionCheckedNode;
+                        if (count < this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "<=":
-                        if (count <= this.count) return this.conditionCheckedNode;
+                        if (count <= this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (count == this.count) return this.conditionCheckedNode;
+                        if (count == this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">":
-                        if (count > this.count) return this.conditionCheckedNode;
+                        if (count > this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">=":
-                        if (count >= this.count) return this.conditionCheckedNode;
+                        if (count >= this.getCount()) return this.conditionCheckedNode;
                         break;
                 }
                 
@@ -169,19 +203,19 @@ function ChRule () {
 
                 switch (this.operator) {
                     case "<":
-                        if (count < this.count) return this.conditionCheckedNode;
+                        if (count < this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "<=":
-                        if (count <= this.count) return this.conditionCheckedNode;
+                        if (count <= this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (count == this.count) return this.conditionCheckedNode;
+                        if (count == this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">":
-                        if (count > this.count) return this.conditionCheckedNode;
+                        if (count > this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">=":
-                        if (count >= this.count) return this.conditionCheckedNode;
+                        if (count >= this.getCount()) return this.conditionCheckedNode;
                         break;
                 }
                 
@@ -191,19 +225,19 @@ function ChRule () {
             case 'shipCount' : {
                 switch (this.operator) {
                     case "<":
-                        if (ships.total < this.count) return this.conditionCheckedNode;
+                        if (ships.total < this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "<=":
-                        if (ships.total <= this.count) return this.conditionCheckedNode;
+                        if (ships.total <= this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (ships.total == this.count) return this.conditionCheckedNode;
+                        if (ships.total == this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">":
-                        if (ships.total > this.count) return this.conditionCheckedNode;
+                        if (ships.total > this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">=":
-                        if (ships.total >= this.count) return this.conditionCheckedNode;
+                        if (ships.total >= this.getCount()) return this.conditionCheckedNode;
                         break;
                 }
 
@@ -311,7 +345,34 @@ function ChRule () {
                     if (found) numShipsWithEquip++;
                 }
 
-                if (numEquips >= this.count && numShipsWithEquip >= this.shipWithEquipCount) return this.conditionCheckedNode;
+                let numEquipsValidated = false;
+                let shipWithEquipCountValidated = false;
+
+                switch (this.operator) {
+                    case "<":
+                        numEquipsValidated = this.getCount() == null || numEquips < this.getCount();
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip < this.shipWithEquipCount;
+                        break;
+                    case "<=":
+                        numEquipsValidated = this.getCount() == null || numEquips <= this.getCount();
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip <= this.shipWithEquipCount;
+                        break;
+                    case "=":
+                        numEquipsValidated = this.getCount() == null || numEquips == this.getCount();
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip == this.shipWithEquipCount;
+                        break;
+                    case ">":
+                        numEquipsValidated = this.getCount() == null || numEquips > this.getCount();
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip > this.shipWithEquipCount;
+                        break;
+                    default: 
+                    case ">=":
+                        numEquipsValidated = this.getCount() == null || numEquips >= this.getCount();
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip >= this.shipWithEquipCount;
+                        break;
+                }
+
+                if (numEquipsValidated && shipWithEquipCountValidated) return this.conditionCheckedNode;
                 return this.conditionFailedNode;
             }
 
@@ -320,9 +381,20 @@ function ChRule () {
             }
 
             case 'fleetType': {
-                if (this.fleetType == 0) return !CHDATA.fleets.combined;
-                
-                return CHDATA.fleets.combined == this.fleetType ? this.conditionCheckedNode : this.conditionFailedNode;
+
+                if (typeof(this.fleetType) == "number") {
+                    if (this.fleetType == 0) return !CHDATA.fleets.combined ? this.conditionCheckedNode : this.conditionFailedNode;
+                    
+                    return CHDATA.fleets.combined == this.fleetType ? this.conditionCheckedNode : this.conditionFailedNode;
+                }
+                else {
+                    for (const type of this.fleetType) {
+                        if (type == 0 && !CHDATA.fleets.combined) return this.conditionCheckedNode;
+                        else if (type == CHDATA.fleets.combined) return this.conditionCheckedNode;
+                    }
+
+                    return this.conditionFailedNode;
+                }
             }
 
             case 'mapPart': {
@@ -330,19 +402,19 @@ function ChRule () {
 
                 switch (this.operator) {
                     case "<":
-                        if (currentPart < this.count) return this.conditionCheckedNode;
+                        if (currentPart < this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "<=":
-                        if (currentPart <= this.count) return this.conditionCheckedNode;
+                        if (currentPart <= this.getCount()) return this.conditionCheckedNode;
                         break;
                     case "=":
-                        if (currentPart == this.count) return this.conditionCheckedNode;
+                        if (currentPart == this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">":
-                        if (currentPart > this.count) return this.conditionCheckedNode;
+                        if (currentPart > this.getCount()) return this.conditionCheckedNode;
                         break;
                     case ">=":
-                        if (currentPart >= this.count) return this.conditionCheckedNode;
+                        if (currentPart >= this.getCount()) return this.conditionCheckedNode;
                         break;
                 }
 
@@ -354,13 +426,41 @@ function ChRule () {
                     if (!CHDATA.event.maps[MAPNUM].routes) return this.conditionCheckedNode;
                     if (!CHDATA.event.maps[MAPNUM].routes.length) return this.conditionCheckedNode;
                     
-                    return !CHDATA.event.maps[MAPNUM].routes.indexOf(this.count) == -1 ? this.conditionCheckedNode : this.conditionFailedNode;
+                    return !CHDATA.event.maps[MAPNUM].routes.indexOf(this.getCount()) == -1 ? this.conditionCheckedNode : this.conditionFailedNode;
                 }
 
                 if (!CHDATA.event.maps[MAPNUM].routes) return this.conditionFailedNode;
                 if (!CHDATA.event.maps[MAPNUM].routes.length) return this.conditionFailedNode;
                 
-                return CHDATA.event.maps[MAPNUM].routes.indexOf(this.count) != -1 ? this.conditionCheckedNode : this.conditionFailedNode;
+                return CHDATA.event.maps[MAPNUM].routes.indexOf(this.getCount()) != -1 ? this.conditionCheckedNode : this.conditionFailedNode;
+            }
+
+            case 'shipRetreatedCount': {
+                let count = 0
+
+                for (let ship of getAllShips(false)) {
+                    if (ship.retreated) count++;
+                }
+
+                switch (this.operator) {
+                    case "<":
+                        if (count < this.getCount()) return this.conditionCheckedNode;
+                        break;
+                    case "<=":
+                        if (count <= this.getCount()) return this.conditionCheckedNode;
+                        break;
+                    case "=":
+                        if (count == this.getCount()) return this.conditionCheckedNode;
+                        break;
+                    case ">":
+                        if (count > this.getCount()) return this.conditionCheckedNode;
+                        break;
+                    case ">=":
+                        if (count >= this.getCount()) return this.conditionCheckedNode;
+                        break;
+                }
+
+                return this.conditionFailedNode;
             }
 
             default:
@@ -395,16 +495,16 @@ function ChRule () {
 
                     shipList = shipTypesTranslated.join(', ');
 
-                    if (this.escortOnly) return `Number of ships that are not ${shipList} in escort fleet ${this.operator} ${this.count}`;
-                    if (this.mainFleetOnly) return `Number of ships that are not ${shipList} in main fleet ${this.operator} ${this.count}`;
+                    if (this.escortOnly) return `Number of ships that are not ${shipList} in escort fleet ${this.operator} ${this.getCountAsText()}`;
+                    if (this.mainFleetOnly) return `Number of ships that are not ${shipList} in main fleet ${this.operator} ${this.getCountAsText()}`;
 
-                    return `Number of ships that are not ${shipList} ${this.operator} ${this.count}`;
+                    return `Number of ships that are not ${shipList} ${this.operator} ${this.getCountAsText()}`;
                 }
 
-                if (this.escortOnly) return `Number of ${shipList} in escort fleet ${this.operator} ${this.count}`;
-                if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.count}`;
+                if (this.escortOnly) return `Number of ${shipList} in escort fleet ${this.operator} ${this.getCountAsText()}`;
+                if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.getCountAsText()}`;
 
-                return `Number of ${shipList} ${this.operator} ${this.count}`;
+                return `Number of ${shipList} ${this.operator} ${this.getCountAsText()}`;
             }
 
             case "shipIds": {
@@ -431,19 +531,19 @@ function ChRule () {
 
                 switch (this.operator) {
                     case "<":
-                        operator = `Less than ${this.count} ship`;
+                        operator = `Less than ${this.getCountAsText()} ship`;
                         break;
                     case "<=":
-                        operator = `${this.count} or less ship`;
+                        operator = `${this.getCountAsText()} or less ship`;
                         break;
                     case "=":
-                        operator = `Exactly ${this.count} ship`;
+                        operator = `Exactly ${this.getCountAsText()} ship`;
                         break;
                     case ">":
-                        operator = `More than ${this.count} ship`;
+                        operator = `More than ${this.getCountAsText()} ship`;
                         break;
                     case ">=":
-                        operator = `${this.count} or more ship`;
+                        operator = `${this.getCountAsText()} or more ship`;
                         break;
                 }
 
@@ -463,7 +563,7 @@ function ChRule () {
             }
 
             case 'shipCount' : {
-                return `Number of ship in fleet ${this.operator} ${this.count}`;
+                return `Number of ship in fleet ${this.operator} ${this.getCountAsText()}`;
             }
 
             case 'multiRules' : {
@@ -556,7 +656,29 @@ function ChRule () {
             }
 
             case 'equipType': {
-                let description = `Have ${this.count} ${this.equipData.equipTypes.map(x => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name).join(" + ")} equipped`;
+
+                let operator = '???';
+
+                switch (this.operator) {
+                    case "<":
+                        operator = `less than ${this.getCountAsText()}`
+                        break;
+                    case "<=":
+                        operator = `${this.getCountAsText()} or less`
+                        break;
+                    case "=":
+                        operator = `exactly ${this.getCountAsText()}`
+                        break;
+                    case ">":
+                        operator = `more than ${this.getCountAsText()}`
+                        break;
+                    default: 
+                    case ">=":
+                        operator = `${this.getCountAsText()} or more`
+                        break;
+                }
+
+                let description = `Have ${operator} ${this.equipData.equipTypes.map(x => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name).join(" + ")} equipped`;
 
                 if (this.shipWithEquipCount) {
                     description += ` on ${this.shipWithEquipCount} different ships`;
@@ -591,17 +713,28 @@ function ChRule () {
             }
 
             case 'fleetType': {
-                switch (this.fleetType) {
-                    case 0:
-                        return 'Single fleet';
-                    case 1:
-                        return 'Carrier Task Force';
-                    case 2:
-                        return 'Surface Task Force';
-                    case 3:
-                        return 'Transport Task Force';
-                    case 7:
-                        return 'Strike force';
+
+                let getFleetType = (type) => {
+                    
+                    switch (type) {
+                        case 0:
+                            return 'Single fleet';
+                        case 1:
+                            return 'Carrier Task Force';
+                        case 2:
+                            return 'Surface Task Force';
+                        case 3:
+                            return 'Transport Task Force';
+                        case 7:
+                            return 'Strike force';
+                    }
+                }
+
+                if (typeof(this.fleetType) == "number") {
+                    return getFleetType(this.fleetType);
+                }
+                else {
+                    return this.fleetType.map(x => getFleetType(x)).join(' or ');
                 }
             }
 
@@ -612,21 +745,25 @@ function ChRule () {
             case "mapPart": {
                 switch (this.operator) {
                     case "<":
-                        return `Part ${this.count} not reached`;
+                        return `Part ${this.getCountAsText()} not reached`;
                     case "<=":
-                        return `Part ${this.count} or before`;
+                        return `Part ${this.getCountAsText()} or before`;
                     case "=":
-                        return `Be on part ${this.count}`;
+                        return `Be on part ${this.getCountAsText()}`;
                     case ">":
-                        return `After part ${this.count} has been cleared`;
+                        return `After part ${this.getCountAsText()} has been cleared`;
                     case ">=":
-                        return `Part ${this.count} or after`;
+                        return `Part ${this.getCountAsText()} or after`;
                 }
             }
 
             case "isRouteUnlocked": {
-                if (this.not) return `Unlock ${this.count} is not done`;
-                return `Unlock ${this.count} is done`;
+                if (this.not) return `Unlock ${this.getCountAsText()} is not done`;
+                return `Unlock ${this.getCountAsText()} is done`;
+            }
+
+            case 'shipRetreatedCount' : {
+                return `Number of ship retreated ${this.operator} ${this.getCountAsText()}`;
             }
 
             default:
@@ -929,7 +1066,7 @@ function ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFa
  * @param {*} conditionCheckedNode 
  * @param {*} conditionFailedNode 
  */
-function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedNode, conditionFailedNode) {
+function ChEquipTypeRule(equipData, operator, count, shipWithEquipCount, conditionCheckedNode, conditionFailedNode) {
     let rule = new ChRule();
 
     rule.type = "equipType";
@@ -938,6 +1075,7 @@ function ChEquipTypeRule(equipData, count, shipWithEquipCount, conditionCheckedN
     rule.conditionFailedNode = conditionFailedNode;
 
     rule.count = count;
+    rule.operator = operator;
     rule.shipWithEquipCount = shipWithEquipCount;
 
     rule.equipData = equipData;
@@ -1074,4 +1212,49 @@ function ChIsRouteNotUnlockedRule(routeNumber, conditionCheckedNode, conditionFa
     rule.not = true;
 
     return rule;
+}
+
+function ChShipRetreatedCountRule(operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "shipRetreatedCount";
+
+    rule.operator = operator;
+    rule.count = count;
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * Compare two number and return isTrue if true or isFalse if false
+ * @param {*} number1 
+ * @param {*} number2 
+ * @param {*} operator 
+ * @param {*} ifTrue 
+ * @param {*} ifFalse 
+ * @returns 
+ */
+ChRule.CompareNumbers = (number1, number2, operator, ifTrue, ifFalse) => {
+    switch (operator) {
+        case "<":
+            if (number1 < number2) return ifTrue;
+            break;
+        case "<=":
+            if (number1 <= number2) return ifTrue;
+            break;
+        case "=":
+            if (number1 == number2) return ifTrue;
+            break;
+        case ">":
+            if (number1 > number2) return ifTrue;
+            break;
+        case ">=":
+            if (number1 >= number2) return ifTrue;
+            break;
+    }
+
+    return ifFalse;
 }

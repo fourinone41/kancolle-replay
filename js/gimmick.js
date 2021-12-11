@@ -64,6 +64,8 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      */
     this.gimmickDone = () => {
 
+        if (this.mapPartNumber && this.mapNum && this.mapPartNumber > CHDATA.event.maps[this.mapNum].part) return false;
+
         // --- Only X steps required instead of all of them (Summer 16 E4)
         if (additionnalParameters && additionnalParameters.numberOfStepRequired) {
             let count = 0;

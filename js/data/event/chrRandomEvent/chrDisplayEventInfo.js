@@ -526,7 +526,8 @@ class ChrDisplayEventInfo {
 
         if (map.hiddenRoutes) {
             for (const part in map.hiddenRoutes) {
-                if (map.hiddenRoutes[part].unlockRules) $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.hiddenRoutes[part].unlockRules, map, MAPDATA[this.GetCurrentWorld()]));
+                if (map.hiddenRoutes[part].unlockRules && map.hiddenRoutes[part].unlockRules.gimmicks.length) 
+                    $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.hiddenRoutes[part].unlockRules, map, MAPDATA[this.GetCurrentWorld()]));
             }
         }
 
