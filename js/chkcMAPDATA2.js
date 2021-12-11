@@ -13948,7 +13948,7 @@ var MAPDATA = {
 					1: 350,
 				},
 				startCheckRule: [
-					ChMapPartRule('=', 1, 'Start1', 'Start2')
+					ChMapPartRuleOld('=', 1, 'Start1', 'Start2')
 				],
 				nodes: {
 					'Start1': {
@@ -14960,7 +14960,7 @@ var MAPDATA = {
 						y: 246,
 						distance: 1,
 						rules: [
-							ChDontShowCompass(ChMapPartRule('=', 1, 'D')),
+							ChDontShowCompass(ChMapPartRuleOld('=', 1, 'D')),
 
 							ChMultipleRulesRule([
 								ChIsMapClearedRule('D'),
@@ -14992,7 +14992,7 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
 						rules: [
-							ChDontShowCompass(ChMapPartRule('=', 1, 'J', 'N'))
+							ChDontShowCompass(ChMapPartRuleOld('=', 1, 'J', 'N'))
 						]
 					},
 					'J': {
@@ -15400,15 +15400,18 @@ var MAPDATA = {
 						images: [
 							{ name: '3_1.png', x: 297, y: 151 }
 						],
-						unlock: function(debuff) {
-							return CHDATA.event.maps[3].part == 2;
-						}
+						unlockRules: new ChGimmickList('mapPart', 2, 3, [], {
+							partToUnlock: 1,
+						})
 					}
 				},
-				startCheck: function() {
-					if (CHDATA.fleets.combined) return 'Start2';
-					return 'Start1';
-				},
+				startCheckRule: [
+					ChFleetTypeRule(0, 'Start1', 'Start2')
+				],
+				mapInfo: `
+				You can debuff the boss by S ranking nodes I and J.<br>
+				Also this map can only be cleared by doing one of the following : <br>- Sink boss twice in a row <br>- A+ rank J twice after reaching last dance then sink the boss once.
+				`,
 				debuffCheck: function(debuff) {
 					if (!debuff) return false;
 					//special case, only map with 2 debuffs, don't return true and play alerts here instead
@@ -15430,16 +15433,17 @@ var MAPDATA = {
 						type: 0,
 						x: 549,
 						y: 94,
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C')
+						]
 					},
 					'Start2': {
 						type: 0,
 						x: 486,
 						y: 327,
-						routeC: function(ships) {
-							if (CHDATA.fleets.combined == 2) return 'S';
-							return 'T';
-						}
+						rules: [
+							ChFleetTypeRule(2, 'S', 'T')
+						],
 					},
 					'A': {
 						type: 1,
@@ -15451,11 +15455,16 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							if (ships.SS + ships.SSV == ships.total) return 'D';
-							if (CHDATA.event.maps[3].diff == 1 && ships.speed >= 10 && ships.CL && ships.DD >= 3) return 'D';
-							return 'B';
-						}
+						rules: [
+							ChAllShipMusteBeOfTypeRule(['SSV', 'SS'], 'D'),
+
+							ChMultipleRulesRule([
+								ChDifficultyRule([1], 'D'),
+								ChSpeedRule('>=', 10, 'D'),
+								ChShipTypeRoutingRule(['CL'], '>', 0, 'D'),
+								ChShipTypeRoutingRule(['DD'], '>=', 3, 'D'),
+							], 'AND', 'D', 'B')
+						],
 					},
 					'B': {
 						type: 1,
@@ -15467,7 +15476,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule('D')
+						]
 					},
 					'C': {
 						type: 1,
@@ -15480,10 +15491,13 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							if (ships.SS + ships.SSV == ships.total && ships.speed >= 10 && ships.total >= 2) return 'D';
-							return 'A';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChAllShipMusteBeOfTypeRule(['SSV', 'SS'], 'D'),
+								ChSpeedRule('>=', 10, 'D'),
+								ChShipCountRoutingRule('>=', 2, 'D')
+							], 'AND', 'D', 'A')
+						],
 					},
 					'D': {
 						type: 1,
@@ -15495,7 +15509,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'E': {
 						type: 2,
@@ -15503,7 +15519,9 @@ var MAPDATA = {
 						y: 310,
 						distance: 1,
 						resource: 0,
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'F': {
 						type: 1,
@@ -15516,23 +15534,15 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							this.showLoSPlane = null;
-							if (CHDATA.event.maps[3].part == 1) {
-								if (ships.aCV + ships.aBB) return 'H';
-								let hasTransport = false;
-								for (let ship of FLEETS1[0].ships) {
-									for (let equip of ship.equips) {
-										if (equip.mid == 209) { hasTransport = true; break; }
-									}
-									if (hasTransport) break;
-								}
-								if (!hasTransport) return 'H';
-							}
-							if (ships.aCV + ships.aBB >= 4) return 'G';
-							this.showLoSPlane = 'I';
-							return checkELoS33(getELoS33(1,4,true),{ 47: 'I', 45: 'G' });
-						}
+						rules: [
+							ChMapPartRule([1], ChShipTypeRoutingRule(['aCV','aBB'], '>', 0, 'H')),
+							ChMapPartRule([1], ChEquipTypeRule({
+								equipIds: [209]
+							}, '=', 0, null, 'H')),
+
+							ChShipTypeRoutingRule(['aCV','aBB'], '>=', 4, 'G'),
+							ChLOSRule({ 47: 'I', 45: 'G' }, 4)
+						]
 					},
 					'G': {
 						type: 3,
@@ -15552,7 +15562,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'J'
+						rules: [
+							ChFixedRoutingRule('J')
+						]
 					},
 					'I': {
 						type: 1,
@@ -15593,7 +15605,9 @@ var MAPDATA = {
 								CHDATA.event.maps[3].debuff.J2 = CHDATA.event.maps[3].debuff.J2 + 1 || 1;
 							}
 						},
-						route: 'K'
+						rules: [
+							ChFixedRoutingRule('K')
+						]
 					},
 					'K': {
 						type: 1,
@@ -15606,7 +15620,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3','Medium 4','Medium 5','Medium 6'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'N'
+						rules: [
+							ChFixedRoutingRule('N')
+						]
 					},
 					'L': {
 						type: 1,
@@ -15618,10 +15634,18 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							if (CHDATA.fleets.combined == 2 && (ships.speed >= 10 || CHDATA.event.maps[3].diff != 3)) return 'M';
-							return 'O';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChDifficultyRule([3], 'M'),
+								ChFleetTypeRule(2, 'M'),
+								ChSpeedRule('>=', 10, 'M')
+							], 'AND', 'M'),
+							
+							ChMultipleRulesRule([
+								ChDifficultyRule([1,2], 'M'),
+								ChFleetTypeRule(2, 'M'),
+							], 'AND', 'M', 'O'),
+						]
 					},
 					'M': {
 						type: 1,
@@ -15639,7 +15663,9 @@ var MAPDATA = {
 							2: ['Medium 3'],
 							1: ['Easy 3','Easy 4','Easy 5'],
 						},
-						routeL: { 3: 'U', 0: 'P' }
+						rules: [
+							ChLOSRule({ 3: 'U', 0: 'P' })
+						]
 					},
 					'N': {
 						type: 1,
@@ -15651,7 +15677,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2'],
 						},
-						route: 'Q'
+						rules: [
+							ChFixedRoutingRule('Q')
+						]
 					},
 					'O': {
 						type: 1,
@@ -15664,12 +15692,22 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3','Medium 4','Medium 5','Medium 6'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							if (ships.aBB + ships.aCV + ships.escort.aBB + ships.escort.aCV >= 7) return 'N';
-							if (CHDATA.fleets.combined == 1 && ships.escort.aBB <= 0 && ships.speed >= 10) return 'Q';
-							if (CHDATA.fleets.combined == 2 && ships.escort.aBB <= 0) return 'Q';
-							return 'N';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aBB', 'aCV'], '>=', 7, 'N'),
+
+							ChMultipleRulesRule([
+								ChFleetTypeRule(1, 'Q'),
+								ChShipTypeRoutingRuleEscortOnly(['aBB'], '=', 0, 'Q'),
+								ChSpeedRule('>=', 10, 'Q')
+							], 'AND', 'M'),
+							
+							ChMultipleRulesRule([
+								ChFleetTypeRule(2, 'Q'),
+								ChShipTypeRoutingRuleEscortOnly(['aBB'], '=', 0, 'Q'),
+							], 'AND', 'M'),
+
+							ChDefaultRouteRule('N')
+						]
 					},
 					'P': {
 						type: 3,
@@ -15694,7 +15732,9 @@ var MAPDATA = {
 							2: ['Medium 3'],
 							1: ['Easy 3'],
 						},
-						routeL: { 3: 'U', 0: 'R' }
+						rules: [
+							ChLOSRule({ 3: 'U', 0: 'R' })
+						]
 					},
 					'R': {
 						type: 3,
@@ -15709,7 +15749,9 @@ var MAPDATA = {
 						y: 278,
 						distance: 2,
 						hidden: 1,
-						routeS: ['V','W']
+						rules: [
+							ChSelectRouteRule(['V','W'])
+						]
 					},
 					'T': {
 						type: 1,
@@ -15723,7 +15765,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'X'
+						rules: [
+							ChFixedRoutingRule('X')
+						]
 					},
 					'U': {
 						type: 1,
@@ -15732,17 +15776,6 @@ var MAPDATA = {
 						distance: 6,
 						boss: true,
 						setupSpecial: function() {
-							for (let ship of FLEETS1[0].ships.concat(FLEETS1[1].ships)) {
-								var hasSonar = false, hasSeiran = false;
-								for (let equip of ship.equips) {
-									if (equip.type == SONARS || equip.type == SONARL) hasSonar = true;
-									if (equip.mid == 62) hasSeiran = true
-								}
-								let bonuses = [];
-								if (hasSonar) bonuses.push({ mod: 1.15 });
-								if (hasSeiran) bonuses.push({ mod: 1.24 });
-								if (bonuses.length) ship.bonusSpecial = bonuses;
-							}
 							if (CHDATA.event.maps[3].debuff.I && CHDATA.event.maps[3].debuff.J) {
 								for (let ship of FLEETS2[0].ships) {
 									if (ship.mid == 1620) ship.debuff = 23;
@@ -15754,6 +15787,10 @@ var MAPDATA = {
 								if (CHDATA.event.maps[3].hp > 660 && CHDATA.event.maps[3].hp <= 800) CHDATA.event.maps[3].hp = 801;
 							}
 						},
+						bonuses: [
+							new ChEquipIdsBonuses({type: "add"}, [62], '>=', 1, 1.24),
+							new ChEquipTypesBonuses({type: "add"}, [SONARS, SONARL], '>=', 1, 1.15),
+						],
 						debuffGive: function() {
 							//if not debuffed, revert to pre-lastdance if didn't sink
 							if (CHDATA.event.maps[3].debuff.debuffed2) return;
@@ -15786,7 +15823,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'J'
+						rules: [
+							ChFixedRoutingRule('J')
+						]
 					},
 					'W': {
 						type: 1,
@@ -15799,7 +15838,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'L'
+						rules: [
+							ChFixedRoutingRule('L')
+						]
 					},
 					'X': {
 						type: 1,
@@ -15812,7 +15853,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'L'
+						rules: [
+							ChFixedRoutingRule('L')
+						]
 					}
 				},
 			}

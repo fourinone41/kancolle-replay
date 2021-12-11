@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty'}
      */
     this.type = "fixed";
 
@@ -64,16 +64,9 @@ function ChRule () {
 
         let countPerDiff = [];
 
-        let diffName = {
-            4: 'Casual',
-            1: 'Easy',
-            2: 'Medium',
-            3: 'Hard',
-        }
-
-        for (const diff in diffName) {
+        for (const diff in [4,1,2,3]) {
             if (this.count[diff] != undefined) {
-                countPerDiff.push(`${this.count[diff]} on ${diffName[diff]}`);
+                countPerDiff.push(`${this.count[diff]} on ${ChRule.getDiffName(diff)}`);
             }
         }
 
@@ -129,6 +122,13 @@ function ChRule () {
     this.mainFleetOnly = false;
     this.notOfType = false;
     this.not = false;
+
+    /**
+     * If not null, define on which parts of the map the rule is applied
+     */
+    this.mapParts = null;
+
+    this.difficulties = [];
 
     /**
      * @type {{if: ChRule,then: ChRule,else: ChRule}} 
@@ -463,6 +463,10 @@ function ChRule () {
                 return this.conditionFailedNode;
             }
 
+            case 'difficulty': {
+                return this.difficulties.includes(getDiff()) ? this.conditionCheckedNode : this.conditionFailedNode;
+            }
+
             default:
                 alert("routing error 2");
                 return;
@@ -678,7 +682,12 @@ function ChRule () {
                         break;
                 }
 
-                let description = `Have ${operator} ${this.equipData.equipTypes.map(x => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name).join(" + ")} equipped`;
+                let equipmentsDescriptions = [];
+                
+                if (this.equipData.equipTypes) equipmentsDescriptions.push(this.equipData.equipTypes.map((x) => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name));
+                if (this.equipData.equipIds) equipmentsDescriptions.push(this.equipData.equipIds.map((x) => EQDATA[x].dname ? EQDATA[x].dname : EQDATA[x].name));
+
+                let description = `Have ${operator} ${equipmentsDescriptions.join(" + ")} equipped`;
 
                 if (this.shipWithEquipCount) {
                     description += ` on ${this.shipWithEquipCount} different ships`;
@@ -766,6 +775,10 @@ function ChRule () {
                 return `Number of ship retreated ${this.operator} ${this.getCountAsText()}`;
             }
 
+            case 'difficulty': {
+                return this.difficulties.map(w => ChRule.getDiffName(w)).join(', ') + ' difficulty';
+            }
+
             default:
                 return "???";
         }
@@ -811,6 +824,12 @@ function ChRule () {
                 return false;
         }
     } 
+
+    this.ruleCanBeChecked = function () {
+        if (!this.mapParts || !this.mapParts.length) return true;
+
+        return this.mapParts.includes(CHDATA.event.maps[MAPNUM].part);
+    }
 }
 
 /**
@@ -1179,7 +1198,15 @@ function ChSelectRouteRule(routeSelection) {
     return rule;
 }
 
-function ChMapPartRule(operator, part, conditionCheckedNode, conditionFailedNode) {
+/**
+ * Do not use, see ChMapPartRule instead
+ * @param {*} operator 
+ * @param {*} part 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+function ChMapPartRuleOld(operator, part, conditionCheckedNode, conditionFailedNode) {
     let rule = new ChRule();
 
     rule.type = "mapPart";
@@ -1229,6 +1256,37 @@ function ChShipRetreatedCountRule(operator, count, conditionCheckedNode, conditi
 }
 
 /**
+ * 
+ * @param {number[]} difficulties 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+function ChDifficultyRule(difficulties, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "difficulty";
+
+    rule.difficulties = difficulties;
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+/**
+ * 
+ * @param {ChRule} rule 
+ * @param {number[]} mapPartNumbers 
+ */
+function ChMapPartRule(mapPartNumbers, rule) {
+    rule.mapParts = mapPartNumbers;
+
+    return rule;
+}
+
+/**
  * Compare two number and return isTrue if true or isFalse if false
  * @param {*} number1 
  * @param {*} number2 
@@ -1257,4 +1315,15 @@ ChRule.CompareNumbers = (number1, number2, operator, ifTrue, ifFalse) => {
     }
 
     return ifFalse;
+}
+
+ChRule.getDiffName = (diff) => {
+    let diffName = {
+        4: 'Casual',
+        1: 'Easy',
+        2: 'Medium',
+        3: 'Hard',
+    }
+
+    return diffName[diff];
 }

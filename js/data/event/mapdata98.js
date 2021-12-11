@@ -321,7 +321,12 @@ MAPDATA[98] = {
                          */
                         MAPDATA[98].chrAddEquipments(null, 75, 5);
                         break;
-                
+                    case 37:
+                        /**
+                         * For winter 17, give dissasembled saiun to the player
+                         */
+                        MAPDATA[98].chrAddEquipments(null, 209, 2);
+                        break;
                     default:
                         break;
                 }

@@ -127,10 +127,52 @@ class ChrDisplayEventInfo {
         $("#routingContainer").html(routingEl);
     }
 
+    TranslateRule(rule, nodeRulesTranslated) {
+        switch (rule.type) {
+            case "fixed":
+                nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
+                break;
+
+            case "random": 
+                let descriptions = rule.GetRandomDescription();
+
+                for (const node in descriptions) {
+                    if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                    nodeRulesTranslated[node] += descriptions[node];
+                    nodeRulesTranslated[node] += "<br>";
+                }
+
+                break;
+        
+            default:
+                let description = rule.getDescription();
+
+                if (typeof(description) == "string") {
+                    if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
+                    if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
+
+                    nodeRulesTranslated[rule.conditionCheckedNode] += description;
+                    nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
+                } 
+                else {
+                    for (const node in description) {
+                        if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                        nodeRulesTranslated[node] += description[node];
+                        nodeRulesTranslated[node] += "<br>";
+                    }
+                }
+
+
+                break;
+        }
+    }
+
     MakeRoutingEl(rules) {
         let root = $("<td>");
 
-        let nodeRulesTranslated = {};
+        let nodeRulesTranslatedPerPart = {};
         
         /**
         * @type {ChRule}
@@ -138,52 +180,33 @@ class ChrDisplayEventInfo {
         let rule;
 
         for (rule of rules) {
-            switch (rule.type) {
-                case "fixed":
-                    nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
-                    break;
-
-                case "random": 
-                    let descriptions = rule.GetRandomDescription();
-
-                    for (const node in descriptions) {
-                        if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
-
-                        nodeRulesTranslated[node] += descriptions[node];
-                        nodeRulesTranslated[node] += "<br>";
-                    }
-
-                    break;
-            
-                default:
-                    let description = rule.getDescription();
-
-                    if (typeof(description) == "string") {
-                        if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
-                        if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
-
-                        nodeRulesTranslated[rule.conditionCheckedNode] += description;
-                        nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
-                    } 
-                    else {
-                        for (const node in description) {
-                            if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
-    
-                            nodeRulesTranslated[node] += description[node];
-                            nodeRulesTranslated[node] += "<br>";
-                        }
-                    }
-
-
-                    break;
+            if (!rule.mapParts) {
+                if (!nodeRulesTranslatedPerPart.noPart) nodeRulesTranslatedPerPart.noPart = {};
+                this.TranslateRule(rule, nodeRulesTranslatedPerPart.noPart);
+            } else {
+                for (const part of rule.mapParts) {
+                    if (!nodeRulesTranslatedPerPart[part]) nodeRulesTranslatedPerPart[part] = {};
+                    this.TranslateRule(rule, nodeRulesTranslatedPerPart[part]);
+                }
             }
         }
 
-        for (const nodeKey in nodeRulesTranslated) {
+        let nodeRulesTranslatedPerNode = {};
+
+        for (const part in nodeRulesTranslatedPerPart) {
+            for (const node in nodeRulesTranslatedPerPart[part]) {
+                if (!nodeRulesTranslatedPerNode[node]) nodeRulesTranslatedPerNode[node] = '';
+
+                if (part == 'noPart') nodeRulesTranslatedPerNode[node] += nodeRulesTranslatedPerPart[part][node]
+                else nodeRulesTranslatedPerNode[node] += `During part ${part}: <br>${nodeRulesTranslatedPerPart[part][node]}<br>`
+            }            
+        }
+
+        for (const nodeKey in nodeRulesTranslatedPerNode) {
             let routingLine = $("<div>");
             routingLine.addClass("routingLine");
 
-            let description = nodeRulesTranslated[nodeKey];
+            let description = nodeRulesTranslatedPerNode[nodeKey];
             if (!description) description = "Other requirements not met";
 
             routingLine.append($(`
@@ -720,8 +743,11 @@ class ChrDisplayEventInfo {
 
         let compareGroups = (bonus, group) => {
             if (group.type != bonus.bonusType) return false;
+            if (group.reqCount != bonus.reqCount) return false;
+            if (group.operator != bonus.operator) return false;
 
-            let ids = bonus.getShipIds();
+            let ids = bonus.getIds();
+                        
             if (group.ids.length != ids.length) return false;
 
             for (let index in group.ids) {
@@ -739,39 +765,54 @@ class ChrDisplayEventInfo {
 
                 bonus.node = node;
 
-                if (bonus.bonusType == 'ChShipIdsBonuses') {
-                    let groupExists = null;
-                    
-                    for (let group of bonusesGroupedByGroups)
-                    {
-                        if (compareGroups(bonus, group)) {
-                            groupExists = group;
-                            break;
-                        }
+                let groupExists = null;
+                
+                for (let group of bonusesGroupedByGroups)
+                {
+                    if (compareGroups(bonus, group)) {
+                        groupExists = group;
+                        break;
                     }
+                }
 
-                    if (groupExists) {
-                        groupExists.bonuses.push(bonus);
-                    }
-                    else {
-                        bonusesGroupedByGroups.push({
-                            type: bonus.bonusType,
-                            ids: bonus.getShipIds(),
-                            bonuses: [bonus]
-                        });
-                    }
+                if (groupExists) {
+                    groupExists.bonuses.push(bonus);
+                }
+                else {
+                    bonusesGroupedByGroups.push({
+                        type: bonus.bonusType,
+                        ids: bonus.getIds(),
+                        bonuses: [bonus],
+                        reqCount: bonus.reqCount,
+                        operator: bonus.operator,
+                    });
                 }
             }
         }
 
-        for (let group of bonusesGroupedByGroups) {
+        for (let currentBonus of bonusesGroupedByGroups) {
             let bonusLine = $("<tr>");
 
-            bonusLine.append($(`<td class="bonus-group">${group.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}">`; }).join("")}</td>`));
+            if (currentBonus.type == 'ChShipIdsBonuses')
+                bonusLine.append($(`<td class="bonus-group">${currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</td>`));
+            else if (currentBonus.type == 'ChEquipTypesBonuses')
+                bonusLine.append($(`
+                <td class="bonus-group">
+                    ${currentBonus.ids.map((x) => { return `${EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name }`; }).join(" + ")}
+                    ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                </td>`));
+            else if (currentBonus.type == 'ChEquipIdsBonuses')
+                bonusLine.append($(`
+                <td class="bonus-group">
+                    ${currentBonus.ids.map((x) => { return `${EQDATA[x].name}`; }).join(" + ")}
+                    ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                </td>`));
+            else 
+                bonusLine.append($(`<td class="bonus-group"></td>`));
 
             for (let node in bonusesPerNode) {
 
-                let bonus = group.bonuses.find(x => x.node == node);
+                let bonus = currentBonus.bonuses.find(x => x.node == node);
 
                 if (!bonus) bonusLine.append($(`<td> / </td>`));
                 else {

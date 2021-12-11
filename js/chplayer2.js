@@ -1067,8 +1067,9 @@ function chPlayerStart() {
 				alert("error in branching 4");
 				return;
 			}
-	
-			curletter = rule.getRouting(CHSHIPCOUNT);
+
+			if (rule.ruleCanBeChecked())
+				curletter = rule.getRouting(CHSHIPCOUNT);
 	
 			index++;
 		}
@@ -1217,7 +1218,8 @@ function mapPhase(first) {
 				return;
 			}
 	
-			nextletter = rule.getRouting(CHSHIPCOUNT);
+			if (rule.ruleCanBeChecked())
+				nextletter = rule.getRouting(CHSHIPCOUNT);
 	
 	
 			index++;

@@ -220,6 +220,7 @@ EQTDATA[SONARS] = {
 };
 EQTDATA[SONARL] = {
 	name: 'Sonar',
+	dname: 'Large sonar',
 	image: 18,
 	btype: B_SONAR,
 	improve: {Pshell:.75,Pasw:1,ACCasw:1.3,EVtorp:1.5},
