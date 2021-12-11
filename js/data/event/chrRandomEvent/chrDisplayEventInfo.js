@@ -144,6 +144,18 @@ class ChrDisplayEventInfo {
                 }
 
                 break;
+
+            case "los": 
+                let descriptionsLos = rule.GetLOSDescription();
+
+                for (const node in descriptionsLos) {
+                    if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                    nodeRulesTranslated[node] += descriptionsLos[node];
+                    nodeRulesTranslated[node] += "<br>";
+                }
+
+                break;
         
             default:
                 let description = rule.getDescription();
@@ -494,8 +506,18 @@ class ChrDisplayEventInfo {
          */
         function getHistoGroupes (rule) {
             if (rule.type == 'shipIds' && !histoGroups.includes(rule.shipsIdsListName) && rule.historicalGroups) {
-                historicalRoutingRules.push(rule);
-                histoGroups.push(rule.shipsIdsListName);
+
+                if (Array.isArray(rule.shipsIds)) {
+                    for (const subRuleGroupe of rule.shipsIds) {
+                        if (histoGroups.includes(subRuleGroupe.shipsIdsListName)) continue;
+
+                        historicalRoutingRules.push(subRuleGroupe);
+                        histoGroups.push(subRuleGroupe.shipsIdsListName);
+                    }
+                } else {
+                    historicalRoutingRules.push(rule);
+                    histoGroups.push(rule.shipsIdsListName);
+                }
             }
 
             if (rule.type == 'multiRules') {

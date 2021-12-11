@@ -242,6 +242,8 @@ function ChGimmick(parameters) {
             parameters.getDescription = (diff) => {
                 return 'Take no damage' + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
             }
+
+            break;
         }
 
         case 'ReachNode': {
@@ -252,6 +254,8 @@ function ChGimmick(parameters) {
             parameters.getDescription = (diff) => {
                 return 'Reach';
             }
+            
+            break;
         }
     }
 

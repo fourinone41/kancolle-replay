@@ -36,13 +36,13 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     if (typeof(shipIds) == 'string') {
         // --- [0] = type
         // --- [1] = the property of the object having the id list
-        let accessToShipIds = shipsIds.split('.');
+        let accessToShipIds = shipIds.split('.');
 
         let type = accessToShipIds.shift();
         let ships = null;
 
         if (type == 'map') {
-            rule.getShipIds = () => {
+            this.getShipIds = () => {
 
                 if (ships) return ships; 
                 
@@ -57,7 +57,7 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
         }
 
         if (type == 'event') {
-            rule.getShipIds = () => {
+            this.getShipIds = () => {
 
                 if (ships) return ships;
 

@@ -697,7 +697,7 @@ function ChRule () {
             }
 
             case 'los': {
-                let description = {};
+                let description = '<ul>';
                 
                 var LOSs = Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
                 
@@ -708,17 +708,14 @@ function ChRule () {
 
                     let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
 
-                    description[node] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
+                    description +=  `<li>${node} if LOS Cn${this.LOSCoef} >= ${LOSs[i]}</li>`;
 
-                    if (nodeAfter) {
-                        description[node] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i + 1]} and ${LOSs[i]}`;
-                    }
-                    else {
-                        description[node] =  `LOS Cn${this.LOSCoef} < ${LOSs[i]}`;
+                    if (!nodeAfter) {
+                        description +=  `<li>${node} if LOS Cn${this.LOSCoef} < ${LOSs[i]}</li>`;
                     }
                 }
 
-                return description;
+                return description + '</ul>';
             }
 
             case 'fleetType': {
@@ -798,6 +795,34 @@ function ChRule () {
     }
 
     /**
+     * Return the description of a LOS routing rule as an object
+     */
+     this.GetLOSDescription = function() {
+        let description = {};
+        
+        var LOSs = Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+        
+        for (var i=0; i<LOSs.length; i++) {
+            let node = this.LOS[LOSs[i]];
+
+            if (!node) continue;
+
+            let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
+
+            description[node] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
+
+            if (nodeAfter) {
+                description[node] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i + 1]} and ${LOSs[i]}`;
+            }
+            else {
+                description[node] =  `LOS Cn${this.LOSCoef} < ${LOSs[i]}`;
+            }
+        }
+
+        return description;
+    }
+
+    /**
      * Returns if the compass should be spinned or not
      * @returns true if compass need to be spined
      */
@@ -862,6 +887,23 @@ function ChFixedRoutingRule(fixedNode) {
 }
 
 /**
+ * Rule that check if ships are in fleet
+ * @param {{groupName: string, shipsIds: number[] | 'map.property' | 'event.property'}[]} groups
+ * @param {"=", ">=", "<=", "<", ">"} operator
+ * @returns 
+ */
+ function ChShipMultipleHistoricalGroupRoutingRule(groups, operator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipIdsRoutingRule(groups.map(x => 
+            ChShipHistoricalRoutingRule(x.groupName, x.shipsIds, operator, count, conditionCheckedNode, conditionFailedNode)
+        ), operator, count, conditionCheckedNode, conditionFailedNode);
+
+    rule.shipsIdsListName = groups.map(x => x.groupName).join(' + ');
+    rule.historicalGroups = true;
+
+    return rule;
+}
+
+/**
  * 
  * @param {number[] | 'map.property' | 'event.property'} shipsIds 
  * @param {*} count 
@@ -913,6 +955,16 @@ function ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, c
 
                 return ships;
             }
+        }
+    } else if (Array.isArray(shipsIds)) {
+        rule.getShipIds = () => {
+            let shipsToReturn = [];
+
+            for (const rule of shipsIds) {
+                shipsToReturn = shipsToReturn.concat(rule.getShipIds());
+            }
+
+            return shipsToReturn;
         }
     }
 
