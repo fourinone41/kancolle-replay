@@ -160,7 +160,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
 let ChGimmickParameters = {
     node: '',
     /**
-     * @type {'battle' | 'NoHPLoss' | 'AirState'}
+     * @type {'battle' | 'NoHPLoss' | 'AirState' | 'ReachNode'}
      */
     type: 'battle',
     timesRequiredPerDiff: {
@@ -241,6 +241,16 @@ function ChGimmick(parameters) {
 
             parameters.getDescription = (diff) => {
                 return 'Take no damage' + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
+            }
+        }
+
+        case 'ReachNode': {
+            parameters.shouldCountBeIncreased = (checkGimmickParameters) => {
+                return true;
+            }
+
+            parameters.getDescription = (diff) => {
+                return 'Reach';
             }
         }
     }

@@ -36,17 +36,38 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     if (typeof(shipIds) == 'string') {
         // --- [0] = type
         // --- [1] = the property of the object having the id list
-        let accessToShipIds = shipIds.split('.');
+        let accessToShipIds = shipsIds.split('.');
 
-        if (accessToShipIds[0] == 'map') {
-            this.getShipIds = () => {
-                return MAPDATA[WORLD].maps[MAPNUM][accessToShipIds[1]];
+        let type = accessToShipIds.shift();
+        let ships = null;
+
+        if (type == 'map') {
+            rule.getShipIds = () => {
+
+                if (ships) return ships; 
+                
+                ships = MAPDATA[WORLD].maps[MAPNUM];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                return ships;
             }
         }
 
-        if (accessToShipIds[0] == 'event') {
-            this.getShipIds = () => {
-                return MAPDATA[WORLD][accessToShipIds[1]];
+        if (type == 'event') {
+            rule.getShipIds = () => {
+
+                if (ships) return ships;
+
+                ships = MAPDATA[WORLD];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                return ships;
             }
         }
     }

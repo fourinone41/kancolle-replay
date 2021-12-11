@@ -309,9 +309,9 @@ function ChIsMapClearedRule(conditionCheckedNode, conditionFailedNode) {
     rule.conditionFailedNode = conditionFailedNode;
 
     rule.getRouting = (ships) => {
-        if (rule.not) return CHDATA.event.maps[MAPNUM].hp > 0;
+        if (rule.not) return CHDATA.event.maps[MAPNUM].hp > 0 ? conditionCheckedNode : conditionFailedNode;
 
-        return CHDATA.event.maps[MAPNUM].hp <= 0;
+        return CHDATA.event.maps[MAPNUM].hp <= 0 ? conditionCheckedNode : conditionFailedNode;
     }
 
     rule.getDescription = () => {

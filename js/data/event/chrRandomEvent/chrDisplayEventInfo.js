@@ -626,7 +626,7 @@ class ChrDisplayEventInfo {
             descTd.append(`Reach part ${rules.mapPartNumber}`);
             debuffLine.append(descTd);
 
-            if (rules.mapPartNumber >= CHDATA.event.maps[rules.mapNum].part) {
+            if (rules.mapPartNumber <= CHDATA.event.maps[rules.mapNum].part) {
                 descTd.addClass('debuff-step-done');
             }
             

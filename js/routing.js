@@ -882,15 +882,36 @@ function ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, c
         // --- [1] = the property of the object having the id list
         let accessToShipIds = shipsIds.split('.');
 
-        if (accessToShipIds[0] == 'map') {
+        let type = accessToShipIds.shift();
+        let ships = null;
+
+        if (type == 'map') {
             rule.getShipIds = () => {
-                return MAPDATA[WORLD].maps[MAPNUM][accessToShipIds[1]];
+
+                if (ships) return ships; 
+                
+                ships = MAPDATA[WORLD].maps[MAPNUM];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                return ships;
             }
         }
 
-        if (accessToShipIds[0] == 'event') {
+        if (type == 'event') {
             rule.getShipIds = () => {
-                return MAPDATA[WORLD][accessToShipIds[1]];
+
+                if (ships) return ships;
+
+                ships = MAPDATA[WORLD];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                return ships;
             }
         }
     }
