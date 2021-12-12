@@ -104,7 +104,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
             let isGimmickForThisMap = gimmick.mapnum == MAPNUM;
             if (!isGimmickForThisMap) continue;
 
-            if (gimmick.mapPartNumber && gimmick.mapPartNumber < CHDATA.event.maps[gimmick.mapnum].part) continue;
+            if (gimmick.mapPartNumber && gimmick.mapPartNumber > CHDATA.event.maps[gimmick.mapnum].part) continue;
 
             let shouldCountBeIncreased = gimmick.shouldCountBeIncreased(checkGimmickParameters);
 
@@ -295,6 +295,8 @@ function ChGimmick(parameters) {
         if (parameters.getDescription) {
             return parameters.getDescription(diff);
         }
+
+        if (!this.timesRequiredPerDiff[diff]) return '-';
 
         return this.ranksRequiredPerDiff[diff] + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
     }

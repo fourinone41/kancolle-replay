@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff'}
      */
     this.type = "fixed";
 
@@ -466,6 +466,11 @@ function ChRule () {
             case 'difficulty': {
                 return this.difficulties.includes(getDiff()) ? this.conditionCheckedNode : this.conditionFailedNode;
             }
+            
+            case 'debuff': {
+                if (this.not) return CHDATA.event.maps[MAPNUM].debuffed ? this.conditionFailedNode : this.conditionCheckedNode;
+                return CHDATA.event.maps[MAPNUM].debuffed ? this.conditionCheckedNode : this.conditionFailedNode;
+            }
 
             default:
                 alert("routing error 2");
@@ -774,6 +779,11 @@ function ChRule () {
 
             case 'difficulty': {
                 return this.difficulties.map(w => ChRule.getDiffName(w)).join(', ') + ' difficulty';
+            }
+            
+            case 'debuff': {
+                if (this.not) return 'Debuff is not done';
+                return "Debuff is done";
             }
 
             default:
@@ -1355,6 +1365,25 @@ function ChDifficultyRule(difficulties, conditionCheckedNode, conditionFailedNod
  */
 function ChMapPartRule(mapPartNumbers, rule) {
     rule.mapParts = mapPartNumbers;
+
+    return rule;
+}
+
+function ChDebuffIsNotDoneRule(conditionCheckedNode, conditionFailedNode) {
+    let rule = ChDebuffIsDoneRule(conditionCheckedNode, conditionFailedNode);
+
+    rule.not = true;
+
+    return rule;
+}
+
+function ChDebuffIsDoneRule(conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "debuff";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
 
     return rule;
 }

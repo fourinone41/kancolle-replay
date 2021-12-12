@@ -105,6 +105,11 @@ span.last-dance-text {
     font-weight: 600;
 }
 
+span.post-clear-text {
+    color: rgb(139, 151, 255);
+    font-weight: 600;
+}
+
 #mapInfo {
     width: 100%;
     margin: 30px;

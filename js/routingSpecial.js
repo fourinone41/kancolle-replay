@@ -345,13 +345,14 @@ function ChCreateCustomRule(ruleProperties) {
     rule.conditionCheckedNode = ruleProperties.conditionCheckedNode;
     rule.conditionFailedNode = ruleProperties.conditionFailedNode;
 
-    rule.getRouting = ruleProperties.getRouting;
-    rule.getDescription = ruleProperties.getDescription;
+    if (ruleProperties.getRouting) rule.getRouting = ruleProperties.getRouting;
+    if (ruleProperties.getDescription) rule.getDescription = ruleProperties.getDescription;
 
-    rule.shipsIds = ruleProperties.shipsIds;
-    rule.getShipIds = ruleProperties.getShipIds;
-    rule.shipsIdsListName = ruleProperties.shipsIdsListName;
-    rule.historicalGroups = ruleProperties.historicalGroups;
+    if (ruleProperties.shipsIds) rule.shipsIds = ruleProperties.shipsIds;
+    if (ruleProperties.getShipIds) rule.getShipIds = ruleProperties.getShipIds;
+    if (ruleProperties.shipsIdsListName) rule.shipsIdsListName = ruleProperties.shipsIdsListName;
+    if (ruleProperties.historicalGroups) rule.historicalGroups = ruleProperties.historicalGroups;
+    if (ruleProperties.randomNodes) rule.randomNodes = ruleProperties.randomNodes;
 
     return rule;
 }
