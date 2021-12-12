@@ -41,6 +41,10 @@ class ChrDisplayEventInfo {
         CHDATA = JSON.parse(localStorage['ch_basic'+FILE]);
         this.Worlds =  JSON.parse(localStorage['ch_basic'+FILE]).maps;
 
+        if (RANDOMAPS) {
+            MAPDATA[97].initializeAllMaps();
+        }
+
         // --- Map 
         /**
          * @type {ChrMap}

@@ -124,6 +124,8 @@ MAPDATA[97].loadFromChData = function (mapNum) {
                 MAPDATA[97].loadNodesFromChData(CHDATA.maps[mapKey].world, mapKey);
             }
         }
+
+        MAPDATA[97].fixBonuses();
     }
     else {
         CHDATA.customMaps = {};
@@ -152,7 +154,7 @@ MAPDATA[97].loadNodesFromChData = function (worldNum, mapNum) {
 function chrGetRandomBgm(type) {
     let bannedMap = [2001, 2, 1];
     let bannedBattle = [2001, 2, 1, 97];
-    let bannedBoss = [2001, 2, 1, 96, 36, 35, 34, 33, 32, 1001];
+    let bannedBoss = [2001, 2, 1, 96, 36, 35, 34, 33, 32, 1000, 1001];
 
     if (!chrGetRandomBgm.possibleBGM) {
 
@@ -207,3 +209,63 @@ function chrGetRandomBgm(type) {
     return possibleBgm[Math.floor(Math.random()*possibleBgm.length)];
 
 }
+
+MAPDATA[97].fixBonuses = function () {
+    let getComps = (node, world, mapnum) => {
+        let eventName = MAPDATA[world].name;
+        let mapName = 'E-' + mapnum;
+        
+        let comps = ENEMYCOMPS[eventName][mapName][node];
+    
+        if (!comps) throw 'Node not found';
+    
+        return comps;
+    }
+
+    let getRandoComps = (node, mapnum) => {
+        let mapName = 'E-' + mapnum;
+        
+        let comps = CHDATA.event.comps[mapName][node];
+    
+        if (!comps) throw 'Node not found';
+    
+        return comps;
+    }
+
+    for (const eventId in MAPDATA) {
+        for (const mapNum in MAPDATA[eventId].maps) {
+            for (const nodeLetter in MAPDATA[eventId].maps[mapNum].nodes) {
+                
+                let node = MAPDATA[eventId].maps[mapNum].nodes[nodeLetter];
+
+                if (node.bonuses) {
+                    let bonuses = node.bonuses;
+
+                    for (const bonus of bonuses) {
+                        if (bonus.parameters.on && !bonus.parameters.fixed) {
+                            let comps = getComps(nodeLetter, eventId, mapNum);
+                            let randoComps = getRandoComps(nodeLetter, mapNum);
+                            let newOn = [];
+
+                            for (const abyssalMid of bonus.parameters.on) {
+                                for (const compNum in comps) {
+                                    for (const index in comps[compNum].c) {
+                                        if (comps[compNum].c[index] == abyssalMid) {
+                                            let newMid = randoComps[compNum].c[index];
+
+                                            if (!newOn.includes(newMid)) newOn.push(newMid);
+                                        }
+                                    }
+                                }
+                            }
+
+                            bonus.parameters.fixed = true;
+                            bonus.parameters.on = newOn;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
