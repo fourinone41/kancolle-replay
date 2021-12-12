@@ -21,7 +21,12 @@ function ChBonusesParameters () {
     /**
      * @type {number[]} enemies mid on which should be applied bonus
      */
-    this.on = []
+    this.on = [];
+
+    /**
+     * Allows to filter some rules on certains ships only
+     */
+    this.onlySpecificShips = [];
 }
 
 /**
@@ -209,5 +214,172 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
                 }
             }
         }
+    }
+}
+
+/**
+ * Give bonus if debuff is done
+ * @param {ChBonusesParameters} parameters 
+ * @param {*} amount 
+ */
+function ChDebuffBonuses(parameters, amount) {
+    this.parameters = parameters;
+
+    this.bonusType = 'ChDebuffBonuses';
+    
+    this.amount = amount;
+
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+    
+    if (parameters.onlySpecificShips) {
+        if (typeof(parameters.onlySpecificShips) == 'string') {
+            // --- [0] = type
+            // --- [1] = the property of the object having the id list
+            let accessToShipIds = parameters.onlySpecificShips.split('.');
+    
+            let type = accessToShipIds.shift();
+            let ships = null;
+    
+            if (type == 'map') {
+                this.getIds = () => {
+    
+                    if (ships) return ships; 
+                    
+                    ships = MAPDATA[WORLD].maps[MAPNUM];
+    
+                    while (accessToShipIds.length) {
+                        ships = ships[accessToShipIds.shift()];
+                    }
+    
+                    return ships;
+                }
+            }
+    
+            if (type == 'event') {
+                this.getIds = () => {
+    
+                    if (ships) return ships;
+    
+                    ships = MAPDATA[WORLD];
+    
+                    while (accessToShipIds.length) {
+                        ships = ships[accessToShipIds.shift()];
+                    }
+    
+                    return ships;
+                }
+            }
+        }
+        else {
+            this.getIds = () => {
+                return parameters.onlySpecificShips;
+            }
+        }
+    }
+    else {
+        this.getIds = () => {
+            return -1;
+        }
+    }
+
+    this.applyBonuses = () => {
+        // --- Only apply if debuffed
+        let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+        if (!debuffed) return;
+
+        let ships = getAllShips();
+        let ids = this.getIds();
+
+        for (let ship of ships) {
+
+            if (ids != -1) {
+                if (ids.indexOf(getBaseId(ship.mid)) == -1) continue;
+            }
+
+            if (parameters.type == 'add') {
+                if (!ship.bonusSpecial) ship.bonusSpecial = [];
+                ship.bonusSpecial.push(this.bonusToApply);
+            }
+
+            if (parameters.type == 'set') {
+                ship.bonusSpecial = [this.bonusToApply];
+            }
+        }
+    }
+}
+
+/**
+ * Custom debuff effects
+ * @param {ChBonusesParameters} parameters 
+ * @param {*} amount 
+ */
+ function ChCustomBonusEffects(parameters, applyBonuses, description) {
+    this.parameters = parameters;
+
+    this.bonusType = 'ChCustomBonusEffects';
+    
+    this.description = description;
+
+    this.bonusToApply = { mod: 1 };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+    
+    if (parameters.onlySpecificShips) {
+        if (typeof(parameters.onlySpecificShips) == 'string') {
+            // --- [0] = type
+            // --- [1] = the property of the object having the id list
+            let accessToShipIds = parameters.onlySpecificShips.split('.');
+    
+            let type = accessToShipIds.shift();
+            let ships = null;
+    
+            if (type == 'map') {
+                this.getIds = () => {
+    
+                    if (ships) return ships; 
+                    
+                    ships = MAPDATA[WORLD].maps[MAPNUM];
+    
+                    while (accessToShipIds.length) {
+                        ships = ships[accessToShipIds.shift()];
+                    }
+    
+                    return ships;
+                }
+            }
+    
+            if (type == 'event') {
+                this.getIds = () => {
+    
+                    if (ships) return ships;
+    
+                    ships = MAPDATA[WORLD];
+    
+                    while (accessToShipIds.length) {
+                        ships = ships[accessToShipIds.shift()];
+                    }
+    
+                    return ships;
+                }
+            }
+        }
+        else {
+            this.getIds = () => {
+                return parameters.onlySpecificShips;
+            }
+        }
+    }
+    else {
+        this.getIds = () => {
+            return -1;
+        }
+    }
+
+    this.applyBonuses = () => {
+        // --- Only apply if debuffed
+        let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+        if (!debuffed) return;
+
+        applyBonuses();
     }
 }

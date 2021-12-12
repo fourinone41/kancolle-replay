@@ -131,64 +131,68 @@ class ChrDisplayEventInfo {
         $("#routingContainer").html(routingEl);
     }
 
-    TranslateRule(rule, nodeRulesTranslated) {
-        switch (rule.type) {
-            case "fixed":
-                nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
-                break;
-
-            case "random": 
-                let descriptions = rule.GetRandomDescription();
-
-                for (const node in descriptions) {
-                    if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
-
-                    nodeRulesTranslated[node] += descriptions[node];
-                    nodeRulesTranslated[node] += "<br>";
-                }
-
-                break;
-
-            case "los": 
-                let descriptionsLos = rule.GetLOSDescription();
-
-                for (const node in descriptionsLos) {
-                    if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
-
-                    nodeRulesTranslated[node] += descriptionsLos[node];
-                    nodeRulesTranslated[node] += "<br>";
-                }
-
-                break;
-        
-            default:
-                let description = rule.getDescription();
-
-                if (typeof(description) == "string") {
-                    if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
-                    if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
-
-                    nodeRulesTranslated[rule.conditionCheckedNode] += description;
-                    nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
-                } 
-                else {
-                    for (const node in description) {
-                        if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
-
-                        nodeRulesTranslated[node] += description[node];
-                        nodeRulesTranslated[node] += "<br>";
-                    }
-                }
-
-
-                break;
-        }
-    }
-
     MakeRoutingEl(rules) {
         let root = $("<td>");
 
         let nodeRulesTranslatedPerPart = {};
+
+        let priority = 0;
+        
+        let translateRule = function (rule, nodeRulesTranslated) {
+            switch (rule.type) {
+                case "fixed":
+                    nodeRulesTranslated[rule.fixedNode] = rule.getDescription();
+                    break;
+
+                case "random": 
+                    let descriptions = rule.GetRandomDescription();
+
+                    for (const node in descriptions) {
+                        if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                        nodeRulesTranslated[node] += descriptions[node];
+                        nodeRulesTranslated[node] += "<br>";
+                    }
+
+                    break;
+
+                case "los": 
+                    let descriptionsLos = rule.GetLOSDescription();
+
+                    for (const node in descriptionsLos) {
+                        if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                        nodeRulesTranslated[node] += descriptionsLos[node];
+                        nodeRulesTranslated[node] += "<br>";
+                    }
+
+                    break;
+            
+                default:
+                    let description = rule.getDescription();
+
+                    if (typeof(description) == "string") {
+                        if (!nodeRulesTranslated[rule.conditionCheckedNode]) nodeRulesTranslated[rule.conditionCheckedNode] = "";
+                        if (rule.conditionFailedNode && !nodeRulesTranslated[rule.conditionFailedNode]) nodeRulesTranslated[rule.conditionFailedNode] = "";
+
+                        nodeRulesTranslated[rule.conditionCheckedNode] += description;
+                        nodeRulesTranslated[rule.conditionCheckedNode] += ` (${++priority})`;
+                        nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
+                    } 
+                    else {
+                        for (const node in description) {
+                            if (!nodeRulesTranslated[node]) nodeRulesTranslated[node] = "";
+
+                            nodeRulesTranslated[node] += description[node];
+                            nodeRulesTranslated[node] += ` (${++priority})`;
+                            nodeRulesTranslated[node] += "<br>";
+                        }
+                    }
+
+
+                    break;
+            }
+        }
         
         /**
         * @type {ChRule}
@@ -198,11 +202,11 @@ class ChrDisplayEventInfo {
         for (rule of rules) {
             if (!rule.mapParts) {
                 if (!nodeRulesTranslatedPerPart.noPart) nodeRulesTranslatedPerPart.noPart = {};
-                this.TranslateRule(rule, nodeRulesTranslatedPerPart.noPart);
+                translateRule(rule, nodeRulesTranslatedPerPart.noPart);
             } else {
                 for (const part of rule.mapParts) {
                     if (!nodeRulesTranslatedPerPart[part]) nodeRulesTranslatedPerPart[part] = {};
-                    this.TranslateRule(rule, nodeRulesTranslatedPerPart[part]);
+                    translateRule(rule, nodeRulesTranslatedPerPart[part]);
                 }
             }
         }
@@ -833,6 +837,30 @@ class ChrDisplayEventInfo {
                     ${currentBonus.ids.map((x) => { return `${EQDATA[x].name}`; }).join(" + ")}
                     ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
                 </td>`));
+            else if (currentBonus.type == 'ChDebuffBonuses') {
+                
+                let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
+                
+                bonusLine.append($(`
+                    <td class="bonus-group">
+                        Bonus after completing the debuff : <br><br>
+                        ${ships}
+                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                    </td>`)
+                );
+            } 
+            else if (currentBonus.type == 'ChCustomBonusEffects') {
+                
+                let ships = currentBonus.ids == -1 ? '' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
+                
+                bonusLine.append($(`
+                    <td class="bonus-group">
+                        Effects after completing the debuff : <br><br>
+                        ${ships}
+                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                    </td>`)
+                );
+            }
             else 
                 bonusLine.append($(`<td class="bonus-group"></td>`));
 
@@ -865,7 +893,11 @@ class ChrDisplayEventInfo {
                             bonusCellPart.attr('title', "Stacks with other bonuses");
                         }
 
-                        bonusCellPart.append(`<span>x${currentBonus.amount}</span>`);
+                        if (currentBonus.bonusType == 'ChCustomBonusEffects') {
+                            bonusCellPart.append(`<span>${currentBonus.description}</span>`);
+                        } else {
+                            bonusCellPart.append(`<span>x${currentBonus.amount}</span>`);
+                        }
 
                         bonusCell.append(bonusCellPart);
                     }
