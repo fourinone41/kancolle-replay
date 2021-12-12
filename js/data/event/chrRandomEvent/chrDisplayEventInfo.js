@@ -210,7 +210,7 @@ class ChrDisplayEventInfo {
                 if (!nodeRulesTranslatedPerNode[node]) nodeRulesTranslatedPerNode[node] = '';
 
                 if (part == 'noPart') nodeRulesTranslatedPerNode[node] += nodeRulesTranslatedPerPart[part][node]
-                else nodeRulesTranslatedPerNode[node] += `During part ${part}: <br>${nodeRulesTranslatedPerPart[part][node]}<br>`
+                else nodeRulesTranslatedPerNode[node] += `During part ${part}: <br>${nodeRulesTranslatedPerPart[part][node]}<br><br>`
             }            
         }
 
@@ -507,7 +507,7 @@ class ChrDisplayEventInfo {
         function getHistoGroupes (rule) {
             if (rule.type == 'shipIds' && !histoGroups.includes(rule.shipsIdsListName) && rule.historicalGroups) {
 
-                if (Array.isArray(rule.shipsIds)) {
+                if (Array.isArray(rule.shipsIds) && typeof(rule.shipsIds[0]) != 'number') {
                     for (const subRuleGroupe of rule.shipsIds) {
                         if (histoGroups.includes(subRuleGroupe.shipsIdsListName)) continue;
 
@@ -834,17 +834,44 @@ class ChrDisplayEventInfo {
 
             for (let node in bonusesPerNode) {
 
-                let bonus = currentBonus.bonuses.find(x => x.node == node);
+                let bonuses = currentBonus.bonuses.filter(x => x.node == node);
 
-                if (!bonus) bonusLine.append($(`<td> / </td>`));
+                if (!bonuses || !bonuses.length) bonusLine.append($(`<td> / </td>`));
                 else {
-                    if (bonus.parameters.type == "set") {
-                        bonusLine.append($(`<td>x${bonus.amount}</td>`));
-                    }
+                    let bonusCell = $('<td>');
                     
-                    if (bonus.parameters.type == "add") {
-                        bonusLine.append($(`<td class="bonus-stacks" title="Stacks with other bonuses">x${bonus.amount}</td>`));
+                    let addBonus = (currentBonus) => {
+                        let bonusCellPart = $('<div>');
+                        bonusCellPart.addClass('bonus-cell');
+
+                        if (currentBonus.parameters.on) {
+                            let image = '';
+
+                            for (const abyssalMid of currentBonus.parameters.on) {
+                                if (SHIPDATA[abyssalMid].image == image) continue;
+
+                                image = SHIPDATA[abyssalMid].image;
+
+                                bonusCellPart.append(`<img src="assets/icons/${image}" />`)
+                            }
+                        }
+                        
+                        if (currentBonus.parameters.type == "add") {
+                            bonusCellPart.addClass("bonus-stacks");
+                            bonusCellPart.attr('title', "Stacks with other bonuses");
+                        }
+
+                        bonusCellPart.append(`<span>x${currentBonus.amount}</span>`);
+
+                        bonusCell.append(bonusCellPart);
                     }
+
+                    for (const bonus of bonuses) {
+                        addBonus(bonus);
+                    }
+                
+
+                    bonusLine.append(bonusCell);
                 }
             }
 

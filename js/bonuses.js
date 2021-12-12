@@ -17,6 +17,11 @@ function ChBonusesParameters () {
      * @type {'set' | 'add'} type Set = set the bonus amount of the group, Add =  add the bonus to the previous bonuses (bonuses resets on map start)
      */
     this.type = 'set';
+
+    /**
+     * @type {number[]} enemies mid on which should be applied bonus
+     */
+    this.on = []
 }
 
 /**
@@ -79,6 +84,9 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     
     this.getIds = this.getShipIds;
 
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+
     this.applyBonuses = () => {
         let ships = getAllShips();
         let ids = this.getShipIds();
@@ -87,11 +95,11 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
             if (ids.indexOf(getBaseId(ship.mid)) != -1) {
                 if (parameters.type == 'add') {
                     if (!ship.bonusSpecial) ship.bonusSpecial = [];
-                    ship.bonusSpecial.push({ mod: amount });
+                    ship.bonusSpecial.push(this.bonusToApply);
                 }
 
                 if (parameters.type == 'set') {
-                    ship.bonusSpecial = [{ mod: amount }];
+                    ship.bonusSpecial = [this.bonusToApply];
                 }
             }
         }
@@ -118,6 +126,9 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     this.equipIds = equipIds;
 
     this.operator = operator;
+
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
     
     this.getIds = () => {
         return this.equipIds;
@@ -137,11 +148,11 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
             if (ChRule.CompareNumbers(eqCount, reqCount, operator, true, false)) {
                 if (parameters.type == 'add') {
                     if (!ship.bonusSpecial) ship.bonusSpecial = [];
-                    ship.bonusSpecial.push({ mod: amount });
+                    ship.bonusSpecial.push(this.bonusToApply);
                 }
 
                 if (parameters.type == 'set') {
-                    ship.bonusSpecial = [{ mod: amount }];
+                    ship.bonusSpecial = [this.bonusToApply];
                 }
             }
         }
@@ -169,6 +180,9 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 
     this.operator = operator;
 
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+
     this.getIds = () => {
         return this.equipTypes;
     }
@@ -187,11 +201,11 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
             if (ChRule.CompareNumbers(eqCount, reqCount, operator, true, false)) {
                 if (parameters.type == 'add') {
                     if (!ship.bonusSpecial) ship.bonusSpecial = [];
-                    ship.bonusSpecial.push({ mod: amount });
+                    ship.bonusSpecial.push(this.bonusToApply);
                 }
 
                 if (parameters.type == 'set') {
-                    ship.bonusSpecial = [{ mod: amount }];
+                    ship.bonusSpecial = [this.bonusToApply];
                 }
             }
         }

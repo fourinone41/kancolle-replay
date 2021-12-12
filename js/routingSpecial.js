@@ -349,6 +349,7 @@ function ChCreateCustomRule(ruleProperties) {
     rule.getDescription = ruleProperties.getDescription;
 
     rule.shipsIds = ruleProperties.shipsIds;
+    rule.getShipIds = ruleProperties.getShipIds;
     rule.shipsIdsListName = ruleProperties.shipsIdsListName;
     rule.historicalGroups = ruleProperties.historicalGroups;
 

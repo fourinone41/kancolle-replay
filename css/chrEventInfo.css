@@ -161,3 +161,12 @@ div#routing {
     font-weight: 700;
     font-style: italic;
 }
+
+.bonus-cell {
+    display: flex;
+    align-items: center;
+}
+
+.bonus-cell span {
+    margin-left: 10px;
+}

@@ -956,7 +956,7 @@ function ChShipIdsRoutingRule(shipsIds, operator, count, conditionCheckedNode, c
                 return ships;
             }
         }
-    } else if (Array.isArray(shipsIds)) {
+    } else if (Array.isArray(shipsIds) && typeof(shipsIds[0]) != 'number') {
         rule.getShipIds = () => {
             let shipsToReturn = [];
 
