@@ -1232,6 +1232,7 @@ function mapPhase(first) {
 			if (rule.ruleCanBeChecked())
 				nextletter = rule.getRouting(CHSHIPCOUNT);
 	
+			if (nextletter) rule = rule.getValidatedRule(CHSHIPCOUNT);	
 	
 			index++;
 		}
@@ -1802,7 +1803,7 @@ function prepBattle(letter) {
 				SHIPDATA[sid].HP = SHIPDATA[compd.originalComp.c[0]].HP;
 
 				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport) {
-					SHIPDATA[sid].HP = CHDATA.event.maps[MAPNUM].hp - SHIPDATA[sid].HP;
+					SHIPDATA[sid].HP = CHDATA.event.maps[MAPNUM].hp - 1;
 				}
 		
 				enemies.push(createDefaultShip(sid,overrideStats));

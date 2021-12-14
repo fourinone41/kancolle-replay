@@ -20165,36 +20165,90 @@ var MAPDATA = {
 				hiddenRoutes: {
 					1: {
 						images: [{ name: '1_1.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (!debuff) return false;
-							return debuff.F && debuff.K;
-						}
+						unlockRules: new ChGimmickList('mapPart', null, 1, [
+							{
+								node: 'F',
+								type: 'ReachNode',
+								timesRequiredPerDiff: {
+									1: 1, 
+									2: 1, 
+									3: 1, 
+								}
+							},
+							{
+								node: 'K',
+								type: 'ReachNode',
+								timesRequiredPerDiff: {
+									1: 1, 
+									2: 1, 
+									3: 1, 
+								}
+							},
+						], 
+						{
+							partToUnlock: 1
+						})
 					},
 					2: {
 						images: [{ name: '1_2.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (!debuff) return false;
-							return debuff.O && debuff.P && (CHDATA.event.maps[1].diff != 3 || debuff.E);
-						}
+						unlockRules: new ChGimmickList('mapPart', null, 1, [
+							{
+								node: 'E',
+								type: 'AirState',
+								timesRequiredPerDiff: {
+									3: 1, 
+								},
+								ranksRequiredPerDiff: {
+									3: 'AS'
+								},
+								routeUnlockRequired: 1,
+							},
+							{
+								node: 'O',
+								type: 'ReachNode',
+								timesRequiredPerDiff: {
+									1: 1, 
+									2: 1, 
+									3: 1, 
+								}
+							},
+							{
+								node: 'P',
+								type: 'ReachNode',
+								timesRequiredPerDiff: {
+									1: 1, 
+									2: 1, 
+									3: 1, 
+								}
+							},
+						], 
+						{
+							partToUnlock: 2,
+						})
 					}
 				},
 				additionalCheck: function(ships,errors) {
 					if (ships.FBB + ships.BB + ships.BBV) errors.push('No (F)BB(V)');
 					if (ships.CV + ships.CVL + ships.CVB) errors.push('No CV(L/B)');
 				},
+				mapInfo: 'No (F)BB(V) allowed<br>No CV(L/B) allowed',
 				nodes: {
 					'Start': {
 						type: 0,
 						x: 695,
 						y: 116,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule('A')
+						]
 					},
 					'A': {
 						type: 3,
 						x: 650,
 						y: 194,
 						distance: 1,
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule('B')
+						]
 					},
 					'B': {
 						type: 1,
@@ -20207,14 +20261,18 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C')
+						]
 					},
 					'C': {
 						type: 3,
 						x: 534,
 						y: 336,
 						distance: 3,
-						route: 'G'
+						rules: [
+							ChFixedRoutingRule('G')
+						]
 					},
 					'D': {
 						type: 1,
@@ -20227,7 +20285,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'E': {
 						type: 1,
@@ -20240,21 +20300,14 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						debuffGive: function() {
-							if (!CHDATA.event.maps[1].routes || CHDATA.event.maps[1].routes.indexOf(1) == -1) return;
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[1].debuff.E = 1;
-						},
 						showLoSPlane: 'H',
-						routeC: function(ships) {
-							let num = 0;
-							for (let mid of MAPDATA[40].historical.shima) {
-								if (isShipInList(ships.ids,mid)) num++;
-							}
-							if (num >= CHDATA.event.maps[1].diff-1) {
-								return checkELoS33(getELoS33(1,1),{ 20: 'H', 15: 'I' });
-							}
-							return checkELoS33(getELoS33(1,1),{ 80: 'H', 50: 'I' });
-						}
+						rules: [
+							ChIfThenElseRule(
+								ChShipHistoricalRoutingRule('Shima fleet', 'event.historical.shima', ">=", { 1:0, 2:1, 3:2 }, 'H'),
+								ChLOSRule({ 20: 'H', 15: 'I' }),
+								ChLOSRule({ 80: 'H', 50: 'I' }),
+							),
+						]
 					},
 					'F': {
 						type: 2,
@@ -20264,9 +20317,6 @@ var MAPDATA = {
 						dropoff: true,
 						resource: 2,
 						amount: [70],
-						debuffGive: function() {
-							CHDATA.event.maps[1].debuff.F = 1;
-						},
 						end: true
 					},
 					'G': {
@@ -20274,7 +20324,9 @@ var MAPDATA = {
 						x: 441,
 						y: 317,
 						distance: 4,
-						routeS: ['D','J']
+						rules: [
+							ChSelectRouteRule(['D','J']),
+						]
 					},
 					'H': {
 						type: 1,
@@ -20286,7 +20338,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'I': {
 						type: 3,
@@ -20306,15 +20360,17 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							if (!CHDATA.event.maps[1].routes || CHDATA.event.maps[1].routes.indexOf(1) == -1) {
-								this.showNoCompass = true;
-								return 'K';
-							}
-							this.showNoCompass = false;
-							if (ships.SS + ships.SSV <= 0 && ships.DD >= 2 && (CHDATA.event.maps[1].diff != 3 || ships.CL)) return 'M';
-							return 'K';
-						}
+						rules: [
+							ChDontShowCompass(ChIsRouteNotUnlockedRule(1, 'K')),
+
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['SS', 'SSV'], '=', 0, 'M'),
+								ChShipTypeRoutingRule(['DD'], '>=', 2, 'M'),
+								ChShipTypeRoutingRule(['CL'], '>=', { 1:0, 2:0, 3:1 }, 'M'),
+							], 'AND', 'M'),
+
+							ChDefaultRouteRule('K')
+						]
 					},
 					'K': {
 						type: 1,
@@ -20327,10 +20383,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2','Medium 3'],
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
-						debuffGive: function() {
-							CHDATA.event.maps[1].debuff.K = 1;
-						},
-						route: 'L'
+						rules: [
+							ChFixedRoutingRule('L')
+						]
 					},
 					'L': {
 						type: 1,
@@ -20350,7 +20405,9 @@ var MAPDATA = {
 						y: 205,
 						distance: 5,
 						hidden: 1,
-						routeS: ['N','O']
+						rules: [
+							ChSelectRouteRule(['N','O']),
+						]
 					},
 					'N': {
 						type: 1,
@@ -20364,7 +20421,9 @@ var MAPDATA = {
 							2: ['Medium 1','Medium 2'],
 							1: ['Easy 1','Easy 2'],
 						},
-						route: 'P'
+						rules: [
+							ChFixedRoutingRule('P')
+						]
 					},
 					'O': {
 						type: 1,
@@ -20383,25 +20442,19 @@ var MAPDATA = {
 							2: ['Medium 3'],
 							1: ['Easy 3'],
 						},
-						debuffGive: function() {
-							CHDATA.event.maps[1].debuff.O = 1;
-						},
-						routeC: function(ships) {
-							if (!CHDATA.event.maps[1].routes || CHDATA.event.maps[1].routes.indexOf(2) == -1) {
-								this.showLoSPlane = 'Q';
-								return checkELoS33(getELoS33(1,1),{ 20: 'Q', 15: 'R' });
-							}
-							this.showLoSPlane = 'S';
-							let letter;
-							let num = 0;
-							for (let mid of MAPDATA[40].historical.shima) {
-								if (isShipInList(ships.ids,mid)) num++;
-							}
-							if (num >= CHDATA.event.maps[1].diff-1) {
-								return checkELoS33(getELoS33(1,1),{ 20: 'S', 15: 'R' });
-							}
-							return checkELoS33(getELoS33(1,1),{ 80: 'S', 50: 'Q', 20: 'Q', 15: 'R' });
-						}
+						rules: [
+							ChIfThenElseRule(
+								ChIsRouteNotUnlockedRule(2, 'Q'),
+								ChLOSRule({ 20: 'Q', 15: 'R' }),
+							),
+
+							ChIfThenElseRule(
+								ChShipHistoricalRoutingRule('Shima fleet', 'event.historical.shima', '>=', { 1: 0, 2:1, 3:2 }, 'S'),
+								ChLOSRule({ 20: 'S', 15: 'R' }),
+							),
+
+							ChLOSRule({ 80: 'S', 50: 'Q', 20: 'Q', 15: 'R' }),
+						]
 					},
 					'P': {
 						type: 2,
@@ -20412,9 +20465,6 @@ var MAPDATA = {
 						dropoff: true,
 						resource: 3,
 						amount: [70],
-						debuffGive: function() {
-							CHDATA.event.maps[1].debuff.P = 1;
-						},
 						end: true
 					},
 					'Q': {
@@ -20445,13 +20495,9 @@ var MAPDATA = {
 						distance: 8,
 						hidden: 2,
 						boss: true,
-						setupSpecial: function() {
-							for (let ship of FLEETS1[0].ships) {
-								if (MAPDATA[40].historical.shima.indexOf(getBaseId(ship.mid)) != -1) {
-									ship.bonusSpecial = [{mod:1.2}];
-								}
-							}
-						},
+						bonuses: [
+							new ChShipIdsBonuses({ type: 'set' }, 'event.historical.shima', 1.2),
+						],
 						compDiff: {
 							3: ['Hard 1','Hard 2'],
 							2: ['Medium 1','Medium 2'],

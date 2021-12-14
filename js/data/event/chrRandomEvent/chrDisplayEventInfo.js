@@ -542,6 +542,10 @@ class ChrDisplayEventInfo {
                     getHistoGroupes(rule2);
                 }
             }
+
+            if (rule.type == 'ifthenelse' && rule.ifthenelse.if.type == 'shipIds' && rule.ifthenelse.if.historicalGroups) {
+                getHistoGroupes(rule.ifthenelse.if);
+            }
         }
 
         for (const nodeKey in map.nodes) {

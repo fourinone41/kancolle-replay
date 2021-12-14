@@ -257,6 +257,25 @@ function ChGimmick(parameters) {
             
             break;
         }
+        
+        case 'AirState': {
+            parameters.shouldCountBeIncreased = (checkGimmickParameters) => {
+                let requiredRank = this.ranksRequiredPerDiff[getDiff()];
+                let aquiredRank = ChGimmick.ConvertAirStateNumberToString(FLEETS1[0].AS);
+        
+                let ranks = ['AS+', 'AS', 'AP'];
+        
+                for (const rank of ranks) {
+                    if (rank == requiredRank) return aquiredRank == rank;
+                    
+                    if (rank == aquiredRank) return 1;
+                }
+        
+                return 0;
+            }
+            
+            break;
+        }
     }
 
     /**
@@ -300,4 +319,14 @@ function ChGimmick(parameters) {
 
         return this.ranksRequiredPerDiff[diff] + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
     }
+}
+
+ChGimmick.ConvertAirStateNumberToString = (airState) => {
+    switch (airState) {
+        case 0: return 'AP';
+        case 1: return 'AS';
+        case 2: return 'AS+';
+    }
+
+    return '???';
 }

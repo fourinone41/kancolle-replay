@@ -847,14 +847,32 @@ function ChRule () {
     }
 
     /**
+     * Returns the rule that got validated
+     * Useful for the ifthenelse rule cause it's the then or the else tha contains the information about compass or los plane value
+     */
+    this.getValidatedRule = function (ships) {
+        if (this.type == "ifthenelse") {
+            if (this.ifthenelse.if.getRouting(ships)) {
+                return this.ifthenelse.then;
+            }
+            else {
+                if (!this.ifthenelse.else) return this;
+                return this.ifthenelse.else;
+            }
+        }
+
+        return this;
+    }
+
+    /**
      * Returns if LOS plane should be shown or not
      * @returns true if LOS plane need to be shown
      */
-    this.getShowLosPlane = function () {
+    this.getShowLosPlane = () => {
         switch (this.type) {
             case "los":
                 return true;
-        
+
             default:
                 return false;
         }
