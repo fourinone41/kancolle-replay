@@ -404,3 +404,93 @@ function ChFleetBeenThroughRule(node, conditionCheckedNode, conditionFailedNode)
 
     return rule;
 }
+
+/**
+ * Rule validated if all ships have a tag that belong to taglist
+ * @param {number[]} tagList 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ */
+function ChAllHaveTagRule(tagList, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.getRouting = (ships) => {
+
+        for (let sid of getAllShipsShipIds()) {
+            if (sid && !tagList.includes(CHDATA.ships[sid].lock)) { return conditionFailedNode; }
+        }
+
+        return conditionCheckedNode;
+    }
+
+    rule.getDescription = () => {
+        let tags = tagList.map(x => `<img src="assets/maps/lock${x}.png" />`)
+        return `All ships must have the tag${tagList.length > 1 ? 's' : ''} ${tags.join(' ')}`;
+    }
+
+    return rule;
+}
+
+
+/**
+ * Rule that can be used in case of node replaced by other
+ * @param {ChRule} baseRule Base rule
+ * @param {*} routeNum Number of the route where node 2 is available
+ * @param {*} node1 First node
+ * @param {*} node2 Node after the replacement
+ */
+function ChNodeReplacedAfterUnlockRule(baseRule, routeNum, node1, node2) {
+    let rule = new ChRule();
+
+    rule.type = 'custom';
+
+    rule.getDescription = () => { return baseRule.getDescription() };
+
+    rule.conditionCheckedNode = node1;
+
+    rule.getRouting = (ships) => {
+        let node = baseRule.getRouting(ships);
+
+        if (node) {
+            node = (!CHDATA.event.maps[MAPNUM].routes || CHDATA.event.maps[MAPNUM].routes.indexOf(routeNum) == -1) ? node1 : node2;
+        }
+
+        return node;
+    }
+
+    return rule;
+}
+
+/**
+ * Rule that can be used in case of node replaced by other
+ * @param {ChRule} baseRule Base rule
+ * @param {*} partNum Number of the part where node 2 is available
+ * @param {*} node1 First node
+ * @param {*} node2 Node after the replacement
+ */
+ function ChNodeReplacedAfterPartRule(baseRule, partNum, node1, node2) {
+    let rule = new ChRule();
+
+    rule.type = 'custom';
+
+    rule.getDescription = () => { return baseRule.getDescription() };
+
+    rule.conditionCheckedNode = node1;
+
+    rule.getRouting = (ships) => {
+        let node = baseRule.getRouting(ships);
+
+        if (node) {
+            node = (CHDATA.event.maps[4].part < partNum) ? node1 : node2;
+        }
+
+        return node;
+    }
+
+    return rule;
+}

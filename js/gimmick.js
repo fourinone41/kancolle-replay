@@ -240,6 +240,7 @@ function ChGimmick(parameters) {
             }
 
             parameters.getDescription = (diff) => {
+                if (!this.timesRequiredPerDiff[diff]) return '-';
                 return 'Take no damage' + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
             }
 
@@ -252,6 +253,7 @@ function ChGimmick(parameters) {
             }
 
             parameters.getDescription = (diff) => {
+                if (!this.timesRequiredPerDiff[diff]) return '-';
                 return 'Reach';
             }
             

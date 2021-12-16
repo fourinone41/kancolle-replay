@@ -66,7 +66,7 @@ class ChrMap  {
         this.stage.addChild(nodeG);
     }
     
-    LoadMap(world, mapnum) {
+    LoadMap(world, mapnum, part, lbPart) {
         this.stage = new PIXI.Container();
 
         this.map = new PIXI.Container();
@@ -78,6 +78,7 @@ class ChrMap  {
 
         if (MAPDATA[world].maps[mapnum].hiddenRoutes) {
             for (var key in MAPDATA[world].maps[mapnum].hiddenRoutes) {
+                if (part < key) continue;
                 
                 var route = MAPDATA[world].maps[mapnum].hiddenRoutes[key];
 
@@ -94,6 +95,9 @@ class ChrMap  {
         for (let letter in MAPDATA[world].maps[mapnum].nodes) {
             
             if (letter.includes('Start')) continue;
+
+            if (MAPDATA[world].maps[mapnum].nodes[letter].hidden && part < MAPDATA[world].maps[mapnum].nodes[letter].hidden) continue;
+            if (MAPDATA[world].maps[mapnum].nodes[letter].lbPart && lbPart < MAPDATA[world].maps[mapnum].nodes[letter].lbPart) continue;
             
             this.AddMapNode(letter, MAPDATA[world].maps[mapnum].nodes[letter].type, world, mapnum);
         }

@@ -14,6 +14,7 @@ class ChrDisplayEventInfo {
                     <div id="mapInfoMapInfo"></div>
                 </div>
                 <div id="mapAndCompsContainer">
+                    <div id="partButtons"></div>
                     <div id="map"></div>
                     <div id="comp"></div>
                 </div>
@@ -63,8 +64,10 @@ class ChrDisplayEventInfo {
                 this.currentMap = mapNum + 1;
                 MAPNUM = this.currentMap;
                 WORLD = this.GetCurrentWorld();
+
+                this.DisplayPartButtons();
                 
-                this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1);
+                this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1, 0, 1);
 
                 // --- Display map infos
                 this.DisplayMapInfos();
@@ -78,6 +81,70 @@ class ChrDisplayEventInfo {
             $("#mapButtons").append(button)
         }
     }
+
+    
+    DisplayPartButtons() {
+        let lbPart = 1;
+        let unlockPart = 0;
+
+        let afterButtonClick = () => {
+            $('.part-button').removeClass('part-button-selected');
+
+            this.map.LoadMap(this.GetCurrentWorld(), this.currentMap, unlockPart, lbPart);
+
+            $($('.part-button-part')[lbPart - 1]).addClass("part-button-selected");
+            $($('.part-button-unlock')[unlockPart]).addClass("part-button-selected");
+        };
+
+        $('#partButtons').html('');
+
+        if (!MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].hiddenRoutes) return;
+
+        let button = $(`<button>No unlock</button>`);
+        button.addClass("part-button part-button-selected part-button-unlock");
+
+        button.click(() => { 
+            unlockPart = 0; 
+            afterButtonClick();
+        });
+        
+        $('#partButtons').append(button);
+
+        for (const key in MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].hiddenRoutes) {
+            button = $(`<button>Unlock ${key}</button>`);
+            button.addClass("part-button part-button-unlock");
+
+            button.click(() => { 
+                unlockPart = parseInt(key);  
+                afterButtonClick();
+            });
+            
+            $('#partButtons').append(button);
+        }
+
+        $('#partButtons').append('<br>');
+
+        let lbParts = [];
+
+        for (const key in MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].nodes) {
+            let node = MAPDATA[this.GetCurrentWorld()].maps[this.currentMap].nodes[key];
+
+            if (node.lbPart && !lbParts.includes(node.lbPart)) {
+                button = $(`<button>Part ${node.lbPart}</button>`);
+                button.addClass("part-button part-button-part");
+
+                if (!lbParts.length) button.addClass("part-button-selected");
+                lbParts.push(node.lbPart);
+
+                button.click(() => { 
+                    lbPart = node.lbPart;
+                    afterButtonClick();
+                });
+                
+                $('#partButtons').append(button);
+            }
+        }        
+    };
 
     GetCurrentWorld() {
         return this.Worlds[this.currentMap].world;
@@ -451,7 +518,33 @@ class ChrDisplayEventInfo {
     GetComps(mapnum, node) {
         let mapName = 'E-' + mapnum;
         
-        let comps = this.Comps[mapName][node];
+        let comps = [];
+        
+        let nodeData = MAPDATA[WORLD].maps[MAPNUM].nodes[node];
+
+        let addComps = (compKeys) => {
+            for (const comp of compKeys) {
+                comps[comp] = this.Comps[mapName][nodeData.compName ? nodeData.compName : node][comp];
+            }
+        }
+
+        for (const key in nodeData.compDiff) {
+            addComps(nodeData.compDiff[key]);
+        }
+        
+        if (nodeData.compDiffF) {
+            for (const key in nodeData.compDiffF) {
+                addComps(nodeData.compDiffF[key]);
+            }
+        }
+
+        if (nodeData.compDiffC) {
+            for (const key in nodeData.compDiffC) {
+                addComps(nodeData.compDiffC[key]);
+            }
+        }
+        
+        this.Comps[mapName][node];
     
         if (!comps) throw 'Node not found';
     

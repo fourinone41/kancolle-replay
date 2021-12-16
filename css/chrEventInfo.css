@@ -86,7 +86,8 @@ div#pageContent {
     margin-right: 20px;
 }
 
-button.diff-button {
+button.diff-button,
+button.part-button {
     border-radius: 8px;
     margin: 15px;
     padding: 10px 15px;
@@ -94,7 +95,8 @@ button.diff-button {
     color: #dbdbdb;
 }
 
-button.diff-button.diff-button-selected {
+button.diff-button.diff-button-selected,
+button.part-button.part-button-selected {
     background-color: #7a7a7a;
     font-weight: 700;
     color: #e3e3e3;
