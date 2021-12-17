@@ -87,7 +87,8 @@ div#pageContent {
 }
 
 button.diff-button,
-button.part-button {
+button.part-button,
+.button {
     border-radius: 8px;
     margin: 15px;
     padding: 10px 15px;

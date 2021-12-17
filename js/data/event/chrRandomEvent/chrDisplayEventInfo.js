@@ -32,15 +32,19 @@ class ChrDisplayEventInfo {
     Comps = {};
 
     selectedDiff = null;
+
+    LoadCHDATA() {
+        let FILE = localStorage.ch_file;
+        this.Comps = JSON.parse(localStorage['ch_basic'+FILE]).event.comps;
+        CHDATA = JSON.parse(localStorage['ch_basic'+FILE]);
+        this.Worlds =  JSON.parse(localStorage['ch_basic'+FILE]).maps;
+    }
     
     Init () {
         $('body').append(this.root);
 
         // --- load comps 
-        let FILE = localStorage.ch_file;
-        this.Comps = JSON.parse(localStorage['ch_basic'+FILE]).event.comps;
-        CHDATA = JSON.parse(localStorage['ch_basic'+FILE]);
-        this.Worlds =  JSON.parse(localStorage['ch_basic'+FILE]).maps;
+        this.LoadCHDATA();
 
         if (RANDOMAPS) {
             MAPDATA[97].initializeAllMaps();
@@ -65,9 +69,21 @@ class ChrDisplayEventInfo {
                 MAPNUM = this.currentMap;
                 WORLD = this.GetCurrentWorld();
 
-                this.DisplayPartButtons();
-                
-                this.map.LoadMap(this.GetCurrentWorld(), mapNum + 1, 0, 1);
+                if (CHDATA.event.maps[this.currentMap].routes) {
+                    this.unlockPart = Math.max(...CHDATA.event.maps[this.currentMap].routes)
+                }
+                else {
+                    this.unlockPart = 0;
+                }
+
+                if (CHDATA.event.maps[4].part) {
+                    this.lbPart = CHDATA.event.maps[4].part;
+                }
+                else {
+                    this.lbPart = 1;
+                }
+
+                this.DisplayPartButtons();                
 
                 // --- Display map infos
                 this.DisplayMapInfos();
@@ -78,22 +94,27 @@ class ChrDisplayEventInfo {
                 this.InitFoldableElement();
             });
 
+            if (CHDATA.event.mapnum == mapNum + 1) {
+                button.click();
+            }
+
             $("#mapButtons").append(button)
         }
     }
 
+    lbPart = 1;
+    unlockPart = 0;
+
     
     DisplayPartButtons() {
-        let lbPart = 1;
-        let unlockPart = 0;
 
         let afterButtonClick = () => {
             $('.part-button').removeClass('part-button-selected');
 
-            this.map.LoadMap(this.GetCurrentWorld(), this.currentMap, unlockPart, lbPart);
+            this.map.LoadMap(this.GetCurrentWorld(), this.currentMap, this.unlockPart, this.lbPart);
 
-            $($('.part-button-part')[lbPart - 1]).addClass("part-button-selected");
-            $($('.part-button-unlock')[unlockPart]).addClass("part-button-selected");
+            $($('.part-button-part')[this.lbPart - 1]).addClass("part-button-selected");
+            $($('.part-button-unlock')[this.unlockPart]).addClass("part-button-selected");
         };
 
         $('#partButtons').html('');
@@ -115,7 +136,7 @@ class ChrDisplayEventInfo {
             button.addClass("part-button part-button-unlock");
 
             button.click(() => { 
-                unlockPart = parseInt(key);  
+                this.unlockPart = parseInt(key);  
                 afterButtonClick();
             });
             
@@ -137,13 +158,16 @@ class ChrDisplayEventInfo {
                 lbParts.push(node.lbPart);
 
                 button.click(() => { 
-                    lbPart = node.lbPart;
+                    this.lbPart = node.lbPart;
                     afterButtonClick();
                 });
                 
                 $('#partButtons').append(button);
             }
         }        
+
+        // --- Load the map 
+        afterButtonClick();
     };
 
     GetCurrentWorld() {
@@ -709,6 +733,23 @@ class ChrDisplayEventInfo {
         let diffs = event.allowDiffs ? event.allowDiffs : [4,1,2,3];
         let nodeList = [];
 
+        /**
+         * @type {{rule: ChRule, element: any}[]}
+         */
+        let ruleAndTdList = [];
+
+        let checkStepsDone = () => {
+            for (const value of ruleAndTdList) {
+                
+                if (value.rule.gimmickDone()) {
+                    value.element.addClass('debuff-step-done');
+                }
+                else {
+                    value.element.removeClass('debuff-step-done');
+                }
+            }
+        }
+
         let debuffInfoRoot = $('<div>').addClass("foldable-element");
         
         if (rules.type == 'debuff') {
@@ -794,9 +835,10 @@ class ChrDisplayEventInfo {
                     descTd.append(desc);
                     debuffLine.append(descTd);
 
-                    if (rule.gimmickDone()) {
-                        descTd.addClass('debuff-step-done');
-                    }
+                    ruleAndTdList.push({
+                        rule: rule,
+                        element: descTd
+                    });
                 } else {
                     descTd.attr('colspan', ++colSpan);
                 }
@@ -817,6 +859,17 @@ class ChrDisplayEventInfo {
 
         debuffInfoContent.append(debuffInfoTable);
         debuffInfoRoot.append(debuffInfoContent);
+
+        let reloadButton = $('<button>');
+        reloadButton.addClass('button')
+        reloadButton.append('Reload')
+        reloadButton.click(() => {
+            this.LoadCHDATA();
+            checkStepsDone();
+        });
+
+        debuffInfoContent.append(reloadButton)
+        debuffInfoContent.append('<br>')
 
         
         if (rules.type == 'debuff') { 
@@ -842,7 +895,8 @@ class ChrDisplayEventInfo {
                 
             debuffInfoContent.append(debuffEffects);
         }
-       
+
+        checkStepsDone();
 
         return debuffInfoRoot;
     }
