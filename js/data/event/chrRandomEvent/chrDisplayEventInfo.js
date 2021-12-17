@@ -125,7 +125,7 @@ class ChrDisplayEventInfo {
         button.addClass("part-button part-button-selected part-button-unlock");
 
         button.click(() => { 
-            unlockPart = 0; 
+            this.unlockPart = 0; 
             afterButtonClick();
         });
         
