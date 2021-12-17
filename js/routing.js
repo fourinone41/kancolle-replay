@@ -384,7 +384,7 @@ function ChRule () {
 
                 if (typeof(this.fleetType) == "number") {
                     if (this.fleetType == 0) return (!CHDATA.fleets.combined && !CHDATA.fleets.sf) ? this.conditionCheckedNode : this.conditionFailedNode;
-                    if (this.fleetType == 7) return !CHDATA.fleets.sf ? this.conditionCheckedNode : this.conditionFailedNode;
+                    if (this.fleetType == 7) return CHDATA.fleets.sf ? this.conditionCheckedNode : this.conditionFailedNode;
                     
                     return CHDATA.fleets.combined == this.fleetType ? this.conditionCheckedNode : this.conditionFailedNode;
                 }
