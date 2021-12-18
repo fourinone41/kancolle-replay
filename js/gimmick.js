@@ -118,8 +118,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
                 CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id] += shouldCountBeIncreased;
 
                 if (this.playSoundOnStepDone() && gimmick.gimmickDone()) {
-                    SM.play('done');
-                    // --- Missing the message here
+                    playSoundAfterSortie = true;
                 }
             }
         }

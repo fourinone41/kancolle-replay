@@ -1052,6 +1052,7 @@ var node = null;
 var curletter = 'Start';
 var CHSHIPCOUNT; //= {DD:2,CA:2,SS:2};
 var ONSORTIE = false;
+var playSoundAfterSortie = false;
 
 var testLOS = 101;
 
@@ -2290,6 +2291,13 @@ function endMap() {
 					alert('DEBUFF');
 				}
 			}
+		}
+
+		if (playSoundAfterSortie) {
+			SM.play('done');
+			alert('A gimmick requirement was completed');
+
+			playSoundAfterSortie = false;
 		}
 
 		if (cleared && CHDATA.event.world >= 98 && !MAPDATA[98].chrGetClearedMap()) {
