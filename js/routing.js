@@ -11,7 +11,7 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount'}
      */
     this.type = "fixed";
 
@@ -294,6 +294,32 @@ function ChRule () {
                 }
 
                 return this.conditionFailedNode;
+            }
+
+            case 'speedCount': {
+                let count = 0;
+
+                // --- raw speed is speed of the ship without boilers
+                let rawSpeed = true;
+
+                if (rawSpeed) {
+                    let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
+
+                    if (this.escortOnly) ships = FLEETS1[1].ships;
+                    if (this.mainFleetOnly) ships = FLEETS1[1].ships;
+
+                    for (let ship of ships) {
+                        let checked = ChRule.CompareNumbers(SHIPDATA[ship.mid].SPD, this.speed, this.speedOperator, true, false);
+                        
+                        if (checked) count++;
+                    }
+                }
+                else {
+                    alert('Todo');
+                    throw 'Todo';
+                }
+
+                return ChRule.CompareNumbers(count, this.getCount(), this.operator, this.conditionCheckedNode, this.conditionFailedNode);
             }
 
             case "ifthenelse": {
@@ -613,41 +639,17 @@ function ChRule () {
             }
 
             case 'speed' : {
-                let speed = {
-                    5: {
-                        "<": "Slow",
-                        "<=": "Slow",
-                        "=": "Slow",
-                        ">": "Fast",
-                        ">=": "Slow or faster",
-                    },
-                    10: {
-                        "<": "Slow",
-                        "<=": "Fast or slower",
-                        "=": "Fast",
-                        ">": "Fast+",
-                        ">=": "Fast or faster",
-                    },
-                    15: {
-                        "<": "Fast or slower",
-                        "<=": "Fast+ or slower",
-                        "=": "Fast+",
-                        ">": "Fastest",
-                        ">=": "Fast+ or faster",
-                    },
-                    15: {
-                        "<": "Fast+ or slower",
-                        "<=": "Fastest or slower",
-                        "=": "Fastest",
-                        ">": "Fastest",
-                        ">=": "Fastest",
-                    },
-                };
+                if (this.escortOnly) return `${ChRule.SpeedArray[this.speed][this.operator]} escort fleet`;
+                if (this.mainFleetOnly) return `${ChRule.SpeedArray[this.speed][this.operator]} main fleet`;
 
-                if (this.escortOnly) return `${speed[this.speed][this.operator]} escort fleet`;
-                if (this.mainFleetOnly) return `${speed[this.speed][this.operator]} main fleet`;
+                return `${ChRule.SpeedArray[this.speed][this.operator]} fleet`;
+            }
 
-                return `${speed[this.speed][this.operator]} fleet`;
+            case 'speedCount' : {
+                if (this.escortOnly) return `Number of ${ChRule.SpeedArray[this.speed][this.speedOperator]} ships in the escort fleet ${this.operator} ${this.count}`;
+                if (this.mainFleetOnly) return `Number of ${ChRule.SpeedArray[this.speed][this.speedOperator]} ships in the main fleet ${this.operator} ${this.count}`;
+
+                return `Number of ${ChRule.SpeedArray[this.speed][this.speedOperator]} ships in the fleet ${this.operator} ${this.count}`;
             }
 
             case "ifthenelse": {
@@ -1408,6 +1410,23 @@ function ChDebuffIsDoneRule(conditionCheckedNode, conditionFailedNode) {
     return rule;
 }
 
+function ChNumberOfShipOfSpeedRule(speedOperator, speed, countOperator, count, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "speedCount";
+
+    rule.speed = speed;
+    rule.speedOperator = speedOperator;
+
+    rule.count = count;
+    rule.operator = countOperator
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
 /**
  * Compare two number and return isTrue if true or isFalse if false
  * @param {*} number1 
@@ -1449,3 +1468,34 @@ ChRule.getDiffName = (diff) => {
 
     return diffName[diff];
 }
+
+ChRule.SpeedArray = {
+    5: {
+        "<": "Slow",
+        "<=": "Slow",
+        "=": "Slow",
+        ">": "Fast",
+        ">=": "Slow or faster",
+    },
+    10: {
+        "<": "Slow",
+        "<=": "Fast or slower",
+        "=": "Fast",
+        ">": "Fast+",
+        ">=": "Fast or faster",
+    },
+    15: {
+        "<": "Fast or slower",
+        "<=": "Fast+ or slower",
+        "=": "Fast+",
+        ">": "Fastest",
+        ">=": "Fast+ or faster",
+    },
+    20: {
+        "<": "Fast+ or slower",
+        "<=": "Fastest or slower",
+        "=": "Fastest",
+        ">": "Fastest",
+        ">=": "Fastest",
+    },
+};
