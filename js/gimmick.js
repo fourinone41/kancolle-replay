@@ -166,8 +166,9 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
 
         if (CHDATA.event.maps[mapNum].debuffed) return;
 
+        CHDATA.event.maps[mapNum].debuffed = true;
+
         if (!this.playSoundOnStepDone()) {
-            CHDATA.event.maps[mapNum].debuffed = true;
             SM.play('done');
             alert('DEBUFF');
         }
