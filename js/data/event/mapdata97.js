@@ -92,7 +92,8 @@ MAPDATA[97].initializeMap = function (worldNum, mapNum) {
 
     MAPDATA[97].initializeNodes(oriMapData, mapData);
 
-    CHDATA.customMaps[mapNum] = mapData; 
+    if (!CHDATA.customMaps) CHDATA.customMaps = {};
+    CHDATA.customMaps[mapNum] = mapData;
     
 
     MAPDATA[97].loadFromChData(mapNum); 
@@ -152,39 +153,6 @@ MAPDATA[97].loadNodesFromChData = function (worldNum, mapNum) {
  * @param {"map" | "battle" | "boss"} type 
  */
 function chrGetRandomBgm(type) {
-    let bannedMap = [2001, 2, 1];
-    let bannedBattle = [2001, 2, 1, 97];
-    let bannedBoss = [2001, 2, 1, 96, 36, 35, 34, 33, 32, 1000, 1001];
-
-    if (!chrGetRandomBgm.possibleBGM) {
-
-        chrGetRandomBgm.possibleBGM = {
-            map : [],
-            battle : [],
-            boss : []
-        };
-
-        for (const eventKey in MAPDATA) {
-            if (eventKey > 90) continue;
-
-            for (const mapKey in MAPDATA[eventKey].maps) {
-                let map = MAPDATA[eventKey].maps[mapKey];
-
-                if (!bannedMap.includes(map.bgmMap) && !chrGetRandomBgm.possibleBGM.map.includes(map.bgmMap)) {
-                    chrGetRandomBgm.possibleBGM.map.push(map.bgmMap);
-                }
-                
-                if (!bannedBattle.includes(map.bgmDN) && !chrGetRandomBgm.possibleBGM.battle.includes(map.bgmDN)) {
-                    chrGetRandomBgm.possibleBGM.battle.push(map.bgmDN);
-                }
-                
-                if (!bannedBoss.includes(map.bgmDB) && !chrGetRandomBgm.possibleBGM.boss.includes(map.bgmDB)) {
-                    chrGetRandomBgm.possibleBGM.boss.push(map.bgmDB);
-                }
-            }
-        }
-    }
-
     let possibleBgm;
     
     switch (type) {
@@ -210,6 +178,36 @@ function chrGetRandomBgm(type) {
 
 }
 
+chrGetRandomBgm.bannedMap = [2001, 2, 1];
+chrGetRandomBgm.bannedBattle = [2001, 2, 1, 97];
+chrGetRandomBgm.bannedBoss = [2001, 2, 1, 96, 36, 35, 34, 33, 32, 1000, 1001];
+
+chrGetRandomBgm.possibleBGM = {
+    map : [],
+    battle : [],
+    boss : []
+};
+
+for (const eventKey in MAPDATA) {
+    if (parseInt(eventKey) > 90) continue;
+
+    for (const mapKey in MAPDATA[eventKey].maps) {
+        let map = MAPDATA[eventKey].maps[mapKey];
+
+        if (!chrGetRandomBgm.bannedMap.includes(map.bgmMap) && !chrGetRandomBgm.possibleBGM.map.includes(map.bgmMap)) {
+            chrGetRandomBgm.possibleBGM.map.push(map.bgmMap);
+        }
+        
+        if (!chrGetRandomBgm.bannedBattle.includes(map.bgmDN) && !chrGetRandomBgm.possibleBGM.battle.includes(map.bgmDN)) {
+            chrGetRandomBgm.possibleBGM.battle.push(map.bgmDN);
+        }
+        
+        if (!chrGetRandomBgm.bannedBoss.includes(map.bgmDB) && !chrGetRandomBgm.possibleBGM.boss.includes(map.bgmDB)) {
+            chrGetRandomBgm.possibleBGM.boss.push(map.bgmDB);
+        }
+    }
+}
+
 MAPDATA[97].fixBonuses = function () {
     let getComps = (node, world, mapnum) => {
         let eventName = MAPDATA[world].name;
@@ -222,10 +220,11 @@ MAPDATA[97].fixBonuses = function () {
         return comps;
     }
 
-    let getRandoComps = (node, mapnum) => {
+    let getRandoComps = (node, world, mapnum) => {
         let mapName = 'E-' + mapnum;
+        if (CHDATA.maps[mapnum].world != world) return getComps(node, world, mapnum);
         
-        let comps = CHDATA.event.comps[mapName][node];
+        let comps = CHDATA.event.comps ? CHDATA.event.comps[mapName][node] : getComps(node, CHDATA.maps[mapnum].world, mapnum);
     
         if (!comps) throw 'Node not found';
     
@@ -244,7 +243,7 @@ MAPDATA[97].fixBonuses = function () {
                     for (const bonus of bonuses) {
                         if (bonus.parameters.on && !bonus.parameters.fixed) {
                             let comps = getComps(nodeLetter, eventId, mapNum);
-                            let randoComps = getRandoComps(nodeLetter, mapNum);
+                            let randoComps = getRandoComps(nodeLetter, eventId, mapNum);
                             let newOn = [];
 
                             for (const abyssalMid of bonus.parameters.on) {
@@ -260,7 +259,7 @@ MAPDATA[97].fixBonuses = function () {
                             }
 
                             bonus.parameters.fixed = true;
-                            bonus.parameters.on = newOn;
+                            bonus.parameters.on = bonus.bonusToApply.on = newOn;
                         }
                     }
                 }

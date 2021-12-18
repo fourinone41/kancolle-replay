@@ -708,7 +708,9 @@ MAPDATA[51] =
 							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [64,188,233,242,248,256,257,277,305,306,316], 1, 1.15),
 							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [243,244,424,425,405,406,431,432,433], 2, 1.2),
 						],
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule('A')
+						]
 					},
 					'Start2': {
 						type: 0,
@@ -724,25 +726,38 @@ MAPDATA[51] =
 							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [243,244,424,425,405,406,431,432,433], 2, 1.2),
 						],
 						hidden: 2,
-						routeC: function(ships) {
-							if (ships.aBB + ships.aCV > 3) return 'H';
-							if (ships.DD >= 2 && (ships.speed >= 10 || ships.DD + ships.DE >= 3)) return 'I';
-							return 'H';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aBB', 'aCV'], '>', 3, 'H'),
+
+							ChMultipleRulesRule([
+								ChMultipleRulesRule([
+									ChSpeedRule('>=', 10, 'I'),
+									ChShipTypeRoutingRule(['DD', 'DE'], '>=', 3, 'I'),
+								], 'OR', 'I'),
+
+								ChShipTypeRoutingRule(['DD'], '>=', 2, 'I'),
+							], 'AND', 'I'),
+
+							ChDefaultRouteRule('H')
+						]
 					},
 					'A': {
 						type: 3,
 						x: 645,
 						y: 258,
 						distance: 6,
-						route: 'B'
+						rules: [
+							ChFixedRoutingRule('B')
+						]
 					},
 					'B': {
 						type: 3,
 						x: 618,
 						y: 208,
 						distance: 5,
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C')
+						]
 					},
 					'C': {
 						type: 1,
@@ -762,15 +777,41 @@ MAPDATA[51] =
 							1: {'Easy 1':25,'Easy 3':75},
 							4: {'Casual 1':50,'Casual 3':50},
 						},
-						routeC: function(ships) {
-							if (ships.aCV) return 'C1';
-							if (ships.AO + ships.AS || (ships.AV && ships.total <= 4)) {
-								if (ships.DD + ships.DE >= 3 && (ships.total <= ships.AO + ships.AS + ships.AV + ships.DD + ships.DE || ships.DD + ships.DE >= 4)) return 'C2';
-							}
-							if (ships.aBB) return 'D';
-							if (ships.DD >= 2 && (ships.speed >= 10 || ships.DD >= 4)) return 'E';
-							return 'D';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aCV'], '>', 0, 'C1'),
+
+							ChMultipleRulesRule([
+								ChMultipleRulesRule([
+									ChMultipleRulesRule([
+										ChShipTypeRoutingRule(['AV'], '>', 0, 'C2'),
+										ChShipCountRoutingRule('<=', 4, 'C2')
+									], 'AND', 'C2'),
+
+									ChShipTypeRoutingRule(['AO', 'AS'], '>', 0, 'C2'),
+								], 'OR', 'C2'),
+
+								ChShipTypeRoutingRule(['DD', 'DE'], '>=', 3, 'C2'),
+
+								ChMultipleRulesRule([
+									ChAllShipMusteBeOfTypeRule(['AO', 'AS', 'AV', 'DD', 'DE'], 'C2'),
+									ChShipTypeRoutingRule(['DD', 'DE'], '>=', 4, 'C2'),
+								], 'OR', 'C2'),
+							], 'AND', 'C2'),
+							
+							ChShipTypeRoutingRule(['aBB'], '>', 0, 'D'),
+
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['DD'], '>=', 2, 'E'),
+
+								ChMultipleRulesRule([
+									ChSpeedRule('>=', 10, 'E'),
+									ChShipTypeRoutingRule(['DD'], '>=', 4, 'E'),
+								], 'OR', 'E'),
+
+							], 'AND', 'E'),
+
+							ChDefaultRouteRule('D')
+						]
 					},
 					'C1': {
 						type: 1,
@@ -783,7 +824,9 @@ MAPDATA[51] =
 							1: {'Easy 1':35,'Easy 2':30,'Easy 3':35},
 							4: {'Casual 1':35,'Casual 2':30,'Casual 3':35},
 						},
-						route: 'C2'
+						rules: [
+							ChFixedRoutingRule('C2')
+						]
 					},
 					'C2': {
 						type: 2,
@@ -807,7 +850,9 @@ MAPDATA[51] =
 							1: {'Easy 1':25,'Easy 2':50,'Easy 3':25},
 							4: {'Casual 1':25,'Casual 2':50,'Casual 3':25},
 						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'E': {
 						type: 1,
@@ -820,16 +865,10 @@ MAPDATA[51] =
 							1: {'Easy 1':35,'Easy 2':25,'Easy 3':40},
 							4: {'Casual 1':35,'Casual 2':25,'Casual 3':40},
 						},
-						routeC: function(ships) {
-							this.showNoCompass = true;
-							this.showLoSPlane = null;
-							if (checkRoute(1)) {
-								this.showNoCompass = false;
-								this.showLoSPlane = 'G';
-								return checkELoS33(getELoS33(1,1),{ 3: 'G', 0: 'F' });
-							}
-							return 'F';
-						}
+						rules: [
+							ChDontShowCompass(ChIsRouteNotUnlockedRule(1, 'F')),
+							ChLOSRule({ 3: 'G', 0: 'F' }),
+						]
 					},
 					'F': {
 						type: 1,
