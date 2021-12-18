@@ -1355,7 +1355,7 @@ function mapPhase2(nextletter, rule) {
 	}
 
 	if (nextnode.bonuses) {
-		for (const bonus of mapdata.bonuses) {
+		for (const bonus of nextnode.bonuses) {
 			bonus.applyBonuses();
 		}
 	}

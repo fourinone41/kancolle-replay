@@ -954,7 +954,9 @@ MAPDATA[51] =
 							1: {'Easy 3':100},
 							4: {'Casual 3':100},
 						},
-						route: 'I'
+						rules: [
+							ChFixedRoutingRule('I')
+						]
 					},
 					'I': {
 						type: 1,
@@ -975,13 +977,15 @@ MAPDATA[51] =
 							1: {'Easy 3':100},
 							4: {'Casual 3':100},
 						},
-						routeC: function(ships) {
-							if (ships.aCV + +isShipInList(ships.ids,161)) return 'J';
-							if (ships.aBB > 2) return 'J';
-							if (ships.SS + ships.SSV) return 'K';
-							if (ships.DD >= 3 || ships.aBB <= 0) return 'N';
-							return 'K';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aCV'], '>', 0, 'J'),
+							ChShipIdsRoutingRule([161], '=', 1, 'J'),
+							ChShipTypeRoutingRule(['aBB'], '>', 2, 'J'),
+							ChShipTypeRoutingRule(['SS', 'SSV'], '>', 0, 'K'),
+							ChShipTypeRoutingRule(['DD'], '>=', 3, 'N'),
+							ChShipTypeRoutingRule(['aBB'], '=', 0, 'N'),
+							ChDefaultRouteRule('K')
+						]
 					},
 					'J': {
 						type: 1,
@@ -1003,11 +1007,19 @@ MAPDATA[51] =
 							1: {'Easy 1':10,'Easy 2':10,'Easy 3':25,'Easy 4':25,'Easy 5':15,'Easy 6':15},
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':20,'Casual 4':20},
 						},
-						routeC: function(ships) {
-							if (ships.CL && ships.DD >= 3 && ships.aCV <= 1) return 'K';
-							if (ships.DD >= 2 && ships.aBB <= 0) return 'P';
-							return 'L';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['CL'], '>', 0, 'K'),
+								ChShipTypeRoutingRule(['DD'], '>=', 3, 'K'),
+								ChShipTypeRoutingRule(['aCV'], '<=', 1, 'K'),
+							], 'AND', 'K'),
+							
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['DD'], '>=', 2, 'P'),
+								ChShipTypeRoutingRule(['aBB'], '=', 0, 'P'),
+							], 'AND', 'P', 'L'),
+							
+						]
 					},
 					'K': {
 						type: 1,
@@ -1029,7 +1041,9 @@ MAPDATA[51] =
 							1: {'Easy 2':50,'Easy 3':50},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
 						},
-						route: 'N'
+						rules: [
+							ChFixedRoutingRule('N')
+						]
 					},
 					'L': {
 						type: 1,
@@ -1063,7 +1077,9 @@ MAPDATA[51] =
 								},
 							},
 						},
-						route: 'P'
+						rules: [
+							ChFixedRoutingRule('P')
+						]
 					},
 					'M': {
 						type: 3,
@@ -1079,7 +1095,9 @@ MAPDATA[51] =
 						y: 261,
 						distance: 4,
 						hidden: 2,
-						routeS: ['Q','R']
+						rules: [
+							ChSelectRouteRule(['Q','R']),
+						]
 					},
 					'O': {
 						type: 1,
@@ -1171,10 +1189,17 @@ MAPDATA[51] =
 						get end() {
 							return !checkRoute(3);
 						},
-						routeC: function(ships) {
-							if (ships.DD >= 3 && ships.CL + ships.DD >= 4 && (ships.speed >= 10 || ships.aBB <= 1)) return 'T';
-							return 'S';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['DD'], '>=', 3, 'T'),
+								ChShipTypeRoutingRule(['DD', 'CL'], '>=', 4, 'T'),
+								
+								ChMultipleRulesRule([
+									ChSpeedRule('>=', 10, 'Q'),
+									ChShipTypeRoutingRule(['aBB'], '<=', 1, 'T'),
+								], 'OR', 'T'),
+							], 'AND', 'T', 'S'),
+						]
 					},
 					'S': {
 						type: 1,
@@ -1195,7 +1220,9 @@ MAPDATA[51] =
 							1: {'Easy 1':50,'Easy 3':50},
 							4: {'Casual 1':50,'Casual 3':50},
 						},
-						route: 'T'
+						rules: [
+							ChFixedRoutingRule('T')
+						]
 					},
 					'T': {
 						type: 1,
