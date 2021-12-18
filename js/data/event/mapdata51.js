@@ -850,9 +850,6 @@ MAPDATA[51] =
 						dropoff: true,
 						resource: 2,
 						amount: [150],
-						debuffGive: function() {
-							CHDATA.event.maps[1].debuff.C2 = 1;
-						},
 						end: true
 					},
 					'D': {
@@ -921,10 +918,6 @@ MAPDATA[51] =
 									4: {'Casual 1':10,'Casual 2':80,'Casual 3':10},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[1].debuff.F = CHDATA.event.maps[1].debuff.F + 1 || 1;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[1].debuff.F_A = 1;
 						},
 						end: true
 					},
@@ -1093,9 +1086,6 @@ MAPDATA[51] =
 								},
 							},
 						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[1].debuff.L = 1;
-						},
 						route: 'P'
 					},
 					'M': {
@@ -1129,9 +1119,6 @@ MAPDATA[51] =
 							2: {'Medium 1':30,'Medium 2':40,'Medium 3':30},
 							1: {'Easy 1':30,'Easy 2':40,'Easy 3':30},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[1].debuff.O = 1;
 						},
 						end: true
 					},
@@ -1181,10 +1168,6 @@ MAPDATA[51] =
 									4: {'Casual 3':100},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[1].debuff.P = CHDATA.event.maps[1].debuff.P + 1 || 1;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[1].debuff.P_A = 1;
 						},
 						end: true
 					},
@@ -1378,47 +1361,42 @@ MAPDATA[51] =
 						images: [{ name: '2_1.png', x: 0, y: 0 }],
 						unlock: function(debuff) {
 							return CHDATA.event.maps[2].part >= 2;
-						}
+						},
+						unlockRules: new ChGimmickList('mapPart', 2, 2, [], {
+							partToUnlock: 1
+						})
 					},
 					2: {
 						images: [{ name: '2_2.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (CHDATA.event.maps[2].part < 2) return false;
-							let diff = getDiff();
-							if (diff == 3) {
-								return debuff.S >= 2 && debuff.Q && debuff.M && debuff.R;
-							} else if (diff == 2) {
-								return debuff.S >= 2 && debuff.Q && debuff.M;
-							} else if (diff == 1) {
-								return debuff.S >= 2;
-							} else {
-								return debuff.S;
-							}
-						}
+						unlockRules: new ChGimmickList('mapPart', 2, 2, [
+							{ node: 'S', type: 'battle', timesRequiredPerDiff: { 4:1, 1:2, 2:2, 3:2 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+							{ node: 'Q', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'S', 3:'S' } },
+							{ node: 'M', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+							{ node: 'R', type: 'AirState', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'AS' } },
+						], {
+							partToUnlock: 2 
+						})
 					},
 					3: {
 						images: [{ name: '2_3.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (CHDATA.event.maps[2].part < 3) return false;
-							let diff = getDiff();
-							if (diff == 3 || diff == 2) {
-								return debuff.G && debuff.H && (debuff.AB || CHDATA.config.disableRaidReq);
-							}
-							return true;
-						}
+						unlockRules: new ChGimmickList('mapPart', 3, 2, [
+							{ node: 'AB', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+							{ node: 'G', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'S', 3:'S' } },
+							{ node: 'H', type: 'ReachNode', timesRequiredPerDiff: { 2:1, 3:1 } },
+						], {
+							partToUnlock: 3 
+						})
 					},
 				},
-				debuffCheck: function(debuff) {
-					if (!debuff) return false;
-					let diff = getDiff();
-					if (diff == 3) {
-						return debuff.S_d && debuff.R_d && debuff.G_d && debuff.X_d && debuff.Y_d;
-					} else if (diff == 2) {
-						return debuff.S_d && debuff.G_d && debuff.X_d && debuff.Y_d;
-					} else {
-						return debuff.SA_d && debuff.G_d && debuff.X_d;
-					}
-				},
+				debuffRules: new ChGimmickList('debuff', 3, 2, [
+					{ node: 'S', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'S', 3:'S' } },
+					{ node: 'R', type: 'AirState', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'AS' } },
+					{ node: 'G', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'S', 1:'S', 2:'S', 3:'S' } },
+					{ node: 'X', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+					{ node: 'Y', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'A', 3:'A' } },
+				], {
+					lastDanceOnly: true,
+				}),
 				enemyRaid: {
 					maxNum: { 3: 1, 2: 1, 1: 1, 4: 1 },
 					chance: { 3: .15, 2: .15, 1: .15, 4: .15 },
@@ -1430,18 +1408,13 @@ MAPDATA[51] =
 						1: {'Easy 1':25,'Easy 2':50,'Easy 3':25},
 						4: {'Casual 1':25,'Casual 2':50,'Casual 3':25},
 					},
-					debuffGive: function(airState,totalHPLost) {
-						if (!checkRoute(2)) return;
-						if (airState >= 1) CHDATA.event.maps[2].debuff.AB = 1;
-					}
 				},
 				getLock(ships) {
 					return CHDATA.event.maps[2].part >= 2 && CHDATA.fleets.combined ? '51_4' : '51_3';
 				},
 				additionalChecks: function(ships,errors) {
 					if (CHDATA.fleets.sf) {
-						let debuff = CHDATA.event.maps[1].debuff;
-						if (!(debuff && debuff.F_A && debuff.L && debuff.O)) {
+						if (!MAPDATA[51].maps[1].debuffRules.gimmickDone()) {
 							errors.push('Unlock Striking Force:<br>- A rank E-1 node F<br>- A rank E-1 node L<br>- A rank E-1 node O');
 							return;
 						}
@@ -1837,13 +1810,6 @@ MAPDATA[51] =
 							1: {'Easy 1':30,'Easy 2':30,'Easy 3':40},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
 						},
-						debuffGive: function() {
-							if (!checkRoute(2)) return;
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.G = 1;
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.G_d = 1;
-						},
 						route: 'F'
 					},
 					'H': {
@@ -1851,10 +1817,6 @@ MAPDATA[51] =
 						x: 406,
 						y: 335,
 						distance: [6,2],
-						debuffGive: function() {
-							if (!checkRoute(2)) return;
-							CHDATA.event.maps[2].debuff.H = 1;
-						},
 						end: true
 					},
 					'I': {
@@ -1974,9 +1936,6 @@ MAPDATA[51] =
 								},
 							},
 						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[2].debuff.M = 1;
-						},
 						get end() {
 							return !checkRoute(2);
 						},
@@ -2081,9 +2040,6 @@ MAPDATA[51] =
 								},
 							},
 						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.Q = 1;
-						},
 						get end() {
 							return !checkRoute(2);
 						},
@@ -2113,12 +2069,6 @@ MAPDATA[51] =
 									4: {'Casual 1':100},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[2].debuff.R = 1;
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[2].debuff.R_d = 1;
 						},
 						routeC: function(ships) {
 							if (CHDATA.fleets.combined == 1) return 'Q';
@@ -2152,13 +2102,6 @@ MAPDATA[51] =
 									4: {'Casual 2':100},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.S = CHDATA.event.maps[2].debuff.S + 1 || 1;
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.S_d = 1;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.SA_d = 1;
 						},
 						end: true
 					},
@@ -2303,11 +2246,6 @@ MAPDATA[51] =
 								},
 							},
 						},
-						debuffGive: function() {
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.X_d = 1;
-						},
 						get end() {
 							return !checkRoute(3);
 						},
@@ -2356,11 +2294,6 @@ MAPDATA[51] =
 							2: {'Medium 1':30,'Medium 3':70},
 							1: {'Easy 1':30,'Easy 3':70},
 							4: {'Casual 2':35,'Casual 3':30,'Casual 4':35},
-						},
-						debuffGive: function() {
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.Y_d = 1;
 						},
 						showLoSPlane: 'Z',
 						routeC: function(ships) {
