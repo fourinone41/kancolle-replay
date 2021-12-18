@@ -587,7 +587,7 @@ class ChrDisplayEventInfo {
                 if (nodeDataWithComps.compDiffC) {
                     for (const key in nodeDataWithComps.compDiffC) {
                         if (diff && key != diff) continue;
-                        
+
                         addComps(nodeDataWithComps.compDiffC[key]);
                     }
                 }
@@ -966,8 +966,14 @@ class ChrDisplayEventInfo {
 
         for (const node in map.nodes) {
             if (map.nodes[node].bonuses) {
-                bonusesPerNode[node] = map.nodes[node].bonuses;
-                bonusInfoColumns.append($(`<th>${node}</th>`));
+
+                let nodeDisplayName = node.includes('Start') ? 'MapWide' : node; 
+
+                if (!bonusesPerNode[nodeDisplayName])
+                    bonusInfoColumns.append($(`<th>${nodeDisplayName}</th>`));
+
+                bonusesPerNode[nodeDisplayName] = map.nodes[node].bonuses;
+
             }
         }
 
@@ -1036,8 +1042,11 @@ class ChrDisplayEventInfo {
             else if (currentBonus.type == 'ChEquipIdsBonuses')
                 bonusLine.append($(`
                 <td class="bonus-group">
-                    ${currentBonus.ids.map((x) => { return `${EQDATA[x].name}`; }).join(" + ")}
-                    ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                    <ul>
+                        <li>${currentBonus.ids.map((x) => { return `${EQDATA[x].name}`; }).join("</li><li>")}
+                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                        </li>
+                    </ul>
                 </td>`));
             else if (currentBonus.type == 'ChDebuffBonuses') {
                 

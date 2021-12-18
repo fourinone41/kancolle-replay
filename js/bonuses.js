@@ -93,7 +93,125 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     if (parameters.on) this.bonusToApply.on = parameters.on;
 
     this.applyBonuses = () => {
-        let ships = getAllShips();
+        let ships = getAllShips(parameters.includeFF);
+        let ids = this.getShipIds();
+
+        let applyBonus = (ship) => {
+            if (parameters.type == 'add') {
+                if (!ship.bonusSpecial) ship.bonusSpecial = [];
+                ship.bonusSpecial.push(this.bonusToApply);
+            }
+
+            if (parameters.type == 'set') {
+                ship.bonusSpecial = [this.bonusToApply];
+            }
+        }
+
+        for (let ship of ships) {
+
+            if (parameters.exactMId) {
+                if (ids.indexOf(ship.mid) != -1) {
+                    applyBonus(ship);
+                }
+            } else {
+                if (ids.indexOf(getBaseId(ship.mid)) != -1) {
+                    applyBonus(ship);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Set bonuses added per ship class
+ * @param {ChBonusesParameters} parameters 
+ * @param {number[] | 'map.property' | 'event.property'} classIds 
+ * @param {*} amount 
+ */
+ function ChShipClassBonuses(parameters, classIds, amount) {
+
+    this.parameters = parameters;
+
+    this.bonusType = 'ChShipIdsBonuses';
+    
+    this.amount = amount;
+
+    let shipData = Object.keys(SHIPDATA).map(x => { return { id: x, sclass: SHIPDATA[x].sclass }});
+
+    let getShipsIdsFromClass = (shipClasses) => {
+        let ids = [];
+
+        for (const classId of shipClasses) {
+            for (const shipId of shipData.filter(x => x.sclass == classId).map(x => x.id)) {
+                let mid = parseInt(getBaseId(shipId));
+
+                if (!ids.includes(mid)) ids.push(mid);
+            }
+        }
+
+        return ids;
+    }
+
+    let ships = null;
+
+    if (typeof(classIds) == 'string') {
+        // --- [0] = type
+        // --- [1] = the property of the object having the id list
+        let accessToShipIds = classIds.split('.');
+
+        let type = accessToShipIds.shift();
+
+        if (type == 'map') {
+            this.getShipIds = () => {
+
+                if (ships) return ships; 
+                
+                ships = MAPDATA[WORLD].maps[MAPNUM];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                ships = getShipsIdsFromClass(ships);
+
+                return ships;
+            }
+        }
+
+        if (type == 'event') {
+            this.getShipIds = () => {
+
+                if (ships) return ships;
+
+                ships = MAPDATA[WORLD];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                ships = getShipsIdsFromClass(ships);
+                
+                return ships;
+            }
+        }
+    }
+    else {
+        this.getShipIds = () => {
+            if (ships) return ships;
+
+            ships = getShipsIdsFromClass(classIds);
+
+            return ships;
+        }
+    }
+    
+    this.getIds = this.getShipIds;
+
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+
+    this.applyBonuses = () => {
+        let ships = getAllShips(parameters.includeFF);
         let ids = this.getShipIds();
 
         for (let ship of ships) {
@@ -140,7 +258,7 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     }
 
     this.applyBonuses = () => {
-        let ships = getAllShips();
+        let ships = getAllShips(parameters.includeFF);
 
         for (let ship of ships) {
 
@@ -193,7 +311,7 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     }
 
     this.applyBonuses = () => {
-        let ships = getAllShips();
+        let ships = getAllShips(parameters.includeFF);
 
         for (let ship of ships) {
 
@@ -288,7 +406,7 @@ function ChDebuffBonuses(parameters, amount) {
         let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
         if (!debuffed) return;
 
-        let ships = getAllShips();
+        let ships = getAllShips(parameters.includeFF);
         let ids = this.getIds();
 
         for (let ship of ships) {
@@ -381,5 +499,41 @@ function ChDebuffBonuses(parameters, amount) {
         if (!debuffed) return;
 
         applyBonuses();
+    }
+}
+
+/**
+ * Set bonuses added per equip id
+ * @param {ChBonusesParameters} parameters 
+ * @param {number[]} equipIds 
+ * @param {*} amount 
+ */
+ function ChEquipIdsBonusTable(parameters, equipIds, tableId, amount) {
+    this.parameters = parameters;
+
+    this.bonusType = 'ChEquipIdsBonuses';
+    
+    this.amount = amount;
+
+    this.tableId = tableId;
+
+    this.equipIds = equipIds;
+    
+    this.getIds = () => {
+        return this.equipIds;
+    }
+
+    this.applyBonuses = () => {
+        let ships = getAllShips(parameters.includeFF);
+
+        for (let ship of ships) {
+
+            for (let eq of ship.equips) {
+                if (this.getIds.includes(eq.mid)) {
+                    if (!eq.bonusSpecialP) eq.bonusSpecialP = {};
+                    eq.bonusSpecialP[tableId] = amount;
+                }
+            }
+        }
     }
 }

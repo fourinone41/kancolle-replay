@@ -32,7 +32,9 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
     /**
      * Set this to true to play sound on every step done
      */
-    this.playSoundOnStepDone = false;
+    this.playSoundOnStepDone = () => {
+        return WORLD >= 51;
+    };
 
     /**
      * @type {ChGimmick[]}
@@ -115,7 +117,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
                 
                 CHDATA.event.maps[this.mapIdForChdata].debuff[gimmick.id] += shouldCountBeIncreased;
 
-                if (this.playSoundOnStepDone && gimmick.gimmickDone()) {
+                if (this.playSoundOnStepDone() && gimmick.gimmickDone()) {
                     SM.play('done');
                     // --- Missing the message here
                 }
@@ -141,7 +143,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
                 atleastOne = true;
             }
 
-            if (atleastOne && !this.playSoundOnStepDone) {
+            if (atleastOne && !this.playSoundOnStepDone()) {
                 SM.play('done');
                 alert('DEBUFF');
             }
@@ -151,7 +153,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
 
         if (CHDATA.event.maps[mapNum].debuffed) return;
 
-        if (!this.playSoundOnStepDone) {
+        if (!this.playSoundOnStepDone()) {
             CHDATA.event.maps[mapNum].debuffed = true;
             SM.play('done');
             alert('DEBUFF');
