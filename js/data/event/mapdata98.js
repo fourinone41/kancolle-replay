@@ -1,4 +1,5 @@
 const ABYSSALS_ON = false;
+const LEVEL_CAP = 200;
 
 MAPDATA[98] = {
     name: 'Random Fiesta',
@@ -1116,7 +1117,14 @@ For each level gained, a stat will be increased beyond its maximum value between
     }
 
     let getBannedShips = () => {
-        return [];
+        let banned = [];
+
+        for (const shipId in CHDATA.ships) {
+            
+            if (CHDATA.ships[shipId].LVL >= LEVEL_CAP) banned.push(shipId);            
+        }
+
+        return banned;
     }
 
     let shipSelection = chrCreateShipSelectionArea(callbackAfterShipSelected, filter, getBannedShips);
@@ -1331,7 +1339,7 @@ var ChrShipModernization = {
         // --- Final level
         let level = Math.min(Math.floor(fodderShip.LVL / 2) + modernizedShip.LVL, levelMax);
 
-        return level;
+        return Math.min(level, LEVEL_CAP);
     },
     calculateShipMaxLevel: (modernizedShip, fodderShip) => {
         let levelMax;
@@ -1349,7 +1357,7 @@ var ChrShipModernization = {
             levelMax = 99;
         }
 
-        return levelMax;
+        return Math.min(levelMax, LEVEL_CAP);
     },
     /**
      * Return true if the ship modernized is the same as the fodder

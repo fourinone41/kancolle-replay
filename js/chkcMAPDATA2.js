@@ -24256,51 +24256,44 @@ var MAPDATA = {
 						2: ['4','5','6'],
 						1: ['7','8','9'],
 					},
-					debuffGive: function(airState,totalHPLost) {
-						if (airState >= 1) CHDATA.event.maps[5].debuff.AB = 1;
-					}
 				},
 				hiddenRoutes: {
 					1: {
 						images: [{ name: '5_1.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (CHDATA.event.maps[5].part < 2) return false;
-							if (!debuff) return false;
-							let debuffAB = debuff.AB || CHDATA.config.disableRaidReq;
-							if (CHDATA.event.maps[5].diff == 3) return debuff.DS && debuffAB;
-							if (CHDATA.event.maps[5].diff == 2) return (debuff.DS||debuff.DP) && debuffAB;
-							if (CHDATA.event.maps[5].diff == 1) return (debuff.DS||debuff.DP);
-							return true;
-						}
+						unlockRules: new ChGimmickList('mapPart', 2, 5, [
+							{ node: 'AB', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+							{ node: 'D', type: 'AirState', timesRequiredPerDiff: { 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 1:'AP', 2:'AP', 3:'AS' } }
+						], {
+							partToUnlock: 1
+						})
 					}
 				},
 				additionalChecks: function(ships,errors) {
 					if (ships.BB + ships.FBB + ships.BBV) errors.push('No (F)BB(V)');
 					if (ships.CV + ships.CVL + ships.CVB) errors.push('No CV(L/B)');
 				},
-				startCheck: function(ships) {
-					if (!CHDATA.event.maps[5].routes || CHDATA.event.maps[5].routes.indexOf(1) == -1) {
-						return 'Start1';
-					}
-					if (ships.SS + ships.SSV + ships.AV) return 'Start1';
-					return 'Start2';
-				},
+				mapInfo: 'No (F)BB(V) allowed<br>No CV(L/B) allowed<br>',
+				startCheckRule: [
+					ChIsRouteNotUnlockedRule(1, 'Start1'),
+					ChShipTypeRoutingRule(['SS', 'SSV', 'AV'], '>', 0, 'Start1', 'Start2'),
+				],
 				nodes: {
 					'Start1': {
 						type: 0,
 						x: 212,
 						y: 114,
-						routeC: function(ships) {
-							if (checkHistorical(MAPDATA[41].historical.ormoc,ships.ids,[2,3,5,0])) return 'C';
-							return 'B';
-						}
+						rules: [
+							ChShipHistoricalRoutingRule('Operation Ta-gō Kai ships', 'event.historical.ormoc', '>=', { 4:0, 1:2, 2:3, 3:5 }, 'C', 'B')
+						]
 					},
 					'Start2': {
 						type: 0,
 						x: 461,
 						y: 83,
 						hidden: 1,
-						route: 'O'
+						rules: [
+							ChFixedRoutingRule('O')
+						]
 					},
 					'A': {
 						type: 1,
@@ -24314,7 +24307,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule('D')
+						]
 					},
 					'B': {
 						type: 1,
@@ -24328,17 +24323,18 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeC: function(ships) {
-							if (ships.CA + ships.CAV <= 1) return 'D';
-							return 'A';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['CA', 'CAV'], '<=', 1, 'D', 'A'),
+						]
 					},
 					'C': {
 						type: 3,
 						x: 245,
 						y: 198,
 						distance: 4,
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule('D')
+						]
 					},
 					'D': {
 						type: 1,
@@ -24352,18 +24348,18 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[5].debuff.DS = 1;
-							else if (FLEETS1[0].AS == 0) CHDATA.event.maps[5].debuff.DP = 1;
-						},
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'E': {
 						type: 3,
 						x: 335,
 						y: 314,
 						distance: 3,
-						route: 'G'
+						rules: [
+							ChFixedRoutingRule('G')
+						]
 					},
 					'F': {
 						type: 1,
@@ -24377,7 +24373,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						route: 'H'
+						rules: [
+							ChFixedRoutingRule('H')
+						]
 					},
 					'G': {
 						type: 3,
@@ -24385,7 +24383,9 @@ var MAPDATA = {
 						y: 337,
 						distance: 3,
 						dropoff: true,
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'H': {
 						type: 1,
@@ -24398,7 +24398,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						route: 'I'
+						rules: [
+							ChFixedRoutingRule('I')
+						]
 					},
 					'I': {
 						type: 2,
@@ -24406,7 +24408,9 @@ var MAPDATA = {
 						y: 204,
 						distance: 2,
 						resource: 0,
-						route: 'J'
+						rules: [
+							ChFixedRoutingRule('J')
+						]
 					},
 					'J': {
 						type: 1,
@@ -24419,7 +24423,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						routeL: { 3: 'L', 0: 'K' }
+						rules: [
+							ChLOSRule({ 3: 'L', 0: 'K' }),
+						]
 					},
 					'K': {
 						type: 3,
@@ -24460,7 +24466,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Easy 1','Easy 2','Easy 3'],
 						},
-						route: 'P'
+						rules: [
+							ChFixedRoutingRule('P')
+						]
 					},
 					'N': {
 						type: 1,
@@ -24474,11 +24482,10 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						routeC: function(ships) {
-							if (ships.DD >= 3) return 'P';
-							if (checkHistorical(MAPDATA[41].historical.ormoc,ships.ids,[1,2,3,0])) return 'P';
-							return 'M';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['DD'], '>=', 3, 'P'),
+							ChShipHistoricalRoutingRule('Operation Ta-gō Kai ships', 'event.historical.ormoc', '>=', { 4:0, 1:1, 2:2, 3:3 }, 'P', 'M')
+						]
 					},
 					'O': {
 						type: 1,
@@ -24493,10 +24500,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						routeC: function(ships) {
-							if (ships.DD + ships.DE >= 4) return 'N';
-							return 'R';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['DD', 'DE'], '>=', 4, 'N', 'R'),
+						]
 					},
 					'P': {
 						type: 1,
@@ -24510,7 +24516,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2','Casual 3'],
 						},
-						routeL: { 3: 'T', 0: 'Q' }
+						rules: [
+							ChLOSRule({ 3: 'T', 0: 'Q' }),
+						]
 					},
 					'Q': {
 						type: 3,
@@ -24532,7 +24540,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Easy 1','Easy 2','Easy 3'],
 						},
-						routeL: { 3: 'N', 0: 'S' }
+						rules: [
+							ChLOSRule({ 3: 'N', 0: 'S' }),
+						]
 					},
 					'S': {
 						type: 3,

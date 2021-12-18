@@ -262,9 +262,14 @@ function ChGimmick(parameters) {
         
         case 'AirState': {
             parameters.shouldCountBeIncreased = (checkGimmickParameters) => {
+                
                 let requiredRank = this.ranksRequiredPerDiff[getDiff()];
                 let aquiredRank = ChGimmick.ConvertAirStateNumberToString(FLEETS1[0].AS);
-        
+                
+                if (checkGimmickParameters.airstate) {
+                    aquiredRank = ChGimmick.ConvertAirStateNumberToString(checkGimmickParameters.airstate);
+                }
+
                 let ranks = ['AS+', 'AS', 'AP'];
         
                 for (const rank of ranks) {
