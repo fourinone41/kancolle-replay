@@ -363,14 +363,13 @@ class ChrDisplayEventInfo {
         if (this.selectedDiff) {
             let nodeData = MAPDATA[this.GetCurrentWorld()].maps[mapnum].nodes[node];
 
-            compsKeys = nodeData.compDiff[this.selectedDiff];
+            compsKeys = Object.keys(this.GetComps(mapnum, node, false, false, this.selectedDiff))
+
             if (nodeData.compDiffF) {
-                compsKeys = compsKeys.concat(nodeData.compDiffF[this.selectedDiff]);
-                compsKeysFinal = nodeData.compDiffF[this.selectedDiff];
+                compsKeysFinal = Object.keys(this.GetComps(mapnum, node, true, false, this.selectedDiff));
             }
             if (nodeData.compDiffC) {
-                compsKeys = compsKeys.concat(nodeData.compDiffC[this.selectedDiff]);
-                compsKeysCleared = nodeData.compDiffC[this.selectedDiff];
+                compsKeysCleared= Object.keys(this.GetComps(mapnum, node, false, true, this.selectedDiff));
             }
         }
 
@@ -539,7 +538,7 @@ class ChrDisplayEventInfo {
         
     }
 
-    GetComps(mapnum, node) {
+    GetComps(mapnum, node, finalOnly, clearedOnly, diff) {
         let mapName = 'E-' + mapnum;
         
         let comps = [];
@@ -547,25 +546,60 @@ class ChrDisplayEventInfo {
         let nodeData = MAPDATA[WORLD].maps[MAPNUM].nodes[node];
 
         let addComps = (compKeys) => {
-            for (const comp of compKeys) {
-                comps[comp] = this.Comps[mapName][nodeData.compName ? nodeData.compName : node][comp];
+
+            if (Array.isArray(compKeys)) {
+                for (const comp of compKeys) {
+                    comps[comp] = this.Comps[mapName][nodeData.compName ? nodeData.compName : node][comp];
+                }
+            }
+            else {
+                for (const compKey in compKeys) {
+                    comps[compKey] = this.Comps[mapName][nodeData.compName ? nodeData.compName : node][compKey];
+                }
             }
         }
 
-        for (const key in nodeData.compDiff) {
-            addComps(nodeData.compDiff[key]);
-        }
-        
-        if (nodeData.compDiffF) {
-            for (const key in nodeData.compDiffF) {
-                addComps(nodeData.compDiffF[key]);
+        let includeFinal = (finalOnly || !clearedOnly);
+        let includeCleared = (!finalOnly || clearedOnly);
+        let includeNormal = (!finalOnly && !clearedOnly);
+
+        let addCompsOfNode = (nodeDataWithComps) => {
+
+            if (includeNormal) {
+                for (const key in nodeDataWithComps.compDiff) {
+                    if (diff && key != diff) continue;
+
+                    addComps(nodeDataWithComps.compDiff[key]);
+                }
+            }
+            
+            if (includeFinal) {
+                if (nodeDataWithComps.compDiffF) {
+                    for (const key in nodeDataWithComps.compDiffF) {
+                        if (diff && key != diff) continue;
+
+                        addComps(nodeDataWithComps.compDiffF[key]);
+                    }
+                }
+            }
+    
+            if (includeCleared) {
+                if (nodeDataWithComps.compDiffC) {
+                    for (const key in nodeDataWithComps.compDiffC) {
+                        if (diff && key != diff) continue;
+                        
+                        addComps(nodeDataWithComps.compDiffC[key]);
+                    }
+                }
             }
         }
 
-        if (nodeData.compDiffC) {
-            for (const key in nodeData.compDiffC) {
-                addComps(nodeData.compDiffC[key]);
+        if (nodeData.compDiffPart) {
+            for (const part in nodeData.compDiffPart) {
+                addCompsOfNode(nodeData.compDiffPart[part]);
             }
+        } else {
+            addCompsOfNode(nodeData);
         }
         
         this.Comps[mapName][node];
@@ -763,6 +797,10 @@ class ChrDisplayEventInfo {
 
             debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Unlock ${rules.additionnalParameters.partToUnlock} - Node${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')}</div>`));
         }
+        
+        if (rules.type == 'custom') {
+            debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">${rules.additionnalParameters.title}</div>`));
+        }
 
         let debuffInfoContent = $("<div>").addClass("mapInfoContent");
 
@@ -775,9 +813,13 @@ class ChrDisplayEventInfo {
             debuffInfoContent.append(`You can unlock node${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')} after completing `);
         }
 
+        if (rules.type == 'custom') {
+            debuffInfoContent.append(rules.additionnalParameters.description);
+        }
+
         if (rules.additionnalParameters && rules.additionnalParameters.numberOfStepRequired) {
             debuffInfoContent.append(`${rules.additionnalParameters.numberOfStepRequired} of the following steps :`);
-        } else {
+        } else if (rules.type != 'custom') {
             debuffInfoContent.append("the following steps :");
         }
 

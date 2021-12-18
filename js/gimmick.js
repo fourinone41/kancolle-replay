@@ -23,6 +23,8 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      * @type {{
     *   numberOfStepRequired: number
      *  partToUnlock: number
+     *  description: string
+     *  title: string
      * }}
      */
     this.additionnalParameters = additionnalParameters;
