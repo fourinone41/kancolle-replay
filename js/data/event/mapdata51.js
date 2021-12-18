@@ -623,39 +623,36 @@ MAPDATA[51] =
 				hiddenRoutes: {
 					1: {
 						images: [{ name: '1_1.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							let diff = getDiff();
-							if (diff == 3) {
-								return debuff.C2 && debuff.F >= 2;
-							} else if (diff == 2) {
-								return debuff.C2 && debuff.F;
-							} else {
-								return debuff.F_A;
-							}
-						}
+						unlockRules: new ChGimmickList('mapPart', null, 1, [
+							{ node: 'C2', type: 'ReachNode', timesRequiredPerDiff: { 2:1, 3:1 } },
+							{ node: 'F', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:2 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'S', 3:'S' } },
+						], {
+							partToUnlock: 1
+						})
 					},
 					2: {
 						images: [{ name: '1_2.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							return CHDATA.event.maps[1].part >= 2;
-						}
+						unlockRules: new ChGimmickList('mapPart', 2, 1, [], {
+							partToUnlock: 2
+						})
 					},
 					3: {
 						images: [{ name: '1_3.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (CHDATA.event.maps[1].part < 3) return false;
-							let diff = getDiff();
-							if (diff == 3) {
-								return debuff.P >= 2;
-							} else if (diff == 2) {
-								return debuff.P;
-							} else if (diff == 1) {
-								return debuff.P_A;
-							}
-							return true;
-						}
+						unlockRules: new ChGimmickList('mapPart', 3, 1, [
+							{ node: 'P', type: 'battle', timesRequiredPerDiff: { 1:1, 2:1, 3:2 }, ranksRequiredPerDiff: { 1:'A', 2:'S', 3:'S' } },
+						], {
+							partToUnlock: 3
+						})
 					},
 				},
+				debuffRules: new ChGimmickList('custom', null, 1, [
+					{ node: 'F', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+					{ node: 'L', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+					{ node: 'O', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+				], {
+					title: 'Unlocking Striking Force',
+					description: 'You can unlock Striking Force after doing the following',
+				}),
 				getLock: function(ships) {
 					let lock = '51_1';
 					if (checkRoute(2)) {
@@ -668,8 +665,7 @@ MAPDATA[51] =
 				},
 				additionalChecks: function(ships,errors) {
 					if (CHDATA.fleets.sf) {
-						let debuff = CHDATA.event.maps[1].debuff;
-						if (!(debuff && debuff.F_A && debuff.L && debuff.O)) {
+						if (!MAPDATA[51].maps[1].debuffRules.gimmickDone()) {
 							errors.push('Unlock Striking Force:<br>- A rank E-1 node F<br>- A rank E-1 node L<br>- A rank E-1 node O');
 							return;
 						}

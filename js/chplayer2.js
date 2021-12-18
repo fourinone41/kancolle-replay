@@ -1032,6 +1032,7 @@ var node = null;
 var curletter = 'Start';
 var CHSHIPCOUNT; //= {DD:2,CA:2,SS:2};
 var ONSORTIE = false;
+var playSoundAfterSortie = false;
 
 var testLOS = 101;
 
@@ -1145,6 +1146,20 @@ function mapPhase(first) {
 			if (curnode.debuffGive) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
+			}
+			
+			if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+				MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+			}
+
+			if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+				let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+		
+				for (var key in hiddenRoutes) {
+					key = parseInt(key);
+			
+					hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
+				}
 			}
 		}
 		if (curnode.dropoff) {
@@ -1625,8 +1640,18 @@ function prepBattle(letter) {
 	}
 	
 	if (mapdata.debuffAmount) {
+
+		let debuffed = false;
+
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+			debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+		}
+		else {
 		var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;
-		if (debuffCheck && debuffCheck(CHDATA.event.maps[MAPNUM].debuff)) {
+			debuffed = debuffCheck && debuffCheck(CHDATA.event.maps[MAPNUM].debuff);
+		}
+
+		if (debuffed) {
 			if (typeof mapdata.debuffAmount === 'object') {
 				for (var i=0; i<FLEETS2[0].ships.length; i++) {
 					var ship = FLEETS2[0].ships[i];
@@ -1951,6 +1976,11 @@ function endMap() {
 		for (var mapnum in MAPDATA[WORLD].maps) {
 			if (mapnum < MAPNUM) continue;
 			if (mapnum > CHDATA.event.unlocked) continue;
+			
+			if (MAPDATA[WORLD].maps[mapnum].debuffRules) {
+				MAPDATA[WORLD].maps[mapnum].debuffRules.checkIfDebuffed();
+			}
+
 			if (MAPDATA[WORLD].maps[mapnum].debuffCheck && !CHDATA.event.maps[mapnum].debuffed) {
 				if (!CHDATA.event.maps[mapnum].debuff) CHDATA.event.maps[mapnum].debuff = {};
 				if (MAPDATA[WORLD].maps[mapnum].debuffCheck(CHDATA.event.maps[mapnum].debuff)) {
@@ -1961,6 +1991,17 @@ function endMap() {
 			}
 		}
 		
+		if (playSoundAfterSortie) {
+			SM.play('done');
+			alert('A gimmick requirement was completed');
+
+			playSoundAfterSortie = false;
+		}
+
+		if (cleared && CHDATA.event.world >= 98 && !MAPDATA[98].chrGetClearedMap()) {
+			MAPDATA[98].chrRerollMap();
+		}
+
 		chSave();
 	}, endTime);
 }
@@ -2085,6 +2126,30 @@ function shuttersPostbattle(noshutters) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].debuffGive(FLEETS2,FLEETS1);
 	}
+	
+	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+	}
+
+	if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+		let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+
+		for (var key in hiddenRoutes) {
+			key = parseInt(key);
+	
+			hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
+		}
+	}
+
+	for (const map in MAPDATA[WORLD].maps) {
+		if (map == MAPNUM) continue;
+		if (!MAPDATA[WORLD].maps[map].debuffRules) continue;
+		if (MAPDATA[WORLD].maps[map].debuffRules.mapNum) continue;
+
+		// --- Gimmick rules without map number = multi map debuff (eg : Spring 16 E5 E6)
+		MAPDATA[WORLD].maps[map].debuffRules.checkGimmickSteps(curletter);
+	}
+
 	FLEETS1[0].resetBattle();
 	if (CHDATA.fleets.combined) FLEETS1[1].resetBattle();
 	CHDATA.temp.done = true;
@@ -2993,7 +3058,12 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 	for (var key in hiddenRoutes) {
 		key = parseInt(key);
 		if (CHDATA.event.maps[MAPNUM].routes.indexOf(key) != -1) continue; 
-		if (hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+		if (hiddenRoutes[key].unlock && hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
+			return key;
+		}
+
+		if (hiddenRoutes[key].unlockRules && hiddenRoutes[key].unlockRules.gimmickDone()) {
 			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
 			return key;
 		}
@@ -3082,6 +3152,38 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 	if (MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive(airState,totalHPLost);
+	}
+	
+	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps('AB', {
+			airstate: airState,
+			totalHPLost: totalHPLost
+		});
+	}
+
+	if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+		let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+
+		for (var key in hiddenRoutes) {
+			key = parseInt(key);
+	
+			hiddenRoutes[key].unlockRules.checkGimmickSteps('AB', {
+				airstate: airState,
+				totalHPLost: totalHPLost
+			});
+		}
+	}
+
+	for (const map in MAPDATA[WORLD].maps) {
+		if (map == MAPNUM) continue;
+		if (!MAPDATA[WORLD].maps[map].debuffRules) continue;
+		if (MAPDATA[WORLD].maps[map].debuffRules.mapNum) continue;
+
+		// --- Gimmick rules without map number = multi map debuff (eg : Spring 16 E5 E6)
+		MAPDATA[WORLD].maps[map].debuffRules.checkGimmickSteps('AB', {
+			airstate: airState,
+			totalHPLost: totalHPLost
+		});
 	}
 	
 	CHAPI.battles.push(BAPI);
