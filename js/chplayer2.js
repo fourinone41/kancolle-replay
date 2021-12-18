@@ -1089,6 +1089,14 @@ function chPlayerStart() {
 		bossbar.active = false;
 	}
 	node = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter];
+
+	// --- Apply mapwide bonuses
+	if (node.bonuses) {
+		for (const bonus of node.bonuses) {
+			bonus.applyBonuses();
+		}
+	}
+
 	var mapshipindex = stage.getChildIndex(mapship);
 	stage.removeChild(mapship);
 	switch(CHDATA.fleets.combined) {
@@ -1343,6 +1351,12 @@ function mapPhase2(nextletter, rule) {
 		let result = chApplySortieItems();
 		if (result.supply || result.ration) {
 			eventqueue.push([mapSortieItems,[result]]);
+		}
+	}
+
+	if (nextnode.bonuses) {
+		for (const bonus of mapdata.bonuses) {
+			bonus.applyBonuses();
 		}
 	}
 	
@@ -1906,12 +1920,6 @@ function prepBattle(letter) {
 	
 	if (mapdata.setupSpecial) {
 		mapdata.setupSpecial(); //not reverted until sortie end
-	}
-
-	if (mapdata.bonuses) {
-		for (const bonus of mapdata.bonuses) {
-			bonus.applyBonuses();
-		}
 	}
 
 	// --- Randomizer code

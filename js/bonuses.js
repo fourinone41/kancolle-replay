@@ -525,11 +525,12 @@ function ChDebuffBonuses(parameters, amount) {
 
     this.applyBonuses = () => {
         let ships = getAllShips(parameters.includeFF);
+        let ids = this.getIds();
 
         for (let ship of ships) {
 
             for (let eq of ship.equips) {
-                if (this.getIds.includes(eq.mid)) {
+                if (ids.includes(eq.mid)) {
                     if (!eq.bonusSpecialP) eq.bonusSpecialP = {};
                     eq.bonusSpecialP[tableId] = amount;
                 }
