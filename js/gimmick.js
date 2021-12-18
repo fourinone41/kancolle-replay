@@ -5,6 +5,9 @@
  * @param {{
  *  numberOfStepRequired: number
  *  partToUnlock: number
+ * lastDanceOnly: boolean
+ *  description: string
+ *  title: string
  * }} additionnalParameters Additionnal parameters to handle special cases
  */
 function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
@@ -25,6 +28,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      *  partToUnlock: number
      *  description: string
      *  title: string
+     * lastDanceOnly: boolean
      * }}
      */
     this.additionnalParameters = additionnalParameters;
@@ -98,6 +102,16 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
 
         if (!CHDATA.event.maps[this.mapIdForChdata].debuff) {
             CHDATA.event.maps[this.mapIdForChdata].debuff = {};
+        }
+
+        if (additionnalParameters.lastDanceOnly) {
+            if (!chGetLastDance()) return;
+        }
+
+        if (mapPartNumber) {
+            if (mapPartNumber > CHDATA.event.maps[mapNum].part) {
+                return;
+            }
         }
 
         for (const gimmick of this.gimmicks) {
@@ -269,7 +283,7 @@ function ChGimmick(parameters) {
                 let requiredRank = this.ranksRequiredPerDiff[getDiff()];
                 let aquiredRank = ChGimmick.ConvertAirStateNumberToString(FLEETS1[0].AS);
                 
-                if (checkGimmickParameters.airstate) {
+                if (checkGimmickParameters && checkGimmickParameters.airstate) {
                     aquiredRank = ChGimmick.ConvertAirStateNumberToString(checkGimmickParameters.airstate);
                 }
 

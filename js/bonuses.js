@@ -91,8 +91,16 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
 
     this.applyBonuses = () => {
+        
+        if (parameters.debuffOnly) {
+            // --- Only apply if debuffed
+            let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+            if (!debuffed) return;
+        }
+
         let ships = getAllShips(parameters.includeFF);
         let ids = this.getShipIds();
 
@@ -221,13 +229,78 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
 
     this.applyBonuses = () => {
+        if (parameters.debuffOnly) {
+            // --- Only apply if debuffed
+            let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+            if (!debuffed) return;
+        }
+
         let ships = getAllShips(parameters.includeFF);
         let ids = this.getShipIds();
 
         for (let ship of ships) {
             if (ids.indexOf(getBaseId(ship.mid)) != -1) {
+                if (parameters.type == 'add') {
+                    if (!ship.bonusSpecial) ship.bonusSpecial = [];
+                    ship.bonusSpecial.push(this.bonusToApply);
+                    
+                    if (parameters.accBonus) {
+                        if (!ship.bonusSpecialAcc) ship.bonusSpecialAcc = [];
+                        ship.bonusSpecialAcc.push({ mod: parameters.accBonus });
+                    }
+    
+                    if (parameters.evBonus) {
+                        if (!ship.bonusSpecialEv) ship.bonusSpecialEv = [];
+                        ship.bonusSpecialEv.push({ mod: parameters.evBonus });
+                    }
+                }
+    
+                if (parameters.type == 'set') {
+                    ship.bonusSpecial = [this.bonusToApply];
+                    if (parameters.accBonus) ship.bonusSpecialAcc = [{ mod: parameters.accBonus }];
+                    if (parameters.evBonus) ship.bonusSpecialEv = [{ mod: parameters.evBonus }];
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Set bonuses added per ship type
+ * @param {ChBonusesParameters} parameters 
+ * @param {string[]} shipTypes 
+ * @param {*} amount 
+ */
+ function ChShipTypeBonuses(parameters, shipTypes, amount) {
+
+    this.parameters = parameters;
+
+    this.bonusType = 'ChShipTypeBonuses';
+    
+    this.amount = amount;
+    
+    this.getIds = () => {
+        return shipTypes;
+    }
+
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+
+    this.applyBonuses = () => {
+        if (parameters.debuffOnly) {
+            // --- Only apply if debuffed
+            let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+            if (!debuffed) return;
+        }
+
+        let ships = getAllShips(parameters.includeFF);
+
+        for (let ship of ships) {
+            if (shipTypes.includes(ship.type)) {
                 if (parameters.type == 'add') {
                     if (!ship.bonusSpecial) ship.bonusSpecial = [];
                     ship.bonusSpecial.push(this.bonusToApply);
@@ -276,6 +349,7 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     
     this.getIds = () => {
         return this.equipIds;
@@ -329,6 +403,7 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
 
     this.getIds = () => {
         return this.equipTypes;
@@ -373,6 +448,7 @@ function ChDebuffBonuses(parameters, amount) {
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     
     if (parameters.onlySpecificShips) {
         if (typeof(parameters.onlySpecificShips) == 'string') {
@@ -477,6 +553,7 @@ function ChDebuffBonuses(parameters, amount) {
 
     this.bonusToApply = { mod: 1 };
     if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     
     if (parameters.onlySpecificShips) {
         if (typeof(parameters.onlySpecificShips) == 'string') {
@@ -570,6 +647,84 @@ function ChDebuffBonuses(parameters, amount) {
                     if (!eq.bonusSpecialP) eq.bonusSpecialP = {};
                     eq.bonusSpecialP[tableId] = amount;
                 }
+            }
+        }
+    }
+}
+
+/**
+ * @param {ChBonusesParameters} parameters 
+ * @param {*} amount 
+ */
+ function ChShipWithoutBonusesBonuses(parameters, amount) {
+
+    this.parameters = parameters;
+
+    this.bonusType = 'ChShipWithoutBonusesBonuses';
+    
+    this.amount = amount;
+    
+    this.getIds = () => {
+        return -1;
+    }
+
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+
+    this.applyBonuses = () => {
+        let ships = getAllShips(parameters.includeFF);
+
+        let applyBonus = (ship) => {
+            if (parameters.type == 'add') {
+                if (!ship.bonusSpecial) ship.bonusSpecial = [];
+                ship.bonusSpecial.push(this.bonusToApply);
+                
+                if (parameters.accBonus) {
+                    if (!ship.bonusSpecialAcc) ship.bonusSpecialAcc = [];
+                    ship.bonusSpecialAcc.push({ mod: parameters.accBonus });
+                }
+
+                if (parameters.evBonus) {
+                    if (!ship.bonusSpecialEv) ship.bonusSpecialEv = [];
+                    ship.bonusSpecialEv.push({ mod: parameters.evBonus });
+                }
+            }
+
+            if (parameters.type == 'set') {
+                ship.bonusSpecial = [this.bonusToApply];
+                if (parameters.accBonus) ship.bonusSpecialAcc = [{ mod: parameters.accBonus }];
+                if (parameters.evBonus) ship.bonusSpecialEv = [{ mod: parameters.evBonus }];
+            }
+        }
+
+        for (let ship of ships) {
+            if (!ship.bonusSpecial) {
+                applyBonus(ship);
+            } else if (!parameters.debuffOnly && parameters.on) {
+                let found = false;
+
+                for (const bonus of ship.bonusSpecial) {
+                    if (bonus.on) found = true;
+                }
+
+                if (!found) applyBonus(ship);
+            } else if (parameters.debuffOnly && !parameters.on) {
+                let found = false;
+
+                for (const bonus of ship.bonusSpecial) {
+                    if (bonus.debuffBonus && !bonus.on) found = true;
+                }
+
+                if (!found) applyBonus(ship);
+            } else if (parameters.debuffOnly && parameters.on) {
+                let found = false;
+
+                for (const bonus of ship.bonusSpecial) {
+                    if (bonus.debuffBonus && bonus.on) found = true;
+                }
+
+                if (!found) applyBonus(ship);
             }
         }
     }

@@ -1363,47 +1363,42 @@ MAPDATA[51] =
 						images: [{ name: '2_1.png', x: 0, y: 0 }],
 						unlock: function(debuff) {
 							return CHDATA.event.maps[2].part >= 2;
-						}
+						},
+						unlockRules: new ChGimmickList('mapPart', 2, 2, [], {
+							partToUnlock: 1
+						})
 					},
 					2: {
 						images: [{ name: '2_2.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (CHDATA.event.maps[2].part < 2) return false;
-							let diff = getDiff();
-							if (diff == 3) {
-								return debuff.S >= 2 && debuff.Q && debuff.M && debuff.R;
-							} else if (diff == 2) {
-								return debuff.S >= 2 && debuff.Q && debuff.M;
-							} else if (diff == 1) {
-								return debuff.S >= 2;
-							} else {
-								return debuff.S;
-							}
-						}
+						unlockRules: new ChGimmickList('mapPart', 2, 2, [
+							{ node: 'S', type: 'battle', timesRequiredPerDiff: { 4:1, 1:2, 2:2, 3:2 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+							{ node: 'Q', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'S', 3:'S' } },
+							{ node: 'M', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+							{ node: 'R', type: 'AirState', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'AS' } },
+						], {
+							partToUnlock: 2 
+						})
 					},
 					3: {
 						images: [{ name: '2_3.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (CHDATA.event.maps[2].part < 3) return false;
-							let diff = getDiff();
-							if (diff == 3 || diff == 2) {
-								return debuff.G && debuff.H && (debuff.AB || CHDATA.config.disableRaidReq);
-							}
-							return true;
-						}
+						unlockRules: new ChGimmickList('mapPart', 3, 2, [
+							{ node: 'AB', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+							{ node: 'G', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'S', 3:'S' } },
+							{ node: 'H', type: 'ReachNode', timesRequiredPerDiff: { 2:1, 3:1 } },
+						], {
+							partToUnlock: 3 
+						})
 					},
 				},
-				debuffCheck: function(debuff) {
-					if (!debuff) return false;
-					let diff = getDiff();
-					if (diff == 3) {
-						return debuff.S_d && debuff.R_d && debuff.G_d && debuff.X_d && debuff.Y_d;
-					} else if (diff == 2) {
-						return debuff.S_d && debuff.G_d && debuff.X_d && debuff.Y_d;
-					} else {
-						return debuff.SA_d && debuff.G_d && debuff.X_d;
-					}
-				},
+				debuffRules: new ChGimmickList('debuff', 3, 2, [
+					{ node: 'S', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'S', 3:'S' } },
+					{ node: 'R', type: 'AirState', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'AS' } },
+					{ node: 'G', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'S', 1:'S', 2:'S', 3:'S' } },
+					{ node: 'X', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+					{ node: 'Y', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'A', 3:'A' } },
+				], {
+					lastDanceOnly: true,
+				}),
 				enemyRaid: {
 					maxNum: { 3: 1, 2: 1, 1: 1, 4: 1 },
 					chance: { 3: .15, 2: .15, 1: .15, 4: .15 },
@@ -1415,22 +1410,18 @@ MAPDATA[51] =
 						1: {'Easy 1':25,'Easy 2':50,'Easy 3':25},
 						4: {'Casual 1':25,'Casual 2':50,'Casual 3':25},
 					},
-					debuffGive: function(airState,totalHPLost) {
-						if (!checkRoute(2)) return;
-						if (airState >= 1) CHDATA.event.maps[2].debuff.AB = 1;
-					}
 				},
 				getLock(ships) {
 					return CHDATA.event.maps[2].part >= 2 && CHDATA.fleets.combined ? '51_4' : '51_3';
 				},
 				additionalChecks: function(ships,errors) {
-					if (CHDATA.fleets.sf) {
-						let debuff = CHDATA.event.maps[1].debuff;
-						if (!(debuff && debuff.F_A && debuff.L && debuff.O)) {
+					// --- SF unlock removed from rando cause you need E1
+					/*if (CHDATA.fleets.sf) {
+						if (!MAPDATA[51].maps[1].debuffRules.gimmickDone()) {
 							errors.push('Unlock Striking Force:<br>- A rank E-1 node F<br>- A rank E-1 node L<br>- A rank E-1 node O');
 							return;
 						}
-					}
+					}*/
 					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
 					let lock = this.getLock(ships);
 					
@@ -1448,202 +1439,52 @@ MAPDATA[51] =
 						else errors.push('Only GREEN locks allowed.');
 					}
 				},
-				applyBonus: function(ships) {
-					for (let ship of ships) {
-						let mid = getBaseId(ship.mid);
-						let bonus = [], bonusAcc = [], bonusEv = [];
-						if ([67,78,82,88,112].includes(ship.sclass)) {
-							bonus.push({mod:1.15});
-							bonusAcc.push({mod:1.125});
-							bonusEv.push({mod:1.08});
-						}
-						if ([58,61,64,68,80,92,113].includes(ship.sclass)) {
-							bonus.push({mod:1.125});
-							bonusAcc.push({mod:1.125});
-							bonusEv.push({mod:1.08});
-						}
-						if ([47,48,55,57,63,70,79,98,96,89].includes(ship.sclass)) {
-							bonus.push({mod:1.08});
-							bonusAcc.push({mod:1.08});
-							bonusEv.push({mod:1.08});
-						}
-						if ([514,595,654,699].includes(mid) || ship.mid == 147) {
-							bonus.push({mod:1.08});
-							bonusAcc.push({mod:1.08});
-							bonusEv.push({mod:1.08});
-						}
-						if (bonus.length) {
-							ship.bonusSpecial = bonus;
-							ship.bonusSpecialAcc = bonusAcc;
-							ship.bonusSpecialEv = bonusEv;
-						}
-					}
-				},
-				applyBonusUV: function(ships) {
-					for (let ship of ships) {
-						let mid = getBaseId(ship.mid);
-						if ([67,78,82,88,112].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.125});
-						}
-						if ([58,61,64,68,80,92,113].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.08});
-						}
-						if ([47,48,55,57,63].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.04});
-						}
-					}
-				},
-				applyBonusSW: function(ships) {
-					for (let ship of ships) {
-						let mid = getBaseId(ship.mid);
-						if ([67,78,82,88,112].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.08});
-						}
-						if ([58,61,64,68,80,92,113].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.08});
-						}
-						if ([89].includes(ship.sclass)) {
-							ship.bonusSpecial = [{mod:1.25}];
-						}
-						if ([514,595,654,699].includes(mid) || ship.mid == 147) {
-							ship.bonusSpecial.push({mod:1.12});
-						}
-					}
-				},
-				applyBonusXYZ: function(ships) {
-					for (let ship of ships) {
-						let mid = getBaseId(ship.mid);
-						if ([67,78,82,88,112].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.15});
-							ship.bonusSpecialAcc.push({mod:1.06});
-							ship.bonusSpecialEv.push({mod:1.06});
-						}
-						if ([58,61,64,68,80,92,113].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.15});
-							ship.bonusSpecialAcc.push({mod:1.06});
-							ship.bonusSpecialEv.push({mod:1.06});
-						}
-						if ([47,48,55,57,63,70,79,98,96,89].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.15});
-							ship.bonusSpecialAcc.push({mod:1.06});
-							ship.bonusSpecialEv.push({mod:1.06});
-						}
-						if ([514,595,654,699].includes(mid) || ship.mid == 147) {
-							ship.bonusSpecial.push({mod:1.15});
-							ship.bonusSpecialAcc.push({mod:1.06});
-							ship.bonusSpecialEv.push({mod:1.06});
-						}
-					}
-				},
-				applyBonusX2: function(ships) {
-					for (let ship of ships) {
-						if (ship.sclass == 6 || ['DD','CA','CAV'].includes(ship.type)) {
-							if (!ship.bonusSpecial) ship.bonusSpecial = [];
-							ship.bonusSpecial.push({mod:1.1});
-						}
-					}
-				},
-				applyBonusZ: function(ships) {
-					for (let ship of ships) {
-						if (!ship.bonusSpecial) ship.bonusSpecial = [];
-						if (!ship.bonusSpecialAcc) ship.bonusSpecialAcc = [];
-						if (!ship.bonusSpecialEv) ship.bonusSpecialEv = [];
-						
-						if (ship.type == 'CA' || ship.type == 'CAV') {
-							ship.bonusSpecial.push({mod:1.12});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						}
-						if (ship.sclass == 6 || ship.type == 'CL') {
-							ship.bonusSpecial.push({mod:1.13});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						}
-						if (ship.type == 'DD') {
-							ship.bonusSpecial.push({mod:1.14});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						}
-					}
-				},
-				applyBonusDebuff: function(ships) {
-					for (let ship of ships) {
-						if (!ship.bonusSpecial) ship.bonusSpecial = [];
-						if (!ship.bonusSpecialAcc) ship.bonusSpecialAcc = [];
-						if (!ship.bonusSpecialEv) ship.bonusSpecialEv = [];
-						let mid = getBaseId(ship.mid);
-						if ([67,78,82,88,112].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.15});
-							let m = ship.sclass == 78 ? 1.2 : 1.1;
-							ship.bonusSpecial.push({mod:m,on:[2032,2033,2034]});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						} else if ([58,61,64,68,80,92,113].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.15});
-							ship.bonusSpecial.push({mod:1.15,on:[2032,2033,2034]});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						} else if ([47,48,55,57,63,70,79,98,96,89].includes(ship.sclass)) {
-							ship.bonusSpecial.push({mod:1.15});
-							let m = ship.sclass == 55 ? 1.1 : 1.15;
-							ship.bonusSpecial.push({mod:m,on:[2032,2033,2034]});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						} else if ([514,595,654,699].includes(mid) || ship.mid == 147) {
-							ship.bonusSpecial.push({mod:1.15});
-							ship.bonusSpecial.push({mod:1.2,on:[2032,2033,2034]});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						} else {
-							ship.bonusSpecial.push({mod:1.1});
-							ship.bonusSpecial.push({mod:1.2,on:[2032,2033,2034]});
-							ship.bonusSpecialAcc.push({mod:1.04});
-							ship.bonusSpecialEv.push({mod:1.04});
-						}
-					}
-				},
-				applyBonusPlane: function(ships,modA,modB) {
-					for (let ship of ships) {
-						if (!ship) continue;
-						for (let eq of ship.equips) {
-							let bonus = {};
-							if ([64,188,233,242,248,256,257,277,305,306,316].includes(eq.mid)) {
-								bonus[1] = modA;
-							}
-							if ([243,244,424,425,405,406,431,432,433].includes(eq.mid)) {
-								bonus[2] = modB;
-							}
-							if (Object.keys(bonus).length) eq.bonusSpecialP = bonus;
-						}
-					}
-				},
-				startCheck: function(ships) {
-					this.applyBonus(getAllShips());
-					this.applyBonusPlane(getAllShips(),1.15,1.2);
-					this.applyBonusPlane(LBAS,1.15,1.2);
-					
+				startCheckRule: [
+					ChAllHaveTagRule(['51_3'], 'Start1', 'Start2')
+				],
+				startCheck(ships) {					
 					let lock = this.getLock(ships);
 					chGiveLockAllCurrent(lock);
-					if (lock == '51_3') {
-						return 'Start1';
-					}
-					return 'Start2';
 				},
 				nodes: {
 					'Start1': {
 						type: 0,
 						x: 678,
 						y: 322,
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true, exactMId: true }, [147], 1.08),
+							
+							// --- Planes
+							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [64,188,233,242,248,256,257,277,305,306,316], 1, 1.15),
+							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [243,244,424,425,405,406,431,432,433], 2, 1.2)
+						],
 						routeC: function(ships) {
 							if (ships.c.aBB + ships.c.aCV + +isShipInList(ships.c.ids,161) + ships.c.SS + ships.c.SSV) return 'A';
 							return 'B';
-						}
+						},
 					},
 					'Start2': {
 						type: 0,
 						x: 90,
 						y: 260,
 						hidden: 1,
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true, exactMId: true }, [147], 1.08),
+							
+							// --- Planes
+							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [64,188,233,242,248,256,257,277,305,306,316], 1, 1.15),
+							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [243,244,424,425,405,406,431,432,433], 2, 1.2)
+						],
 						route: 'J'
 					},
 					'A': {
@@ -1822,13 +1663,6 @@ MAPDATA[51] =
 							1: {'Easy 1':30,'Easy 2':30,'Easy 3':40},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
 						},
-						debuffGive: function() {
-							if (!checkRoute(2)) return;
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.G = 1;
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.G_d = 1;
-						},
 						route: 'F'
 					},
 					'H': {
@@ -1836,10 +1670,6 @@ MAPDATA[51] =
 						x: 406,
 						y: 335,
 						distance: [6,2],
-						debuffGive: function() {
-							if (!checkRoute(2)) return;
-							CHDATA.event.maps[2].debuff.H = 1;
-						},
 						end: true
 					},
 					'I': {
@@ -1959,9 +1789,6 @@ MAPDATA[51] =
 								},
 							},
 						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[2].debuff.M = 1;
-						},
 						get end() {
 							return !checkRoute(2);
 						},
@@ -2043,11 +1870,14 @@ MAPDATA[51] =
 						y: 136,
 						distance: 4,
 						hidden: 1,
-						setupSpecial: function() {
-							let ships = getAllShips();
-							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;
-							MAPDATA[51].maps[2].applyBonus(ships);
-						},
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.16, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.16, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.16, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.16, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.16, includeFF: true, exactMId: true }, [147], 1.08),
+						],
 						compDiffPart: {
 							2: {
 								compDiff: {
@@ -2065,9 +1895,6 @@ MAPDATA[51] =
 									4: {'Casual 2':50,'Casual 3':50},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.Q = 1;
 						},
 						get end() {
 							return !checkRoute(2);
@@ -2099,12 +1926,6 @@ MAPDATA[51] =
 								},
 							},
 						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[2].debuff.R = 1;
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[2].debuff.R_d = 1;
-						},
 						routeC: function(ships) {
 							if (CHDATA.fleets.combined == 1) return 'Q';
 							if (CHDATA.fleets.combined == 2) return 'T';
@@ -2117,9 +1938,15 @@ MAPDATA[51] =
 						y: 163,
 						distance: 3,
 						hidden: 1,
-						setupSpecial: function() {
-							MAPDATA[51].maps[2].applyBonusSW(getAllShips());
-						},
+						bonuses: [
+							// --- Node bonuses
+							new ChShipClassBonuses({ type: 'add' }, [67,78,82,88,112], 1.08),
+							new ChShipClassBonuses({ type: 'add' }, [58,61,64,68,80,92,113], 1.08),
+							new ChShipClassBonuses({ type: 'add' }, [89], 1.25),
+							new ChShipIdsBonuses({ type: 'add'}, [514,595,654,699], 1.12),
+							new ChShipIdsBonuses({ type: 'add', exactMId: true }, [147], 1.12),
+	
+						],
 						compDiffPart: {
 							2: {
 								compDiff: {
@@ -2137,13 +1964,6 @@ MAPDATA[51] =
 									4: {'Casual 2':100},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.S = CHDATA.event.maps[2].debuff.S + 1 || 1;
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[2].debuff.S_d = 1;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.SA_d = 1;
 						},
 						end: true
 					},
@@ -2167,9 +1987,12 @@ MAPDATA[51] =
 						y: 103,
 						distance: 7,
 						hidden: 2,
-						setupSpecial: function() {
-							MAPDATA[51].maps[2].applyBonusUV(getAllShips());
-						},
+						bonuses: [
+							// --- Node bonuses
+							new ChShipClassBonuses({ type: 'add' }, [67,78,82,88,112], 1.125),
+							new ChShipClassBonuses({ type: 'add' }, [58,61,64,68,80,92,113], 1.08),
+							new ChShipClassBonuses({ type: 'add' }, [47,48,55,57,63], 1.04),
+						],
 						compDiff: {
 							3: {'Hard 1':40,'Hard 2':30,'Hard 3':30},
 							2: {'Medium 1':40,'Medium 2':30,'Medium 3':30},
@@ -2184,12 +2007,19 @@ MAPDATA[51] =
 						y: 137,
 						distance: 5,
 						hidden: 2,
-						setupSpecial: function() {
-							let ships = getAllShips();
-							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;
-							MAPDATA[51].maps[2].applyBonus(ships);
-							MAPDATA[51].maps[2].applyBonusUV(ships);
-						},
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true, exactMId: true }, [147], 1.08),
+
+							// --- Node bonuses
+							new ChShipClassBonuses({ type: 'add' }, [67,78,82,88,112], 1.125),
+							new ChShipClassBonuses({ type: 'add' }, [58,61,64,68,80,92,113], 1.08),
+							new ChShipClassBonuses({ type: 'add' }, [47,48,55,57,63], 1.04),
+						],
 						compDiffPart: {
 							2: {
 								compDiff: {
@@ -2233,14 +2063,26 @@ MAPDATA[51] =
 								friendFleetSX: ['E1P-1-6','E2W-2-2','E2W-2-3','E2W-2-4','E2W-2-2','E2W-2-3','E2W-2-4'],
 							},
 						},
-						setupSpecial: function() {
-							let ships = getAllShips(true);
-							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;
-							MAPDATA[51].maps[2].applyBonus(ships);
-							MAPDATA[51].maps[2].applyBonusSW(ships);
-							MAPDATA[51].maps[2].applyBonusPlane(ships,1.2,1.3);
-							MAPDATA[51].maps[2].applyBonusPlane(LBAS,1.2,1.3);
-						},
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true, exactMId: true }, [147], 1.08),
+
+							// --- Node bonus
+							new ChShipClassBonuses({ type: 'add' }, [67,78,82,88,112], 1.08),
+							new ChShipClassBonuses({ type: 'add' }, [58,61,64,68,80,92,113], 1.08),
+							new ChShipClassBonuses({ type: 'add' }, [89], 1.25),
+							new ChShipIdsBonuses({ type: 'add'}, [514,595,654,699], 1.12),
+							new ChShipIdsBonuses({ type: 'add', exactMId: true }, [147], 1.12),
+	
+							// --- Plane bonuses
+							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [64,188,233,242,248,256,257,277,305,306,316], 1, 1.2),
+							new ChEquipIdsBonusTable( { type: 'set', includeLBAS: true }, [243,244,424,425,405,406,431,432,433], 2, 1.3)
+							
+						],
 						compDiff: {
 							3: {'Hard 1':100},
 							2: {'Medium 1':100},
@@ -2263,13 +2105,25 @@ MAPDATA[51] =
 						distance: 2,
 						hidden: 1,
 						night2: true,
-						setupSpecial: function() {
-							let ships = getAllShips();
-							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;
-							MAPDATA[51].maps[2].applyBonus(ships);
-							MAPDATA[51].maps[2].applyBonusXYZ(ships);
-							MAPDATA[51].maps[2].applyBonusX2(ships);
-						},
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08,  exactMId: true }, [147], 1.08),
+							
+							// --- Node bonuses
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [58,61,64,68,80,92,113], 1.15),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [47,48,55,57,63,70,79,98,96,89], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [514,595,654,699], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06,  exactMId: true }, [147], 1.15),
+							
+							// --- Class & Kongou bonuses
+							new ChShipTypeBonuses({ type: 'add', }, ['DD','CA','CAV'], 1.1),
+							new ChShipClassBonuses({ type: 'add', }, [6], 1.1),
+						],
 						compDiffPart: {
 							2: {
 								compDiff: {
@@ -2287,11 +2141,6 @@ MAPDATA[51] =
 									4: {'Casual 3':100},
 								},
 							},
-						},
-						debuffGive: function() {
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.X_d = 1;
 						},
 						get end() {
 							return !checkRoute(3);
@@ -2323,12 +2172,21 @@ MAPDATA[51] =
 						distance: 2,
 						hidden: 3,
 						subonly: true,
-						setupSpecial: function() {
-							let ships = getAllShips();
-							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;
-							MAPDATA[51].maps[2].applyBonus(ships);
-							MAPDATA[51].maps[2].applyBonusXYZ(ships);
-						},
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true, exactMId: true }, [147], 1.08),
+							
+							// --- Node bonuses
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [58,61,64,68,80,92,113], 1.15),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [47,48,55,57,63,70,79,98,96,89], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, }, [514,595,654,699], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06,  exactMId: true }, [147], 1.15),
+						],
 						compDiff: {
 							3: {'Hard 1':50,'Hard 2':50},
 							2: {'Medium 1':50,'Medium 2':50},
@@ -2341,11 +2199,6 @@ MAPDATA[51] =
 							2: {'Medium 1':30,'Medium 3':70},
 							1: {'Easy 1':30,'Easy 3':70},
 							4: {'Casual 2':35,'Casual 3':30,'Casual 4':35},
-						},
-						debuffGive: function() {
-							if (CHDATA.event.maps[2].part < 3) return;
-							if (CHDATA.event.maps[2].hp > MAPDATA[51].maps[2].parts[3].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[2].debuff.Y_d = 1;
 						},
 						showLoSPlane: 'Z',
 						routeC: function(ships) {
@@ -2376,26 +2229,55 @@ MAPDATA[51] =
 								friendFleetSX: ['E2Z-1-7','E2Z-2-4','E2Z-2-5','E2Z-2-6','E2Z-2-7','E2Z-2-4','E2Z-2-5','E2Z-2-6','E2Z-2-7'],
 							},
 						},
-						setupSpecial: function() {
-							let ships = getAllShips(true);
-							for (let ship of ships) ship.bonusSpecial = ship.bonusSpecialAcc = null;
-							MAPDATA[51].maps[2].applyBonus(ships);
-							MAPDATA[51].maps[2].applyBonusXYZ(ships);
-							MAPDATA[51].maps[2].applyBonusX2(ships);
-							MAPDATA[51].maps[2].applyBonusZ(ships);
-							MAPDATA[51].maps[2].applyBonusPlane(ships,1.25,1.35);
-							MAPDATA[51].maps[2].applyBonusPlane(LBAS,1.25,1.35);
+						bonuses: [
+							// --- Base bonuses
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.125, evBonus: 1.08, includeFF: true }, [58,61,64,68,80,92,113], 1.125),
+							new ChShipClassBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [47,48,55,57,63,70,79,98,96,89], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true }, [514,595,654,699], 1.08),
+							new ChShipIdsBonuses({ type: 'set', accBonus: 1.08, evBonus: 1.08, includeFF: true, exactMId: true }, [147], 1.08),
 							
-							let debuffed = CHDATA.event.maps[2].debuffed || MAPDATA[51].maps[2].debuffCheck(CHDATA.event.maps[2].debuff);
-							if (debuffed) {
-								MAPDATA[51].maps[2].applyBonusDebuff(ships);
-							}
-							for (let mid = 2032; mid <= 2034; mid++) {
-								SHIPDATA[mid].image = debuffed ? SHIPDATA[mid].imageBroken : SHIPDATA[mid].imageBase;
-								VOICES[mid].attack = debuffed ? VOICES[mid].attackB : VOICES[mid].attackN;
-								VOICES[mid].damage = debuffed ? VOICES[mid].damageB : VOICES[mid].damageN;
-							}
-						},
+							// --- Node bonuses
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, includeFF: true, }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, includeFF: true, }, [58,61,64,68,80,92,113], 1.15),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, includeFF: true, }, [47,48,55,57,63,70,79,98,96,89], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, includeFF: true, }, [514,595,654,699], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, includeFF: true,  exactMId: true }, [147], 1.15),
+							
+							// --- Class & Kongou bonuses
+							new ChShipTypeBonuses({ type: 'add', }, ['DD','CA','CAV'], 1.1),
+							new ChShipClassBonuses({ type: 'add', }, [6], 1.1),
+									
+							// --- Class & Kongou bonuses part 2
+							new ChShipTypeBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true } , ['CA','CAV'], 1.12),
+							new ChShipTypeBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true } , ['CL'], 1.13),
+							new ChShipTypeBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true } , ['DD'], 1.14),
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true }, [6], 1.13),
+
+							// --- Debuff
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true, debuffOnly: true }, [67,78,82,88,112], 1.15),
+							new ChShipClassBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, [67,82,88,112], 1.2),
+							new ChShipClassBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, [78], 1.1),
+
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true, debuffOnly: true }, [58,61,64,68,80,92,113], 1.15),
+							new ChShipClassBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, [58,61,64,68,80,92,113], 1.15),
+							
+							new ChShipClassBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true, debuffOnly: true }, [47,48,55,57,63,70,79,98,96,89], 1.15),
+							new ChShipClassBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, [47,48,57,63,70,79,98,96,89], 1.15),
+							new ChShipClassBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, [55], 1.1),
+
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true, debuffOnly: true }, [514,595,654,699], 1.15),
+							new ChShipIdsBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true, debuffOnly: true, exactMId: true }, [147], 1.15),
+							new ChShipIdsBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, [514,595,654,699], 1.2),
+							new ChShipIdsBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true, exactMId: true }, [147], 1.2),
+
+							new ChShipWithoutBonusesBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true, debuffOnly: true }, 1.1),
+							new ChShipWithoutBonusesBonuses({ type: 'add', on: [2032,2033,2034], includeFF: true, debuffOnly: true }, 1.2),
+
+							// --- Plane bonuses
+							new ChEquipIdsBonusTable( { type: 'set', includeFF: true, includeLBAS: true }, [64,188,233,242,248,256,257,277,305,306,316], 1, 1.25),
+							new ChEquipIdsBonusTable( { type: 'set', includeFF: true, includeLBAS: true }, [243,244,424,425,405,406,431,432,433], 2, 1.35)
+						],
 						compDiff: {
 							3: {'Hard 1':100},
 							2: {'Medium 1':100},

@@ -840,13 +840,34 @@ class ChrDisplayEventInfo {
         if (rules.mapPartNumber) {
             let debuffLine = $("<tr>");
 
-            let descTd = $('<td>').attr('colspan', 5);
+            let descTd = $('<td>').attr('colspan', 6);
 
             descTd.append(`Reach part ${rules.mapPartNumber}`);
             debuffLine.append(descTd);
 
             if (rules.mapPartNumber <= CHDATA.event.maps[rules.mapNum].part) {
                 descTd.addClass('debuff-step-done');
+            }
+            
+            debuffInfoTable.append(debuffLine);
+        }
+
+        if (rules.additionnalParameters.lastDanceOnly) {
+            let debuffLine = $("<tr>");
+
+            let descTd = $('<td>').attr('colspan', 6);
+
+            descTd.append(`Reach last dance`);
+            debuffLine.append(descTd);
+
+            if (chrGetLastDance()) {
+                if (rules.mapPartNumber) {
+                    if (rules.mapPartNumber <= CHDATA.event.maps[rules.mapNum].part) {
+                        descTd.addClass('debuff-step-done');
+                    }
+                } else {
+                    descTd.addClass('debuff-step-done');
+                }
             }
             
             debuffInfoTable.append(debuffLine);
@@ -1028,12 +1049,21 @@ class ChrDisplayEventInfo {
             }
         }
 
+        bonusesGroupedByGroups = bonusesGroupedByGroups.sort((x, y) => {
+            if (x.type == "ChEquipTypesBonuses") return 1;
+            if (x.type == "ChEquipIdsBonuses") return 1;
+
+            return x.type > y.type ? 1 : -1;
+        });
+
         for (let currentBonus of bonusesGroupedByGroups) {
             let bonusLine = $("<tr>");
 
             if (currentBonus.type == 'ChShipIdsBonuses')
                 bonusLine.append($(`<td class="bonus-group">${currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</td>`));
-            else if (currentBonus.type == 'ChEquipTypesBonuses')
+            else if (currentBonus.type == 'ChShipTypeBonuses') {
+                bonusLine.append($(`<td class="bonus-group">${currentBonus.ids.join(', ')}</td>`));
+            } else if (currentBonus.type == 'ChEquipTypesBonuses')
                 bonusLine.append($(`
                 <td class="bonus-group">
                     ${currentBonus.ids.map((x) => { return `${EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name }`; }).join(" + ")}
@@ -1048,6 +1078,13 @@ class ChrDisplayEventInfo {
                         </li>
                     </ul>
                 </td>`));
+            else if (currentBonus.type == 'ChShipWithoutBonusesBonuses') {
+                bonusLine.append($(`
+                    <td class="bonus-group">
+                        Any ship without bonus
+                    </td>`)
+                );
+            }
             else if (currentBonus.type == 'ChDebuffBonuses') {
                 
                 let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
@@ -1107,7 +1144,8 @@ class ChrDisplayEventInfo {
                         if (currentBonus.bonusType == 'ChCustomBonusEffects') {
                             bonusCellPart.append(`<span>${currentBonus.description}</span>`);
                         } else {
-                            bonusCellPart.append(`<span>x${currentBonus.amount}</span>`);
+                            if (currentBonus.parameters.debuffOnly) bonusCellPart.append(`<span>After debuff : x${currentBonus.amount}</span>`);
+                            else bonusCellPart.append(`<span>x${currentBonus.amount}</span>`);
                         }
 
                         bonusCell.append(bonusCellPart);
