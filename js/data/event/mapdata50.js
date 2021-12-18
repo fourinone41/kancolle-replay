@@ -5324,7 +5324,7 @@ MAPDATA[50] =
 								}
 							}
 							for (let ship of FLEETS2[0].combinedWith.ships) {
-								if (ship.mid == 1951 || ship.mid == 1952) ship.TACC = 50;
+								if (ship.mid == 1951 || ship.mid == 1952) ship.TACC = 25;
 							}
 						},
 						compDiff: {

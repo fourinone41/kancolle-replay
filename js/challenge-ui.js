@@ -1336,7 +1336,7 @@ function chProcessKC3File2() {
 				}
 			}
 			
-			if (CHDATA.gears[eqid].ace >= 1) CHDATA.gears[eqid].ace = 7;
+			if (CHDATA.gears[eqid].ace >= 1 && eqd.type != LANDSCOUT) CHDATA.gears[eqid].ace = 7;
 		}
 	}
 	
@@ -1661,7 +1661,8 @@ function chStart() {
 	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA;
 	MECHANICS.hayabusa65Buff = CHDATA.config.mechanics.softCapIncrease;
 	MECHANICS.eqBonus = CHDATA.config.mechanics.equipBonus;
-	MECHANICS.anchorageTorpNerf = false;//MAPDATA[WORLD].date >= MAPDATA[51].date;
+	MECHANICS.anchorageTorpNerf = MAPDATA[WORLD].date >= MAPDATA[51].date;
+	MECHANICS.aaci8Up = MECHANICS.installRevamp;
 	SIMCONSTS.shellDmgCap = 150;
 	SIMCONSTS.aswDmgCap = 100;
 	SIMCONSTS.torpedoDmgCap = 150;
@@ -1682,6 +1683,9 @@ function chStart() {
 		SIMCONSTS.airDmgCap = 170;
 		SIMCONSTS.supportDmgCap = 170;
 	}
+	SIMCONSTS.enableModSummerBB = WORLD >= 51;
+	SIMCONSTS.enableModSummerCA = WORLD >= 51;
+	SIMCONSTS.enableModFrenchBB = WORLD >= 51;
 	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
 	toggleDDCIBuff(MECHANICS.subFleetAttack);
 
