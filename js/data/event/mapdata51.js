@@ -2552,8 +2552,7 @@ MAPDATA[51] =
 				},
 				additionalChecks: function(ships,errors) {
 					if (CHDATA.fleets.sf) {
-						let debuff = CHDATA.event.maps[1].debuff;
-						if (!(debuff && debuff.F_A && debuff.L && debuff.O)) {
+						if (!MAPDATA[51].maps[1].debuffRules.gimmickDone()) {
 							errors.push('Unlock Striking Force:<br>- A rank E-1 node F<br>- A rank E-1 node L<br>- A rank E-1 node O');
 							return;
 						}
