@@ -475,7 +475,14 @@ function chrApplyDebuffedForm(abyssal) {
         VOICES[mid].damage = VOICES[mid].damageB;
     }
     
+    // --- Cavour princess
     for (let mid = 2032; mid <= 2034; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackB;
+        VOICES[mid].damage = VOICES[mid].damageB;
+    }
+
+    // --- Victorious abyssal
+    for (let mid = 2044; mid <= 2046; mid++) {
         VOICES[mid].attack = VOICES[mid].attackB;
         VOICES[mid].damage = VOICES[mid].damageB;
     }
@@ -535,7 +542,14 @@ function chrApplyBaseForm(abyssal) {
         VOICES[mid].damage = VOICES[mid].damageN;
     }
     
+    // --- Cavour princess
     for (let mid = 2032; mid <= 2034; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackN;
+        VOICES[mid].damage = VOICES[mid].damageN;
+    }
+
+    // --- Victorious abyssal
+    for (let mid = 2044; mid <= 2046; mid++) {
         VOICES[mid].attack = VOICES[mid].attackN;
         VOICES[mid].damage = VOICES[mid].damageN;
     }

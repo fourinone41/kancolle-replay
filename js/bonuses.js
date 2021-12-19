@@ -27,6 +27,30 @@ function ChBonusesParameters () {
      * Allows to filter some rules on certains ships only
      */
     this.onlySpecificShips = [];
+
+    /**
+     * Debuff type
+     */
+    this.debuffType = null;
+
+    this.includeFF = false;
+
+    this.includeLBAS = false;
+
+    this.accBonus = 0;
+
+    this.evBonus = 0;
+
+    this.exactMId = false;
+
+    this.friendFleetOnly = false;
+
+    this.part = 0;
+
+    /**
+     * @type {number[]}
+     */
+    this.diff = null;
 }
 
 /**
@@ -92,16 +116,13 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
     this.applyBonuses = () => {
-        
-        if (parameters.debuffOnly) {
-            // --- Only apply if debuffed
-            let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
-            if (!debuffed) return;
-        }
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
 
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
+
         let ids = this.getShipIds();
 
         let applyBonus = (ship) => {
@@ -230,15 +251,13 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
     this.applyBonuses = () => {
-        if (parameters.debuffOnly) {
-            // --- Only apply if debuffed
-            let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
-            if (!debuffed) return;
-        }
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
 
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
+
         let ids = this.getShipIds();
 
         for (let ship of ships) {
@@ -289,15 +308,12 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
     this.applyBonuses = () => {
-        if (parameters.debuffOnly) {
-            // --- Only apply if debuffed
-            let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
-            if (!debuffed) return;
-        }
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
 
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
 
         for (let ship of ships) {
             if (shipTypes.includes(ship.type)) {
@@ -350,13 +366,14 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
     
     this.getIds = () => {
         return this.equipIds;
     }
 
     this.applyBonuses = () => {
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
 
         for (let ship of ships) {
 
@@ -404,13 +421,14 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
     this.getIds = () => {
         return this.equipTypes;
     }
 
     this.applyBonuses = () => {
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
 
         for (let ship of ships) {
 
@@ -443,12 +461,15 @@ function ChDebuffBonuses(parameters, amount) {
     this.parameters = parameters;
 
     this.bonusType = 'ChDebuffBonuses';
+
+    this.parameters.debuffOnly = true;
     
     this.amount = amount;
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
     
     if (parameters.onlySpecificShips) {
         if (typeof(parameters.onlySpecificShips) == 'string') {
@@ -502,11 +523,10 @@ function ChDebuffBonuses(parameters, amount) {
     }
 
     this.applyBonuses = () => {
-        // --- Only apply if debuffed
-        let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
-        if (!debuffed) return;
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
 
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
+
         let ids = this.getIds();
 
         for (let ship of ships) {
@@ -554,6 +574,7 @@ function ChDebuffBonuses(parameters, amount) {
     this.bonusToApply = { mod: 1 };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
     
     if (parameters.onlySpecificShips) {
         if (typeof(parameters.onlySpecificShips) == 'string') {
@@ -607,9 +628,7 @@ function ChDebuffBonuses(parameters, amount) {
     }
 
     this.applyBonuses = () => {
-        // --- Only apply if debuffed
-        let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
-        if (!debuffed) return;
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
 
         applyBonuses();
     }
@@ -637,7 +656,8 @@ function ChDebuffBonuses(parameters, amount) {
     }
 
     this.applyBonuses = () => {
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
+
         let ids = this.getIds();
 
         for (let ship of ships) {
@@ -671,9 +691,10 @@ function ChDebuffBonuses(parameters, amount) {
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
     this.applyBonuses = () => {
-        let ships = getAllShips(parameters.includeFF);
+        let ships = ChBonuses.GetBonusShips(parameters);
 
         let applyBonus = (ship) => {
             if (parameters.type == 'add') {
@@ -728,4 +749,55 @@ function ChDebuffBonuses(parameters, amount) {
             }
         }
     }
+}
+
+/**
+ * Returns list of ships to apply bonuses
+ * @param {ChBonusesParameters} parameters 
+ */
+ChBonuses.GetBonusShips = (parameters) => {
+    let ships = getAllShips(parameters.includeFF);
+    if (parameters.includeLBAS) ships = ships.concat(LBAS);
+
+    if (parameters.friendFleetOnly) {
+        if (CHDATA.sortie.fleetFriendAir) {
+            return CHDATA.sortie.fleetFriendAir.ships;
+        }
+
+        if (CHDATA.sortie.fleetFriendAir) {
+            return CHDATA.sortie.fleetFriendAir.ships;
+        }
+
+        return [];
+    }
+
+    return ships;
+}
+
+/**
+ * Return true if bonus can be applied
+ * @param {ChBonusesParameters} parameters 
+ */
+ChBonuses.CheckIfCanBeApplied = (parameters) => {
+    if (parameters.debuffOnly) {
+        // --- Only apply if debuffed
+        let debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.gimmickDone();
+        if (!debuffed) return false;
+    }
+
+    if (parameters.part) {
+        // --- Only apply if debuffed
+        let part = CHDATA.event.maps[MAPNUM].part;
+
+        if (!part) return false;
+        if (part < parameters.part) return false;
+    }
+
+    if (parameters.diff) {
+        let diff = getDiff();
+
+        if (!parameters.diff.includes(diff)) return false;
+    }
+
+    return true;
 }

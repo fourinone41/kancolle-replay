@@ -19126,7 +19126,7 @@ var MAPDATA = {
 						boss: true,
 						bonuses: [
 							new ChDebuffBonuses({ type: "set" }, 1.2),
-							new ChCustomBonusEffects({  }, () => {
+							new ChCustomBonusEffects({ debuffOnly: true }, () => {
 								for (let ship of FLEETS2[0].ships.concat(FLEETS2[1].ships)) {
 									ship.EV *= .35;
 								}
@@ -19533,7 +19533,7 @@ var MAPDATA = {
 						boss: true,
 						bonuses: [
 							new ChDebuffBonuses({ type: "set" }, 1.2),
-							new ChCustomBonusEffects({  }, () => {
+							new ChCustomBonusEffects({ debuffOnly: true }, () => {
 								for (let ship of FLEETS2[0].ships.concat(FLEETS2[1].ships)) {
 									ship.EV *= .35;
 								}
@@ -19994,12 +19994,12 @@ var MAPDATA = {
 						distance: 6,
 						bonuses: [
 							new ChDebuffBonuses({ type: 'set' }, 1.3),
-							new ChCustomBonusEffects({  }, () => {
+							new ChCustomBonusEffects({ debuffOnly: true }, () => {
 								for (let ship of FLEETS2[0].ships.concat(FLEETS2[1].ships)) {
 									ship.EV *= .35;
 								}
 							}, 'Enemy fleet evasion reduced'),
-							new ChCustomBonusEffects({  }, () => {
+							new ChCustomBonusEffects({ debuffOnly: true }, () => {
 								for (let lbas of LBAS) lbas.bonusSpecial = [{ mod: 1.3 }];
 							}, 'LBAS gets a 1.3x damage bonus for the rest of the sortie')
 						],
@@ -20039,7 +20039,7 @@ var MAPDATA = {
 						y: 267,
 						distance: 8,
 						bonuses: [
-							new ChCustomBonusEffects({  }, () => {
+							new ChCustomBonusEffects({ debuffOnly: true }, () => {
 								for (let ship of FLEETS2[0].ships.concat(FLEETS2[1].ships)) {
 									ship.EV *= .5;
 								}
@@ -20066,7 +20066,7 @@ var MAPDATA = {
 						distance: 9,
 						boss: true,
 						bonuses: [
-							new ChCustomBonusEffects({  }, () => {
+							new ChCustomBonusEffects({ debuffOnly: true }, () => {
 								for (let ship of FLEETS2[0].ships.concat(FLEETS2[1].ships)) {
 									ship.EV *= .35;
 								}

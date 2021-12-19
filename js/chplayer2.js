@@ -1090,9 +1090,15 @@ function chPlayerStart() {
 	}
 	node = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter];
 
-	// --- Apply mapwide bonuses
+	// --- Apply start bonuses
 	if (node.bonuses) {
 		for (const bonus of node.bonuses) {
+			bonus.applyBonuses();
+		}
+	}
+
+	if (MAPDATA[WORLD].maps[MAPNUM].startBonus) {
+		for (const bonus of MAPDATA[WORLD].maps[MAPNUM].startBonus) {
 			bonus.applyBonuses();
 		}
 	}
@@ -1354,12 +1360,6 @@ function mapPhase2(nextletter, rule) {
 		}
 	}
 
-	if (nextnode.bonuses) {
-		for (const bonus of nextnode.bonuses) {
-			bonus.applyBonuses();
-		}
-	}
-	
 	switch (nextnode.type) {
 		case 1: //battle
 			eventqueue.push([mapBattleNode,[mapship,nextletter]]);
@@ -1918,6 +1918,12 @@ function prepBattle(letter) {
 	}
 	console.log(friendFleets);
 	
+	if (mapdata.bonuses) {
+		for (const bonus of mapdata.bonuses) {
+			bonus.applyBonuses();
+		}
+	}
+
 	if (mapdata.setupSpecial) {
 		mapdata.setupSpecial(); //not reverted until sortie end
 	}
@@ -2118,7 +2124,7 @@ function prepBattle(letter) {
 			}
 		}
 		modDmg *= getBonusSpecialPlane(ship);
-		console.log(ship.name + ': ' + modDmg + ' ' + modAcc + ' ' + modEv);
+		console.debug(ship.name + ': ' + Math.trunc(modDmg*1000)/1000 + ' ' + Math.trunc(modAcc*1000)/1000 + ' ' + Math.trunc(modEv*1000)/1000);
 	}
 	
 	

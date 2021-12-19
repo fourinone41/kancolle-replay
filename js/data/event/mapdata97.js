@@ -277,7 +277,8 @@ function chrGetLastDance() {
     let map = MAPDATA[WORLD].maps[MAPNUM];
 
     if (MAPDATA[WORLD].maps[MAPNUM].parts) {
-        map = MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[2].part];
+        if (!CHDATA.event.maps[MAPNUM].part) return false;
+        map = MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[MAPNUM].part];
     } 
     
     if (map.transport) {

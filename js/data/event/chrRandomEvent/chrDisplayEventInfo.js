@@ -985,10 +985,20 @@ class ChrDisplayEventInfo {
         let bonusesPerNode = {};
         let bonusesGroupedByGroups = [];
 
+
+        if (map.startBonus) {
+            if (!bonusesPerNode['MapWide'])
+                bonusInfoColumns.append($(`<th>MapWide</th>`));
+
+            bonusesPerNode["MapWide"] = map.startBonus;
+        }
+
         for (const node in map.nodes) {
             if (map.nodes[node].bonuses) {
+                
+                let nodeDisplayName = node; 
 
-                let nodeDisplayName = node.includes('Start') ? 'MapWide' : node; 
+                if (!map.nodes[node].bonuses.find(x => !x.parameters.friendFleetOnly)) continue;
 
                 if (!bonusesPerNode[nodeDisplayName])
                     bonusInfoColumns.append($(`<th>${nodeDisplayName}</th>`));
@@ -1021,7 +1031,7 @@ class ChrDisplayEventInfo {
             let bonuses = bonusesPerNode[node];
             
             for (const bonus of bonuses) {
-
+                
                 bonus.node = node;
 
                 let groupExists = null;
@@ -1038,6 +1048,7 @@ class ChrDisplayEventInfo {
                     groupExists.bonuses.push(bonus);
                 }
                 else {
+
                     bonusesGroupedByGroups.push({
                         type: bonus.bonusType,
                         ids: bonus.getIds(),
@@ -1052,6 +1063,7 @@ class ChrDisplayEventInfo {
         bonusesGroupedByGroups = bonusesGroupedByGroups.sort((x, y) => {
             if (x.type == "ChEquipTypesBonuses") return 1;
             if (x.type == "ChEquipIdsBonuses") return 1;
+            if (x.type == "ChCustomBonusEffects") return 1;
 
             return x.type > y.type ? 1 : -1;
         });
@@ -1099,11 +1111,11 @@ class ChrDisplayEventInfo {
             } 
             else if (currentBonus.type == 'ChCustomBonusEffects') {
                 
-                let ships = currentBonus.ids == -1 ? '' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
+                let ships = currentBonus.ids == -1 ? 'All ships' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
                 
                 bonusLine.append($(`
                     <td class="bonus-group">
-                        Effects after completing the debuff : <br><br>
+                        ${currentBonus.debuffOnly ? 'Effects after completing the debuff :<br><br>' : ''} 
                         ${ships}
                         ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
                     </td>`)
@@ -1114,9 +1126,9 @@ class ChrDisplayEventInfo {
 
             for (let node in bonusesPerNode) {
 
-                let bonuses = currentBonus.bonuses.filter(x => x.node == node);
+                let bonuses = currentBonus.bonuses.filter(x => x.node == node && !x.parameters.friendFleetOnly);
 
-                if (!bonuses || !bonuses.length) bonusLine.append($(`<td> / </td>`));
+                if (!bonuses || !bonuses.length || !bonuses.find(x => x.amount != 1)) bonusLine.append($(`<td> / </td>`));
                 else {
                     let bonusCell = $('<td>');
                     
@@ -1144,8 +1156,13 @@ class ChrDisplayEventInfo {
                         if (currentBonus.bonusType == 'ChCustomBonusEffects') {
                             bonusCellPart.append(`<span>${currentBonus.description}</span>`);
                         } else {
-                            if (currentBonus.parameters.debuffOnly) bonusCellPart.append(`<span>After debuff : x${currentBonus.amount}</span>`);
-                            else bonusCellPart.append(`<span>x${currentBonus.amount}</span>`);
+                            let infos = [];
+
+                            if (currentBonus.parameters.part) infos.push(`After part ${currentBonus.parameters.part}`);
+                            if (currentBonus.parameters.diff) infos.push(`${currentBonus.parameters.diff.map(x => this.GetDiffText(x)).join(', ')} only`);
+
+                            if (currentBonus.parameters.debuffOnly) bonusCellPart.append(`<span>After debuff : x${currentBonus.amount} ${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
+                            else bonusCellPart.append(`<span>x${currentBonus.amount} ${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
                         }
 
                         bonusCell.append(bonusCellPart);
