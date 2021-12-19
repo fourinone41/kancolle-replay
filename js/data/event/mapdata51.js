@@ -2501,9 +2501,9 @@ MAPDATA[51] =
 					{ node: 'AB', type: 'AirState', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'AS', 1:'AS', 2:'AS', 3:'AS' } },
 					{ node: 'I', type: 'battle', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'A' } },
 					{ node: 'T', type: 'battle', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'A', 3:'A' } },
-					{ node: 'X', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+					{ node: 'X', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'S' } },
 					{ node: 'Y', type: 'battle', timesRequiredPerDiff: { 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 1:'A', 2:'A', 3:'A' } },
-					{ node: 'Z2', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' } },
+					{ node: 'Z2', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'S' } },
 				], {
 					lastDanceOnly: true,
 				}),
