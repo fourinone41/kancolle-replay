@@ -2577,11 +2577,11 @@ MAPDATA[51] =
 					if (diff == 3) {
 						return debuff.I_d && debuff.T_d && debuff.X_d && debuff.Y_d && debuff.Z2_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
 					} else if (diff == 2) {
-						return debuff.T_d && debuff.XA_d && debuff.Y_d && debuff.Z2_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
+						return debuff.T_d && debuff.XA_d && debuff.Y_d && debuff.Z2A_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
 					} else if (diff == 1) {
-						return debuff.XA_d && debuff.Y_d && debuff.Z2_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
+						return debuff.XA_d && debuff.Y_d && debuff.Z2A_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
 					} else {
-						return debuff.XA_d && debuff.Z2_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
+						return debuff.XA_d && debuff.Z2A_d && (debuff.AB_d || CHDATA.config.disableRaidReq);
 					}
 				},
 				enemyRaid: {
@@ -3920,7 +3920,8 @@ MAPDATA[51] =
 							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.XA = 1;
 							if (CHDATA.event.maps[3].part < 4) return;
 							if (CHDATA.event.maps[3].hp > MAPDATA[51].maps[3].parts[4].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.X_d = 1;
+							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[3].debuff.X_d = 1;
+							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.XA_d = 1;
 						},
 						get end() {
 							return !checkRoute(3);
@@ -4094,7 +4095,8 @@ MAPDATA[51] =
 						debuffGive: function() {
 							if (CHDATA.event.maps[3].part < 4) return;
 							if (CHDATA.event.maps[3].hp > MAPDATA[51].maps[3].parts[4].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.Z2_d = 1;
+							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[3].debuff.Z2_d = 1;
+							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.Z2A_d = 1;
 						},
 						end: true
 					},
