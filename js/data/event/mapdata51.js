@@ -2245,8 +2245,8 @@ MAPDATA[51] =
 							new ChShipIdsBonuses({ type: 'add', accBonus: 1.06, evBonus: 1.06, includeFF: true,  exactMId: true }, [147], 1.15),
 							
 							// --- Class & Kongou bonuses
-							new ChShipTypeBonuses({ type: 'add', }, ['DD','CA','CAV'], 1.1),
-							new ChShipClassBonuses({ type: 'add', }, [6], 1.1),
+							new ChShipTypeBonuses({ type: 'add', includeFF: true }, ['DD','CA','CAV'], 1.1),
+							new ChShipClassBonuses({ type: 'add', includeFF: true }, [6], 1.1),
 									
 							// --- Class & Kongou bonuses part 2
 							new ChShipTypeBonuses({ type: 'add', accBonus: 1.04, evBonus: 1.04, includeFF: true } , ['CA','CAV'], 1.12),

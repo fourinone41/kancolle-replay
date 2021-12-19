@@ -273,14 +273,21 @@ MAPDATA[97].fixBonuses = function () {
 function chrGetLastDance() {
 	var diff = CHDATA.event.maps[MAPNUM].diff || 2;
 	var lastdance = false;
-	if (MAPDATA[WORLD].maps[MAPNUM].transport) {
-		var transportCalc = MAPDATA[WORLD].maps[MAPNUM].transportCalc || MAPDATA[WORLD].transportCalc;
-		var tp = transportCalc(chGetShips(true),'S');
-		lastdance = CHDATA.event.maps[MAPNUM].hp <= tp && CHDATA.event.maps[MAPNUM].hp > 0;
-		if (!lastdance && MAPDATA[WORLD].maps[MAPNUM].finaltp) lastdance = (CHDATA.event.maps[MAPNUM].hp <= MAPDATA[WORLD].maps[MAPNUM].finaltp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
-	} else {
-		lastdance = (MAPDATA[WORLD].maps[MAPNUM].finalhp && CHDATA.event.maps[MAPNUM].hp <= MAPDATA[WORLD].maps[MAPNUM].finalhp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
-	}
-	if (MAPDATA[WORLD].maps[MAPNUM].parts && MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[MAPNUM].part+1] && WORLD == 32) lastdance = false; //for now Fall15 only
-	return lastdance;
+
+    let map = MAPDATA[WORLD].maps[MAPNUM];
+
+    if (MAPDATA[WORLD].maps[MAPNUM].parts) {
+        map = MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[2].part];
+    } 
+    
+    if (map.transport) {
+        var transportCalc = MAPDATA[WORLD].maps[MAPNUM].transportCalc || MAPDATA[WORLD].transportCalc;
+        var tp = transportCalc(chGetShips(true),'S');
+        lastdance = CHDATA.event.maps[MAPNUM].hp <= tp && CHDATA.event.maps[MAPNUM].hp > 0;
+        if (!lastdance && map.finaltp) lastdance = (CHDATA.event.maps[MAPNUM].hp <= map.finaltp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
+    } else {
+        lastdance = (map && CHDATA.event.maps[MAPNUM].hp <= map.finalhp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
+    }
+    
+    return lastdance;
 }
