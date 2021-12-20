@@ -3726,7 +3726,7 @@ MAPDATA[51] =
 						debuffGive: function() {
 							if (CHDATA.event.maps[3].part < 4) return;
 							if (CHDATA.event.maps[3].hp > MAPDATA[51].maps[3].parts[4].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.T_d = 1;
+							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[3].debuff.T_d = 1;
 						},
 						route: 'U'
 					},
@@ -3999,7 +3999,7 @@ MAPDATA[51] =
 						debuffGive: function() {
 							if (CHDATA.event.maps[3].part < 4) return;
 							if (CHDATA.event.maps[3].hp > MAPDATA[51].maps[3].parts[4].finalhp[getDiff()]) return;
-							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A') CHDATA.event.maps[3].debuff.Y_d = 1;
+							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[3].debuff.Y_d = 1;
 						},
 						routeC: function(ships) {
 							this.showNoCompass = true;
