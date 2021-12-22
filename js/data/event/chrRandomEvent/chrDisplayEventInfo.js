@@ -83,7 +83,7 @@ class ChrDisplayEventInfo {
                     this.lbPart = 1;
                 }
 
-                this.DisplayPartButtons();                
+                this.LoadMapAndButtons();                
 
                 // --- Display map infos
                 this.DisplayMapInfos();
@@ -105,9 +105,7 @@ class ChrDisplayEventInfo {
     lbPart = 1;
     unlockPart = 0;
 
-    
-    DisplayPartButtons() {
-
+    LoadMapAndButtons() {
         let afterButtonClick = () => {
             $('.part-button').removeClass('part-button-selected');
 
@@ -116,6 +114,14 @@ class ChrDisplayEventInfo {
             $($('.part-button-part')[this.lbPart - 1]).addClass("part-button-selected");
             $($('.part-button-unlock')[this.unlockPart]).addClass("part-button-selected");
         };
+
+        this.DisplayPartButtons(afterButtonClick);
+
+        // --- Load the map 
+        afterButtonClick();
+    }
+    
+    DisplayPartButtons(afterButtonClick) {
 
         $('#partButtons').html('');
 
@@ -165,9 +171,6 @@ class ChrDisplayEventInfo {
                 $('#partButtons').append(button);
             }
         }        
-
-        // --- Load the map 
-        afterButtonClick();
     };
 
     GetCurrentWorld() {
