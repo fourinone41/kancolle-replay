@@ -186,6 +186,8 @@ function chRerollMap() {
     InitUI();
 }
 
+const DISABLE_RANDO = true;
+
 function chRandomizeComps() {
     let comps = {};
 
@@ -205,7 +207,12 @@ function chRandomizeComps() {
                 let comp = {};
                 Object.assign(comp, node[compIndex]);
 
+                if (!DISABLE_RANDO) {
                 nodeComps[compIndex] = chRandomizeComp(comp, mapData, nodeIndex);
+                }
+                else {
+                    nodeComps[compIndex] = comp;
+                }
             }
 
             eventNodes[nodeIndex] = nodeComps;

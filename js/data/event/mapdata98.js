@@ -1,5 +1,6 @@
 const ABYSSALS_ON = false;
-const LEVEL_CAP = 200;
+const LEVEL_CAP = 2000;
+const LEVEL_SOFT_CAP = 200;
 
 MAPDATA[98] = {
     name: 'Random Fiesta',
@@ -1351,7 +1352,11 @@ var ChrShipModernization = {
             dupeNbr++;
         }
 
-        if (dupeNbr > 0) {
+        let softcapDupeNumber = (LEVEL_SOFT_CAP - 100) / 25;
+
+        if (dupeNbr >= softcapDupeNumber) {
+            levelMax = LEVEL_SOFT_CAP + (5 * (dupeNbr - softcapDupeNumber));
+        } else if (dupeNbr > 0) {
             levelMax = 100 + (25 * dupeNbr);
         } else {
             levelMax = 99;

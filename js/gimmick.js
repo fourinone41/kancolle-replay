@@ -8,6 +8,7 @@
  * lastDanceOnly: boolean
  *  description: string
  *  title: string
+ * difficultiesAllowed: number[]
  * }} additionnalParameters Additionnal parameters to handle special cases
  */
 function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
@@ -29,6 +30,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      *  description: string
      *  title: string
      * lastDanceOnly: boolean
+     * difficultiesAllowed: number[]
      * }}
      */
     this.additionnalParameters = additionnalParameters;
@@ -71,7 +73,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      * @returns Returns true if gimmick is done
      */
     this.gimmickDone = () => {
-
+        if (additionnalParameters.difficultiesAllowed && !additionnalParameters.difficultiesAllowed.includes(getDiff())) return false;
         if (this.mapPartNumber && this.mapNum && this.mapPartNumber > CHDATA.event.maps[this.mapNum].part) return false;
 
         // --- Only X steps required instead of all of them (Summer 16 E4)

@@ -454,7 +454,7 @@ function ChRule () {
                     if (!CHDATA.event.maps[MAPNUM].routes) return this.conditionCheckedNode;
                     if (!CHDATA.event.maps[MAPNUM].routes.length) return this.conditionCheckedNode;
                     
-                    return !CHDATA.event.maps[MAPNUM].routes.indexOf(this.getCount()) == -1 ? this.conditionCheckedNode : this.conditionFailedNode;
+                    return CHDATA.event.maps[MAPNUM].routes.indexOf(this.getCount()) == -1 ? this.conditionCheckedNode : this.conditionFailedNode;
                 }
 
                 if (!CHDATA.event.maps[MAPNUM].routes) return this.conditionFailedNode;

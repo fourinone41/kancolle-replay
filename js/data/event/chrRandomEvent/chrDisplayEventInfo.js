@@ -765,7 +765,15 @@ class ChrDisplayEventInfo {
     DisplayDebuffInfos(rules, map, event) {
 
         let diffs = event.allowDiffs ? event.allowDiffs : [4,1,2,3];
+        if (rules.additionnalParameters.difficultiesAllowed) diffs = rules.additionnalParameters.difficultiesAllowed;
+        
         let nodeList = [];
+
+        let getUnlockTitle = (lowerCaseFirstLetter) => {
+            if (!nodeList.length) return lowerCaseFirstLetter ? 'shortcut' : 'Shortcut';
+
+            return `${(lowerCaseFirstLetter ? 'node' : 'Node')}${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')}`;
+        }
 
         /**
          * @type {{rule: ChRule, element: any}[]}
@@ -795,7 +803,7 @@ class ChrDisplayEventInfo {
                 if (map.nodes[node].hidden && map.nodes[node].hidden == rules.additionnalParameters.partToUnlock) nodeList.push(node);
             }
 
-            debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Unlock ${rules.additionnalParameters.partToUnlock} - Node${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')}</div>`));
+            debuffInfoRoot.append($(`<div class="mapInfoTitle foldable-element-title">Unlock ${rules.additionnalParameters.partToUnlock} - ${getUnlockTitle(false)}</div>`));
         }
         
         if (rules.type == 'custom') {
@@ -810,7 +818,7 @@ class ChrDisplayEventInfo {
 
         if (rules.type == 'mapPart') {
 
-            debuffInfoContent.append(`You can unlock node${nodeList.length > 1 ? 's' : ''} ${nodeList.join(', ')} after completing `);
+            debuffInfoContent.append(`You can unlock ${getUnlockTitle(true)} after completing `);
         }
 
         if (rules.type == 'custom') {

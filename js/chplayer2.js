@@ -1708,6 +1708,8 @@ function chGetLastDance() {
 
 function prepBattle(letter) {
 	SM.stopBGM();
+	console.clear();
+	
 	var enemies = [];
 	var mapdata = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
 	var diff = CHDATA.event.maps[MAPNUM].diff || 2;
