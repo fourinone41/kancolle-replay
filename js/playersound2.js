@@ -7634,6 +7634,42 @@ var VOICES = {
 		damage2: "assets/voice/895_damage2.mp3",
 		damage3: "assets/voice/895_damage3.mp3",
 	},
+	2049: {
+		start: "assets/voice/New_Submarine_Princess_Intro.ogg",
+		attack: "assets/voice/New_Submarine_Princess_Attack.ogg",
+		damage: "assets/voice/New_Submarine_Princess_Damaged.ogg",
+		sunk: "assets/voice/New_Submarine_Princess_Sunk.ogg",
+	},
+	2053: {
+		start: "assets/voice/523205310.mp3",
+		damage: "assets/voice/523205330.mp3",
+		sunk: "assets/voice/523205340.mp3",
+	},
+	2054: {
+		start: "assets/voice/523205310.mp3",
+		damage: "assets/voice/523205330.mp3",
+		sunk: "assets/voice/523205340.mp3",
+	},
+	2055: {
+		start: "assets/voice/523205310.mp3",
+		damage: "assets/voice/523205330.mp3",
+		sunk: "assets/voice/523205340.mp3",
+	},
+	2056: {
+		start: "assets/voice/523205610.mp3",
+		damage: "assets/voice/523205630.mp3",
+		sunk: "assets/voice/523205641.mp3",
+	},
+	2057: {
+		start: "assets/voice/523205610.mp3",
+		damage: "assets/voice/523205630.mp3",
+		sunk: "assets/voice/523205641.mp3",
+	},
+	2058: {
+		start: "assets/voice/523205610.mp3",
+		damage: "assets/voice/523205630.mp3",
+		sunk: "assets/voice/523205641.mp3",
+	},
 }
 
 for (let id in SHIPDATA) {
