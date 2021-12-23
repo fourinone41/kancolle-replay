@@ -186,7 +186,7 @@ function chRerollMap() {
     InitUI();
 }
 
-const DISABLE_RANDO = true;
+const DISABLE_RANDO = false;
 
 function chRandomizeComps() {
     let comps = {};
