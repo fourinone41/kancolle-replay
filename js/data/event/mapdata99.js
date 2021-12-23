@@ -636,6 +636,8 @@ const bossIds = [
     2035, 2036, 2037, 2038, 2039, 2040,     // --- Abyssal Mediterranean Princess Vacation Mode
     2041, 2042, 2043, 2044, 2045, 2046,     // --- European Armoured Carrier Princess
     2047, 2048,                             // --- Airfield Princess
+    2049,                                   // --- New SSH
+    2053, 2054, 2055, 2056, 2057, 2058,     // --- Submarine Shark Water Demon
 
 	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
 ];

@@ -339,6 +339,7 @@ function ChRule () {
                     count += ships[shipType];
                 }
 
+                if (this.not) return count != ships.total ? this.conditionCheckedNode : this.conditionFailedNode;
                 return count == ships.total ? this.conditionCheckedNode : this.conditionFailedNode;
             }
 
@@ -661,7 +662,8 @@ function ChRule () {
             }
 
             case "allShipsMustBe": {
-                return `All ships must be ${this.shipTypes.join(" OR ")}`;
+                if (this.not) return `Atleast one ship is not a ${this.shipTypes.join(" or ")}`;
+                return `All ships must be ${this.shipTypes.join(" or ")}`;
             }
 
             case "isLastDance": {
@@ -1161,6 +1163,21 @@ function ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFa
     rule.conditionFailedNode = conditionFailedNode;
 
     rule.shipTypes = shipTypes;
+
+    return rule;
+}
+
+/**
+ * All ships of the fleet must be of the types in shipTypes
+ * @param {*} shipTypes 
+ * @param {*} conditionCheckedNode 
+ * @param {*} conditionFailedNode 
+ * @returns 
+ */
+ function ChOneShipNotOfTypeRule(shipTypes, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFailedNode);
+
+    rule.not = true;
 
     return rule;
 }

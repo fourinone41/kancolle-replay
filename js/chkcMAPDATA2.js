@@ -25831,7 +25831,7 @@ var MAPDATA = {
 				},
 				mapInfo: 'No CV(L/B) allowed<br>No (F)BB(V) allowed',
 				startCheckRule: [
-					ChAllShipMusteBeOfTypeRule(['CL', 'CT', 'DD', 'DE'], 'Start1'),
+					ChOneShipNotOfTypeRule(['CL', 'CT', 'DD', 'DE'], 'Start1'),
 					ChShipTypeRoutingRule(['CL', 'CT'], '>', 2, 'Start1'),
 					ChShipTypeRoutingRule(['DD', 'DE'], '>=', 4, 'Start2'),
 
