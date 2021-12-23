@@ -373,6 +373,8 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     }
 
     this.applyBonuses = () => {
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
+        
         let ships = ChBonuses.GetBonusShips(parameters);
 
         for (let ship of ships) {
@@ -428,6 +430,8 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     }
 
     this.applyBonuses = () => {
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
+
         let ships = ChBonuses.GetBonusShips(parameters);
 
         for (let ship of ships) {
