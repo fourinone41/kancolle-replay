@@ -926,6 +926,10 @@ class ChrDisplayEventInfo {
                 notes.push(`You need to do unlock ${rule.routeUnlockRequired} before doing this requirement`);
             }
 
+            if (rule.fleetType) {
+                notes.push(`Fleet needs to be ${rule.fleetType.map(x => ChrDisplayEventInfo.GetFleetTypeAsString(x)).join(' or ')}`);
+            }
+
             debuffLine.append($(`<td>${notes.join('<br>')}</td>`));
             
             debuffInfoTable.append(debuffLine);
@@ -1025,6 +1029,7 @@ class ChrDisplayEventInfo {
             if (group.type != bonus.bonusType) return false;
             if (group.reqCount != bonus.reqCount) return false;
             if (group.operator != bonus.operator) return false;
+            if (group.specificShips != bonus.parameters.onlySpecificShips) return false;
 
             let ids = bonus.getIds();
                         
@@ -1066,6 +1071,7 @@ class ChrDisplayEventInfo {
                         bonuses: [bonus],
                         reqCount: bonus.reqCount,
                         operator: bonus.operator,
+                        specificShips: bonus.parameters.onlySpecificShips
                     });
                 }
             }
@@ -1092,18 +1098,23 @@ class ChrDisplayEventInfo {
                 
                     <ul>
                         <li>${currentBonus.ids.map((x) => { return `${EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name }`; }).join("</li><li>")}
-                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
                         </li>
                     </ul>
+                    <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
                 </td>`));
             else if (currentBonus.type == 'ChEquipIdsBonuses')
                 bonusLine.append($(`
                 <td class="bonus-group">
                     <ul>
                         <li>${currentBonus.ids.map((x) => { return `${EQDATA[x].name}`; }).join("</li><li>")}
-                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
                         </li>
                     </ul>
+                    <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
+                    ${
+                        currentBonus.specificShips ? 
+                        `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
+                        ''
+                    }
                 </td>`));
             else if (currentBonus.type == 'ChShipWithoutBonusesBonuses') {
                 bonusLine.append($(`
@@ -1209,3 +1220,18 @@ class ChrDisplayEventInfo {
 
 ChrDisplayEventInfo.MAP_COUNT = 7;
 
+ChrDisplayEventInfo.GetFleetTypeAsString = (type) => {
+                    
+    switch (type) {
+        case 0:
+            return 'Single fleet';
+        case 1:
+            return 'Carrier Task Force';
+        case 2:
+            return 'Surface Task Force';
+        case 3:
+            return 'Transport Task Force';
+        case 7:
+            return 'Strike force';
+    }
+}

@@ -33,6 +33,11 @@ function ChBonusesParameters () {
      */
     this.debuffType = null;
 
+    /**
+     * If true, bonus only applies with debuff done
+     */
+    this.debuffOnly = false;
+
     this.includeFF = false;
 
     this.includeLBAS = false;
@@ -68,52 +73,8 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     this.bonusType = 'ChShipIdsBonuses';
     
     this.amount = amount;
-
-    if (typeof(shipIds) == 'string') {
-        // --- [0] = type
-        // --- [1] = the property of the object having the id list
-        let accessToShipIds = shipIds.split('.');
-
-        let type = accessToShipIds.shift();
-        let ships = null;
-
-        if (type == 'map') {
-            this.getShipIds = () => {
-
-                if (ships) return ships; 
-                
-                ships = MAPDATA[WORLD].maps[MAPNUM];
-
-                while (accessToShipIds.length) {
-                    ships = ships[accessToShipIds.shift()];
-                }
-
-                return ships;
-            }
-        }
-
-        if (type == 'event') {
-            this.getShipIds = () => {
-
-                if (ships) return ships;
-
-                ships = MAPDATA[WORLD];
-
-                while (accessToShipIds.length) {
-                    ships = ships[accessToShipIds.shift()];
-                }
-
-                return ships;
-            }
-        }
-    }
-    else {
-        this.getShipIds = () => {
-            return shipIds;
-        }
-    }
     
-    this.getIds = this.getShipIds;
+    this.getIds = this.getShipIds = ChBonuses.GetShipIds(shipIds, shipIds);
 
     this.bonusToApply = { mod: amount };
     if (parameters.on) this.bonusToApply.on = parameters.on;
@@ -157,7 +118,7 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
                     applyBonus(ship);
                 }
             } else {
-                if (ids.indexOf(getBaseId(ship.mid)) != -1) {
+                if (ids.indexOf(getBaseId(ship.mid)) != -1 || ids.indexOf(ship.mid) != -1) {
                     applyBonus(ship);
                 }
             }
@@ -373,8 +334,11 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
         if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
         
         let ships = ChBonuses.GetBonusShips(parameters);
+        let specificShips = parameters.onlySpecificShips ? ChBonuses.GetShipIds(parameters.onlySpecificShips, -1)() : -1;
 
         for (let ship of ships) {
+
+            if (specificShips != -1 && !specificShips.includes(ship.mid)) continue;
 
             let eqCount = 0;
             let level = 0;
@@ -820,4 +784,50 @@ ChBonuses.GetBonusToApply = (parameters, amount, level) => {
     if (parameters.amountPerLevel && level) bonusToApply.mod += (parameters.amountPerLevel * level);
 
     return bonusToApply;
+}
+
+ChBonuses.GetShipIds = (shipIds) => {
+    if (typeof(shipIds) == 'string') {
+        // --- [0] = type
+        // --- [1] = the property of the object having the id list
+        let accessToShipIds = shipIds.split('.');
+
+        let type = accessToShipIds.shift();
+        let ships = null;
+
+        if (type == 'map') {
+            return () => {
+
+                if (ships) return ships; 
+                
+                ships = MAPDATA[WORLD].maps[MAPNUM];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                return ships;
+            }
+        }
+
+        if (type == 'event') {
+            return () => {
+
+                if (ships) return ships;
+
+                ships = MAPDATA[WORLD];
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                return ships;
+            }
+        }
+    }
+    else {
+        return () => {
+            return shipIds;
+        }
+    }
 }

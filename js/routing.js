@@ -65,7 +65,7 @@ function ChRule () {
 
         let countPerDiff = [];
 
-        for (const diff in [4,1,2,3]) {
+        for (const diff of [4,1,2,3]) {
             if (this.count[diff] != undefined) {
                 countPerDiff.push(`${this.count[diff]} on ${ChRule.getDiffName(diff)}`);
             }

@@ -65,6 +65,10 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
             gimmickObject.id += '-U' + additionnalParameters.partToUnlock;
         }
 
+        if (gimmick.fleetType) {
+            gimmickObject.id += `-FT${gimmick.fleetType.join('_')}`;
+        }
+
         this.gimmicks.push(gimmickObject);
     }
 
@@ -208,7 +212,13 @@ let ChGimmickParameters = {
     /**
      * You can specify if a certain route unlock must be done before
      */
-    routeUnlockRequired: 0
+    routeUnlockRequired: 0,
+
+    /**
+     * Only give debuff if fleet is of type
+     * @type {null | number[]]
+     */
+    fleetType: null,
 }
 
 
@@ -235,6 +245,8 @@ function ChGimmick(parameters) {
     this.ranksRequiredPerDiff = parameters.ranksRequiredPerDiff;
 
     this.routeUnlockRequired = parameters.routeUnlockRequired;
+
+    this.fleetType = parameters.fleetType;
 
     /**
      * Returns true if this part of the gimmick is done
@@ -317,6 +329,13 @@ function ChGimmick(parameters) {
             if (!CHDATA.event.maps[MAPNUM].routes.length) return 0;
 
             if (CHDATA.event.maps[MAPNUM].routes.indexOf(this.routeUnlockRequired) == -1) return 0;
+        }
+
+        if (parameters.fleetType) {
+            let fleetType = CHDATA.fleets.combined;
+            if (!fleetType) fleetType = CHDATA.fleets.sf ? 7 : 0;
+            
+            if (!parameters.fleetType.includes(fleetType)) return;
         }
 
         if (parameters.shouldCountBeIncreased) {
