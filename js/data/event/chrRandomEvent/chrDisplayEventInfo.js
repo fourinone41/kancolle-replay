@@ -1081,6 +1081,7 @@ class ChrDisplayEventInfo {
             if (x.type == "ChEquipTypesBonuses") return 1;
             if (x.type == "ChEquipIdsBonuses") return 1;
             if (x.type == "ChCustomBonusEffects") return 1;
+            if (x.type == "ChEquipTypesComboBonuses") return 1;
 
             return x.type > y.type ? 1 : -1;
         });
@@ -1144,6 +1145,34 @@ class ChrDisplayEventInfo {
                         ${currentBonus.debuffOnly ? 'Effects after completing the debuff :<br><br>' : ''} 
                         ${ships}
                         ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                    </td>`)
+                );
+            }
+            else if (currentBonus.type == 'ChEquipTypesComboBonuses') {
+                
+                let typeNames = [];
+
+                for (const bonus of currentBonus.bonuses) {
+                    for (const combo of bonus.comboData) {
+                        let types = [];
+                        
+                        if (combo.types) types.push(...combo.types.map(x => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name));
+                        if (combo.bTypes) types.push(...combo.bTypes.map(x => EQBTDATA[x].dname));
+                        
+                        typeNames.push(types.join(', ') + ' x'+combo.numberRequired);
+                    }
+                }
+
+                // --- Remove duplicates
+                typeNames = [...new Set(typeNames)];
+
+                bonusLine.append($(`
+                    <td class="bonus-group">
+                        Ship has all of the following :
+                        <ul>
+                            <li>${typeNames.join("</li><li>")}
+                            </li>
+                        </ul>
                     </td>`)
                 );
             }

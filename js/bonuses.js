@@ -421,6 +421,93 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 }
 
 /**
+ * Set bonuses added per combo of equip type
+ * @param {ChBonusesParameters} parameters 
+ * @param {{ types: number[], bTypes: number[], numberRequired: number }[]} comboData
+ * @param {*} amount 
+ */
+ function ChEquipTypesComboBonuses(parameters, comboData, amount) {
+    this.parameters = parameters;
+
+    this.bonusType = 'ChEquipTypesComboBonuses';
+    
+    this.amount = amount;
+
+    this.comboData = comboData;
+  
+    this.getIds = () => {
+        let ids = [];
+
+        for (const combo of this.comboData) {
+            if (combo.types) ids.push(...combo.types);
+            if (combo.bTypes) ids.push(...combo.bTypes);
+        }
+
+        return ids;
+    }
+
+    this.checkComboOnShip = (ship) => {
+
+        let shipEquipsTypes = [];
+
+        for (const combo of this.comboData) {
+            shipEquipsTypes.push({
+                numberRequired: combo.numberRequired,
+                types: combo.types ? combo.types : [],
+                bTypes: combo.bTypes ? combo.bTypes : [],
+                numberOnShip: 0,
+            })
+        }
+
+        for (let equip of ship.equips) {
+            for (const combo of shipEquipsTypes) {
+
+                let bTypes = EQTDATA[equip.type].btype;
+
+                if (combo.types.includes(equip.type)) {
+                    combo.numberOnShip++;
+                } else if (combo.bTypes.includes(bTypes)) {
+                    combo.numberOnShip++;
+                }
+            }
+        }
+
+        // --- Checking if combo equipped
+        for (const combo of shipEquipsTypes) {
+            if (combo.numberOnShip < combo.numberRequired) return false;
+        }
+
+        return true;
+    }
+
+    this.applyBonuses = () => {
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
+
+        let specificShips = parameters.onlySpecificShips ? ChBonuses.GetShipIds(parameters.onlySpecificShips, -1)() : -1;
+
+        let ships = ChBonuses.GetBonusShips(parameters);
+
+        for (let ship of ships) {
+
+            if (specificShips != -1 && !specificShips.includes(ship.mid)) continue;
+
+            let comboOk = this.checkComboOnShip(ship);
+            
+            if (comboOk) {
+                if (parameters.type == 'add') {
+                    if (!ship.bonusSpecial) ship.bonusSpecial = [];
+                    ship.bonusSpecial.push(ChBonuses.GetBonusToApply(parameters, amount));
+                }
+
+                if (parameters.type == 'set') {
+                    ship.bonusSpecial = [ChBonuses.GetBonusToApply(parameters, amount)];
+                }
+            }
+        }
+    }
+}
+
+/**
  * Give bonus if debuff is done
  * @param {ChBonusesParameters} parameters 
  * @param {*} amount 
