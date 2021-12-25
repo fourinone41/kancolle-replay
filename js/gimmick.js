@@ -219,6 +219,11 @@ let ChGimmickParameters = {
      * @type {null | number[]]
      */
     fleetType: null,
+
+    /**
+     * If true, the lbas needs to be sent to this node to validate the gimmick
+     */
+    needLBAS: false
 }
 
 
@@ -247,6 +252,8 @@ function ChGimmick(parameters) {
     this.routeUnlockRequired = parameters.routeUnlockRequired;
 
     this.fleetType = parameters.fleetType;
+
+    this.needLBAS = parameters.needLBAS;
 
     /**
      * Returns true if this part of the gimmick is done
@@ -336,6 +343,11 @@ function ChGimmick(parameters) {
             if (!fleetType) fleetType = CHDATA.fleets.sf ? 7 : 0;
             
             if (!parameters.fleetType.includes(fleetType)) return;
+        }
+
+        if (parameters.needLBAS) {
+            if (!CHDATA.sortie.lbasNodes) return false;
+            if (!CHDATA.sortie.lbasNodes[this.node]) return false;
         }
 
         if (parameters.shouldCountBeIncreased) {

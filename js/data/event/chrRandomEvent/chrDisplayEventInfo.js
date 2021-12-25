@@ -930,6 +930,10 @@ class ChrDisplayEventInfo {
                 notes.push(`Fleet needs to be ${rule.fleetType.map(x => ChrDisplayEventInfo.GetFleetTypeAsString(x)).join(' or ')}`);
             }
 
+            if (rule.needLBAS) {
+                notes.push(`You need to send land based aerial support to this node`);
+            }
+
             debuffLine.append($(`<td>${notes.join('<br>')}</td>`));
             
             debuffInfoTable.append(debuffLine);
