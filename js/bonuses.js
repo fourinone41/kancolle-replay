@@ -38,7 +38,7 @@ function ChBonusesParameters () {
      */
     this.debuffOnly = false;
 
-    this.includeFF = false;
+    this.excludeFF = false;
 
     this.includeLBAS = false;
 
@@ -811,7 +811,7 @@ function ChDebuffBonuses(parameters, amount) {
  * @param {ChBonusesParameters} parameters 
  */
 ChBonuses.GetBonusShips = (parameters) => {
-    let ships = getAllShips(parameters.includeFF);
+    let ships = getAllShips(!parameters.excludeFF);
     if (parameters.includeLBAS) ships = ships.concat(LBAS);
 
     if (parameters.friendFleetOnly) {
