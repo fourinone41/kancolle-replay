@@ -1706,9 +1706,11 @@ function chGetLastDance() {
 	return lastdance;
 }
 
+var CLEAR_CONSOLE = true;
+
 function prepBattle(letter) {
 	SM.stopBGM();
-	console.clear();
+	if (CLEAR_CONSOLE) console.clear();
 	
 	var enemies = [];
 	var mapdata = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];

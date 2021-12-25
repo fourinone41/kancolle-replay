@@ -1089,8 +1089,12 @@ class ChrDisplayEventInfo {
             } else if (currentBonus.type == 'ChEquipTypesBonuses')
                 bonusLine.append($(`
                 <td class="bonus-group">
-                    ${currentBonus.ids.map((x) => { return `${EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name }`; }).join(" + ")}
-                    ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                
+                    <ul>
+                        <li>${currentBonus.ids.map((x) => { return `${EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name }`; }).join("</li><li>")}
+                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                        </li>
+                    </ul>
                 </td>`));
             else if (currentBonus.type == 'ChEquipIdsBonuses')
                 bonusLine.append($(`
@@ -1149,14 +1153,17 @@ class ChrDisplayEventInfo {
 
                         if (currentBonus.parameters.on) {
                             let image = '';
+                            let imageEl = $('<div>').addClass('bonus-cell-images');
 
                             for (const abyssalMid of currentBonus.parameters.on) {
                                 if (SHIPDATA[abyssalMid].image == image) continue;
 
                                 image = SHIPDATA[abyssalMid].image;
 
-                                bonusCellPart.append(`<img src="assets/icons/${image}" />`)
+                                imageEl.append(`<img src="assets/icons/${image}" />`)
                             }
+
+                            bonusCellPart.append(imageEl);
                         }
                         
                         if (currentBonus.parameters.type == "add") {
@@ -1169,11 +1176,12 @@ class ChrDisplayEventInfo {
                         } else {
                             let infos = [];
 
+                            let amountPerLevelInfo = currentBonus.parameters.amountPerLevel ? `+ (x${currentBonus.parameters.amountPerLevel} per level)` : '';
                             if (currentBonus.parameters.part) infos.push(`After part ${currentBonus.parameters.part}`);
                             if (currentBonus.parameters.diff) infos.push(`${currentBonus.parameters.diff.map(x => this.GetDiffText(x)).join(', ')} only`);
 
                             if (currentBonus.parameters.debuffOnly) bonusCellPart.append(`<span>After debuff : x${currentBonus.amount} ${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
-                            else bonusCellPart.append(`<span>x${currentBonus.amount} ${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
+                            else bonusCellPart.append(`<span>x${currentBonus.amount} ${amountPerLevelInfo}${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
                         }
 
                         bonusCell.append(bonusCellPart);

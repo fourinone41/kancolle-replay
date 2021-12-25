@@ -51,6 +51,8 @@ function ChBonusesParameters () {
      * @type {number[]}
      */
     this.diff = null;
+
+    this.amountPerLevel = 0;
 }
 
 /**
@@ -362,11 +364,6 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     this.equipIds = equipIds;
 
     this.operator = operator;
-
-    this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
-    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
-    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
     
     this.getIds = () => {
         return this.equipIds;
@@ -380,19 +377,23 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
         for (let ship of ships) {
 
             let eqCount = 0;
+            let level = 0;
 
             for (let equip of ship.equips) {
-                if (equipIds.includes(equip.mid)) eqCount++;
+                if (equipIds.includes(equip.mid)) {
+                    eqCount++;
+                    level = equip.level || level;
+                }
             }
 
             if (ChRule.CompareNumbers(eqCount, reqCount, operator, true, false)) {
                 if (parameters.type == 'add') {
                     if (!ship.bonusSpecial) ship.bonusSpecial = [];
-                    ship.bonusSpecial.push(this.bonusToApply);
+                    ship.bonusSpecial.push(ChBonuses.GetBonusToApply(parameters, amount, level));
                 }
 
                 if (parameters.type == 'set') {
-                    ship.bonusSpecial = [this.bonusToApply];
+                    ship.bonusSpecial = [ChBonuses.GetBonusToApply(parameters, amount, level)];
                 }
             }
         }
@@ -419,12 +420,7 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
     this.equipTypes = equipTypes;
 
     this.operator = operator;
-
-    this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
-    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
-    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
-
+  
     this.getIds = () => {
         return this.equipTypes;
     }
@@ -437,19 +433,23 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
         for (let ship of ships) {
 
             let eqCount = 0;
+            let level = 0;
 
             for (let equip of ship.equips) {
-                if (equipTypes.includes(equip.type)) eqCount++;
+                if (equipTypes.includes(equip.type)) {
+                    eqCount++;
+                    level = equip.level || level;
+                }
             }
 
             if (ChRule.CompareNumbers(eqCount, reqCount, operator, true, false)) {
                 if (parameters.type == 'add') {
                     if (!ship.bonusSpecial) ship.bonusSpecial = [];
-                    ship.bonusSpecial.push(this.bonusToApply);
+                    ship.bonusSpecial.push(ChBonuses.GetBonusToApply(parameters, amount, level));
                 }
 
                 if (parameters.type == 'set') {
-                    ship.bonusSpecial = [this.bonusToApply];
+                    ship.bonusSpecial = [ChBonuses.GetBonusToApply(parameters, amount, level)];
                 }
             }
         }
@@ -804,4 +804,20 @@ ChBonuses.CheckIfCanBeApplied = (parameters) => {
     }
 
     return true;
+}
+
+/**
+ * Returns the bonus to apply
+ * @param {*} parameters 
+ * @param {*} level 
+ */
+ChBonuses.GetBonusToApply = (parameters, amount, level) => {
+    let bonusToApply = { mod: amount };
+
+    if (parameters.on) bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) bonusToApply.type = parameters.debuffType;
+    if (parameters.amountPerLevel && level) bonusToApply.mod += (parameters.amountPerLevel * level);
+
+    return bonusToApply;
 }

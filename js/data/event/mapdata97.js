@@ -259,7 +259,8 @@ MAPDATA[97].fixBonuses = function () {
                             }
 
                             bonus.parameters.fixed = true;
-                            bonus.parameters.on = bonus.bonusToApply.on = newOn;
+                            if (bonus.parameters) bonus.parameters.on = newOn;
+                            if (bonus.bonusToApply) bonus.bonusToApply.on = newOn;
                         }
                     }
                 }
