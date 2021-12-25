@@ -44,6 +44,7 @@ function ChRule () {
         equipIds: [],
         equipTypes: [],
         LOS: 0,
+        haveAllEquips: false
     };
 
     /**
@@ -157,7 +158,10 @@ function ChRule () {
 
                 let shipsToCheck = ships.c;
 
-                if (this.escortOnly) shipsToCheck = ships.escort;
+                if (this.escortOnly) {
+                    if (!ships.escort) return this.conditionFailedNode;
+                    shipsToCheck = ships.escort;
+                }
                 if (this.mainFleetOnly) shipsToCheck = ships;
 
                 for (const shipType of this.shipTypes) {
@@ -194,7 +198,10 @@ function ChRule () {
 
                 let shipsToCheck = ships.c.ids;
 
-                if (this.escortOnly) shipsToCheck = ships.escort.ids;
+                if (this.escortOnly) {
+                    if (!ships.escort) return this.conditionFailedNode;
+                    shipsToCheck = ships.escort.ids;
+                }
                 if (this.mainFleetOnly) shipsToCheck = ships.ids;
 
                 for (const shipId of this.getShipIds()) {
@@ -272,7 +279,10 @@ function ChRule () {
             case 'speed': {
                 let speed = ships.c.speed;
 
-                if (this.escortOnly) speed = ships.escort.speed;
+                if (this.escortOnly) {
+                    if (!ships.escort) return this.conditionFailedNode;
+                    shipsToCheck = ships.escort.speed;
+                }
                 if (this.mainFleetOnly) speed = ships.speed;
 
                 switch (this.operator) {
@@ -305,7 +315,11 @@ function ChRule () {
                 if (rawSpeed) {
                     let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
 
-                    if (this.escortOnly) ships = FLEETS1[1].ships;
+                    if (this.escortOnly) {
+                        if (!FLEETS1[1]) return this.conditionFailedNode;
+                        ships = FLEETS1[1].ships;
+                    }
+
                     if (this.mainFleetOnly) ships = FLEETS1[1].ships;
 
                     for (let ship of ships) {
@@ -359,16 +373,27 @@ function ChRule () {
                 for (let ship of ships) {
 
                     let found = false;
+                    let equipsFound = [];
 
                     for (let eq of ship.equips) {
                         if (equipTypes && !equipTypes.includes(eq.type)) continue;
                         if (equipIds && !equipIds.includes(eq.mid)) continue;
                         if (this.equipData.LOS && (!eq.LOS || eq.LOS < this.equipData.LOS)) continue;
                         {
-                            numEquips++;
-                            found = true;
+                            if (this.equipData.haveAllEquips) {
+                                if (!equipsFound.includes(eq.mid)) equipsFound.push(eq.mid);
+                            } else {
+                                numEquips++;
+                                found = true;
+                            }
                         }
                     }
+
+                    if (this.equipData.haveAllEquips && equipsFound.length == this.equipData.equipIds.length) {
+                        numEquips++;
+                        numShipsWithEquip++;
+                    }
+
                     if (found) numShipsWithEquip++;
                 }
 
@@ -695,10 +720,11 @@ function ChRule () {
 
                 let equipmentsDescriptions = [];
                 
-                if (this.equipData.equipTypes) equipmentsDescriptions.push(this.equipData.equipTypes.map((x) => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name));
-                if (this.equipData.equipIds) equipmentsDescriptions.push(this.equipData.equipIds.map((x) => EQDATA[x].dname ? EQDATA[x].dname : EQDATA[x].name));
+                if (this.equipData.equipTypes) equipmentsDescriptions.push(...this.equipData.equipTypes.map((x) => EQTDATA[x].dname ? EQTDATA[x].dname : EQTDATA[x].name));
+                if (this.equipData.equipIds) equipmentsDescriptions.push(...this.equipData.equipIds.map((x) => EQDATA[x].dname ? EQDATA[x].dname : EQDATA[x].name));
 
                 let description = `Have ${operator} ${equipmentsDescriptions.join(" + ")} equipped`;
+                if (this.equipData.haveAllEquips) description = `Have all of ${equipmentsDescriptions.join(", ")} equipped`;
 
                 if (this.shipWithEquipCount) {
                     description += ` on ${this.shipWithEquipCount} different ships`;
@@ -1201,7 +1227,7 @@ function ChAllShipMusteBeOfTypeRule(shipTypes, conditionCheckedNode, conditionFa
 
 /**
  * Rule valid if [shipWithEquipCount] ships have the required equipments and there's a total of [count] equipment in the fleet
- * @param {{equipIds: [],equipTypes: [],LOS: number}} equipData 
+ * @param {{equipIds: [],equipTypes: [],LOS: number, haveAllEquips: boolean}} equipData 
  * @param {*} count 
  * @param {*} shipWithEquipCount 
  * @param {*} conditionCheckedNode 
