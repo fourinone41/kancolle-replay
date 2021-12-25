@@ -85,10 +85,14 @@ function ChRule () {
     };
 
     this.getCount = () => {
-        if (typeof(this.count) == 'number') return this.count;
+        return this.getSpecialCount(this.count);
+    }
+
+    this.getSpecialCount = (countObject) => {
+        if (typeof(countObject) == 'number') return countObject;
 
         let diff = getDiff();
-        return this.count[diff];
+        return countObject[diff];
     }
 
     this.shipWithEquipCount = 0;
@@ -420,24 +424,24 @@ function ChRule () {
                 switch (this.operator) {
                     case "<":
                         numEquipsValidated = this.getCount() == null || numEquips < this.getCount();
-                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip < this.shipWithEquipCount;
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip < this.getSpecialCount(this.shipWithEquipCount);
                         break;
                     case "<=":
                         numEquipsValidated = this.getCount() == null || numEquips <= this.getCount();
-                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip <= this.shipWithEquipCount;
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip <= this.getSpecialCount(this.shipWithEquipCount);
                         break;
                     case "=":
                         numEquipsValidated = this.getCount() == null || numEquips == this.getCount();
-                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip == this.shipWithEquipCount;
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip == this.getSpecialCount(this.shipWithEquipCount);
                         break;
                     case ">":
                         numEquipsValidated = this.getCount() == null || numEquips > this.getCount();
-                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip > this.shipWithEquipCount;
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip > this.getSpecialCount(this.shipWithEquipCount);
                         break;
                     default: 
                     case ">=":
                         numEquipsValidated = this.getCount() == null || numEquips >= this.getCount();
-                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip >= this.shipWithEquipCount;
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip >= this.getSpecialCount(this.shipWithEquipCount);
                         break;
                 }
 
