@@ -44,7 +44,11 @@ function ChRule () {
         equipIds: [],
         equipTypes: [],
         LOS: 0,
-        haveAllEquips: false
+        haveAllEquips: false,
+        /**
+         * @type {boolean} Set to true to check if flagship has the equipment
+         */
+        flagship : false,
     };
 
     /**
@@ -60,18 +64,24 @@ function ChRule () {
     this.count = 0;
 
     this.getCountAsText = () => {
+        return this.getSpecialCountAsText(this.count);
+    };
 
-        if (typeof(this.count) == 'number') return this.count;
+    this.getSpecialCountAsText = (countObject) => {
+
+        if (typeof(countObject) == 'number') return countObject;
 
         let countPerDiff = [];
 
         for (const diff of [4,1,2,3]) {
-            if (this.count[diff] != undefined) {
-                countPerDiff.push(`${this.count[diff]} on ${ChRule.getDiffName(diff)}`);
+            if (countObject[diff] != undefined) {
+                //countPerDiff.push(`${countObject[diff]} on ${ChRule.getDiffName(diff)}`);
+                countPerDiff.push(countObject[diff]);
             }
         }
 
-        return countPerDiff.join(', ');
+        return countPerDiff.join('/');
+        //return countPerDiff.join(', ');
     };
 
     this.getCount = () => {
@@ -370,6 +380,8 @@ function ChRule () {
                 let equipTypes = this.equipData.equipTypes && this.equipData.equipTypes.length ? this.equipData.equipTypes : null;
                 let equipIds = this.equipData.equipIds && this.equipData.equipIds.length ? this.equipData.equipIds : null;
 
+                let flagship = true;
+
                 for (let ship of ships) {
 
                     let found = false;
@@ -391,8 +403,13 @@ function ChRule () {
 
                     if (this.equipData.haveAllEquips && equipsFound.length == this.equipData.equipIds.length) {
                         numEquips++;
-                        numShipsWithEquip++;
+                        found = true;
                     }
+
+                    // --- First loop = check flagship
+                    if (this.equipData.flagship && flagship && !found) return this.conditionFailedNode;
+
+                    flagship = false;
 
                     if (found) numShipsWithEquip++;
                 }
@@ -725,9 +742,17 @@ function ChRule () {
 
                 let description = `Have ${operator} ${equipmentsDescriptions.join(" + ")} equipped`;
                 if (this.equipData.haveAllEquips) description = `Have all of ${equipmentsDescriptions.join(", ")} equipped`;
+                
+                if (this.equipData.LOS) {
+                    description += ` (${this.equipData.LOS} LOS each)`;
+                }
 
                 if (this.shipWithEquipCount) {
-                    description += ` on ${this.shipWithEquipCount} different ships`;
+                    description += ` on ${this.getSpecialCountAsText(this.shipWithEquipCount)} different ships`;
+                }
+
+                if (this.equipData.flagship) {
+                    description += ` (including the flagship)`;
                 }
 
                 return description;

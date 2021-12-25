@@ -352,6 +352,7 @@ EQTDATA[RADARL] = {
 };
 EQTDATA[RADARXL] = {
 	name: 'Radar (L)',
+	dname: 'Radar (XL)',
 	image: 11,
 	btype: B_RADAR,
 	canequip: ['FBB','BB','BBV'],
@@ -561,7 +562,14 @@ EQTDATA[OTHER] = {
 	canequip: ['DD','CL','CT','CLT','CA','CAV','FBB','BB','BBV','CVL','CV','CVB','SS','SSV','AS','AV','AO','AR','LHA','DE'],
 };
 
+EQBTDATA = {};
+EQBTDATA[B_RADAR] = {
+	dname: 'Radar',
+}
 
+EQBTDATA[B_MAINGUN] = {
+	dname: 'Main gun',
+}
 
 //FITDATA[shipclass][eqclass]
 var FITDATA = {
