@@ -421,6 +421,7 @@ EQTDATA[PICKET] = {
 };
 EQTDATA[WG42] = {
 	name: 'Misc',
+	dname: 'Anti-ground Rocket Launcher / WG42',
 	image: 31,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['DD','CL','CAV','BBV','SS','SSV','AS','AV','LHA'],
