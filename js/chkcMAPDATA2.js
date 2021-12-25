@@ -25620,6 +25620,7 @@ var MAPDATA = {
 			ozawa: [76,125,124, 69, 23, 479,9,32,33,10],
 			italians: [443,575, 449,448, 444, 441,442, 535],
 			kriegsmarine: [432, 171, 176, 174,175, 431],
+			marineNationaleAndKriegsmarine: [432, 171, 176, 174,175, 431, 492, 491],
 			royalnavy: [515, 571,439, 519],
 			marinenationale: [492, 491],
 			sovietnavy: [511, 516,147],
@@ -25628,7 +25629,7 @@ var MAPDATA = {
 				515, 571,439, 519,
 				492, 491,
 				443,575, 449,448, 444, 441,442, 535,
-				511, 516,147,
+				511, 516, 147,
 				574
 			]
 		},
@@ -27349,10 +27350,6 @@ var MAPDATA = {
 						1: ['6','7','8','9'],
 						4: ['7','8','9'],
 					},
-					debuffGive: function(airState,totalHPLost) {
-						if (totalHPLost <= 0) CHDATA.event.maps[5].debuff.AB2 = CHDATA.event.maps[5].debuff.AB2 + 1 || 1;
-						if (airState >= 1) CHDATA.event.maps[5].debuff.AB = CHDATA.event.maps[5].debuff.AB + 1 || 1;
-					}
 				},
 				parts: {
 					1: {
@@ -27404,45 +27401,37 @@ var MAPDATA = {
 				hiddenRoutes: {
 					1: {
 						images: [{ name: '5_1.png', x: 0, y: 0 }],
-						unlock: function() {
-							return CHDATA.event.maps[5].part >= 2; 
-						}
+						unlockRules: new ChGimmickList('mapPart', 2, 5, [], {
+							partToUnlock: 1
+						})
 					},
 					2: {
 						images: [{ name: '5_2.png', x: 0, y: 0 }],
-						unlock: function() {
-							if(CHDATA.event.maps[5].part < 3) return;
-
-							if(CHDATA.event.maps[5].diff === 4) return true;
-
-							if(!CHDATA.event.maps[5].debuff) return;
-
-							if(CHDATA.event.maps[5].diff <= 2) return CHDATA.event.maps[5].debuff.I;
-							if(CHDATA.event.maps[5].diff === 3) return CHDATA.event.maps[5].debuff.I && CHDATA.event.maps[5].debuff.H;
-						}
+						unlockRules: new ChGimmickList('mapPart', 3, 5, [
+							{ node: 'I', type: 'battle', timesRequiredPerDiff: { 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 1:'S', 2:'S', 3:'S' } },
+							{ node: 'H', type: 'battle', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'S' } },
+						], {
+							partToUnlock: 2
+						})
 					},
 					3: {
 						images: [{ name: '5_3.png', x: 0, y: 0 }],
-						unlock: function() {
-							if(CHDATA.event.maps[5].part < 3 || !CHDATA.event.maps[5].debuff) return;
-
-							switch(CHDATA.event.maps[5].diff){
-								case 4: 
-									return (CHDATA.event.maps[5].debuff.AB >= 1 || CHDATA.config.disableRaidReq);						
-								case 1:
-									return (CHDATA.event.maps[5].debuff.AB >= 2 || CHDATA.config.disableRaidReq) && CHDATA.event.maps[5].debuff.T;
-								case 2: 
-									return (CHDATA.event.maps[5].debuff.AB >= 2 || CHDATA.config.disableRaidReq) && CHDATA.event.maps[5].debuff.K >= 1 && CHDATA.event.maps[5].debuff.T;
-								case 3: 
-									return (CHDATA.event.maps[5].debuff.AB >= 2 || CHDATA.config.disableRaidReq) && (CHDATA.event.maps[5].debuff.AB2 >= 2 || CHDATA.config.disableRaidReq) && CHDATA.event.maps[5].debuff.K >= 2 && CHDATA.event.maps[5].debuff.T;
-							}
-						}
+						unlockRules: new ChGimmickList('mapPart', 3, 5, [
+							{ node: 'AB', type: 'AirState', timesRequiredPerDiff: { 4:1, 1:2, 2:2, 3:2 }, ranksRequiredPerDiff: { 4:'AS', 1:'AS', 2:'AS', 3:'AS' } },
+							{ node: 'AB', type: 'NoHPLoss', timesRequiredPerDiff: { 3:2 } },
+							{ node: 'T', type: 'battle', timesRequiredPerDiff: { 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 1:'S', 2:'S', 3:'S' } },
+							{ node: 'K', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:2 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+						], {
+							partToUnlock: 3
+						})
 					},
 				},
-				debuffCheck: function(debuff) {
-					if (!debuff) return false;
-					return debuff.Z2CTF >= 1 && debuff.Z2STF >= 1;
-				},
+				debuffRules:  new ChGimmickList('debuff', 3, 5, [
+					{ node: 'Z2', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' }, fleetType: [1] },
+					{ node: 'Z2', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'A', 1:'A', 2:'A', 3:'A' }, fleetType: [2] },
+				], {
+					lastDanceOnly: true,
+				}),
 				lockSpecial: true,
 				startCheck: function(ships) {
 					let lock = 9;
@@ -27454,10 +27443,10 @@ var MAPDATA = {
 					for (let i=0; i<CHDATA.fleets[1].length; i++) {
 						chGiveLock(1,i+1,lock);
 					}
-
-					if (CHDATA.fleets.combined == 2) return 'Start2';
-					return 'Start1';
 				},
+				startCheckRule: [
+					ChFleetTypeRule(2, 'Start2', 'Start1')
+				],
 				additionalChecks: function(ships,errors) {
 					if (CHDATA.event.maps[5].diff != 3 || CHDATA.config.disablelock) return;
 					
@@ -27479,14 +27468,18 @@ var MAPDATA = {
 						type: 3,
 						x: 259,
 						y: 337,
-						route: 'C'
+						rules: [
+							ChFixedRoutingRule('C')
+						]
 					},
 					'Start2': {
 						type: 3,
 						x: 726,
 						y: 219,
 						hidden: 1,
-						route: 'U'
+						rules: [
+							ChFixedRoutingRule('U')
+						]
 					},
 					'A': {
 						type: 1,
@@ -27499,12 +27492,14 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2','Casual 3'],
 						},
-						routeC: function (ships){
-							let ids = ships.ids.concat(ships.escort.ids);
-							if(checkHistorical(MAPDATA[42].historical.europeans,ids,[2,4,6,1])) return 'D';
-							if(ships.CV + ships.CVB <= 2 && ships.CLT + ships.escort.CLT <= 1) return 'D';
-							return 'B';
-						}
+						rules: [
+							ChShipHistoricalRoutingRule('Europeans', 'event.historical.europeans', '>=', { 4:1, 1:2, 2:4, 3:6 }, 'D'),
+
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['CV', 'CVB'], '<=', 2, 'D'),
+								ChShipTypeRoutingRule(['CLT'], '<=', 1, 'D'),
+							], 'AND', 'D', 'B'),
+						]
 					},
 					'B': {
 						type: 1,
@@ -27524,7 +27519,9 @@ var MAPDATA = {
 							1: ['Easy 2'],
 							4: ['Casual 2'],
 						},
-						route: 'D'
+						rules: [
+							ChFixedRoutingRule('D')
+						]
 					},
 					'C': {
 						type: 1,
@@ -27538,14 +27535,18 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4','Easy 5','Easy 6'],
 							4: ['Casual 1','Casual 2'],
 						},
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule('A')
+						]
 					},
 					'D': {
 						type: 3,
 						x: 197,
 						y: 186,
 						distance: 5,
-						routeS: ['E', 'F']
+						rules: [
+							ChSelectRouteRule(['E', 'F']),
+						]
 					},
 					'E': {
 						type: 1,
@@ -27558,14 +27559,18 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						routeL: { 3: 'J', 0: 'G' }
+						rules: [
+							ChLOSRule({ 3: 'J', 0: 'G' }),
+						]
 					},
 					'F': {
 						type: 3,
 						x: 268,
 						y: 167,
 						distance: 4,
-						routeS: ['H', 'I']
+						rules: [
+							ChSelectRouteRule(['H', 'I']),
+						]
 					},
 					'G': {
 						type: 3,
@@ -27588,10 +27593,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[5].debuff.H = 1;
-						},
-						route: 'X',
+						rules: [
+							ChFixedRoutingRule('X')
+						]
 					},
 					'I': {
 						type: 1,
@@ -27604,22 +27608,18 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[5].debuff.I = 1;
-						},
-						routeC: function(ships) {
-							this.showLoSPlane = 'J';
-							let result = checkELoS33(getELoS33(1,1,true),{ 3: 'J', 0: 'G' });
-							if (result == 'G') return 'G';
-							if (CHDATA.event.maps[5].routes && CHDATA.event.maps[5].routes.indexOf(1) != -1) {
-								if (CHDATA.fleets.combined == 2) return this.showLoSPlane = 'L';
-								if (ships.AO + ships.escort.AO) return this.showLoSPlane = 'L';
-								let ids = ships.ids.concat(ships.escort.ids);
-								let historicals = MAPDATA[42].historical.marinenationale.concat(MAPDATA[42].historical.kriegsmarine);
-								if (checkHistorical(historicals,ids,[2,2,2,2])) return this.showLoSPlane = 'L';
-							}
-							return 'J';
-						}
+						rules: [
+							ChLOSRule({ 3: '', 0: 'G' }),
+
+							ChShowLOSPlane(ChIsRouteNotUnlockedRule(1, 'J')),
+
+							ChShowLOSPlane(ChFleetTypeRule(2, 'L')),
+							ChShowLOSPlane(ChShipTypeRoutingRule(['AO'], '>', 0, 'L')),
+							
+							ChShowLOSPlane(ChShipHistoricalRoutingRule('Marine nationale and Kriegsmarine', 'event.historical.marineNationaleAndKriegsmarine', '>=', 2, 'L')),
+
+							ChDefaultRouteRule('J')
+						]
 					},
 					'J': {
 						type: 1,
@@ -27654,18 +27654,16 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						routeC: function(ships) {
-							if(CHDATA.event.maps[5].routes.indexOf(2) === -1) {
-								this.showNoCompass = true;
-								return 'I';
-							}
-							if(ships.LHA) return 'I';
-							if(ships.aBB + ships.escort.aBB <= 2 || ships.CL + ships.escort.CL >= 2) return 'H';
-							return 'I';
-						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[5].debuff.K = CHDATA.event.maps[5].debuff.K + 1 || 1;
-						}
+						rules: [
+							ChDontShowCompass(ChIsRouteNotUnlockedRule(2, 'I')),
+							
+							ChShipTypeRoutingRule(['LHA'], '>', 0, 'I'),
+							
+							ChShipTypeRoutingRule(['aBB'], '<=', 2, 'H'),
+							ChShipTypeRoutingRule(['CL'], '>=', 2, 'H'),
+
+							ChDefaultRouteRule('I')
+						]
 					},
 					'L': {
 						type: 1,
@@ -27679,12 +27677,11 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						routeC: function(ships) {
-							let ids = ships.ids.concat(ships.escort.ids);
-							let historicals = MAPDATA[42].historical.marinenationale.concat(MAPDATA[42].historical.kriegsmarine);
-							if(checkHistorical(historicals,ids,[2,3,4,1])) return 'O';
-							return (Math.random() < .5)? 'N' : 'O';
-						}
+						rules: [							
+							ChShowLOSPlane(ChShipHistoricalRoutingRule('Marine nationale and Kriegsmarine', 'event.historical.marineNationaleAndKriegsmarine', '>=', { 4:1, 1:2, 2:3, 3:4 }, 'O')),
+
+							ChRandomRule({ 'N': .5, 'O': .5 }),
+						]
 					},
 					'M': {
 						type: 1,
@@ -27698,17 +27695,17 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						routeC: function(ships) {
-							if(CHDATA.event.maps[5].routes.indexOf(3) === -1) {
-								this.showNoCompass = true;
-								return 'K';
-							}
-							if(ships.aBB + ships.escort.aBB > 2) return 'K';
-							if(ships.CV + ships.CVB > 0) return 'K';
-							let ids = ships.ids.concat(ships.escort.ids);
-							if(ships.CVL <= 1 || checkHistorical(MAPDATA[42].historical.europeans,ids,[2,4,6,1])) return 'X';
-							return 'K';
-						}
+						rules: [
+							ChDontShowCompass(ChIsRouteNotUnlockedRule(3, 'K')),
+
+							ChShipTypeRoutingRule(['aBB'], '>', 2, 'K'),
+							ChShipTypeRoutingRule(['CV', 'CVB'], '>', 0, 'K'),
+
+							ChShipTypeRoutingRule(['CVL'], '<=', 1, 'X'),
+							ChShipHistoricalRoutingRule('Europeans', 'event.historical.europeans', '>=', { 4:1, 1:2, 2:4, 3:6 }, 'X'),
+
+							ChDefaultRouteRule('I')
+						]
 					},
 					'N': {
 						type: 3,
@@ -27724,7 +27721,9 @@ var MAPDATA = {
 						y: 289,
 						hidden: 1,
 						distance: 2,
-						route: 'W'
+						rules: [
+							ChFixedRoutingRule('W')
+						]
 					},
 					'P': {
 						type: 1,
@@ -27738,11 +27737,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2', 'Casual 3'],
 						},
-						routeC: function(ships) {
-							let maxBB = [4,3,2,4];
-							if(ships.aBB + ships.escort.aBB <= maxBB[CHDATA.event.maps[5].diff-1]) return 'L';
-							return 'K';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aBB'], '<=', { 4:4, 1:4, 2:3, 3:2 }, 'L', 'K'),
+						]
 					},
 					'Q': {
 						type: 3,
@@ -27750,21 +27747,21 @@ var MAPDATA = {
 						y: 59,
 						hidden: 1,
 						distance: 3,
-						routeC: function(ships) {
-							if(ships.AO || ships.escort.AO || ships.AV || ships.escort.AV) return 'P';
+						rules: [
+							ChShipTypeRoutingRule(['AO', 'AV'], '>', 0, 'P'),
+
+							ChMultipleRulesRule([
+								ChIsRouteNotUnlockedRule(3, 'P'),
+								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', { 4:5, 1:5, 2:4, 3:3 }, 'P'),
+							], 'AND', 'P'),
+
+							ChIsRouteNotUnlockedRule(3, 'M'),
 							
-							if(CHDATA.event.maps[5].routes.indexOf(3) === -1){
-								let maxBBCV = [5,4,3,5];
-								if(ships.aBB + ships.escort.aBB + ships.aCV + ships.escort.aCV <= maxBBCV[CHDATA.event.maps[5].diff-1]) return 'P';
-								return 'M';
-							} else {
-								if(ships.CLT + ships.escort.CLT > 2) return 'P';
-								if(ships.DD + ships.escort.DD >= 3) return 'M';
-								let maxBBCV = [6,5,4,6];
-								if(ships.aBB + ships.escort.aBB + ships.aCV + ships.escort.aCV >= maxBBCV[CHDATA.event.maps[5].diff-1]) return 'M';
-								return 'P';
-							}
-						}
+							ChShipTypeRoutingRule(['CLT'], '>', 2, 'P'),
+							ChShipTypeRoutingRule(['DD'], '>', 3, 'M'),
+							ChShipTypeRoutingRule(['aBB', 'aCV'], '>=', { 4:6, 1:6, 2:5, 3:4 }, 'M'),
+							ChDefaultRouteRule('P')
+						]
 					},
 					'R': {
 						type: 3,
@@ -27772,7 +27769,9 @@ var MAPDATA = {
 						y: 96,
 						hidden: 1,
 						distance: 2,
-						route: 'Q',
+						rules: [
+							ChFixedRoutingRule('Q')
+						]
 					},
 					'S': {
 						type: 1,
@@ -27787,7 +27786,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2'],
 						},
-						route: 'R'
+						rules: [
+							ChFixedRoutingRule('R')
+						]
 					},
 					'T': {
 						type: 1,
@@ -27802,15 +27803,10 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2'],
 						},
-						routeC: function(ships) {
-							let ids = ships.ids.concat(ships.escort.ids);
-							if(checkHistorical(MAPDATA[42].historical.europeans,ids,[2,4,6,0])) return 'R';
-							if(ships.aBB + ships.escort.aBB + ships.aCV + ships.escort.aCV + ships.CLT + ships.escort.CLT <= 3) return 'R';
-							return 'S'; 
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[5].debuff.T = 1;
-						},
+						rules: [
+							ChShipHistoricalRoutingRule('Europeans', 'event.historical.europeans', '>=', { 4:0, 1:2, 2:4, 3:6 }, 'R'),
+							ChShipTypeRoutingRule(['aBB', 'aCV', 'CLT'], '<=', 3, 'R', 'S'),
+						]
 					},
 					'U': {
 						type: 3,
@@ -27818,7 +27814,9 @@ var MAPDATA = {
 						y: 212,
 						hidden: 1,
 						distance: 2,
-						route: 'V'
+						rules: [
+							ChFixedRoutingRule('V')
+						]
 					},
 					'V': {
 						type: 3,
@@ -27826,7 +27824,9 @@ var MAPDATA = {
 						y: 143,
 						hidden: 1,
 						distance: 3,
-						route: 'T'
+						rules: [
+							ChFixedRoutingRule('T')
+						]
 					},
 					'W': {
 						type: 1,
@@ -27837,22 +27837,11 @@ var MAPDATA = {
 						boss: true,
 						end: true,
 						friendFleet: ['desdiv31C','desdiv31F','europefleet6','europefleet7','europefleet8','europefleet9','europefleet14','europefleet15'],
-						setupSpecial: function() {
-							let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
-							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
-
-							for (ship of ships) {
-								if (MAPDATA[42].historical.europeans.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial = [{ mod : 1.2 }];
-								}
-								if (MAPDATA[42].historical.kriegsmarine.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial.push({ mod : 1.1 });
-								}
-								if (MAPDATA[42].historical.marinenationale.indexOf(getBaseId(ship.mid)) !== -1){
-									ship.bonusSpecial.push({ mod : 1.1 });
-								}
-							}
-						},
+						bonuses: [
+							new ChShipIdsBonuses({ type: 'add', includeFF: true, }, 'event.historical.europeans', 1.2),
+							new ChShipIdsBonuses({ type: 'add', includeFF: true, }, 'event.historical.kriegsmarine', 1.1),
+							new ChShipIdsBonuses({ type: 'add', includeFF: true, }, 'event.historical.marinenationale', 1.1),
+						],
 						compDiff: {
 							3: ['Hard 1'],
 							2: ['Medium 1'],
@@ -27872,19 +27861,25 @@ var MAPDATA = {
 						y: 75,
 						hidden: 2,
 						distance: 5,
-						routeC: function(ships) {
-							if(CHDATA.event.maps[5].routes.indexOf(3) === -1){
-								this.showNoCompass = true;
-								return 'Y';
-							} else {
-								if(ships.SS || ships.SSV || ships.escort.SS || ships.escort.SSV) return 'Y';
-								if(ships.DE + ships.escort.DE + ships.DD + ships.escort.DD + ships.CL + ships.escort.CL >= 5) return 'Z3';
-								if(ships.CV + ships.CVB === 0 && ships.speed > 10) return 'Z3';
-								if(CHDATA.fleets.combined === 2 && ships.aBB + ships.escort.aBB + ships.CV + ships.CVB <= 2) return 'Z3';
-								if(ships.speed >= 15) return 'Z3';
-								return 'Y';
-							}
-						}
+						rules: [
+							ChDontShowCompass(ChIsRouteNotUnlockedRule(3, 'Y')),
+							ChShipTypeRoutingRule(['SS', 'SSV'], '>', 0, 'Y'),
+							ChShipTypeRoutingRule(['DE', 'DD', 'CL'], '>=', 5, 'Z3'),
+							
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['CV', 'CVB'], '=', 0, 'Z3'),
+								ChSpeedRule('>=', 10, 'Z3'),
+							], 'AND', 'Z3'),
+							
+							ChMultipleRulesRule([
+								ChFleetTypeRule(2, 'Z3'),
+								ChShipTypeRoutingRule(['aBB', 'CV', 'CVB'], '<=', 2, 'Z3'),
+							], 'AND', 'Z3'),
+							
+							ChSpeedRule('>=', 15, 'Z3'),
+
+							ChDefaultRouteRule('Y')
+						]
 					},
 					'Y': {
 						type: 1,
@@ -27898,7 +27893,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 							4: ['Casual 1','Casual 2'],
 						},
-						routeL: { 3: 'Z2', 0: 'Z' }
+						rules: [
+							ChLOSRule({ 3: 'Z2', 0: 'Z' }),
+						]
 					},
 					'Z': {
 						type: 3,
@@ -27917,47 +27914,18 @@ var MAPDATA = {
 						boss: true,
 						end: true,
 						friendFleet: ['desdiv31D','desdiv31E','desdiv31G','europefleet5','europefleet10','europefleet11','europefleet12','europefleet13'],
-						setupSpecial: function() {
-							let debuffed = MAPDATA[42].maps[5].debuffCheck(CHDATA.event.maps[5].debuff);
-														
-							let ships = FLEETS1[0].ships.concat(FLEETS1[1].ships);
-							if (CHDATA.sortie.fleetFriend) ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
+						bonuses: [
+							// --- Base bonus :
+							new ChShipIdsBonuses({ type: 'set', includeFF: true, }, 'event.historical.europeans', 1.2),
+							new ChDebuffBonuses({ type: 'set', includeFF: true }, 1.5),
 
-							for (ship of ships) {
+							new ChEquipTypesBonuses({ type: 'add', includeFF: true, }, [SEAPLANEFIGHTER, SEAPLANEBOMBER], '>=', 1, 1.3),
+							new ChEquipTypesBonuses({ type: 'add', includeFF: true, }, [TYPE3SHELL], '>=', 1, 1.2),
+							new ChEquipTypesBonuses({ type: 'add', includeFF: true, }, [DIVEBOMBER], '>=', 1, 1.2),
 
-								let hasSPFSPB = false;
-								let hasT3shell = false;
-								let hasDiveBomber = false;
-
-								for (let equip of ship.equips) {
-									if (equip.type == SEAPLANEFIGHTER || equip.type == SEAPLANEBOMBER) hasSPFSPB = true;
-									if (equip.type == TYPE3SHELL) hasT3shell = true;
-									if (equip.type === DIVEBOMBER) hasDiveBomber = true;
-								}
-
-								let bonuses = [];
-
-								// Ark royal
-								if(getBaseId(ship.mid) === 515) {
-									let swordfish = 0;
-									let swordfishIds = [242,243,244];
-									for (let equip of ship.equips) {
-										if (swordfishIds.indexOf(equip.mid) !== -1) swordfish++;
-									}
-
-									if (swordfish === 1) bonuses.push({ mod: 1.4 });
-									if (swordfish > 1) bonuses.push({ mod: 1.75 });
-								}
-								
-								if (debuffed) bonuses.push({ mod: 1.5 });
-								if (!debuffed && MAPDATA[42].historical.europeans.indexOf(getBaseId(ship.mid)) !== -1)  bonuses.push({ mod: 1.2 });
-								if (hasSPFSPB) bonuses.push({ mod: 1.3 });
-								if (hasT3shell) bonuses.push({ mod: 1.2 });
-								if (hasDiveBomber) bonuses.push({ mod: 1.2 });
-
-								if (bonuses.length) ship.bonusSpecial = bonuses;
-							}
-						},
+							new ChEquipIdsBonuses({ type: 'add', includeFF: true, onlySpecificShips: [515] }, [242,243,244], '=', 1, 1.4),
+							new ChEquipIdsBonuses({ type: 'add', includeFF: true, onlySpecificShips: [515] }, [242,243,244], '>=', 2, 1.75),
+						],
 						compName: 'Z2',
 						compDiff: {
 							3: ['Hard 1'],
@@ -27970,12 +27938,6 @@ var MAPDATA = {
 							2: ['Medium 2'],
 							1: ['Easy 2'],
 							4: ['Casual 2'],
-						},
-						debuffGive: function() {
-							if (CHDATA.event.maps[5].hp > 900) return;
-
-							if (CHDATA.fleets.combined === 1 && CHDATA.temp.rank == 'A') CHDATA.event.maps[5].debuff.Z2CTF = 1;
-							if (CHDATA.fleets.combined === 2 && CHDATA.temp.rank == 'A') CHDATA.event.maps[5].debuff.Z2STF = 1;
 						},
 					},
 					'Z3': {
@@ -27998,7 +27960,9 @@ var MAPDATA = {
 							1: ['Easy 2'],
 							4: ['Casual 2'],
 						},
-						routeL: { 3: 'Z2', 0: 'Z' }
+						rules: [
+							ChLOSRule({ 3: 'Z2', 0: 'Z' }),
+						]
 					},
 				}
 			}
