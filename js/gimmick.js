@@ -39,7 +39,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      * Set this to true to play sound on every step done
      */
     this.playSoundOnStepDone = () => {
-        return WORLD >= 51;
+        return WORLD >= 45;
     };
 
     /**
