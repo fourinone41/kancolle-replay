@@ -755,7 +755,7 @@ class ChrDisplayEventInfo {
             $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map, MAPDATA[this.GetCurrentWorld()]));
         }
 
-        if (Object.values(map.nodes).find(x => x.bonuses)) {
+        if (Object.values(map.nodes).find(x => x.bonuses) || map.startBonus) {
             $("#mapInfoMapInfo").append(this.DisplayBonusInfos(map));
         }
     } 
