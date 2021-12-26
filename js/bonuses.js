@@ -53,6 +53,11 @@ function ChBonusesParameters () {
     this.part = 0;
 
     /**
+     * If set, can specify which unlocks are required to apply the bonus
+     */
+    this.requireUnlock = 0;
+
+    /**
      * @type {number[]}
      */
     this.diff = null;
@@ -846,6 +851,11 @@ ChBonuses.CheckIfCanBeApplied = (parameters) => {
 
         if (!part) return false;
         if (part < parameters.part) return false;
+    }
+
+    if (parameters.requireUnlock) {
+        // --- Only apply if route unlocked
+        if (CHDATA.event.maps[MAPNUM].routes.indexOf(parameters.requireUnlock) == -1) return false;
     }
 
     if (parameters.diff) {

@@ -662,7 +662,7 @@ function ChRule () {
                             rd.push(`${letter} (${rule.randomNodes[letter] * 100}%)`);
                         }
 
-                        randomDesc = `<br>else random ${rd.join(", ")}`;
+                        randomDesc = `<div style="margin-left:20px;">else random ${rd.join(", ")}</div>`;
                     }
                     else descriptions.push(`<div style="margin-left:20px;">${rule.getDescription()}</div>`);
                 }

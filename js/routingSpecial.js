@@ -342,6 +342,8 @@ function ChCreateCustomRule(ruleProperties) {
     let rule = new ChRule();
 
     if (ruleProperties.type) rule.type = ruleProperties.type;
+    else rule.type = "custom";
+
     rule.conditionCheckedNode = ruleProperties.conditionCheckedNode;
     rule.conditionFailedNode = ruleProperties.conditionFailedNode;
 

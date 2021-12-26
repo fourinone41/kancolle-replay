@@ -1222,6 +1222,7 @@ class ChrDisplayEventInfo {
 
                             let amountPerLevelInfo = currentBonus.parameters.amountPerLevel ? `+ (x${currentBonus.parameters.amountPerLevel} per level)` : '';
                             if (currentBonus.parameters.part) infos.push(`After part ${currentBonus.parameters.part}`);
+                            if (currentBonus.parameters.requireUnlock) infos.push(`After unlock ${currentBonus.parameters.requireUnlock}`);
                             if (currentBonus.parameters.diff) infos.push(`${currentBonus.parameters.diff.map(x => this.GetDiffText(x)).join(', ')} only`);
 
                             if (currentBonus.parameters.debuffOnly) bonusCellPart.append(`<span>After debuff : x${currentBonus.amount} ${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
