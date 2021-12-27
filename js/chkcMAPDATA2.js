@@ -33379,7 +33379,7 @@ var MAPDATA = {
 								}
 							}
 							if (num <= 3 && numSlow <= 1) return 'X';
-							return 'K';
+							return 'W';
 						}
 					},
 					'A': {
