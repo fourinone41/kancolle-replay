@@ -33673,9 +33673,9 @@ var MAPDATA = {
 						},
 						routeC: function(ships) {
 							this.showLoSPlane = null;
-							if (ships.AV + ships.escort.AV <= 0) return 'Q';
+							if (ships.AV + ships.escort.AV <= 0) return 'O';
 							this.showLoSPlane = 'T';
-							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'Q' });
+							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'O' });
 						}
 					},
 					'R': {
