@@ -27444,7 +27444,7 @@ var MAPDATA = {
 			1839: { AR: 305 },
 		},
 		historical: {
-			nagumo: [93,111,91,110,90, 78,79,86,85, 71,72, 114, 48,132,167,168,169,170,17,18,49],
+			nagumo: [83,111,91,110,90, 78,79,86,85, 71,72, 114, 48,132,167,168,169,170,17,18,49],
 			ozawa: [76,125,124, 69, 23, 479,9,32,33,10],
 			italians: [443,575, 449,448, 444, 441,442, 535],
 			kriegsmarine: [432, 171, 176, 174,175, 431],
@@ -30072,7 +30072,7 @@ var MAPDATA = {
 						},
 						compDiffF: {
 							3: ['Hard 5'],
-							2: ['Medium  5'],
+							2: ['Medium 5'],
 							1: ['Easy 4'],
 							4: ['Casual 3'],
 						},
@@ -30160,13 +30160,13 @@ var MAPDATA = {
 						},
 						compDiff: {
 							3: ['Hard 1'],
-							2: ['Medium  1'],
+							2: ['Medium 1'],
 							1: ['Easy 1','Easy 2'],
 							4: ['Casual 1'],
 						},
 						compDiffF: {
 							3: ['Hard 2'],
-							2: ['Medium  2'],
+							2: ['Medium 2'],
 							1: ['Easy 3'],
 							4: ['Casual 2'],
 						},
@@ -33379,7 +33379,7 @@ var MAPDATA = {
 								}
 							}
 							if (num <= 3 && numSlow <= 1) return 'X';
-							return 'K';
+							return 'W';
 						}
 					},
 					'A': {
@@ -33673,9 +33673,9 @@ var MAPDATA = {
 						},
 						routeC: function(ships) {
 							this.showLoSPlane = null;
-							if (ships.AV + ships.escort.AV <= 0) return 'Q';
+							if (ships.AV + ships.escort.AV <= 0) return 'O';
 							this.showLoSPlane = 'T';
-							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'Q' });
+							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'O' });
 						}
 					},
 					'R': {
