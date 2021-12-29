@@ -184,7 +184,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
 let ChGimmickParameters = {
     node: '',
     /**
-     * @type {'battle' | 'NoHPLoss' | 'AirState' | 'ReachNode'}
+     * @type {'battle' | 'NoHPLoss' | 'AirState' | 'ReachNode' | 'MapHP'}
      */
     type: 'battle',
     timesRequiredPerDiff: {
@@ -318,6 +318,25 @@ function ChGimmick(parameters) {
                 }
         
                 return 0;
+            }
+            
+            break;
+        }
+
+        case 'MapHP': {
+            parameters.shouldCountBeIncreased = (checkGimmickParameters) => {
+                
+                let requiredHP = this.ranksRequiredPerDiff[getDiff()];
+                let mapHP = CHDATA.event.maps[this.mapnum].hp;
+                
+                if (requiredHP > mapHP) return 1;
+        
+                return 0;
+            }
+            
+            parameters.getDescription = (diff) => {
+                if (!this.ranksRequiredPerDiff[diff]) return '-';
+                return 'Map HP <= ' + this.ranksRequiredPerDiff[diff];
             }
             
             break;

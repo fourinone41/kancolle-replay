@@ -1180,6 +1180,13 @@ class ChrDisplayEventInfo {
                     </td>`)
                 );
             }
+            else if (currentBonus.type == 'ChWholeFleetBonuses') {
+                bonusLine.append($(`
+                <td class="bonus-group">
+                    Whole fleet
+                </td>`)
+            );
+            }
             else 
                 bonusLine.append($(`<td class="bonus-group"></td>`));
 

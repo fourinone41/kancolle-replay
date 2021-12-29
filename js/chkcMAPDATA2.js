@@ -31730,13 +31730,17 @@ var MAPDATA = {
 				hiddenRoutes: {
 					1: {
 						images: [{ name: '4_1.png', x: 0, y: 0 }],
-						unlock: function(debuff) {
-							if (!debuff) return false;
-							let diff = CHDATA.event.maps[4].diff;
-							let debuffAB = debuff.AB || CHDATA.config.disableRaidReq;
-							let debuffHP = CHDATA.event.maps[4].hp <= [1000,1333,1500,1200][diff-1];
-							return debuffHP && debuff.J && debuff.S && (debuff.L || diff == 1 || diff == 4) && (debuff.T || diff == 4) && (debuff.K || diff != 3) && debuffAB;
-						}
+						unlockRules: new ChGimmickList('mapPart', null, 4, [
+							{ node: 'MapWide', type: 'MapHP', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:1200, 1:1000, 2:1333, 3:1500 } },
+							{ node: 'AB', type: 'AirState', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'AS', 1:'AS', 2:'AS', 3:'AS' } },
+							{ node: 'J', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'S', 1:'S', 2:'S', 3:'S' } },
+							{ node: 'S', type: 'battle', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 4:'S', 1:'S', 2:'S', 3:'S' } },
+							{ node: 'L', type: 'AirState', timesRequiredPerDiff: { 2:1, 3:1 }, ranksRequiredPerDiff: { 2:'AS', 3:'AS' } },
+							{ node: 'T', type: 'battle', timesRequiredPerDiff: { 1:1, 2:1, 3:1 }, ranksRequiredPerDiff: { 1:'S', 2:'S', 3:'S' } },
+							{ node: 'K', type: 'AirState', timesRequiredPerDiff: { 3:1 }, ranksRequiredPerDiff: { 3:'AS' } },
+						], {
+							partToUnlock: 1
+						})
 					},
 				},
 				enemyRaid: {
@@ -31755,9 +31759,6 @@ var MAPDATA = {
 						1: ['Easy 2'],
 						4: ['Casual 2'],
 					},
-					debuffGive: function(airState,totalHPLost) {
-						if (airState >= 1) CHDATA.event.maps[4].debuff.AB = 1;
-					}
 				},
 				additionalChecks: function(ships,errors) {
 					if (CHDATA.event.maps[4].diff == 1 || CHDATA.event.maps[4].diff == 4 || CHDATA.config.disablelock) return;
@@ -31780,63 +31781,80 @@ var MAPDATA = {
 					for (let i=0; i<CHDATA.fleets[2].length; i++) {
 						chGiveLock(2,i+1,lock);
 					}
-					this.applyBonus(FLEETS1[0].ships.concat(FLEETS1[1].ships));
-					if (CHDATA.fleets.combined == 2 && CHDATA.event.maps[4].routes.indexOf(1) != -1) return 'Start3';
-					if (CHDATA.fleets.combined == 3) return 'Start2';
-					return 'Start1';
 				},
-				applyBonus: function(ships) {
-					for (let ship of ships) {
-						let mid = getBaseId(ship.mid), bonuses = [];
-						if (MAPDATA[44].historical.E4_1.indexOf(mid) != -1) bonuses.push({mod:1.3});
-						else if (MAPDATA[44].historical.E4_2.indexOf(mid) != -1) bonuses.push({mod:1.25});
-						else if (MAPDATA[44].historical.E4_3.indexOf(mid) != -1) bonuses.push({mod:1.2});
-						else if (MAPDATA[44].historical.E4_4.indexOf(mid) != -1) bonuses.push({mod:1.15});
-						if (CHDATA.event.maps[4].routes.indexOf(1) != -1) {
-							bonuses.push({mod:1.15});
-						}
-						if (bonuses.length) ship.bonusSpecial = bonuses;
-					}
-				},
+				startCheckRule: [
+					ChMultipleRulesRule([
+						ChFleetTypeRule(2, 'Start3'),
+						ChIsRouteUnlockedRule(1, 'Start3'),
+					], 'AND', 'Start3'),
+
+					ChFleetTypeRule(3, 'Start2', 'Start1'),
+				],
+				startBonus: [
+					new ChWholeFleetBonuses({ type: "add", requireUnlock: 1, excludeFF: true }, '1.15'),
+					new ChShipIdsBonuses({ type: "add", excludeFF: true }, 'event.historical.E4_4', '1.15'),
+					new ChShipIdsBonuses({ type: "add", excludeFF: true }, 'event.historical.E4_3', '1.2'),
+					new ChShipIdsBonuses({ type: "add", excludeFF: true }, 'event.historical.E4_2', '1.25'),
+					new ChShipIdsBonuses({ type: "add", excludeFF: true }, 'event.historical.E4_1', '1.3'),
+				],
 				nodes: {
 					'Start1': {
 						type: 0,
 						x: 69,
 						y: 180,
-						routeC: function(ships) {
-							if (CHDATA.fleets.combined == 1) return 'A';
-							return 'B';
-						}
+						rules: [
+							ChFleetTypeRule(1, 'A', 'B'),
+						]
 					},
 					'Start2': {
 						type: 0,
 						x: 199,
 						y: 319,
-						route: 'E'
+						rules: [
+							ChFixedRoutingRule('E')
+						]
 					},
 					'Start3': {
 						type: 0,
+						hidden: 1,
 						x: 279,
 						y: 195,
-						routeC: function(ships) {
-							let num = ships.aBB + ships.aCV + ships.escort.aBB + ships.escort.aCV;
-							if (num <= 2) return 'X';
-							let numSlow = 0;
-							for (let n=0; n<2; n++) {
-								for (let ship of FLEETS1[n].ships) {
-									if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
-								}
-							}
-							if (num <= 3 && numSlow <= 1) return 'X';
-							return 'K';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 2, 'X'),
+
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 3, 'X'),
+
+								ChCreateCustomRule({
+									conditionCheckedNode: 'X',
+
+									getRouting: () => {
+										let numSlow = 0;
+
+										for (let n=0; n<2; n++) {
+											for (let ship of FLEETS1[n].ships) {
+												if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+											}
+										}
+
+										return numSlow <= 1 ? 'X' : '';
+									},
+
+									getDescription: () => {
+										return `One or less slow (F)BB(V)`;
+									}
+								})
+							], 'AND', 'X', 'W'),
+						]
 					},
 					'A': {
 						type: 3,
 						x: 155,
 						y: 121,
 						distance: 2,
-						routeS: ['C','D']
+						rules: [
+							ChSelectRouteRule(['C','D']),
+						]
 					},
 					'B': {
 						type: 1,
@@ -31850,7 +31868,9 @@ var MAPDATA = {
 							1: {'Easy 1':20,'Easy 2':20,'Easy 3':20,'Easy 4':20,'Easy 5':10,'Easy 6':10},
 							4: {'Casual 1':35,'Casual 2':35,'Casual 3':15,'Casual 4':15},
 						},
-						route: 'F'
+						rules: [
+							ChFixedRoutingRule('F')
+						]
 					},
 					'C': {
 						type: 1,
@@ -31864,11 +31884,13 @@ var MAPDATA = {
 							1: {'Easy 1':20,'Easy 2':20,'Easy 3':20,'Easy 4':20,'Easy 5':10,'Easy 6':10},
 							4: {'Casual 1':35,'Casual 2':35,'Casual 3':15,'Casual 4':15},
 						},
-						routeC: function(ships) {
-							let num = ships.aBB + ships.aCV + ships.escort.aBB + ships.escort.aCV;
-							if (ships.speed >= 15 && num <= 3 && ships.aCV + ships.escort.aCV <= 2) return 'I';
-							return 'G';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChSpeedRule('>=', 15, 'I'),
+								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 3, 'I'),
+								ChShipTypeRoutingRule(['aCV'], '<=', 2, 'I'),
+							], 'AND', 'I', 'G'),
+						]
 					},
 					'D': {
 						type: 1,
@@ -31888,7 +31910,9 @@ var MAPDATA = {
 							1: ['Easy 3','Easy 4'],
 							4: {'Casual 1':60,'Casual 2':30,'Casual 3':10},
 						},
-						route: 'G'
+						rules: [
+							ChFixedRoutingRule('G')
+						]
 					},
 					'E': {
 						type: 1,
@@ -31902,7 +31926,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4','Easy 5','Easy 6'],
 							4: ['Casual 1','Casual 2','Casual 3','Casual 4'],
 						},
-						route: 'H'
+						rules: [
+							ChFixedRoutingRule('H')
+						]
 					},
 					'F': {
 						type: 1,
@@ -31922,7 +31948,9 @@ var MAPDATA = {
 							1: ['Easy 3'],
 							4: ['Casual 3'],
 						},
-						route: 'H'
+						rules: [
+							ChFixedRoutingRule('H')
+						]
 					},
 					'G': {
 						type: 1,
@@ -31935,11 +31963,15 @@ var MAPDATA = {
 							1: {'Easy 1':40,'Easy 2':20,'Easy 3':10,'Easy 4':15,'Easy 5':15},
 							4: {'Casual 1':50,'Casual 2':25,'Casual 3':25},
 						},
-						routeC: function(ships) {
-							if (ships.speed >= 15) return 'J';
-							if (ships.speed >= 10 && ships.aBB + ships.escort.aBB <= 2 && ships.CV + ships.CVB <= 3) return 'J';
-							return 'I';
-						}
+						rules: [
+							ChSpeedRule('>=', 15, 'J'),
+							
+							ChMultipleRulesRule([
+								ChSpeedRule('>=', 10, 'J'),
+								ChShipTypeRoutingRule(['aBB'], '<=', 2, 'J'),
+								ChShipTypeRoutingRule(['CV', 'CVB'], '<=', 3, 'J'),
+							], 'AND', 'J', 'I'),
+						]
 					},
 					'H': {
 						type: 1,
@@ -31952,10 +31984,9 @@ var MAPDATA = {
 							1: {'Easy 1':30,'Easy 2':30,'Easy 3':10,'Easy 4':30},
 							4: {'Casual 1':35,'Casual 2':30,'Casual 3':35},
 						},
-						routeC: function(ships) {
-							if (ships.aBB + ships.escort.aBB) return 'K';
-							return 'M';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aBB'], '>', 0, 'K', 'M'),
+						]
 					},
 					'I': {
 						type: 1,
@@ -31969,10 +32000,9 @@ var MAPDATA = {
 							1: {'Easy 1':20,'Easy 2':20,'Easy 3':20,'Easy 4':20,'Easy 5':10,'Easy 6':10},
 							4: {'Casual 1':40,'Casual 2':40,'Casual 3':10,'Casual 4':10},
 						},
-						routeC: function(ships) {
-							if (ships.speed >= 15) return 'L';
-							return 'J';
-						}
+						rules: [
+							ChSpeedRule('>=', 15, 'L', 'J'),
+						]
 					},
 					'J': {
 						type: 1,
@@ -31985,14 +32015,14 @@ var MAPDATA = {
 							1: {'Easy 1':30,'Easy 2':40,'Easy 3':20,'Easy 4':10},
 							4: {'Casual 1':60,'Casual 2':30,'Casual 3':10},
 						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[4].debuff.J = 1;
-						},
-						routeC: function(ships) {
-							let num = ships.aBB + ships.aCV + ships.escort.aBB + ships.escort.aCV;
-							if (ships.speed >= 10 && num <= 4 && ships.aCV + ships.escort.aCV <= 3 && ships.CLT + ships.escort.CLT <= 2) return 'O';
-							return 'L';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChSpeedRule('>=', 10, 'O'),
+								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 4, 'O'),
+								ChShipTypeRoutingRule(['aCV'], '<=', 3, 'O'),
+								ChShipTypeRoutingRule(['CLT'], '<=', 2, 'O'),
+							], 'AND', 'O', 'L'),
+						]
 					},
 					'K': {
 						type: 1,
@@ -32006,10 +32036,9 @@ var MAPDATA = {
 							1: {'Easy 1':10,'Easy 2':40,'Easy 3':35,'Easy 4':15},
 							4: {'Casual 1':55,'Casual 2':30,'Casual 3':15},
 						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[4].debuff.K = 1;
-						},
-						route: 'N'
+						rules: [
+							ChFixedRoutingRule('N')
+						]
 					},
 					'L': {
 						type: 1,
@@ -32029,14 +32058,14 @@ var MAPDATA = {
 							1: ['Easy 2'],
 							4: ['Casual 2'],
 						},
-						debuffGive: function() {
-							if (FLEETS1[0].AS >= 1) CHDATA.event.maps[4].debuff.L = 1;
-						},
-						routeC: function(ships) {
-							if (ships.speed >= 15 && ships.AV + ships.escort.AV) return 'Q';
-							if (ships.speed <= 5) return 'Q';
-							return 'O';
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChSpeedRule('>=', 15, 'Q'),
+								ChShipTypeRoutingRule(['AV'], '>', 0, 'Q'),
+							], 'AND', 'Q'),
+							
+							ChSpeedRule('<=', 5, 'Q', 'O'),
+						]
 					},
 					'M': {
 						type: 1,
@@ -32050,7 +32079,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 						},
-						route: 'P'
+						rules: [
+							ChFixedRoutingRule('P')
+						]
 					},
 					'N': {
 						type: 1,
@@ -32063,11 +32094,10 @@ var MAPDATA = {
 							1: {'Easy 1':30,'Easy 2':40,'Easy 3':20,'Easy 4':10},
 							4: {'Casual 1':25,'Casual 2':45,'Casual 3':30},
 						},
-						routeC: function(ships) {
-							if (ships.aBB + ships.escort.aBB + ships.aCV + ships.escort.aCV > 4) return 'P';
-							if (ships.aBB + ships.escort.aBB + ships.CV + ships.CVB > 3) return 'P';
-							return 'S';
-						}
+						rules: [
+							ChShipTypeRoutingRule(['aBB', 'aCV'], '>', 4, 'P'),
+							ChShipTypeRoutingRule(['aBB', 'CV', 'CVB'], '>', 3, 'P', 'S'),
+						]
 					},
 					'O': {
 						type: 1,
@@ -32086,15 +32116,17 @@ var MAPDATA = {
 							1: ['Easy 3'],
 							4: {'Casual 1':40,'Casual 2':35,'Casual 3':15,'Casual 4':10},
 						},
-						routeC: function(ships) {
-							this.showLoSPlane = null;
-							if (CHDATA.event.maps[4].diff == 3 || CHDATA.event.maps[4].diff == 2) {
-								let radars = checkSurfaceRadar(FLEETS1[0].ships.concat(FLEETS1[1].ships));
-								if (radars.num < 4) return 'R';
-							}
-							this.showLoSPlane = 'V';
-							return checkELoS33(getELoS33(1,2,true),{ 78: 'V', 65: 'R' });
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChDifficultyRule([2,3], 'R'),
+								ChEquipTypeRule({
+									equipTypes: [RADARS, RADARL, RADARXL],
+									LOS: 5,
+								}, '<', 4, 4, 'R'),
+							], 'AND', 'R'),
+
+							ChLOSRule({ 78: 'V', 65: 'R' }, 2),
+						]
 					},
 					'P': {
 						type: 1,
@@ -32107,7 +32139,9 @@ var MAPDATA = {
 							1: {'Easy 1':30,'Easy 2':25,'Easy 3':15,'Easy 4':15,'Easy 5':15},
 							4: {'Casual 1':50,'Casual 2':30,'Casual 3':20},
 						},
-						route: 'S'
+						rules: [
+							ChFixedRoutingRule('S')
+						]
 					},
 					'Q': {
 						type: 1,
@@ -32120,12 +32154,10 @@ var MAPDATA = {
 							1: {'Easy 1':35,'Easy 2':15,'Easy 3':15,'Easy 4':10,'Easy 5':25},
 							4: {'Casual 1':25,'Casual 2':50,'Casual 3':25},
 						},
-						routeC: function(ships) {
-							this.showLoSPlane = null;
-							if (ships.AV + ships.escort.AV <= 0) return 'Q';
-							this.showLoSPlane = 'T';
-							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'Q' });
-						}
+						rules: [
+							ChShipTypeRoutingRule(['AV'], '=', 0, 'O'),
+							ChLOSRule({ 67: 'T', 54: 'O' }, 2),
+						]
 					},
 					'R': {
 						type: 1,
@@ -32145,15 +32177,17 @@ var MAPDATA = {
 							1: ['Easy 2'],
 							4: ['Casual 2'],
 						},
-						routeC: function(ships) {
-							this.showLoSPlane = null;
-							if (CHDATA.event.maps[4].diff == 3 || CHDATA.event.maps[4].diff == 2) {
-								let radars = checkSurfaceRadar(FLEETS1[0].ships.concat(FLEETS1[1].ships));
-								if (radars.num < 3) return 'U';
-							}
-							this.showLoSPlane = 'V';
-							return checkELoS33(getELoS33(1,2,true),{ 73: 'V', 60: 'U' });
-						}
+						rules: [
+							ChMultipleRulesRule([
+								ChDifficultyRule([2,3], 'U'),
+								ChEquipTypeRule({
+									equipTypes: [RADARS, RADARL, RADARXL],
+									LOS: 5,
+								}, '<', 3, 3, 'U'),
+							], 'AND', 'U'),
+
+							ChLOSRule({ 73: 'V', 60: 'U' }, 2),
+						]
 					},
 					'S': {
 						type: 1,
@@ -32166,16 +32200,14 @@ var MAPDATA = {
 							1: {'Easy 1':30,'Easy 2':10,'Easy 3':40,'Easy 4':20},
 							4: {'Casual 1':60,'Casual 2':30,'Casual 3':10},
 						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[4].debuff.S = 1;
-						},
-						routeC: function(ships) {
-							if (CHDATA.fleets.combined == 3) return 'O';
-							if (CHDATA.event.maps[4].routes.indexOf(1) != -1) {
-								if (CHDATA.fleets.combined == 2) return 'R';
-							}
-							return 'U';
-						}
+						rules: [
+							ChFleetTypeRule(3, 'O'),
+							
+							ChMultipleRulesRule([
+								ChIsRouteUnlockedRule(1, 'R'),
+								ChFleetTypeRule(2, 'R'),
+							], 'AND', 'R', 'U'),
+						]
 					},
 					'T': {
 						type: 1,
@@ -32187,9 +32219,6 @@ var MAPDATA = {
 							2: {'Medium 1':60,'Medium 2':40},
 							1: {'Easy 1':65,'Easy 2':35},
 							4: {'Casual 1':65,'Casual 2':35},
-						},
-						debuffGive: function() {
-							if (CHDATA.temp.rank == 'S') CHDATA.event.maps[4].debuff.T = 1;
 						},
 						end: true
 					},
@@ -32216,11 +32245,13 @@ var MAPDATA = {
 								friendFleetS: ['E4-8','E4-12','E4-21','E4-22'],
 							},
 						},
-						setupSpecial: function() {
-							if (CHDATA.sortie.fleetFriend) {
-								MAPDATA[44].maps[4].applyBonus(CHDATA.sortie.fleetFriend.ships);
-							}
-						},
+						bonuses: [
+							new ChWholeFleetBonuses({ type: "add", requireUnlock: 1, friendFleetOnly: true }, '1.15'),
+							new ChShipIdsBonuses({ type: "add", friendFleetOnly: true }, 'event.historical.E4_4', '1.15'),
+							new ChShipIdsBonuses({ type: "add", friendFleetOnly: true }, 'event.historical.E4_3', '1.2'),
+							new ChShipIdsBonuses({ type: "add", friendFleetOnly: true }, 'event.historical.E4_2', '1.25'),
+							new ChShipIdsBonuses({ type: "add", friendFleetOnly: true }, 'event.historical.E4_1', '1.3'),
+						],
 						compDiff: {
 							3: ['Hard 1'],
 							2: ['Medium 1'],
@@ -32248,18 +32279,33 @@ var MAPDATA = {
 							1: {'Easy 1':20,'Easy 2':20,'Easy 3':20,'Easy 4':20,'Easy 5':10,'Easy 6':10},
 							4: {'Casual 1':45,'Casual 2':35,'Casual 3':10,'Casual 4':10},
 						},
-						routeC: function(ships) {
-							if (ships.aBB + ships.escort.aBB + ships.CV + ships.CVB <= 3) {
-								let numSlow = 0;
-								for (let n=0; n<2; n++) {
-									for (let ship of FLEETS1[n].ships) {
-										if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+						rules: [
+							ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 2, 'X'),
+
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 3, 'X'),
+
+								ChCreateCustomRule({
+									conditionCheckedNode: 'X',
+
+									getRouting: () => {
+										let numSlow = 0;
+
+										for (let n=0; n<2; n++) {
+											for (let ship of FLEETS1[n].ships) {
+												if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+											}
+										}
+
+										return numSlow <= 2 ? 'X' : '';
+									},
+
+									getDescription: () => {
+										return `Two or less slow (F)BB(V)`;
 									}
-								}
-								if (numSlow <= 2) return 'X';
-							}
-							return 'K';
-						}
+								})
+							], 'AND', 'X', 'K'),
+						]
 					},
 					'X': {
 						type: 1,
@@ -32273,19 +32319,33 @@ var MAPDATA = {
 							1: {'Easy 1':30,'Easy 2':30,'Easy 3':30,'Easy 4':10},
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':40},
 						},
-						routeC: function(ships) {
-							if (ships.aCV + ships.escort.aCV > 1) return 'K';
-							if (ships.aBB + ships.escort.aBB + ships.CV + ships.CVB >= 3) {
-								let numSlow = 0;
-								for (let n=0; n<2; n++) {
-									for (let ship of FLEETS1[n].ships) {
-										if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+						rules: [
+							ChShipTypeRoutingRule(['aCV'], '>', 1, 'K'),
+
+							ChMultipleRulesRule([
+								ChShipTypeRoutingRule(['aBB', 'aCV'], '>=', 3, 'K'),
+
+								ChCreateCustomRule({
+									conditionCheckedNode: 'K',
+
+									getRouting: () => {
+										let numSlow = 0;
+
+										for (let n=0; n<2; n++) {
+											for (let ship of FLEETS1[n].ships) {
+												if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+											}
+										}
+
+										return numSlow > 0 ? 'K' : '';
+									},
+
+									getDescription: () => {
+										return `One or more slow (F)BB(V)`;
 									}
-								}
-								if (numSlow) return 'K';
-							}
-							return 'Y';
-						}
+								})
+							], 'AND', 'K', 'Y'),
+						]
 					},
 					'Y': {
 						type: 1,
@@ -32306,10 +32366,9 @@ var MAPDATA = {
 							1: ['Easy 3'],
 							4: ['Casual 3'],
 						},
-						routeC: function(ships) {
-							if (ships.speed >= 10) return 'O';
-							return 'S';
-						}
+						rules: [
+							ChSpeedRule('>=', 10, 'O', 'S'),
+						]
 					},
 				}
 			},

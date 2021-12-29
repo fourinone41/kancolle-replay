@@ -66,6 +66,59 @@ function ChBonusesParameters () {
 }
 
 /**
+ * @param {ChBonusesParameters} parameters 
+ * @param {*} amount 
+ */
+ function ChWholeFleetBonuses(parameters, amount) {
+
+    this.parameters = parameters;
+
+    this.bonusType = 'ChWholeFleetBonuses';
+    
+    this.amount = amount;
+    
+    this.getIds = () => { return -1; };
+
+    this.bonusToApply = { mod: amount };
+    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
+    if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
+
+    this.applyBonuses = () => {
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
+
+        let ships = ChBonuses.GetBonusShips(parameters);
+
+        let applyBonus = (ship) => {
+            if (parameters.type == 'add') {
+                if (!ship.bonusSpecial) ship.bonusSpecial = [];
+                ship.bonusSpecial.push(this.bonusToApply);
+                
+                if (parameters.accBonus) {
+                    if (!ship.bonusSpecialAcc) ship.bonusSpecialAcc = [];
+                    ship.bonusSpecialAcc.push({ mod: parameters.accBonus });
+                }
+
+                if (parameters.evBonus) {
+                    if (!ship.bonusSpecialEv) ship.bonusSpecialEv = [];
+                    ship.bonusSpecialEv.push({ mod: parameters.evBonus });
+                }
+            }
+
+            if (parameters.type == 'set') {
+                ship.bonusSpecial = [this.bonusToApply];
+                if (parameters.accBonus) ship.bonusSpecialAcc = [{ mod: parameters.accBonus }];
+                if (parameters.evBonus) ship.bonusSpecialEv = [{ mod: parameters.evBonus }];
+            }
+        }
+
+        for (let ship of ships) {
+            applyBonus(ship);
+        }
+    }
+}
+
+/**
  * Set bonuses added per ship id
  * @param {ChBonusesParameters} parameters 
  * @param {number[] | 'map.property' | 'event.property'} shipIds 
@@ -824,8 +877,8 @@ ChBonuses.GetBonusShips = (parameters) => {
             return CHDATA.sortie.fleetFriendAir.ships;
         }
 
-        if (CHDATA.sortie.fleetFriendAir) {
-            return CHDATA.sortie.fleetFriendAir.ships;
+        if (CHDATA.sortie.fleetFriend) {
+            return CHDATA.sortie.fleetFriend.ships;
         }
 
         return [];
