@@ -807,6 +807,8 @@ function ChDebuffBonuses(parameters, amount) {
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
     this.applyBonuses = () => {
+        if (!ChBonuses.CheckIfCanBeApplied(parameters)) return;
+        
         let ships = ChBonuses.GetBonusShips(parameters);
 
         let applyBonus = (ship) => {

@@ -774,11 +774,16 @@ function ChRule () {
 
                     let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
 
-                    description +=  `<li>${node} if LOS Cn${this.LOSCoef} >= ${LOSs[i]}</li>`;
+                    let currentDescription = `<li>${node} if LOS Cn${this.LOSCoef} >= ${LOSs[i]}</li>`;
 
-                    if (!nodeAfter) {
-                        description +=  `<li>${node} if LOS Cn${this.LOSCoef} < ${LOSs[i]}</li>`;
+                    if (nodeAfter) {
+                        currentDescription +=  `<li>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i + 1]} and ${LOSs[i]}</li>`;
                     }
+                    else {
+                        currentDescription =  `<li>${node} if LOS Cn${this.LOSCoef} < ${LOSs[i]}</li>`;
+                    }
+
+                    description +=  currentDescription;
                 }
 
                 return description + '</ul>';
