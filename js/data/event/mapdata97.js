@@ -126,7 +126,7 @@ MAPDATA[97].loadFromChData = function (mapNum) {
             }
         }
 
-        MAPDATA[97].fixBonuses();
+        //MAPDATA[97].fixBonuses();
     }
     else {
         CHDATA.customMaps = {};

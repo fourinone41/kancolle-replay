@@ -884,6 +884,21 @@ class ChrDisplayEventInfo {
             debuffInfoTable.append(debuffLine);
         }
 
+        if (rules.additionnalParameters.routeUnlockRequired) {
+            let debuffLine = $("<tr>");
+
+            let descTd = $('<td>').attr('colspan', 6);
+
+            descTd.append(`Unlock ${rules.additionnalParameters.routeUnlockRequired} done`);
+            debuffLine.append(descTd);
+
+            if (ChGimmick.IsUnlockDone(rules.additionnalParameters.routeUnlockRequired)) {
+                descTd.addClass('debuff-step-done');
+            }
+            
+            debuffInfoTable.append(debuffLine);
+        }
+
         for (const rule of rules.gimmicks) {
             let debuffLine = $("<tr>");
 

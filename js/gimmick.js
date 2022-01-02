@@ -9,6 +9,8 @@
  *  description: string
  *  title: string
  * difficultiesAllowed: number[]
+ * specialSoundOnCompletion: String
+ * routeUnlockRequired: number
  * }} additionnalParameters Additionnal parameters to handle special cases
  */
 function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
@@ -31,6 +33,8 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      *  title: string
      * lastDanceOnly: boolean
      * difficultiesAllowed: number[]
+     * specialSoundOnCompletion: string
+     * routeUnlockRequired: number
      * }}
      */
     this.additionnalParameters = additionnalParameters;
@@ -114,6 +118,13 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
             if (!chGetLastDance()) return;
         }
 
+        if (additionnalParameters.routeUnlockRequired) {
+            if (!CHDATA.event.maps[MAPNUM].routes) return;
+            if (!CHDATA.event.maps[MAPNUM].routes.length) return;
+
+            if (CHDATA.event.maps[MAPNUM].routes.indexOf(additionnalParameters.routeUnlockRequired) == -1) return;
+        }
+
         if (mapPartNumber) {
             if (mapPartNumber > CHDATA.event.maps[mapNum].part) {
                 return;
@@ -151,6 +162,17 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
     this.checkIfDebuffed = () => {
         if (!this.gimmickDone()) return;
 
+        let playSound = () => {
+
+            if (this.additionnalParameters.specialSoundOnCompletion) {
+                SM.playNew(this.additionnalParameters.specialSoundOnCompletion);
+            } else if (!this.playSoundOnStepDone()) {
+                SM.play('done');
+                alert('DEBUFF');
+            }
+
+        }
+
         if (!mapNum) {
             let atleastOne = false;
 
@@ -162,9 +184,8 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
                 atleastOne = true;
             }
 
-            if (atleastOne && !this.playSoundOnStepDone()) {
-                SM.play('done');
-                alert('DEBUFF');
+            if (atleastOne) {
+                playSound();
             }
 
             return;
@@ -174,10 +195,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
         
         CHDATA.event.maps[mapNum].debuffed = true;
 
-        if (!this.playSoundOnStepDone()) {
-            SM.play('done');
-            alert('DEBUFF');
-        }
+        playSound();
     }
 }
 
@@ -406,4 +424,11 @@ ChGimmick.ConvertAirStateNumberToString = (airState) => {
     }
 
     return '???';
+}
+
+ChGimmick.IsUnlockDone = (routeUnlock) => {
+    if (!CHDATA.event.maps[MAPNUM].routes) return false;
+    if (!CHDATA.event.maps[MAPNUM].routes.length) return false;
+
+    return CHDATA.event.maps[MAPNUM].routes.indexOf(routeUnlock) != -1;
 }
