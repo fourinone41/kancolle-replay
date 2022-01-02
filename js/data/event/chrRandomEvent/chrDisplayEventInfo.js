@@ -272,6 +272,7 @@ class ChrDisplayEventInfo {
                         nodeRulesTranslated[rule.conditionCheckedNode] += description;
                         nodeRulesTranslated[rule.conditionCheckedNode] += ` (${++priority})`;
                         nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
+                        nodeRulesTranslated[rule.conditionCheckedNode] += "<br>";
                     } 
                     else {
                         for (const node in description) {
@@ -279,6 +280,7 @@ class ChrDisplayEventInfo {
 
                             nodeRulesTranslated[node] += description[node];
                             nodeRulesTranslated[node] += ` (${++priority})`;
+                            nodeRulesTranslated[node] += "<br>";
                             nodeRulesTranslated[node] += "<br>";
                         }
                     }

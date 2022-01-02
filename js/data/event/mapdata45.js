@@ -1501,15 +1501,14 @@ var MAPDATA45 = {
 							4: ['Casual 1'],
 						},
 						rules: [
-							ChIfThenElseRule(
+							ChLOSCheckIfRuleChecked({ 42: 'R', 30: 'S' }, 1,
 								ChMultipleRulesRule([
 									ChShipTypeRoutingRule(['aBB'], '<=', 2, 'R'),
 									ChShipTypeRoutingRule(['aBB', 'aCV', 'LHA'], '<=', 4, 'R'),
 								], 'AND', 'R'),
-								ChLOSRule({ 42: 'R', 30: 'S' })
 							),
 
-							ChIfThenElseRule(
+							ChLOSCheckIfRuleChecked({ 42: 'P', 30: 'S' }, 1,
 								ChMultipleRulesRule([
 									ChShipTypeRoutingRule(['SS', 'SSV'], '>', 0, 'P'),
 									ChShipTypeRoutingRule(['DD'], '<', 2, 'P'),
@@ -1519,18 +1518,16 @@ var MAPDATA45 = {
 										ChShipTypeRoutingRule(['LHA', 'AO', 'CA', 'CAV', 'CL', 'CLT'], '>', 8, 'P'),
 									], 'AND', 'P'),
 								], 'OR', 'P'),
-								ChLOSRule({ 42: 'P', 30: 'S' })
 							),
 
-							ChIfThenElseRule(
+							ChLOSCheckIfRuleChecked({ 42: 'R', 30: 'S' }, 1,
 								ChMultipleRulesRule([
 									ChShipIdsRoutingRule([187, 450], '>', 0, 'R'),
 									ChShipTypeRoutingRule(['LHA', 'AO', 'CA', 'CAV', 'CL', 'CLT'], '<=', 8, 'R'),
-								], 'AND', 'R'),
-								ChLOSRule({ 42: 'R', 30: 'S' })
+								], 'AND', 'R')
 							),
 
-							ChIfThenElseRule(
+							ChLOSCheckIfRuleChecked({ 42: 'P', 30: 'S' }, 1,
 								ChMultipleRulesRule([
 									ChShipTypeRoutingRule(['aBB', 'aCV'], '>', 5, 'P'),
 
@@ -1544,8 +1541,7 @@ var MAPDATA45 = {
 										ChShipTypeRoutingRule(['aBB'], '>', 2, 'P'),
 									], 'AND', 'P'),
 
-								], 'OR', 'P'),
-								ChLOSRule({ 42: 'P', 30: 'S' })
+								], 'OR', 'P')
 							),
 							
 							ChLOSRule({ 42: 'R', 30: 'S' })

@@ -126,6 +126,40 @@ function ChRule () {
     this.LOS = {};
     this.LOSCoef = null;
 
+    this.GetLOSArray = () => {
+        let key = Object.keys(this.LOS)[0];
+
+        if (typeof(this.LOS[key]) == 'string') {
+            return this.LOS;
+        } else {
+            // --- Multiple diffs
+            let diff = getDiff();
+
+            return this.LOS[diff];
+        }
+    }
+
+    this.GetLOSValuesForDisplay = () => {
+        let key = Object.keys(this.LOS)[0];
+
+        if (typeof(this.LOS[key]) == 'string') {
+            return Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+        }
+
+        let LOSs = {};
+        let values = [];
+
+        for (const diff of [4,1,2,3]) {
+            LOSs[diff] = Object.keys(this.LOS[diff]).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+        }
+
+        for (const key in LOSs[4]) {
+            values.push([LOSs[4][key], LOSs[1][key], LOSs[2][key], LOSs[3][key]].join('/'))
+        }
+
+        return values;
+    }
+
     /**
      * Speed of fleet
      */
@@ -450,7 +484,7 @@ function ChRule () {
             }
 
             case 'los': {
-                return checkELoS33(getELoS33(1, this.LOSCoef || 1, CHDATA.fleets.combined), this.LOS);
+                return checkELoS33(getELoS33(1, this.LOSCoef || 1, CHDATA.fleets.combined), this.GetLOSArray());
             }
 
             case 'fleetType': {
@@ -764,23 +798,26 @@ function ChRule () {
 
             case 'los': {
                 let description = '<ul>';
+
+                let losArray = this.GetLOSArray();
                 
-                var LOSs = Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+                var LOSs = Object.keys(losArray).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+                var LOSsPerDiff = this.GetLOSValuesForDisplay();
                 
                 for (var i=0; i<LOSs.length; i++) {
-                    let node = this.LOS[LOSs[i]];
+                    let node = losArray[LOSs[i]];
 
                     if (!node) continue;
 
-                    let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
+                    let nodeAfter = LOSs[i + 1] ? losArray[LOSs[i + 1]] : null;
 
-                    let currentDescription = `<li>${node} if LOS Cn${this.LOSCoef} >= ${LOSs[i]}</li>`;
+                    let currentDescription = `<li>${node} if LOS Cn${this.LOSCoef} >= ${LOSsPerDiff[i]}</li>`;
 
                     if (nodeAfter) {
-                        currentDescription +=  `<li>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i + 1]} and ${LOSs[i]}</li>`;
+                        currentDescription +=  `<li>Random if LOS Cn${this.LOSCoef} bewteen ${LOSsPerDiff[i + 1]} and ${LOSsPerDiff[i]}</li>`;
                     }
                     else {
-                        currentDescription =  `<li>${node} if LOS Cn${this.LOSCoef} < ${LOSs[i]}</li>`;
+                        currentDescription =  `<li>${node} if LOS Cn${this.LOSCoef} < ${LOSsPerDiff[i]}</li>`;
                     }
 
                     description +=  currentDescription;
@@ -875,23 +912,26 @@ function ChRule () {
      */
      this.GetLOSDescription = function() {
         let description = {};
+
+        let losArray = this.GetLOSArray();
         
-        var LOSs = Object.keys(this.LOS).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+        var LOSs = Object.keys(losArray).sort(function(a,b) { return (parseInt(a) > parseInt(b))? -1:1; } );
+        var LOSsPerDiff = this.GetLOSValuesForDisplay();
         
         for (var i=0; i<LOSs.length; i++) {
-            let node = this.LOS[LOSs[i]];
+            let node = losArray[LOSs[i]];
 
             if (!node) continue;
 
-            let nodeAfter = LOSs[i + 1] ? this.LOS[LOSs[i + 1]] : null;
+            let nodeAfter = LOSs[i + 1] ? losArray[LOSs[i + 1]] : null;
 
-            description[node] =  `LOS Cn${this.LOSCoef} >= ${LOSs[i]}`;
+            description[node] =  `LOS Cn${this.LOSCoef} >= ${LOSsPerDiff[i]}`;
 
             if (nodeAfter) {
-                description[node] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSs[i + 1]} and ${LOSs[i]}`;
+                description[node] +=  `<br>Random if LOS Cn${this.LOSCoef} bewteen ${LOSsPerDiff[i + 1]} and ${LOSsPerDiff[i]}`;
             }
             else {
-                description[node] =  `LOS Cn${this.LOSCoef} < ${LOSs[i]}`;
+                description[node] =  `LOS Cn${this.LOSCoef} < ${LOSsPerDiff[i]}`;
             }
         }
 
@@ -1295,13 +1335,66 @@ function ChEquipTypeRule(equipData, operator, count, shipWithEquipCount, conditi
 
     rule.type = "los";
 
-    rule.conditionCheckedNode = losArray[Math.max(...Object.keys(losArray))];
+    let key = Object.keys(losArray)[0];
+    
+    if (typeof(losArray[key]) == 'string') {
+        rule.conditionCheckedNode = losArray[Math.max(...Object.keys(losArray))];
+    } else {
+        rule.conditionCheckedNode = losArray[key][Math.max(...Object.keys(losArray[key]))];
+    }
 
     rule.LOS = losArray;
     rule.LOSCoef = coef ? coef : 1;
 
     return rule;
 }
+
+/**
+ * Need to be tested
+ * @param {*} losArray 
+ * @param {*} coef 
+ * @param {ChRule} ruleToCheck 
+ * @returns 
+ */
+ function ChLOSCheckIfRuleChecked(losArray, coef, ruleToCheck) {
+
+    let conditionCheckedNode = ruleToCheck.conditionCheckedNode;
+
+     /**
+      * @type {ChRule}
+      */
+    let rule = new ChIfThenElseRule(ruleToCheck, ChLOSRule(losArray, coef));
+    
+    rule.conditionCheckedNode = conditionCheckedNode;
+
+    rule.type = "ifthenelse";
+
+    let key = Object.keys(losArray)[0];
+
+    rule.getDescription = () => {
+        let LOSdescription;
+
+        if (typeof(losArray[key]) == 'string') {
+            let successIndex = Math.max(...Object.keys(losArray));
+            let failNode = losArray[Math.min(...Object.keys(losArray))];
+
+            LOSdescription = ` (Also require LOS Cn${coef} >= ${successIndex}${losArray[failNode] ? `, else ${losArray[failNode]}` : ''})`;
+        } else {
+            let values = [4,1,2,3].map(x => Math.max(...Object.keys(losArray[x])));
+            let failNode = losArray[key][Math.min(...Object.keys(losArray[key]))];
+
+            LOSdescription = ` (Also require LOS Cn${coef} >= ${values.join('/')}${failNode ? `, else ${failNode}` : ''})`;
+        }
+
+        return ruleToCheck.getDescription() + LOSdescription;
+    }
+
+    rule.LOS = losArray;
+    rule.LOSCoef = coef ? coef : 1;
+
+    return rule;
+}
+
 
 /**
  * Returns the rule and making it so that LOS plane wont show up if the rule is validated
