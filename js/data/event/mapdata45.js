@@ -1751,9 +1751,6 @@ var MAPDATA45 = {
 							if (CHDATA.event.maps[3].part == 1) return;
 							let debuff = CHDATA.event.maps[3].debuff, rank = CHDATA.temp.rank;
 							if (rank == 'S') debuff.T = debuff.T + 1 || 1;
-							if (CHDATA.event.maps[3].hp <= MAPDATA[45].maps[3].parts[2].finalhp[CHDATA.event.maps[3].diff]) {
-								if (rank == 'S' || rank == 'A') debuff.O2 = 1;
-							}
 						},
 						end: true
 					},
