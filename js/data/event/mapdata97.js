@@ -283,10 +283,11 @@ function chrGetLastDance() {
     } 
     
     if (map.transport) {
-        var transportCalc = MAPDATA[WORLD].maps[MAPNUM].transportCalc || MAPDATA[WORLD].transportCalc;
-        var tp = transportCalc(chGetShips(true),'S');
+        /*var transportCalc = MAPDATA[WORLD].maps[MAPNUM].transportCalc || MAPDATA[WORLD].transportCalc;
+        var tp = transportCalc(chrGetShips(true),'S');
         lastdance = CHDATA.event.maps[MAPNUM].hp <= tp && CHDATA.event.maps[MAPNUM].hp > 0;
-        if (!lastdance && map.finaltp) lastdance = (CHDATA.event.maps[MAPNUM].hp <= map.finaltp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
+        if (!lastdance && map.finaltp) lastdance = (CHDATA.event.maps[MAPNUM].hp <= map.finaltp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);*/
+        return false;
     } else {
         lastdance = (map && CHDATA.event.maps[MAPNUM].hp <= map.finalhp[diff] && CHDATA.event.maps[MAPNUM].hp > 0);
     }
