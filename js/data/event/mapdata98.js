@@ -390,7 +390,7 @@ function chrGetRandomEquipmentId(gearType) {
 	var keys = [];
     
     let max_id = ABYSSALS_ON ? 1000 : 500;
-    let min_id = ABYSSALS_ON ? 0 : 0;
+    let min_id = ABYSSALS_ON ? 1 : 1;
 
     for (let i = min_id; i < max_id; i++) {
         if (!EQDATA[i]) continue;
