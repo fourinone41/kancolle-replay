@@ -6662,6 +6662,30 @@ var VOICES = {
 		damage: "assets/voice/494199130.mp3",
 		sunk: "assets/voice/494199141.mp3",
 	},
+	1994: {
+		start: "assets/voice/Supply_Depot_Princess_Broken_Form_Intro.ogg",
+		attack: "assets/voice/Supply_Depot_Princess_Broken_Form_Attack.ogg",
+		damage: "assets/voice/Supply_Depot_Princess_Broken_Form_Damaged.ogg",
+		sunk: "assets/voice/Supply_Depot_Princess_Destroyed.ogg",
+	},
+	1995: {
+		start: "assets/voice/Supply_Depot_Princess_Broken_Form_Intro.ogg",
+		attack: "assets/voice/Supply_Depot_Princess_Broken_Form_Attack.ogg",
+		damage: "assets/voice/Supply_Depot_Princess_Broken_Form_Damaged.ogg",
+		sunk: "assets/voice/Supply_Depot_Princess_Destroyed.ogg",
+	},
+	1996: {
+		start: "assets/voice/465191810.mp3",
+		attack: "assets/voice/465191820.mp3",
+		damage: "assets/voice/465191830.mp3",
+		sunk: "assets/voice/465191841.mp3",
+	},
+	1997: {
+		start: "assets/voice/CV_Hime_Intro.ogg",
+		attack: "assets/voice/CV_Hime_Attack_1.ogg",
+		damage: "assets/voice/CV_Hime_Attack_2.ogg",
+		sunk: "assets/voice/CV_Hime_Sunk.ogg",
+	},
 	2000: {
 		start: "assets/voice/503200010.mp3",
 		attack: "assets/voice/503200020.mp3",
