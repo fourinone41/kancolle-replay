@@ -1046,11 +1046,26 @@ class ChrDisplayEventInfo {
 
         bonusInfoTable.append(bonusInfoColumns);
 
+        let compareArrays = (array1, array2) => {
+            
+            if (!array1 && !array2) return true;
+            if (array1 && !array2) return false;
+            if (!array1 && array2) return false;
+
+            for (const key in array1) {
+               if (!array2[key]) return false; 
+               if (array1[key] != array2[key]) return false; 
+            }
+
+            return true;
+        }
+
         let compareGroups = (bonus, group) => {
             if (group.type != bonus.bonusType) return false;
             if (group.reqCount != bonus.reqCount) return false;
             if (group.operator != bonus.operator) return false;
-            if (group.specificShips != bonus.parameters.onlySpecificShips) return false;
+            if (!compareArrays(bonus.parameters.onlySpecificShips, group.specificShips)) return false;
+            if (!compareArrays(bonus.parameters.excludeSpecificShips, group.excludeShips)) return false;
 
             let ids = bonus.getIds();
                         
@@ -1092,7 +1107,8 @@ class ChrDisplayEventInfo {
                         bonuses: [bonus],
                         reqCount: bonus.reqCount,
                         operator: bonus.operator,
-                        specificShips: bonus.parameters.onlySpecificShips
+                        specificShips: bonus.parameters.onlySpecificShips,
+                        excludeShips: bonus.parameters.excludeSpecificShips,
                     });
                 }
             }
@@ -1135,6 +1151,11 @@ class ChrDisplayEventInfo {
                     ${
                         currentBonus.specificShips ? 
                         `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
+                        ''
+                    }
+                    ${
+                        currentBonus.excludeShips ? 
+                        `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} not included</div>` :
                         ''
                     }
                 </td>`));

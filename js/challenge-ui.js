@@ -1862,7 +1862,7 @@ function chLoadLBAS(num) {
 }
 
 function chNewShipCount() {
-	return {DD:0,CL:0,CLT:0,CA:0,CAV:0,BB:0,FBB:0,BBV:0,AV:0,SS:0,SSV:0,CVL:0,CV:0,CVB:0,LHA:0,AS:0,AR:0,AO:0,CT:0,DE:0,total:0,ids:[],aBB:0,aCV:0,speed:10};
+	return {DD:0,CL:0,CLT:0,CA:0,CAV:0,BB:0,FBB:0,BBV:0,AV:0,SS:0,SSV:0,CVL:0,CV:0,CVB:0,LHA:0,AS:0,AR:0,AO:0,CT:0,DE:0,total:0,ids:[],aBB:0,aCV:0,speed:10,AkitsuMaru:0};
 }
 
 function chRefreshShipCountSortie() { //use in sortie only
@@ -1880,6 +1880,7 @@ function chRefreshShipCountSortie() { //use in sortie only
 			counts.ids.push(ship.mid);
 			if (ship.SPD < 15) fastPlus = false;
 			if (ship.SPD == 5) counts.speed = 5;
+			if (ship.mid == 161) counts.AkitsuMaru++;
 		}
 	}
 	CHSHIPCOUNT = countsA[0];

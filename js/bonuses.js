@@ -29,6 +29,11 @@ function ChBonusesParameters () {
     this.onlySpecificShips = [];
 
     /**
+     * Allows to filter some rules on certains ships only
+     */
+     this.excludeSpecificShips = [];
+
+    /**
      * Debuff type
      */
     this.debuffType = null;
@@ -320,14 +325,21 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 
         for (let ship of ships) {
 
-            if (specificShips != -1 && !specificShips.includes(ship.mid)) continue;
+            if (specificShips != -1 && !specificShips.includes(getBaseId(ship.mid))) continue;
+            if (parameters.excludeSpecificShips && parameters.excludeSpecificShips.includes(getBaseId(ship.mid))) continue;
 
             let eqCount = 0;
             let level = 0;
+            let found = [];
 
             for (let equip of ship.equips) {
                 if (equipIds.includes(equip.mid)) {
-                    eqCount++;
+
+                    if (!found.includes(equip.mid)) {
+                        eqCount++;
+                        found.push(equip.mid);
+                    }
+
                     level = equip.level || level;
                 }
             }
@@ -471,7 +483,8 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 
         for (let ship of ships) {
 
-            if (specificShips != -1 && !specificShips.includes(ship.mid)) continue;
+            if (specificShips != -1 && !specificShips.includes(getBaseId(ship.mid))) continue;
+            if (parameters.excludeSpecificShips && parameters.excludeSpecificShips.includes(getBaseId(ship.mid))) continue;
 
             let comboOk = this.checkComboOnShip(ship);
             

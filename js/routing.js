@@ -1,7 +1,7 @@
 function ChRule () {
 
     /**
-     * @type {"=" | ">=" | "<=" | "<" | ">"}
+     * @type {"=" | ">=" | "<=" | "<" | ">" | "!="}
      */
     this.operator = "=";
 
@@ -236,6 +236,9 @@ function ChRule () {
                     case ">=":
                         if (count >= this.getCount()) return this.conditionCheckedNode;
                         break;
+                    case "!=":
+                        if (count != this.getCount()) return this.conditionCheckedNode;
+                        break;
                 }
                 
                 return this.conditionFailedNode;
@@ -272,6 +275,9 @@ function ChRule () {
                     case ">=":
                         if (count >= this.getCount()) return this.conditionCheckedNode;
                         break;
+                    case "!=":
+                        if (count != this.getCount()) return this.conditionCheckedNode;
+                        break;
                 }
                 
                 return this.conditionFailedNode;
@@ -293,6 +299,9 @@ function ChRule () {
                         break;
                     case ">=":
                         if (ships.total >= this.getCount()) return this.conditionCheckedNode;
+                        break;
+                    case "!=":
+                        if (ships.total != this.getCount()) return this.conditionCheckedNode;
                         break;
                 }
 
@@ -348,6 +357,9 @@ function ChRule () {
                         break;
                     case ">=":
                         if (speed >= this.speed) return this.conditionCheckedNode;
+                        break;
+                    case "!=":
+                        if (speed != this.speed) return this.conditionCheckedNode;
                         break;
                 }
 
@@ -472,6 +484,12 @@ function ChRule () {
                         numEquipsValidated = this.getCount() == null || numEquips > this.getCount();
                         shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip > this.getSpecialCount(this.shipWithEquipCount);
                         break;
+                        
+                    case "!=":
+                        numEquipsValidated = this.getCount() == null || numEquips != this.getCount();
+                        shipWithEquipCountValidated = this.shipWithEquipCount == null || numShipsWithEquip != this.getSpecialCount(this.shipWithEquipCount);
+                        break;
+
                     default: 
                     case ">=":
                         numEquipsValidated = this.getCount() == null || numEquips >= this.getCount();
@@ -525,6 +543,9 @@ function ChRule () {
                     case ">=":
                         if (currentPart >= this.getCount()) return this.conditionCheckedNode;
                         break;
+                    case "!=":
+                        if (currentPart != this.getCount()) return this.conditionCheckedNode;
+                        break;
                 }
 
                 return this.conditionFailedNode;
@@ -566,6 +587,9 @@ function ChRule () {
                         break;
                     case ">=":
                         if (count >= this.getCount()) return this.conditionCheckedNode;
+                        break;
+                    case "!=":
+                        if (count != this.getCount()) return this.conditionCheckedNode;
                         break;
                 }
 
@@ -609,20 +633,23 @@ function ChRule () {
 
                 let shipList = shipTypesTranslated.join(" + ");
 
+                let translatedOperator = this.operator;
+                if (translatedOperator == '!=') translatedOperator = 'different than'
+
                 if (this.notOfType) {
 
                     shipList = shipTypesTranslated.join(', ');
 
-                    if (this.escortOnly) return `Number of ships that are not ${shipList} in escort fleet ${this.operator} ${this.getCountAsText()}`;
-                    if (this.mainFleetOnly) return `Number of ships that are not ${shipList} in main fleet ${this.operator} ${this.getCountAsText()}`;
+                    if (this.escortOnly) return `Number of ships that are not ${shipList} in escort fleet ${translatedOperator} ${this.getCountAsText()}`;
+                    if (this.mainFleetOnly) return `Number of ships that are not ${shipList} in main fleet ${translatedOperator} ${this.getCountAsText()}`;
 
-                    return `Number of ships that are not ${shipList} ${this.operator} ${this.getCountAsText()}`;
+                    return `Number of ships that are not ${shipList} ${translatedOperator} ${this.getCountAsText()}`;
                 }
 
-                if (this.escortOnly) return `Number of ${shipList} in escort fleet ${this.operator} ${this.getCountAsText()}`;
-                if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${this.operator} ${this.getCountAsText()}`;
+                if (this.escortOnly) return `Number of ${shipList} in escort fleet ${translatedOperator} ${this.getCountAsText()}`;
+                if (this.mainFleetOnly) return `Number of ${shipList} in main fleet ${translatedOperator} ${this.getCountAsText()}`;
 
-                return `Number of ${shipList} ${this.operator} ${this.getCountAsText()}`;
+                return `Number of ${shipList} ${translatedOperator} ${this.getCountAsText()}`;
             }
 
             case "shipIds": {
@@ -662,6 +689,10 @@ function ChRule () {
                         break;
                     case ">=":
                         operator = `${this.getCountAsText()} or more ship`;
+                        break;
+                        
+                    case "!=":
+                        operator = `number different than ${this.getCountAsText()} of ship`;
                         break;
                 }
 
@@ -767,6 +798,11 @@ function ChRule () {
                     case ">":
                         operator = `more than ${this.getCountAsText()}`
                         break;
+                        
+                    case "!=":
+                        operator = `number different than ${this.getCountAsText()}`;
+                        break;
+
                     default: 
                     case ">=":
                         operator = `${this.getCountAsText()} or more`
@@ -868,6 +904,9 @@ function ChRule () {
                         return `After part ${this.getCountAsText()} has been cleared`;
                     case ">=":
                         return `Part ${this.getCountAsText()} or after`;
+                        
+                    case "!=":
+                        return `Don't be on part ${this.getCountAsText()}`;
                 }
             }
 
@@ -1622,6 +1661,9 @@ ChRule.CompareNumbers = (number1, number2, operator, ifTrue, ifFalse) => {
             break;
         case ">=":
             if (number1 >= number2) return ifTrue;
+            break;
+        case "!=":
+            if (number1 != number2) return ifTrue;
             break;
     }
 
