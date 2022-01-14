@@ -407,6 +407,25 @@ function ChFleetBeenThroughRule(node, conditionCheckedNode, conditionFailedNode)
     return rule;
 }
 
+function ChFleetNotBeenThroughRule(node, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.getRouting = (ships) => {
+        return !CHDATA.sortie[node] ? conditionCheckedNode: conditionFailedNode;
+    }
+
+    rule.getDescription = () => {
+        return `Fleet has not been through node ${node}`;
+    }
+
+    return rule;
+}
+
 /**
  * Rule validated if all ships have a tag that belong to taglist
  * @param {number[]} tagList 
