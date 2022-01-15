@@ -390,6 +390,9 @@ function ChEquipIdsBonuses(parameters, equipIds, operator, reqCount, amount) {
 
         for (let ship of ships) {
 
+            if (parameters.onlySpecificShips && !parameters.onlySpecificShips.includes(getBaseId(ship.mid))) continue;
+            if (parameters.excludeSpecificShips && parameters.excludeSpecificShips.includes(getBaseId(ship.mid))) continue;
+
             let eqCount = 0;
             let level = 0;
 

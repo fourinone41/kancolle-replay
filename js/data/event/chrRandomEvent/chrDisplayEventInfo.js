@@ -1139,6 +1139,16 @@ class ChrDisplayEventInfo {
                         </li>
                     </ul>
                     <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
+                    ${
+                        currentBonus.specificShips ? 
+                        `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
+                        ''
+                    }
+                    ${
+                        currentBonus.excludeShips ? 
+                        `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} not included</div>` :
+                        ''
+                    }
                 </td>`));
             else if (currentBonus.type == 'ChEquipIdsBonuses')
                 bonusLine.append($(`
