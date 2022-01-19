@@ -241,7 +241,12 @@ let ChGimmickParameters = {
     /**
      * If true, the lbas needs to be sent to this node to validate the gimmick
      */
-    needLBAS: false
+    needLBAS: false,
+
+    /**
+     * @type {number} Part to clear to check gimmick of PartClear type
+     */
+    partToClear: null
 }
 
 
@@ -261,7 +266,7 @@ function ChGimmick(parameters) {
 
     this.mapPartNumber = parameters.mapPartNumber;
 
-    this.id = `E${this.mapnum}-${this.node}`
+    this.id = `E${this.mapnum}-${this.node}-${parameters.type}`
 
     this.timesRequiredPerDiff = parameters.timesRequiredPerDiff;
 
@@ -363,13 +368,13 @@ function ChGimmick(parameters) {
         case 'PartClear': {
             parameters.shouldCountBeIncreased = (checkGimmickParameters) => {
                 
-                if (parameters.mapPartNumber >= CHDATA.event.maps[gimmick.mapnum].part) return 0;
+                if (parameters.partToClear >= CHDATA.event.maps[this.mapnum].part) return 0;
         
                 return 1;
             }
             
             parameters.getDescription = (diff) => {
-                return 'Clear part '+ parameters.mapPartNumber + '        ';
+                return 'Clear part '+ parameters.partToClear + '        ';
             }
             
             break;

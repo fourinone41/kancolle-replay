@@ -1838,11 +1838,13 @@ function prepBattle(letter) {
 
 				SHIPDATA[sid].HP = SHIPDATA[compd.originalComp.c[0]].HP;
 
-				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport) {
+				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport && MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter) {
 					SHIPDATA[sid].HP = CHDATA.event.maps[MAPNUM].hp - 1;
 				}
 		
-				enemies.push(createDefaultShip(sid,overrideStats));
+				let newShip = createDefaultShip(sid,overrideStats);
+
+				enemies.push(newShip);
 		
 				SHIPDATA[sid] = oldShip;
 			}
@@ -2261,7 +2263,7 @@ function endMap() {
 	var endTime = 1500;
 	var hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
 	if (hiddenRoutes) {
-		var key = checkRouteUnlocks(hiddenRoutes);
+		var key = checkRouteUnlocks(hiddenRoutes, null, true);
 		if (key) {
 			addTimeout(function() {
 				stage = STAGEMAP;
@@ -3379,7 +3381,7 @@ function testGetLoSOld(fleetnum,includeCombined) {
 }
 
 
-function checkRouteUnlocks(hiddenRoutes,peekOnly) {
+function checkRouteUnlocks(hiddenRoutes,peekOnly, mapWideCheck) {
 	if (!CHDATA.event.maps[MAPNUM].routes) CHDATA.event.maps[MAPNUM].routes = [];
 	for (var key in hiddenRoutes) {
 		key = parseInt(key);
@@ -3389,6 +3391,11 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 			return key;
 		}
 
+		if (hiddenRoutes[key].unlockRules && mapWideCheck) {
+			// --- Do a mapwide check (for part clear)
+			hiddenRoutes[key].unlockRules.checkGimmickSteps();
+		} 
+		
 		if (hiddenRoutes[key].unlockRules && hiddenRoutes[key].unlockRules.gimmickDone()) {
 			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
 			return key;
