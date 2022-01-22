@@ -76,6 +76,16 @@ function ChBonusesParameters () {
     this.diff = null;
 
     this.amountPerLevel = 0;
+
+    /**
+     * Required flagship id to apply bonus
+     */
+    this.requiredFlagshipId = [];
+
+    /**
+     * Required flagship type to apply bonus
+     */
+    this.requiredFlagshipType = [];
 }
 
 /**
@@ -815,6 +825,24 @@ ChBonuses.CheckIfCanBeApplied = (parameters) => {
         let diff = getDiff();
 
         if (!parameters.diff.includes(diff)) return false;
+    }
+
+    if (parameters.requiredFlagshipId) {
+        let ships = ChBonuses.GetBonusShips(parameters);
+
+        // --- Check the flagship
+        let flagId = getBaseId(ships[0].mid);
+
+        if (!parameters.requiredFlagshipId.includes(flagId)) return false;
+    }
+
+    if (parameters.requiredFlagshipType) {
+        let ships = ChBonuses.GetBonusShips(parameters);
+
+        // --- Check the flagship
+        let flagType = ships[0].type;
+
+        if (!parameters.requiredFlagshipType.includes(flagType)) return false;
     }
 
     return true;
