@@ -91,7 +91,7 @@ function ChRule () {
     this.getSpecialCount = (countObject) => {
         if (typeof(countObject) == 'number') return countObject;
 
-        let diff = getDiff();
+        let diff = getDiff(3);
         return countObject[diff];
     }
 
@@ -133,7 +133,7 @@ function ChRule () {
             return this.LOS;
         } else {
             // --- Multiple diffs
-            let diff = getDiff();
+            let diff = getDiff(3);
 
             return this.LOS[diff];
         }
@@ -597,7 +597,7 @@ function ChRule () {
             }
 
             case 'difficulty': {
-                return this.difficulties.includes(getDiff()) ? this.conditionCheckedNode : this.conditionFailedNode;
+                return this.difficulties.includes(getDiff(3)) ? this.conditionCheckedNode : this.conditionFailedNode;
             }
             
             case 'debuff': {

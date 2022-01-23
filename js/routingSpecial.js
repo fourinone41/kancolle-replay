@@ -256,6 +256,21 @@ function ChFlagshipIdRoutingRule(shipId, conditionCheckedNode, conditionFailedNo
     return rule;
 }
 
+function ChFlagshipTypeRoutingRule(shipTypes, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChShipTypeRoutingRule(shipTypes, '>', 0, conditionCheckedNode, conditionFailedNode);
+
+    rule.getDescription = function () {
+        return `Flagship is ${shipTypes.join(' or ')}`;
+    };
+
+    rule.getRouting = function (ships) {
+        let s = CHDATA.ships[CHDATA.fleets[1][0]];
+		return shipTypes.indexOf(SHIPDATA[s.masterId].type) != -1 ? conditionCheckedNode : conditionFailedNode;
+    }
+
+    return rule;
+}
+
 /**
  * 
  * @param {*} operator 
@@ -512,6 +527,45 @@ function ChNodeReplacedAfterUnlockRule(baseRule, routeNum, node1, node2) {
 
         return node;
     }
+
+    return rule;
+}
+
+/**
+ * Rule that check if flagship has a specific tag
+ */
+function ChFlagshipHasTag(tags, conditionCheckedNode, conditionFailedNode) {
+    
+    let rule = new ChRule();
+
+    rule.type = "custom";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.getRouting = (ships) => {
+        let s = CHDATA.ships[CHDATA.fleets[1][0]];
+        
+        if (rule.not) return !tags.includes(s.lock) ? conditionCheckedNode: conditionFailedNode;
+        return tags.includes(s.lock) == tag ? conditionCheckedNode: conditionFailedNode;
+    }
+
+    rule.getDescription = () => {
+        let tagList = tags.map(x => `<img src="assets/maps/lock${x}.png" />`);
+        return `Flagship ${rule.not ? 'doesn\'t have' : 'has'} the following shiplock(s) : ${tagList.join(' ')}`;
+    }
+
+    return rule;
+}
+
+/**
+ * Rule that check if flagship don't have specific tags
+ */
+ function ChFlagshipDontHaveTag(tags, conditionCheckedNode, conditionFailedNode) {
+    
+    let rule = ChFlagshipHasTag(tags, conditionCheckedNode, conditionFailedNode);
+    
+    rule.not = true;
 
     return rule;
 }

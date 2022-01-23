@@ -33229,7 +33229,8 @@ function checkRoute(id) {
 	return CHDATA.event.maps[MAPNUM].routes.indexOf(id) != -1;
 }
 
-function getDiff() {
+function getDiff(defaultValue) {
+	if (!CHDATA.event.maps[MAPNUM].diff) return defaultValue;
 	return CHDATA.event.maps[MAPNUM].diff;
 }
 

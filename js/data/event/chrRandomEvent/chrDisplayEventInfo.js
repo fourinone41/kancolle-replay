@@ -1131,8 +1131,16 @@ class ChrDisplayEventInfo {
             let bonusLine = $("<tr>");
             let bonusGroupColumn = null;
 
-            if (currentBonus.type == 'ChShipIdsBonuses')
-                bonusGroupColumn = $(`<td class="bonus-group">${currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</td>`);
+            if (currentBonus.type == 'ChShipIdsBonuses') {
+                // --- defined classes
+                if (currentBonus.bonuses[0].classIds && typeof(currentBonus.bonuses[0].classIds) == 'string' && currentBonus.bonuses[0].classIds.split('.')[0] == 'class') {
+                    let shipClass = ChShipClassBonuses.ShipClasses[currentBonus.bonuses[0].classIds.split('.')[1]];
+                    bonusGroupColumn = $(`<td class="bonus-group">${shipClass.name}</td>`);
+                }
+                else {
+                    bonusGroupColumn = $(`<td class="bonus-group">${currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</td>`);
+                }
+            }
             else if (currentBonus.type == 'ChShipTypeBonuses') {
                 bonusGroupColumn = $(`<td class="bonus-group">${currentBonus.ids.join(', ')}</td>`)
                 

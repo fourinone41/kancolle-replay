@@ -169,6 +169,8 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
  */
  function ChShipClassBonuses(parameters, classIds, amount) {
 
+    this.classIds = classIds;
+
     this.parameters = parameters;
 
     this.bonusType = 'ChShipIdsBonuses';
@@ -230,6 +232,23 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
 
                 ships = getShipsIdsFromClass(ships);
                 
+                return ships;
+            }
+        }
+
+        if (type == 'class') {
+            this.getShipIds = () => {
+
+                if (ships) return ships; 
+                
+                ships = ChShipClassBonuses.ShipClasses;
+
+                while (accessToShipIds.length) {
+                    ships = ships[accessToShipIds.shift()];
+                }
+
+                ships = getShipsIdsFromClass(ships.ids);
+
                 return ships;
             }
         }
@@ -950,3 +969,14 @@ ChBonuses.ApplyBonusToShip = function (ship, amount, parameters) {
     }
 
 }
+
+ChShipClassBonuses.ShipClasses = {
+    'IJN_CL': {
+        ids: [4,16,20,21,34,41,52,56],
+        name: 'IJN CLs'
+    },
+    'IJN_DD': {
+        ids: [1,5,10,12,18,22,23,28,30,38,54,66,101],
+        name: 'IJN DDs'
+    }
+};
