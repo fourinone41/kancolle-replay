@@ -1068,6 +1068,7 @@ class ChrDisplayEventInfo {
             if (!compareArrays(bonus.parameters.excludeSpecificShips, group.excludeShips)) return false;
             if (!compareArrays(bonus.parameters.requiredFlagshipId, group.requiredFlagshipId)) return false;
             if (!compareArrays(bonus.parameters.requiredFlagshipType, group.requiredFlagshipType)) return false;
+            if (group.bonuslessShipsOnly != bonus.parameters.bonuslessShipsOnly) return false;
 
             let ids = bonus.getIds();
                         
@@ -1113,6 +1114,7 @@ class ChrDisplayEventInfo {
                         excludeShips: bonus.parameters.excludeSpecificShips,
                         requiredFlagshipId: bonus.parameters.requiredFlagshipId,
                         requiredFlagshipType: bonus.parameters.requiredFlagshipType,
+                        bonuslessShipsOnly: bonus.parameters.bonuslessShipsOnly
                     });
                 }
             }
@@ -1203,18 +1205,6 @@ class ChrDisplayEventInfo {
                     </td>`
                 )
             } 
-            else if (currentBonus.type == 'ChCustomBonusEffects') {
-                
-                let ships = currentBonus.ids == -1 ? 'All ships' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
-                
-                bonusGroupColumn = $(`
-                    <td class="bonus-group">
-                        ${currentBonus.debuffOnly ? 'Effects after completing the debuff :<br><br>' : ''} 
-                        ${ships}
-                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
-                    </td>`
-                )
-            }
             else if (currentBonus.type == 'ChEquipTypesComboBonuses') {
                 
                 let typeNames = [];
@@ -1249,6 +1239,18 @@ class ChrDisplayEventInfo {
                     Whole fleet
                 </td>`)
             }
+            else if (currentBonus.type == 'ChCustomBonusEffects') {
+                
+                let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
+                
+                bonusGroupColumn = $(`
+                    <td class="bonus-group">
+                        ${currentBonus.debuffOnly ? 'Effects after completing the debuff :<br><br>' : ''} 
+                        ${ships}
+                        ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}
+                    </td>`
+                )
+            }
             else 
                 bonusGroupColumn = $(`<td class="bonus-group"></td>`);
 
@@ -1264,6 +1266,10 @@ class ChrDisplayEventInfo {
 
                 if (currentBonus.requiredFlagshipType) {
                     bonusGroupColumn.append(`<br>If flagship is ${currentBonus.requiredFlagshipType.join(",")}`);
+                }
+
+                if (currentBonus.bonuslessShipsOnly) {
+                    bonusGroupColumn.append(` (ships without bonus only)`);
                 }
             }
 
@@ -1310,7 +1316,7 @@ class ChrDisplayEventInfo {
                             if (currentBonus.parameters.diff) infos.push(`${currentBonus.parameters.diff.map(x => this.GetDiffText(x)).join(', ')} only`);
 
                             if (currentBonus.parameters.debuffOnly) bonusCellPart.append(`<span>After debuff : x${currentBonus.amount} ${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
-                            else bonusCellPart.append(`<span>x${currentBonus.amount} ${amountPerLevelInfo}${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
+                            else if (currentBonus.amount != null) bonusCellPart.append(`<span>x${currentBonus.amount} ${amountPerLevelInfo}${infos.length ? `(${infos.join(', ')})` : ''}</span>`);
                         }
 
                         bonusCell.append(bonusCellPart);

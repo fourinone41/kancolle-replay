@@ -57,6 +57,16 @@ function ChBonusesParameters () {
      */
     this.flatAccBonus = 0;
 
+    /**
+     * If true, bonus only applies to bonusless ships
+     */
+    this.bonuslessShipsOnly = false;
+
+    /**
+     * Flat evasion bonus
+     */
+    this.flatEvBonus = 0;
+
     this.evBonus = 0;
 
     this.exactMId = false;
@@ -803,14 +813,16 @@ ChBonuses.GetBonusShips = (parameters) => {
 
     if (parameters.friendFleetOnly) {
         if (CHDATA.sortie.fleetFriendAir) {
-            return CHDATA.sortie.fleetFriendAir.ships;
+            ships = CHDATA.sortie.fleetFriendAir.ships;
+        } else if (CHDATA.sortie.fleetFriend) {
+            ships = CHDATA.sortie.fleetFriend.ships;
+        } else  {
+            ships = [];
         }
+    }
 
-        if (CHDATA.sortie.fleetFriend) {
-            return CHDATA.sortie.fleetFriend.ships;
-        }
-
-        return [];
+    if (parameters.bonuslessShipsOnly) {
+        ships = ships.filter(x => !x.bonusSpecial);
     }
 
     return ships;
@@ -944,10 +956,14 @@ ChBonuses.ApplyBonusToShip = function (ship, amount, parameters) {
 
     if (parameters.type == 'add') {
         if (!ship.bonusSpecial) ship.bonusSpecial = [];
-        ship.bonusSpecial.push(bonusToApply);
+        if (amount) ship.bonusSpecial.push(bonusToApply);
         
         if (parameters.flatAccBonus) {
             ship.ACC = ship.ACC + parameters.flatAccBonus || parameters.flatAccBonus;
+        }
+
+        if (parameters.flatEvBonus) {
+            ship.bonusEvFlat = ship.bonusEvFlat + parameters.flatEvBonus || parameters.flatEvBonus;
         }
 
         if (parameters.accBonus) {
@@ -962,8 +978,9 @@ ChBonuses.ApplyBonusToShip = function (ship, amount, parameters) {
     }
 
     if (parameters.type == 'set') {
-        ship.bonusSpecial = [bonusToApply];
+        if (amount) ship.bonusSpecial = [bonusToApply];
         if (parameters.flatAccBonus) ship.ACC = ship.ACC + parameters.flatAccBonus || parameters.flatAccBonus;
+        if (parameters.flatEvBonus) ship.bonusEvFlat = parameters.flatEvBonus;
         if (parameters.accBonus) ship.bonusSpecialAcc = [{ mod: parameters.accBonus }];
         if (parameters.evBonus) ship.bonusSpecialEv = [{ mod: parameters.evBonus }];
     }
