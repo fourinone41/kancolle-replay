@@ -278,6 +278,10 @@ function ChGimmick(parameters) {
 
     this.needLBAS = parameters.needLBAS;
 
+    this.type = parameters.type;
+
+    this.partToClear = parameters.partToClear;
+
     /**
      * Returns true if this part of the gimmick is done
      */
