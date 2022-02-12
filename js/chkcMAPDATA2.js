@@ -26138,9 +26138,9 @@ var MAPDATA = {
 						y: 193,
 						raid: true,
 						distance: 3,
-						get end(){
-							return CHDATA.event.maps[2].part === 1;
-						},
+						endRules: [
+							ChMapPartRuleOld('=', 1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('K')
 						],
@@ -26495,9 +26495,9 @@ var MAPDATA = {
 						x: 305,
 						y: 308,
 						subonly: true,
-						get end(){
-							return CHDATA.event.maps[3].part === 1;
-						},
+						endRules: [
+							ChMapPartRuleOld('=', 1, true),
+						],
 						distance: 6,
 						compDiff: {
 							3: ['Hard 1','Hard 2','Hard 3','Hard 4','Hard 5'],
@@ -26929,9 +26929,9 @@ var MAPDATA = {
 						type: 1,
 						x: 391,
 						y: 176,
-						get end(){
-							return CHDATA.event.maps[4].routes.indexOf(2) === -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						distance: 4,
 						compDiff: {
 							3: ['Hard 1','Hard 2','Hard 3'],
@@ -26971,9 +26971,9 @@ var MAPDATA = {
 						type: 1,
 						x: 298,
 						y: 280,
-						get end(){
-							return CHDATA.event.maps[4].routes.indexOf(1) === -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						distance: 5,
 						compDiff: {
 							3: ['Hard 1','Hard 2','Hard 3','Hard 4'],
@@ -27196,9 +27196,9 @@ var MAPDATA = {
 						x: 90,
 						y: 243,
 						subonly: true,
-						get end(){
-							return CHDATA.event.maps[4].routes.indexOf(3) === -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						hidden: 1,
 						distance: 8,
 						compDiff: {
@@ -27584,9 +27584,9 @@ var MAPDATA = {
 						x: 295,
 						y: 110,
 						distance: 4,
-						get end(){
-							return CHDATA.event.maps[5].routes.indexOf(2) === -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						compDiff: {
 							3: ['Hard 1','Hard 2','Hard 3'],
 							2: ['Medium 1','Medium 2','Medium 3'],
@@ -28717,9 +28717,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2','Casual 3'],
 						},
-						get end() {
-							return CHDATA.event.maps[2].routes.indexOf(1) === -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('L')
 						]
@@ -29301,9 +29301,9 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3','Easy 4'],
 							4: ['Casual 1','Casual 2','Casual 3'],
 						},
-						get end() {
-							return CHDATA.event.maps[3].routes.indexOf(1) === -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('T')
 						]
@@ -32563,9 +32563,12 @@ var MAPDATA = {
 						rules: [
 							ChFixedRoutingRule('J3')
 						],
-						get end() {
-							return CHDATA.event.maps[5].routes.indexOf(2) == -1;
-						}
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
+						endRules: [
+							ChMapPartRuleOld('=', 1, true),
+						],
 					},
 					'F': {
 						type: 1,

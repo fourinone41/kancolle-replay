@@ -84,7 +84,12 @@ ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, curre
 }
 
 ChrRandomizeEventHelper.MakeShipTypeRouting.types = ['DD', 'CL', 'BB', 'CV'];
-ChrRandomizeEventHelper.MakeShipTypeRouting.changes = ["++min", '--min', '++max', '--max'];
+ChrRandomizeEventHelper.MakeShipTypeRouting.changes = [
+    "++min", 
+    //'--min', 
+    //'++max', 
+    '--max'
+];
 
 /**
  * 

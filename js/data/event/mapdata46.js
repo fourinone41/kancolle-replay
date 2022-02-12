@@ -620,9 +620,9 @@ MAPDATA[46] =
 						type: 3,
 						x: 266,
 						y: 310,
-						get end() {
-							return CHDATA.event.maps[1].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('J')
 						]
@@ -1360,9 +1360,9 @@ MAPDATA[46] =
 						x: 192,
 						y: 136,
 						distance: 5,
-						get end() {
-							return CHDATA.event.maps[3].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						showLoSPlane: 'O',
 						rules: [
 							ChLOSRule({
@@ -2186,9 +2186,9 @@ MAPDATA[46] =
 							1: {'Easy 3':100},
 							4: {'Casual 2':100},
 						},
-						get end() {
-							return CHDATA.event.maps[5].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChLOSCheckIfRuleChecked({
 								3: { 66: 'L', 60: 'M' },
@@ -2787,9 +2787,9 @@ MAPDATA[46] =
 							1: {'Easy 1':25,'Easy 2':25,'Easy 3':25,'Easy 4':25},
 							4: {'Casual 1':35,'Casual 2':35,'Casual 3':30},
 						},
-						get end() {
-							return CHDATA.event.maps[6].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChLOSCheckIfRuleChecked({
 								3: { 105: 'R', 98: 'T' },

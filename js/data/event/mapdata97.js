@@ -208,6 +208,13 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
         case "routeSelect":
             return ChSelectRouteRule(ruleToConvert.routeSelect);
 
+        case "mapPart":
+            return ChMapPartRuleOld(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            
+        case "isRouteUnlocked":
+            if (ruleToConvert.not) return ChIsRouteNotUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            return ChIsRouteUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
         case "default":
             return ChDefaultRouteRule(ruleToConvert.conditionCheckedNode);
 
@@ -238,6 +245,16 @@ MAPDATA[97].loadNodeFromChData = function (nodeData) {
     }
 
     nodeData.rules = rules;
+    
+    if (nodeData.endRules) {
+        let endRules = [];
+
+        for (const rule of nodeData.endRules) {
+            endRules.push(MAPDATA[97].convertRule(rule))
+        }
+
+        nodeData.endRules = endRules;
+    }
 }
 
 /**

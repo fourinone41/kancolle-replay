@@ -485,9 +485,9 @@ var MAPDATA45 = {
 							1: {'Easy 1':35,'Easy 2':30,'Easy 3':15,'Easy 4':10,'Easy 5':10},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
 						},
-						get end() {
-							return CHDATA.event.maps[1].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('N')
 						]
@@ -1546,9 +1546,9 @@ var MAPDATA45 = {
 							
 							ChLOSRule({ 42: 'R', 30: 'S' })
 						],
-						get end() {
-							return CHDATA.event.maps[3].routes.indexOf(2) == -1;
-						}
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 					},
 					'L': {
 						type: 3,
