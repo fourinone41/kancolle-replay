@@ -590,7 +590,7 @@ var NOTES_SPECIAL = {
 	'51-1_normal': 'Note: Slots 1 to 6 order unclear',
 	'51-2_normal': 'Note: Replacements unclear',
 	'51-2_boss': 'Note: Nelson/Kongou slots are limited to 1 dupe Nelson? Nelson/Naka slots are limited to 0 dupe Nelsons?',
-	'53-2_boss': '(WIP)<br>Note: Additional 6 梅/那珂 slots "above" the table. On LD comps S-rank only, apply -6 to offset. (Effect: Lowest 6 slots cannot be rolled, "replaced" by 6 higher slots normally outside the window.)',
+	'53-2_boss': '(WIP)<br>Note: On LD comps S-rank only, applies -6 to offset. (Effect: Lowest 6 slots cannot be rolled, "replaced" by 6 higher slots normally outside the window.)',
 };
 
 // })();
