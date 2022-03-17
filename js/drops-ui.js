@@ -6,6 +6,7 @@ var RANKOFFSET = { 'S':0, 'A':20, 'B': 50 };
 var HLTYPE, SDZ = 1.25;
 var DATAOUT;
 var GROUPREPLACEMENTS;
+const NUMROWS = 110;
 
 $('#divNode').hide();
 $('#spanPoiLoad').hide();
@@ -14,11 +15,16 @@ $('#radHL'+(HLTYPE = +localStorage.drops_hl || 1)).prop('checked',true);
 if (localStorage.drops_group == null) localStorage.drops_group = 1;
 $('#chkGroup').prop('checked',GROUPREPLACEMENTS = !!+localStorage.drops_group);
 
-for (let i=0; i<100; i++) {
+for (let i=0; i<NUMROWS; i++) {
 	$('#tabDrops').append('<tr id="trDrops'+i+'"><td>'+(i+1)+'</td><td id="tdDropsName'+i+'"></td><td><img id="imgDrops'+i+'" src="" /></td><td><img id="imgDropsR'+i+'" src="" /></td></tr>');
 	$('#trDrops'+i).hide();
 }
 
+
+function getCompOffset(comp,rank) {
+	if (rank == 'S' && comp.geth_clear != null) return comp.geth_clear;
+	return comp.geth;
+}
 
 function htmlCreateEnemyComp(compId) {
 	let e = $('<div id="divEnemyComp'+compId+'"></div>');
@@ -32,9 +38,9 @@ function htmlCreateEnemyComp(compId) {
 	
 	$('#inpComp'+compId).change(function() {
 		COMPID = compId;
-		let offset = MAPENEMY[CELLID].comp[COMPID].geth;
+		let offset = getCompOffset(MAPENEMY[CELLID].comp[COMPID],RANK);
 		if (offset >= 0) {
-			tableHighlightRank(offset);
+			tableHighlightRank(MAPENEMY[CELLID].comp[COMPID].geth);
 			tableOutlinePool(offset + RANKOFFSET[RANK]);
 		}
 		changeRates();
@@ -77,7 +83,7 @@ for (let letter of ['S','A','B']) {
 	$('#inpRank'+letter).change(function() {
 		RANK = letter;
 		if (COMPID) {
-			let offset = MAPENEMY[CELLID].comp[COMPID].geth;
+			let offset = getCompOffset(MAPENEMY[CELLID].comp[COMPID],RANK);
 			if (offset >= 0) {
 				offset += RANKOFFSET[letter];
 				tableOutlinePool(offset);
@@ -167,7 +173,7 @@ function changeTable(prop) {
 		$('#spanNoteMap').parent().hide();
 	}
 	if (!SHIPGET || !MAPENEMY) return;
-	for (let i=0; i<100; i++) {
+	for (let i=0; i<NUMROWS; i++) {
 		if (i < SHIPGET[prop].ships.length) {
 			let mid = SHIPGET[prop].ships[i];
 			$('#trDrops'+i).show();
@@ -224,6 +230,9 @@ function changeNode(cellId) {
 		}
 		$('#divEnemyComp'+compId).show();
 		$('#divEnemyCompOffset'+compId).text((comp.geth >= 0)? comp.geth : '?');
+		if (comp.geth_clear != null) {
+			$('#divEnemyCompOffset'+compId).text(comp.geth + ' (' + comp.geth_clear + ')');
+		}
 		let ships = comp.ship.slice();
 		if (comp.shipC) ships = ships.concat(comp.shipC);
 		for (let i=0; i<12; i++) {
@@ -255,7 +264,7 @@ function changeNode(cellId) {
 
 function changeRates() {
 	if (!COMPID) return;
-	let offset = MAPENEMY[CELLID].comp[COMPID].geth;
+	let offset = getCompOffset(MAPENEMY[CELLID].comp[COMPID],RANK);
 	if (offset < 0) offset = 100;
 	offset += RANKOFFSET[RANK];
 	let prop = ($('input[name=radGroup]:checked').val() == '1')? 'normal' : 'boss';
@@ -464,7 +473,7 @@ function tableHighlightRank(offset) {
 	
 	if (offset == null) return;
 	
-	for (let i=offset; i<100; i++) {
+	for (let i=offset; i<NUMROWS; i++) {
 		if (i < offset+20) {
 			$('#trDrops'+i).addClass('rankS');
 		} else if (i < offset+50) {
@@ -484,7 +493,7 @@ function tableOutlinePool(offset) {
 	
 	if (offset == null) return;
 	
-	for (let i=offset; i<100; i++) {
+	for (let i=offset; i<NUMROWS; i++) {
 		if (i == offset) {
 			if (i == 0) {
 				$('#trDrops'+i).addClass('outlineTop');
@@ -590,7 +599,7 @@ var NOTES_SPECIAL = {
 	'51-1_normal': 'Note: Slots 1 to 6 order unclear',
 	'51-2_normal': 'Note: Replacements unclear',
 	'51-2_boss': 'Note: Nelson/Kongou slots are limited to 1 dupe Nelson? Nelson/Naka slots are limited to 0 dupe Nelsons?',
-	'53-2_boss': '(WIP)<br>Note: On LD comps S-rank only, applies -6 to offset. (Effect: Lowest 6 slots cannot be rolled, "replaced" by 6 higher slots normally outside the window.)',
+	'53-2_boss': 'Note: On LD comps S-rank (and A/B clears?) only, applies -6 to offset. (Effect: Lowest 6 slots cannot be rolled, "replaced" by 6 higher slots normally outside the window.)',
 };
 
 // })();
