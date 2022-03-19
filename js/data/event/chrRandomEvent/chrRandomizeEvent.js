@@ -48,33 +48,48 @@ ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, curre
         }
 
         if (allowed) {
+            let min = 999;
+            let max = 0;
+
             for (const fleetType of Object.values(path.nodeData.fleetsTypes).filter(x => x.canReach).map(x => x.ships)) {
 
                 switch (change) {
                     case "++min":
                         fleetType[type].IncreaseMin(number);
-                        currentRulesArray.push(ChShipTypeRoutingRule([type], '>=', fleetType[type].min, destination.node));
                         break;
 
                         
                     case "--min":
                         fleetType[type].DecreaseMin(number);
-                        currentRulesArray.push(ChShipTypeRoutingRule([type], '>=', fleetType[type].min, destination.node));
                         break;
 
                         
                     case "++max":
                         fleetType[type].IncreaseMax(number);
-                        currentRulesArray.push(ChShipTypeRoutingRule([type], '<=', fleetType[type].max, destination.node));
                         break;
 
                         
                     case "--max":
                         fleetType[type].DecreaseMax(number);
-                        currentRulesArray.push(ChShipTypeRoutingRule([type], '<=', fleetType[type].max, destination.node));
                         break;
                 }
+                
+                min = fleetType[type].min < min ? fleetType[type].min : min;
+                max = fleetType[type].max > max ? fleetType[type].max : max;
             }    
+
+            switch (change) {
+                case "++min":
+                case "--min":
+                    currentRulesArray.push(ChShipTypeRoutingRule([type], '>=', min, destination.node));
+                    break;
+
+                    
+                case "++max":
+                case "--max":
+                    currentRulesArray.push(ChShipTypeRoutingRule([type], '<=', max, destination.node));
+                    break;
+            }
             
 
             return;   
