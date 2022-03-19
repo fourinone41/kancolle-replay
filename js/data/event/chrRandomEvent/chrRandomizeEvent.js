@@ -98,13 +98,58 @@ ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, curre
     }
 }
 
-ChrRandomizeEventHelper.MakeShipTypeRouting.types = ['DD', 'CL', 'BB', 'CV'];
+ChrRandomizeEventHelper.MakeShipTypeRouting.types = [
+    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
+    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
+    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
+    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
+    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL', 'DE', 'SS'
+];
 ChrRandomizeEventHelper.MakeShipTypeRouting.changes = [
     "++min", 
     //'--min', 
     //'++max', 
     '--max'
 ];
+
+ChrRandomizeEventHelper.RuleReturnValue = {
+    cantApply: false,
+    pathWontHaveFleet: 0
+};
+
+/**
+ * 
+ * @param {ChrRandomizeEventHelper.PathObject} path 
+ * @param {ChrRandomizeEventHelper.PathObject} destination 
+ * @param {ChRule[]} currentRulesArray 
+ */
+ChrRandomizeEventHelper.MakeFleetTypeRouting = function (path, destination, currentRulesArray) {
+
+    let possibleFleetTypes = [];
+
+    for (const type in destination.nodeData.fleetsTypes) {
+        if (destination.nodeData.fleetsTypes[type].canReach) possibleFleetTypes.push(type);
+
+        destination.nodeData.fleetsTypes[type].canReach = false;
+    }
+    
+    if (possibleFleetTypes.length <= 1) return {
+        cantApply: true,
+    };
+
+
+    const fleetType = ChrRandomizeEventHelper.GetRandomElementFromArray(possibleFleetTypes);
+
+    // --- This fleet can go this path
+    destination.nodeData.fleetsTypes[fleetType].canReach = true;
+
+    currentRulesArray.push(ChFleetTypeRule([parseInt(fleetType)], destination.node));
+
+    // --- Other paths wont have this fleet (path cross handled ?)    
+    return {
+        pathWontHaveFleet: fleetType
+    };
+}
 
 /**
  * 
@@ -134,6 +179,13 @@ ChrRandomizeEventHelper.MakeFixedRouting = function (path) {
     path.nodeData.rules = [ChFixedRoutingRule(path.paths[0].node)];
 }
 
+
+/**
+ * @type {{
+    *  rule: (path : ChrRandomizeEventHelper.PathObject, destination: ChrRandomizeEventHelper.PathObject, currentRulesArray: ChRule[]) => ChrRandomizeEventHelper.RuleReturnValue
+ *     weight: Number
+ * }[]}
+ */
 ChrRandomizeEventHelper.PossibleRules = [
     {
         rule: ChrRandomizeEventHelper.MakeShipTypeRouting,
@@ -251,20 +303,67 @@ ChrRandomizeEventHelper.RandomizeArray = function (array) {
  ChrRandomizeEventHelper.CreateStartRules = function (mapData, startPaths) {
 
     const rules = [];
-    const possibleFleets = [...mapData.fleetTypes];
+    let possibleFleets = [...mapData.fleetTypes];
+
+    for (const path of startPaths) {
+        for (const fleetType of possibleFleets) {
+            path.nodeData.fleetsTypes[fleetType].canReach = true;
+        }
+    }
 
     if (startPaths.length == 1) {
-
-        for (const fleetType of possibleFleets) {
-            startPaths[0].nodeData.fleetsTypes[fleetType].canReach = true;
-        }
 
         return [ChFixedRoutingRule(startPaths[0].node)];
     } 
 
-    for (const path of startPaths) {
-        
+    const possibleRulesWithWeight = [];
+
+    for (const rule of ChrRandomizeEventHelper.PossibleRules) {
+        for (let index = 0; index < rule.weight; index++) {
+            possibleRulesWithWeight.push(rule.rule);
+        }
     }
+
+    const getRandomRule = function () {
+        if (possibleFleets.length > 1 && Math.random() > 0.1) {
+            return ChrRandomizeEventHelper.MakeFleetTypeRouting;
+        }
+
+        const keys = Object.keys(possibleRulesWithWeight);
+
+        return possibleRulesWithWeight[Math.floor(Math.random() * keys.length)];
+    }
+
+    const nextPathWontHaveFleet = [];
+    const paths = [...startPaths].reverse();
+
+    while (paths.length > 1) {
+
+        const path = paths.pop();
+
+        for (const fleetType of nextPathWontHaveFleet) {
+            path.nodeData.fleetsTypes[fleetType].canReach = false;
+
+            possibleFleets = [];
+
+            for (const fleetType in path.nodeData.fleetsTypes) {
+                if (path.nodeData.fleetsTypes[fleetType].canReach) {
+                    possibleFleets.push(fleetType);
+                }
+            }
+        }
+
+        let rule = getRandomRule();
+        const ruleResult = rule(path, path, rules);
+
+        if (ruleResult && ruleResult.pathWontHaveFleet) {
+            nextPathWontHaveFleet.push(ruleResult.pathWontHaveFleet);
+        }
+    }
+
+    // --- Default start
+    const pathDefault = paths.pop();
+    rules.push(ChDefaultRouteRule(pathDefault.node));
 
     return rules;
 

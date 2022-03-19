@@ -230,6 +230,9 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
 
             return ChMultipleRulesRule(rulesArray, ruleToConvert.logicOperator, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
     
+        case "fleetType": 
+            return ChFleetTypeRule(ruleToConvert.fleetType, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
         default:
             console.debug(ruleToConvert);
             throw 'unhandled rule';
