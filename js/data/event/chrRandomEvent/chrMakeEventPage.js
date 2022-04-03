@@ -19,30 +19,33 @@ setTimeout(() => {
     checkEvents();
 }, 80);
 
+const FILE = localStorage.ch_file;
+var basic = JSON.parse(localStorage['ch_basic'+FILE]);
+var CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
 
 makeEventClass.InitMapButtons();
 makeEventClass.ChangeMap(1);
 
 function ChrRandomizeEvent() {
-    ChrRandomizeMap(48, 1).then((e1) => {
+    ChrRandomizeMap(basic.maps[1].world, 1).then((e1) => {
         saveMapData(1, e1);
 
-        ChrRandomizeMap(48, 2).then((e2) => {
+        ChrRandomizeMap(basic.maps[2].world, 2).then((e2) => {
 
             saveMapData(2, e2);
-            ChrRandomizeMap(48, 3).then((e3) => {
+            ChrRandomizeMap(basic.maps[3].world, 3).then((e3) => {
 
                 saveMapData(3, e3);
-                ChrRandomizeMap(48, 4).then((e4) => {
+                ChrRandomizeMap(basic.maps[4].world, 4).then((e4) => {
 
                     saveMapData(4, e4);
-                    ChrRandomizeMap(48, 5).then((e5) => {
+                    ChrRandomizeMap(basic.maps[5].world, 5).then((e5) => {
 
                         saveMapData(5, e5);
-                        ChrRandomizeMap(48, 6).then((e6) => {
+                        ChrRandomizeMap(basic.maps[6].world, 6).then((e6) => {
 
                             saveMapData(6, e6);
-                            ChrRandomizeMap(48, 7).then((e7) => {
+                            ChrRandomizeMap(basic.maps[7].world, 7).then((e7) => {
                                 saveMapData(7, e7);
                             });
                         });
@@ -103,7 +106,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
             if (node.includes('Start')) starts.push(node);
         }
     
-        let constructPaths = (node) => {
+        let constructPaths = (node, nodeFrom) => {
 
             checkLoop();
 
@@ -130,17 +133,37 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
             path.paths = [];
             let nodesDone = [];
-            
-            for (const rule of path.nodeData.rules) {
+
+            const constructPathOfPath = (rule) => {
                 let nextNode = rule.conditionCheckedNode || rule.fixedNode;
 
                 if (rule.type == 'routeSelect')  {
 
                     for (const selectNode of rule.routeSelect) {
-                        path.paths.push(constructPaths(selectNode));
+                        path.paths.push(constructPaths(selectNode, node));
                     }
 
-                    continue;
+                    return;
+                }
+
+                if (rule.type == 'random')  {
+
+                    for (const randomNode of Object.keys(rule.randomNodes)) {
+                        if (randomNode) path.paths.push(constructPaths(randomNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'ifthenelse')  {
+
+                    constructPathOfPath(rule.ifthenelse.then);
+
+                    if (rule.ifthenelse.else) {
+                        constructPathOfPath(rule.ifthenelse.else);
+                    }
+
+                    return;
                 }
 
                 if (!nextNode) {
@@ -148,18 +171,21 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
                     throw 'Error reading rule of node ' + node;
                 }
 
-                if (!nodesDone.includes(nextNode)) {
-                    path.paths.push(constructPaths(nextNode));
+                if (!nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
                     nodesDone.push(nextNode);
                 }
 
                 nextNode = rule.conditionFailedNode;
 
-                if (nextNode && !nodesDone.includes(nextNode)) {
-                    path.paths.push(constructPaths(nextNode));
+                if (nextNode && !nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
                     nodesDone.push(nextNode);
                 }
-
+            }
+            
+            for (const rule of path.nodeData.rules) {
+                constructPathOfPath(rule);
             }
 
             return path;
@@ -261,6 +287,16 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
         }, map.nodes, abPossible);
     }
 
+    const makeBonuses = () => {
+
+        for (const node in map.nodes) {
+            const nodeData = map.nodes[node];
+            nodeData.bonuses = [];
+        }
+
+        ChrRandomizeBonuses.MakeBonusesFromNodes(paths);
+    }
+
     const delay = 100;
 
     return new Promise((resolve) => {
@@ -289,7 +325,13 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
                             setTimeout(() => {
                                 makeGimmicks();
                                 events.push(() => { loadObject.SetProgress("Gimmicks ready", 100, 3); });
-                                resolve(map);
+                                events.push(() => { loadObject.SetProgress("Creating bonuses", 100, 3); });
+                                
+                                setTimeout(() => {
+                                    makeBonuses();
+                                    events.push(() => { loadObject.SetProgress("Bonuses ready", 100, 3); });
+                                    resolve(map);
+                                }, delay);
                             }, delay);
     
                         }, delay);

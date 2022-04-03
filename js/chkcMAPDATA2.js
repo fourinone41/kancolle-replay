@@ -23675,6 +23675,7 @@ var MAPDATA = {
 								ChShipTypeRoutingRuleEscortOnly(['aBB'], '=', 0, 'S'),
 								ChShipTypeRoutingRule(['aBB', 'CV', 'CVB'], '<=', 4, 'S'),
 							], 'AND', 'S', 'P')),
+							ChDefaultRouteRule('T'),
 						]
 					},
 					'R': {

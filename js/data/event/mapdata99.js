@@ -638,6 +638,7 @@ const bossIds = [
     2047, 2048,                             // --- Airfield Princess
     2049,                                   // --- New SSH
     2053, 2054, 2055, 2056, 2057, 2058,     // --- Submarine Shark Water Demon
+    2084, 2085, 2086, 2087, 2088, 2089,     // --- Supply Depot Princess C
 
 	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
 ];
@@ -648,6 +649,7 @@ const strongEnemiesIds = [
     1895, 1896,                         // --- Ne kai 1 & 2
     1953, 1954,                         // --- Summer Ne kai 1 & 2
     2013, 2014,                         // --- Wa-Class B
+    2090,                               // --- Ne kai 4
 ];
     
 function chInitAbyssalTables () {

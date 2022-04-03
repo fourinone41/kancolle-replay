@@ -192,13 +192,31 @@ MAPDATA[97].loadUnlockFromChData = function (map) {
 }
 
 MAPDATA[97].loadStartBonusesFromChData = function (map) {
-    map.startBonus = [];
+    if (map.startBonus) delete map.startBonus;
 }
 
 MAPDATA[97].loadBonusesFromChData = function (nodeData) {
 
-    // --- TODO
-    nodeData.bonuses = [];
+    const bonuses = [];
+
+    if (!nodeData.bonuses) return;
+
+    for (const bonus of nodeData.bonuses) {
+        switch (bonus.bonusType) {
+            case 'ChShipIdsBonuses':
+                bonuses.push(new ChShipIdsBonuses(bonus.parameters, bonus.shipIds, bonus.amount));
+                break;
+
+            case 'ChShipTypeBonuses':
+                bonuses.push(new ChShipTypeBonuses(bonus.parameters, bonus.shipTypes, bonus.amount));
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    nodeData.bonuses = bonuses; 
 }
 
 /**

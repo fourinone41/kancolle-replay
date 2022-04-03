@@ -29468,7 +29468,7 @@ var SHIPDATA = {
 		SLOTS: [0, 0, 0, 0],
 		EQUIPS: [593, 593, 580, 580],
 	},
-	2059: {
+	/*2059: {
 		name: 'Hi Convoy Princess 1',
 		nameJP: 'ヒ船団棲姫',
 		image: 'S2059.jpg',
@@ -29978,7 +29978,7 @@ var SHIPDATA = {
 		SPD: 10,
 		SLOTS: [0, 0, 0, 0],
 		EQUIPS: [553, 553, 624, 603],
-	},
+	},*/
 	2084: {
 		name: 'Supply Depot Princess C 1',
 		nameJP: '集積地棲姫III',
