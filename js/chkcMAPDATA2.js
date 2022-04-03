@@ -33168,7 +33168,8 @@ function transportCalcStandard(ships,rank) {
 			if (eqd.type == LANDINGTANK) tp += 2;
 		}
 	}
-	tp = Math.floor(tp) * 10;
+	tp = Math.floor(tp);
+	if (RUSH_MODE == 1) tp *= 10;
 	if (rank == 'A') tp *= 0.7;
 	if (rank != 'S' && rank != 'A') return 0;
 	return Math.floor(tp);
@@ -33188,7 +33189,8 @@ function transportCalcFall15(ships,rank) {
 			if (eqd.type == LANDINGCRAFT) tp += 5.5;
 		}
 	}
-	tp = Math.floor(tp) * 10;
+	tp = Math.floor(tp);
+	if (RUSH_MODE == 1) tp *= 10;
 	if (rank == 'S') tp *= 1.5;
 	if (rank != 'S' && rank != 'A') return 0;
 	return Math.floor(tp);
