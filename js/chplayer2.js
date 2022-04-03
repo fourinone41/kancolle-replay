@@ -1,3 +1,10 @@
+// --- 1 => enemies have their normal stats
+// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
+// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
+// --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
+const RANDO_MODE = 4;
+const RUSH_MODE = 0;
+
 function InitUI() {
 	if (!CHDATA.event) return;
 	randomizeMaps();
@@ -1824,13 +1831,6 @@ function prepBattle(letter) {
 		enemyDiv.css('margin-right', '20px');
 		$('#enemyComp'+(combined ? 'C' : '')).append(enemyDiv);
 	}
-
-	// --- 1 => enemies have their normal stats
-	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
-	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
-	// --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
-	const RANDO_MODE = 4;
-	const RUSH_MODE = 0;
 
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
