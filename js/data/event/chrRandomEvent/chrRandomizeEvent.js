@@ -78,16 +78,32 @@ ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, curre
                 max = fleetType[type].max > max ? fleetType[type].max : max;
             }    
 
+            let finalType = [type];
+
+            switch (type) {
+                case "aDD":
+                    finalType = ['DD', 'DE'];
+                    break;
+                    
+                case "aSS":
+                    finalType = ['SS', 'SSV'];
+                    break;
+                    
+                case "aCA":
+                    finalType = ['CAV', 'CA'];
+                    break;
+            }
+
             switch (change) {
                 case "++min":
                 case "--min":
-                    currentRulesArray.push(ChShipTypeRoutingRule([type], '>=', min, destination.node));
+                    currentRulesArray.push(ChShipTypeRoutingRule(finalType, '>=', min, destination.node));
                     break;
 
                     
                 case "++max":
                 case "--max":
-                    currentRulesArray.push(ChShipTypeRoutingRule([type], '<=', max, destination.node));
+                    currentRulesArray.push(ChShipTypeRoutingRule(finalType, '<=', max, destination.node));
                     break;
             }
             
@@ -99,17 +115,17 @@ ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, curre
 }
 
 ChrRandomizeEventHelper.MakeShipTypeRouting.types = [
-    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
-    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
-    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
-    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL',
-    'DD', 'CL', 'BB', 'CV', 'CA', 'CVL', 'DE', 'SS'
+    'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'aDD', 'CAV',
+    'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'aDD', 'CA',
+    'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'aDD', 'LHA',
+    'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'aDD', 'AS',
+    'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'DE', 'aSS'
 ];
 ChrRandomizeEventHelper.MakeShipTypeRouting.changes = [
     "++min", 
     //'--min', 
     //'++max', 
-    '--max'
+    //'--max'
 ];
 
 ChrRandomizeEventHelper.RuleReturnValue = {
@@ -412,6 +428,17 @@ ChrRandomizeEventHelper.InitNodeData = function(nodeData) {
                 }
             }
         }
+    }
+}
+
+ChrRandomizeEventHelper.MakeEndRules = function(nodeData) {
+    
+    if (nodeData.rules.length == 0) {
+        return nodeData.end = true;
+    }
+
+    if (nodeData.hidden) {
+        nodeData.endRules = [ChIsRouteNotUnlockedRule(nodeData.hidden, true)];
     }
 }
 

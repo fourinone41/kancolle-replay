@@ -1210,25 +1210,27 @@ function mapPhase(first) {
 			end = rule.getRouting(CHSHIPCOUNT);
 	}
 
+	if (curnode.type == 3) {
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+			MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+		}
+
+		if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+			let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+	
+			for (var key in hiddenRoutes) {
+				key = parseInt(key);
+		
+				hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
+			}
+		}
+	}
+
 	if (end) {
 		if (curnode.dropoff || curnode.type == 3) {
 			if (curnode.debuffGive) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
-			}
-			
-			if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
-				MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
-			}
-
-			if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
-				let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
-		
-				for (var key in hiddenRoutes) {
-					key = parseInt(key);
-			
-					hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
-				}
 			}
 		}
 		if (curnode.dropoff) {

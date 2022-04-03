@@ -226,6 +226,41 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
         }
     }
 
+    const makeGimmicks = () => {
+
+        let unlockRequired = null;
+        let lastPart = null;
+
+        const abPossible = !!map.enemyRaid;
+
+        for (const part in map.hiddenRoutes) {
+
+            let partRequired = null;
+
+            if (map.hiddenRoutes[part].unlockRules && map.hiddenRoutes[part].unlockRules.mapPartNumber) partRequired = map.hiddenRoutes[part].unlockRules.mapPartNumber - 1;
+            if (map.hiddenRoutes[part].unlockRules) {
+                const unlockRule = map.hiddenRoutes[part].unlockRules.gimmicks.find(gimmick => gimmick.type == "PartClear");
+
+                if (unlockRule) partRequired = unlockRule.additionnalParameters.partToClear;
+            }
+
+            map.hiddenRoutes[part].unlockRules = ChrRandomizeGimmicks.RandomizeGimmicks("mapPart", mapNumber, {
+                partToUnlock: part,
+                mapPartRequired : partRequired,
+                routeUnlockRequired: unlockRequired
+            }, map.nodes, abPossible);
+
+            unlockRequired = part;
+            lastPart = partRequired && partRequired > lastPart ? partRequired : lastPart;
+        }
+
+        map.debuffRules = ChrRandomizeGimmicks.RandomizeGimmicks("debuff", mapNumber, {
+            partToUnlock: lastPart,
+            mapPartRequired : lastPart,
+            routeUnlockRequired: unlockRequired
+        }, map.nodes, abPossible);
+    }
+
     const delay = 100;
 
     return new Promise((resolve) => {
@@ -243,12 +278,20 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
                 
                     setTimeout(() => {
                         makeStartRules();
+                        events.push(() => { loadObject.SetProgress("Start rules ready", 0, 3); });
                         events.push(() => { loadObject.SetProgress("Making routing", 10, 3); });
 
                         setTimeout(() => {
                             makeMapRouting();
                             events.push(() => { loadObject.SetProgress("Routing complete", 100, 3); });
-                            resolve(map);
+                            events.push(() => { loadObject.SetProgress("Creating gimmicks", 100, 3); });
+
+                            setTimeout(() => {
+                                makeGimmicks();
+                                events.push(() => { loadObject.SetProgress("Gimmicks ready", 100, 3); });
+                                resolve(map);
+                            }, delay);
+    
                         }, delay);
 
                     }, delay);

@@ -177,12 +177,18 @@ MAPDATA[97].loadStartCheckFromChData = function (map) {
 }
 
 MAPDATA[97].loadUnlockFromChData = function (map) {
-    map.hiddenRoutes = {};
-    // --- TODO
-
     for (const unlockKey in map.hiddenRoutes) {
-        
+
+        /**
+         * @type {ChGimmickList}
+         */
+        const gimmicks = map.hiddenRoutes[unlockKey].unlockRules;
+
+        map.hiddenRoutes[unlockKey].unlockRules = new ChGimmickList(gimmicks.type, gimmicks.mapPartNumber, gimmicks.mapNum, gimmicks.gimmickData, gimmicks.additionnalParameters);
     }
+
+    const debuff = map.debuffRules;
+    if (debuff) map.debuffRules = new ChGimmickList(debuff.type, debuff.mapPartNumber, debuff.mapNum, debuff.gimmickData, debuff.additionnalParameters);
 }
 
 MAPDATA[97].loadStartBonusesFromChData = function (map) {
@@ -261,7 +267,7 @@ MAPDATA[97].loadNodeFromChData = function (nodeData) {
 }
 
 /**
- * Returns a random bgm id (doesn't include 2001, 2, 1 because :) )
+ * Returns a random bgm id (doesn't include 2001, 2, 1)
  * @param {"map" | "battle" | "boss"} type 
  */
 function chrGetRandomBgm(type) {

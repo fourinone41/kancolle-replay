@@ -50,6 +50,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      * @type {ChGimmick[]}
      */
     this.gimmicks = [];
+    this.gimmickData = gimmickData;
 
     for (const gimmick of gimmickData) {
         if (mapNum) gimmick.mapnum = mapNum;
@@ -320,7 +321,7 @@ function ChGimmick(parameters) {
 
             parameters.getDescription = (diff) => {
                 if (!this.timesRequiredPerDiff[diff]) return '-';
-                return 'Reach';
+                return 'Reach' + (this.timesRequiredPerDiff[diff] > 1 ? (' x' + this.timesRequiredPerDiff[diff]) : '');
             }
             
             break;
