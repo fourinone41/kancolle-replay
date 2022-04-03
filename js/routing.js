@@ -1382,6 +1382,12 @@ function ChEquipTypeRule(equipData, operator, count, shipWithEquipCount, conditi
         rule.conditionCheckedNode = losArray[key][Math.max(...Object.keys(losArray[key]))];
     }
 
+    if (typeof(losArray[key]) == 'string') {
+        rule.conditionFailedNode = losArray[Math.min(...Object.keys(losArray))];
+    } else {
+        rule.conditionFailedNode = losArray[key][Math.min(...Object.keys(losArray[key]))];
+    }
+
     rule.LOS = losArray;
     rule.LOSCoef = coef ? coef : 1;
 
@@ -1405,6 +1411,7 @@ function ChEquipTypeRule(equipData, operator, count, shipWithEquipCount, conditi
     let rule = new ChIfThenElseRule(ruleToCheck, ChLOSRule(losArray, coef));
     
     rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = rule.ifthenelse.then.conditionFailedNode;
 
     rule.type = "ifthenelse";
 

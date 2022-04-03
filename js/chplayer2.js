@@ -1,3 +1,10 @@
+// --- 1 => enemies have their normal stats
+// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
+// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
+// --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
+const RANDO_MODE = 4;
+const RUSH_MODE = 0;
+
 function InitUI() {
 	if (!CHDATA.event) return;
 	randomizeMaps();
@@ -1201,25 +1208,36 @@ function mapPhase(first) {
 		CHDATA.sortie.reachedTransport = true;
 	}
 
-	if (curnode.end) {
+	let end = curnode.end;
+	
+	if (curnode.endRules) {
+		let rule = curnode.endRules[0];
+
+		if (rule.ruleCanBeChecked())
+			end = rule.getRouting(CHSHIPCOUNT);
+	}
+
+	if (curnode.type == 3) {
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
+			MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
+		}
+
+		if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
+			let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
+	
+			for (var key in hiddenRoutes) {
+				key = parseInt(key);
+		
+				hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
+			}
+		}
+	}
+
+	if (end) {
 		if (curnode.dropoff || curnode.type == 3) {
 			if (curnode.debuffGive) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
-			}
-			
-			if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
-				MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
-			}
-
-			if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
-				let hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
-		
-				for (var key in hiddenRoutes) {
-					key = parseInt(key);
-			
-					hiddenRoutes[key].unlockRules.checkGimmickSteps(curletter);
-				}
 			}
 		}
 		if (curnode.dropoff) {
@@ -1359,7 +1377,7 @@ function mapPhase2(nextletter, rule) {
 			eventqueue.push([mapSortieItems,[result]]);
 		}
 	}
-
+	
 	switch (nextnode.type) {
 		case 1: //battle
 			eventqueue.push([mapBattleNode,[mapship,nextletter]]);
@@ -1814,13 +1832,6 @@ function prepBattle(letter) {
 		$('#enemyComp'+(combined ? 'C' : '')).append(enemyDiv);
 	}
 
-	// --- 1 => enemies have their normal stats
-	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
-	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
-	// --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
-	const RANDO_MODE = 4;
-	const RUSH_MODE = 0;
-
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
 		var overrideStats = (MAPDATA[WORLD].overrideStats)? MAPDATA[WORLD].overrideStats[sid] : null;
@@ -1923,7 +1934,7 @@ function prepBattle(letter) {
 		friendFleets.air = CHDATA.sortie.fleetFriendAir = getFriendFleet(mapdata.friendFleetAir);
 	}
 	console.log(friendFleets);
-	
+
 	if (mapdata.bonuses) {
 		for (const bonus of mapdata.bonuses) {
 			bonus.applyBonuses();
@@ -2186,7 +2197,17 @@ function prepBattle(letter) {
 	eventqueue.push([shuttersPostbattle,[]]);
 	eventqueue.push([showResults,[]]);
 	shutterTop2.y = 0; shutterBottom2.y = 210;
-	if (!MAPDATA[WORLD].maps[MAPNUM].nodes[letter].end) {
+
+	let end = MAPDATA[WORLD].maps[MAPNUM].nodes[letter].end;
+	
+	if (MAPDATA[WORLD].maps[MAPNUM].nodes[letter].endRules) {
+		let rule = MAPDATA[WORLD].maps[MAPNUM].nodes[letter].endRules[0];
+
+		if (rule.ruleCanBeChecked())
+			end = rule.getRouting(CHSHIPCOUNT);
+	}
+
+	if (!end) {
 		if (FLEETS1[0].ships[0].hasFCF) eventqueue.push([FCFSelect,[]]);
 		eventqueue.push([continueSelect,[]]);
 		eventqueue.push([wait,[1000]]);
@@ -2197,7 +2218,17 @@ function prepBattle(letter) {
 }
 
 function prepMap() {
-	if (!MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].end) {
+
+	let end = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].end;
+	
+	if (MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].endRules) {
+		let rule = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].endRules[0];
+
+		if (rule.ruleCanBeChecked())
+			end = rule.getRouting(CHSHIPCOUNT);
+	}
+
+	if (!end) {
 		stage = STAGEMAP;
 		eventqueue = []; e = -1;
 		chResetMapSpritePos();
@@ -3293,7 +3324,7 @@ function getELoS33(fleet,coef,includeCombined) {
 	for (var i=0; i<ships.length; i++) {
 		var ship = CHDATA.ships[ships[i]];
 		if (!ship) continue;
-		if (CHDATA.sortie && FLEETS1[fleet-1] && FLEETS1[fleet-1].ships[i].retreated) continue;
+		if (CHDATA.sortie && FLEETS1[fleet-1] && FLEETS1[fleet-1].ships[i] && FLEETS1[fleet-1].ships[i].retreated) continue;
 		numShip++;
 		var shiplos = ship.LOS;
 		for (var j=0; j<ship.items.length; j++) {

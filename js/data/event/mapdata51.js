@@ -1178,9 +1178,9 @@ MAPDATA[51] =
 						y: 293,
 						distance: 5,
 						hidden: 2,
-						get end() {
-							return !checkRoute(3);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						rules: [
 							ChMultipleRulesRule([
 								ChShipTypeRoutingRule(['DD'], '>=', 3, 'T'),
@@ -1769,9 +1769,9 @@ MAPDATA[51] =
 								},
 							},
 						},
-						get end() {
-							return !checkRoute(2);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						routeC: function(ships) {
 							if (ships.c.SS + ships.c.SSV) return 'U';
 							if (ships.c.aBB + ships.c.aCV > 5) return 'U';
@@ -1876,9 +1876,9 @@ MAPDATA[51] =
 								},
 							},
 						},
-						get end() {
-							return !checkRoute(2);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						route: 'W'
 					},
 					'R': {
@@ -2122,9 +2122,9 @@ MAPDATA[51] =
 								},
 							},
 						},
-						get end() {
-							return !checkRoute(3);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						routeC: function(ships) {
 							this.showLoSPlane = null;
 							if (ships.speed < 15) {
@@ -3419,9 +3419,9 @@ MAPDATA[51] =
 								},
 							},
 						},
-						get end() {
-							return !checkRoute(3);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						routeC: function(ships) {
 							this.showNoCompass = true;
 							if (checkRoute(4)) {
