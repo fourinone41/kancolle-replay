@@ -204,7 +204,7 @@ MAPDATA[97].loadBonusesFromChData = function (nodeData) {
     for (const bonus of nodeData.bonuses) {
         switch (bonus.bonusType) {
             case 'ChShipIdsBonuses':
-                bonuses.push(new ChShipIdsBonuses(bonus.parameters, bonus.shipIds, bonus.amount));
+                bonuses.push(new ChShipIdsBonuses(bonus.parameters, bonus.shipIds.map(x => parseInt(x)), bonus.amount));
                 break;
 
             case 'ChShipTypeBonuses':

@@ -1849,7 +1849,16 @@ function prepBattle(letter) {
 
 				SHIPDATA[sid].HP = SHIPDATA[compd.originalComp.c[0]].HP;
 
-				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport && MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter) {
+				var currentBoss = false;
+				
+				if (MAPDATA[WORLD].maps[MAPNUM].currentBoss) currentBoss = MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter;
+				else {
+					var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode[0] : MAPDATA[WORLD].maps[MAPNUM].bossnode;
+					var letterboss = (typeof bossnum == 'string')? bossnum : String.fromCharCode(64+bossnum);
+					currentBoss = letterboss == letter;
+				}
+
+				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport && currentBoss) {
 					SHIPDATA[sid].HP = CHDATA.event.maps[MAPNUM].hp - 1;
 				}
 		
