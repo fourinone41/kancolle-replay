@@ -250,6 +250,30 @@ ChrRandomizeEventHelper.CreateRandomRules = function (previousNode, path) {
     // --- 5% chance of select routing
     if (Math.random() < 0.05) return ChrRandomizeEventHelper.MakeSelectNodeRouting(path);
 
+    // --- Before reset rules, check that there's no route unlock rule 
+    /**
+     * 
+     * @param {Nodedata} node 
+     * @returns 
+     */
+    const getUnlockRoute = (node) => {
+        for (const ruleToCheck of node.rules) {
+            if (ruleToCheck.type == "isRouteUnlocked") return ruleToCheck;
+
+            if (ruleToCheck.type == "multiRules") {
+                for (const multiRuleToCheck of ruleToCheck.rules) {
+                    if (multiRuleToCheck.type == "isRouteUnlocked") return multiRuleToCheck;
+                }
+            }
+
+        }
+    }
+    
+    /**
+     * @type {ChRule}
+     */
+    let routeUnlocks = getUnlockRoute(path.nodeData);
+    
     path.nodeData.rules = [];
 
     /**
@@ -266,6 +290,28 @@ ChrRandomizeEventHelper.CreateRandomRules = function (previousNode, path) {
     let currentRulesArray = [];
 
     while (destinations.length) {
+
+        // --- Unlock route first
+        if (routeUnlocks) {
+
+            if (routeUnlocks.not) {
+                path.nodeData.rules.push(routeUnlocks);
+            }
+            else {
+                // --- Get destination
+                currentDestination = destinations.findIndex(_dest => _dest.node == routeUnlocks.conditionCheckedNode);
+                currentDestination = destinations.splice(currentDestination, 1);
+                currentDestination = currentDestination[0];
+
+                // --- Randomize rule
+                currentRulesArray = [];
+                let currentNodeRule = ChMultipleRulesRule(currentRulesArray, 'AND', currentDestination.node);
+                currentRulesArray.push(routeUnlocks);
+                path.nodeData.rules.push(currentNodeRule);
+            }
+
+            routeUnlocks = null;
+        }
 
         if (!currentDestination)  {
             currentDestination = destinations.pop();
