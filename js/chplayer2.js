@@ -1217,7 +1217,7 @@ function mapPhase(first) {
 			end = rule.getRouting(CHSHIPCOUNT);
 	}
 
-	if (curnode.type == 3) {
+	if (curnode.type == 3 || curnode.type == 2) {
 		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
 			MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
 		}

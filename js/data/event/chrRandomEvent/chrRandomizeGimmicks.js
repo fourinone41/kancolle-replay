@@ -50,7 +50,7 @@ ChrRandomizeGimmicks.MakeGimmick = (node, diffs, nodes) => {
     for (const diff of ['4','1','2','3']) {
         nbTimeRequired[diff] = diffs.includes(diff) ? currentNbRequired : 0;
 
-        if (Math.random() < 0.2) currentNbRequired++;
+        if (Math.random() < 0.1) currentNbRequired++;
     }
 
     if (airNode) {
@@ -63,6 +63,9 @@ ChrRandomizeGimmicks.MakeGimmick = (node, diffs, nodes) => {
 
         for (const diff of [4,1,2,3]) {
             ranks[diff] = currentRank > 0 ? 'S' : 'A';
+
+            // --- Force A on bosses
+            if (nodes[node].boss) ranks[diff] = 'A';
 
             if (Math.random() < 0.25) currentRank++;
         }
