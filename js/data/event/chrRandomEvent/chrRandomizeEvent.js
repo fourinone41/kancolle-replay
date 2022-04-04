@@ -365,6 +365,8 @@ ChrRandomizeEventHelper.RandomizeArray = function (array) {
  ChrRandomizeEventHelper.CreateStartRules = function (mapData, startPaths) {
 
     const rules = [];
+
+    if (!mapData.fleetTypes) mapData.fleetTypes = [0,1,2,3,7];
     let possibleFleets = [...mapData.fleetTypes];
 
     for (const path of startPaths) {
