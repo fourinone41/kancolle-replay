@@ -2047,7 +2047,9 @@ var MAPDATA = {
 						type: 0,
 						x: 106,
 						y: 99,
-						route: 'A'
+						rules: [
+							ChFixedRoutingRule('A')
+						]
 					},
 					'A': {
 						type: 1,
@@ -3611,7 +3613,7 @@ var MAPDATA = {
 							1: ['2','3'],
 						},
 						rules: [
-							ChLOSRule({100:'H',90:'L'})
+							ChLOSRule({100:'H',90:'G'})
 						]
 					},
 					'E': {

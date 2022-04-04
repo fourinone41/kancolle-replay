@@ -267,7 +267,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
             if (map.hiddenRoutes[part].unlockRules) {
                 const unlockRule = map.hiddenRoutes[part].unlockRules.gimmicks.find(gimmick => gimmick.type == "PartClear");
 
-                if (unlockRule) partRequired = unlockRule.additionnalParameters.partToClear;
+                if (unlockRule) partRequired = unlockRule.partToClear;
             }
 
             map.hiddenRoutes[part].unlockRules = ChrRandomizeGimmicks.RandomizeGimmicks("mapPart", mapNumber, {
