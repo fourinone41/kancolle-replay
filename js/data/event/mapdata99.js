@@ -638,6 +638,13 @@ const bossIds = [
     2047, 2048,                             // --- Airfield Princess
     2049,                                   // --- New SSH
     2053, 2054, 2055, 2056, 2057, 2058,     // --- Submarine Shark Water Demon
+    2059,2060,2061,2062,                    // --- Hi Convoy Princess
+    2063,2064,2065,2066,2067,2068,          // --- Abyssal Plum Princess
+    2069,2070,2071,2072,                    // --- Yokohama Wharf Princess
+    2073,2074,2075,2076,                    // --- Abyssal Jade Princess
+    2077,2078,2079,                         // --- Super Heavy Bombing Airfield Princess 
+    2080,2081,2082,2083,                    // --- Winter Entombed Anti-Air Guardian Princess
+    2084,2085,2086,2087,2088,2089,          // --- Supply Depot Princess C
 
 	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
 ];
@@ -645,7 +652,7 @@ const bossIds = [
 const strongEnemiesIds = [
     1539,1540,1544,1545,1546,1547,      // --- Early bosses
     1561, 1562,                         // --- Re class 
-    1895, 1896,                         // --- Ne kai 1 & 2
+    1895,1896,2090,                     // --- Ne kai 1 & 2 & 4
     1953, 1954,                         // --- Summer Ne kai 1 & 2
     2013, 2014,                         // --- Wa-Class B
 ];
