@@ -179,3 +179,42 @@ div#routing {
     margin-left: 10px;
     margin-right: 10px;
 }
+
+.edit {
+    display: flex;
+}
+
+.edit-label {
+    margin-right: 10px;
+}
+
+button.play-bgm {
+    margin-left: 10px;
+}
+
+.map-part-edit,
+.unlock-edit {
+    margin-top: 10px;
+}
+
+.gimmick-edit {
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+.chr-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: #484848;
+    padding: 30px;
+    border-style: solid;
+    border-radius: 10%;
+    border-color: gray;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 15px;
+}

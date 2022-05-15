@@ -532,9 +532,9 @@ MAPDATA[48] =
 							1: {'Easy 3':25,'Easy 4':25,'Easy 5':25,'Easy 6':25},
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':20,'Casual 4':20},
 						},
-						get end() {
-							return CHDATA.event.maps[1].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChMultipleRulesRule([
 								ChDifficultyRule([2,3], 'O'),
@@ -1418,9 +1418,9 @@ MAPDATA[48] =
 							1: {'Easy 1':25,'Easy 2':35,'Easy 3':40},
 							4: {'Casual 1':25,'Casual 2':35,'Casual 3':40},
 						},
-						get end() {
-							return CHDATA.event.maps[3].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('P')
 						]
@@ -1908,9 +1908,9 @@ MAPDATA[48] =
 							1: {'Easy 1':10,'Easy 2':30,'Easy 3':30,'Easy 4':30},
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':40},
 						},
-						get end() {
-							return CHDATA.event.maps[4].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFleetTypeRule([1,2], 'D'),
 							ChShipTypeRoutingRule(['SS', 'SSV'], '>', 0, 'D'),
@@ -1964,9 +1964,9 @@ MAPDATA[48] =
 							1: {'Easy 1':50,'Easy 2':25,'Easy 3':25},
 							4: {'Casual 1':50,'Casual 2':25,'Casual 3':25},
 						},
-						get end() {
-							return CHDATA.event.maps[4].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('O')
 						]
@@ -2656,9 +2656,9 @@ MAPDATA[48] =
 							1: {'Easy 1':45,'Easy 2':30,'Easy 3':25},
 							4: {'Casual 1':45,'Casual 2':30,'Casual 3':25},
 						},
-						get end() {
-							return CHDATA.event.maps[5].routes.indexOf(2) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						rules: [
 							ChShipCountRoutingRule('<=', 5, 'Z6'),
 
@@ -2756,9 +2756,9 @@ MAPDATA[48] =
 							1: {'Easy 1':15,'Easy 2':15,'Easy 3':25,'Easy 4':25,'Easy 5':10,'Easy 6':10},
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':20,'Casual 4':20},
 						},
-						get end() {
-							return CHDATA.event.maps[5].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFleetTypeRule([1,2], 'I'),
 

@@ -505,9 +505,9 @@ MAPDATA[49] =
 							1: {'Easy 1':10,'Easy 2':30,'Easy 3':30,'Easy 4':30},
 							4: {'Casual 1':30,'Casual 2':30,'Casual 3':40},
 						},
-						get end() {
-							return CHDATA.event.maps[1].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChShipTypeRoutingRule(['SS', 'SSV'], '>', 0, 'K'),
 							ChShipTypeRoutingRule(['DD', 'DE'], '>=', 4, 'N'),
@@ -1072,9 +1072,9 @@ MAPDATA[49] =
 							1: {'Easy 1':25,'Easy 2':50,'Easy 3':25},
 							4: {'Casual 1':30,'Casual 2':45,'Casual 3':25},
 						},
-						get end() {
-							return CHDATA.event.maps[2].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						showLoSPlane: 'Q',
 						rules: [
 							ChShowLOSPlane(ChFixedRoutingRule('Q'))
@@ -1665,9 +1665,9 @@ MAPDATA[49] =
 							1: {'Easy 1':5,'Easy 2':20,'Easy 3':30,'Easy 4':30,'Easy 5':15},
 							4: {'Casual 1':25,'Casual 2':35,'Casual 3':40},
 						},
-						get end() {
-							return CHDATA.event.maps[3].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('W')
 						]
@@ -2022,9 +2022,9 @@ MAPDATA[49] =
 							1: {'Easy 1':10,'Easy 2':30,'Easy 3':35,'Easy 4':25},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
 						},
-						get end() {
-							return CHDATA.event.maps[4].routes.indexOf(1) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('R')
 						]
@@ -2473,9 +2473,9 @@ MAPDATA[49] =
 							1: {'Easy 1':40,'Easy 2':30,'Easy 3':30},
 							4: {'Casual 1':35,'Casual 2':35,'Casual 3':30},
 						},
-						get end() {
-							return CHDATA.event.maps[4].routes.indexOf(2) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						rules: [
 							// --- Not unlockes
 							ChDontShowCompass(ChIsRouteNotUnlockedRule(3, 'Y1')),

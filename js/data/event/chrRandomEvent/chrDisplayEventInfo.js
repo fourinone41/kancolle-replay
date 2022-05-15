@@ -753,7 +753,7 @@ class ChrDisplayEventInfo {
             }
         }
 
-        if (map.debuffRules) {
+        if (map.debuffRules && map.debuffRules.gimmicks.length) {
             $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map, MAPDATA[this.GetCurrentWorld()]));
         }
 

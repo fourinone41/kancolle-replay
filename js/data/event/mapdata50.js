@@ -731,9 +731,9 @@ MAPDATA[50] =
 							1: {'Easy 1':20,'Easy 2':30,'Easy 3':20,'Easy 4':30},
 							4: {'Casual 1':40,'Casual 2':40,'Casual 3':20},
 						},
-						get end() {
-							return !checkRoute(1);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							// --- Not unlocked
 							ChDontShowCompass(ChIsRouteNotUnlockedRule(3, 'K')),
@@ -1534,9 +1534,9 @@ MAPDATA[50] =
 							1: {'Easy 1':30,'Easy 2':40,'Easy 3':30},
 							4: {'Casual 1':30,'Casual 2':40,'Casual 3':30},
 						},
-						get end() {
-							return !checkRoute(1);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChSpeedRule('<=', 5, 'R'),
 
@@ -2119,9 +2119,9 @@ MAPDATA[50] =
 						x: 294,
 						y: 231,
 						distance: 3,
-						get end() {
-							return !checkRoute(1);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1, true),
+						],
 						rules: [
 							ChFixedRoutingRule('O2')
 						]
@@ -3110,9 +3110,9 @@ MAPDATA[50] =
 							1: {'Easy 1':10,'Easy 2':25,'Easy 3':35,'Easy 4':30},
 							4: {'Casual 1':55,'Casual 2':45},
 						},
-						get end() {
-							return !checkRoute(3);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						rules: [
 							ChFixedRoutingRule('Y1')
 						]
@@ -3157,9 +3157,9 @@ MAPDATA[50] =
 							1: {'Easy 2':100},
 							4: {'Casual 2':100},
 						},
-						get end() {
-							return !checkRoute(3);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						rules: [
 							ChFixedRoutingRule('Y2')
 						]
@@ -3336,9 +3336,9 @@ MAPDATA[50] =
 							1: {'Easy 1':20,'Easy 2':30,'Easy 3':30,'Easy 4':20},
 							4: {'Casual 1':50,'Casual 2':25,'Casual 3':25},
 						},
-						get end() {
-							return !checkRoute(4);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(4, true),
+						],
 						rules: [
 							ChFixedRoutingRule('Z1')
 						]
@@ -3614,9 +3614,9 @@ MAPDATA[50] =
 							1: {'Easy 1':30,'Easy 2':35,'Easy 3':35},
 							4: {'Casual 1':30,'Casual 2':35,'Casual 3':35},
 						},
-						get end() {
-							return !checkRoute(2);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						rules: [
 							ChLOSCheckIfRuleChecked({
 								3: { 22: 'W1', 13: 'W2' },
@@ -5194,9 +5194,9 @@ MAPDATA[50] =
 							1: {'Easy 1':50,'Easy 2':25,'Easy 3':25},
 							4: {'Casual 1':50,'Casual 2':25,'Casual 3':25},
 						},
-						get end() {
-							return !checkRoute(3);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(3, true),
+						],
 						rules: [
 							ChFixedRoutingRule('Z1')
 						]

@@ -544,9 +544,9 @@ MAPDATA[47] =
 							1: {'Easy 2':50,'Easy 3':50},
 							4: {'Casual 1':60,'Casual 2':30,'Casual 3':10},
 						},
-						get end() {
-							return CHDATA.event.maps[1].routes.indexOf(2) == -1;
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2, true),
+						],
 						rules: [
 							ChFixedRoutingRule('P')
 						]
