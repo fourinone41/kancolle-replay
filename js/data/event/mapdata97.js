@@ -1,4 +1,4 @@
-var RANDOMAPS = false;
+var RANDOMAPS = true;
 // --- todo
 
 MAPDATA[97] = {
@@ -66,7 +66,7 @@ MAPDATA[97].initializeMap = function (worldNum, mapNum) {
         mapData.maphp[3] = mapData.maphp[2];
     }*/
 
-    let combinedAllowed = Math.random() > 0.5;
+    /*let combinedAllowed = Math.random() > 0.5;
     let strikeForceAllowed = Math.random() > 0.5;
     let singleAllowed = combinedAllowed || strikeForceAllowed ? Math.random() > 0.5 : true;
 
@@ -84,9 +84,9 @@ MAPDATA[97].initializeMap = function (worldNum, mapNum) {
         mapData.fleetTypes.push(0);
     }*/
 
-    mapData.bgmMap = chrGetRandomBgm("map");
+    /*mapData.bgmMap = chrGetRandomBgm("map");
     mapData.bgmDN = mapData.bgmNN = chrGetRandomBgm("battle");
-    mapData.bgmDB = mapData.bgmNB = chrGetRandomBgm("boss");
+    mapData.bgmDB = mapData.bgmNB = chrGetRandomBgm("boss");*/
 
     //mapData.fleetTypes = oriMapData.fleetTypes
 
@@ -122,7 +122,7 @@ MAPDATA[97].loadFromChData = function (mapNum) {
             }
 
             for (const mapKey in CHDATA.maps) {
-                MAPDATA[97].loadNodesFromChData(CHDATA.maps[mapKey].world, mapKey);
+                MAPDATA[97].loadMapFromChData(CHDATA.maps[mapKey].world, mapKey);
             }
         }
 
@@ -136,7 +136,7 @@ MAPDATA[97].loadFromChData = function (mapNum) {
 }
 
 
-MAPDATA[97].loadNodesFromChData = function (worldNum, mapNum) {
+MAPDATA[97].loadMapFromChData = function (worldNum, mapNum) {
     
     /*for (const nodeKey in CHDATA.customMaps[mapNum].nodes) {
         
@@ -146,10 +146,129 @@ MAPDATA[97].loadNodesFromChData = function (worldNum, mapNum) {
         //MAPDATA[worldNum].maps[mapNum].nodes[nodeKey] = MAPDATA[worldNum].maps[mapNum].nodes[nodeKey];
 
     }*/
+    return;
+    
+    let customMap = localStorage.getItem('chrRandom-' + mapNum);
+    if (!customMap) return;
+
+    customMap = JSON.parse(customMap);
+
+    MAPDATA[worldNum].maps[mapNum] = customMap;
+        
+    MAPDATA[97].loadUnlockFromChData(MAPDATA[worldNum].maps[mapNum]);
+    MAPDATA[97].loadStartCheckFromChData(MAPDATA[worldNum].maps[mapNum]);
+    MAPDATA[97].loadStartBonusesFromChData(MAPDATA[worldNum].maps[mapNum]);
+
+    for (const nodeKey in MAPDATA[worldNum].maps[mapNum].nodes) {
+        MAPDATA[97].loadNodeFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
+
+        MAPDATA[97].loadBonusesFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
+    }
+}
+
+MAPDATA[97].loadStartCheckFromChData = function (map) {
+    
+    let rules = [];
+
+    for (const rule of map.startCheckRule) {
+        rules.push(MAPDATA[97].convertRule(rule))
+    }
+
+    map.startCheckRule = rules;
+}
+
+MAPDATA[97].loadUnlockFromChData = function (map) {
+    for (const unlockKey in map.hiddenRoutes) {
+
+        /**
+         * @type {ChGimmickList}
+         */
+        const gimmicks = map.hiddenRoutes[unlockKey].unlockRules;
+
+        map.hiddenRoutes[unlockKey].unlockRules = new ChGimmickList(gimmicks.type, gimmicks.mapPartNumber, gimmicks.mapNum, gimmicks.gimmickData, gimmicks.additionnalParameters);
+    }
+
+    const debuff = map.debuffRules;
+    if (debuff) map.debuffRules = new ChGimmickList(debuff.type, debuff.mapPartNumber, debuff.mapNum, debuff.gimmickData, debuff.additionnalParameters);
+}
+
+MAPDATA[97].loadStartBonusesFromChData = function (map) {
+    map.startBonus = [];
+}
+
+MAPDATA[97].loadBonusesFromChData = function (nodeData) {
+
+    // --- TODO
+    nodeData.bonuses = [];
 }
 
 /**
- * Returns a random bgm id (doesn't include 2001, 2, 1 because :) )
+ * 
+ * @param {ChRule} ruleToConvert 
+ * @returns 
+ */
+MAPDATA[97].convertRule = function (ruleToConvert) {
+    switch (ruleToConvert.type) {
+        case "fixed":
+            return ChFixedRoutingRule(ruleToConvert.fixedNode);
+            
+        case "routeSelect":
+            return ChSelectRouteRule(ruleToConvert.routeSelect);
+
+        case "mapPart":
+            return ChMapPartRuleOld(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            
+        case "isRouteUnlocked":
+            if (ruleToConvert.not) return ChIsRouteNotUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            return ChIsRouteUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "default":
+            return ChDefaultRouteRule(ruleToConvert.conditionCheckedNode);
+
+        case "shipType":
+            return ChShipTypeRoutingRule(ruleToConvert.shipTypes, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "multiRules":
+            let rulesArray = [];
+
+            for (const rule of ruleToConvert.rules) {
+                rulesArray.push(MAPDATA[97].convertRule(rule));
+            }
+
+            return ChMultipleRulesRule(rulesArray, ruleToConvert.logicOperator, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+    
+        case "fleetType": 
+            return ChFleetTypeRule(ruleToConvert.fleetType, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        default:
+            console.debug(ruleToConvert);
+            throw 'unhandled rule';
+    }
+}
+
+MAPDATA[97].loadNodeFromChData = function (nodeData) {
+
+    let rules = [];
+
+    for (const rule of nodeData.rules) {
+        rules.push(MAPDATA[97].convertRule(rule))
+    }
+
+    nodeData.rules = rules;
+    
+    if (nodeData.endRules) {
+        let endRules = [];
+
+        for (const rule of nodeData.endRules) {
+            endRules.push(MAPDATA[97].convertRule(rule))
+        }
+
+        nodeData.endRules = endRules;
+    }
+}
+
+/**
+ * Returns a random bgm id (doesn't include 2001, 2, 1)
  * @param {"map" | "battle" | "boss"} type 
  */
 function chrGetRandomBgm(type) {
