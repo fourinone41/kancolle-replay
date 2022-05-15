@@ -73,6 +73,8 @@ function saveMapData(mapnum, map) {
 
 function ChrRandomizeMap(eventNumber, mapNumber) {
     
+    console.debug(`Randomizing ${MAPDATA[eventNumber].name} E${mapNumber}`);
+    
     events.push(() => { loadObject.Show(); });
 
     events.push(() => {loadObject.Reset()});

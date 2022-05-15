@@ -1659,6 +1659,24 @@ function selectNode(letters) {
 // eventqueue.push([mapBattleNode,[mapship,'D']]);
 // eventqueue.push([prepBattle,[]]);
 
+function getEnemyCompFromRouteCompObject(compDiffRoute) {
+	if (!CHDATA.event.maps[MAPNUM].routes) return compDiffRoute[0];
+	if (!CHDATA.event.maps[MAPNUM].routes.length) return compDiffRoute[0];
+
+	let route = 0;
+	const maxUnlockedRoute = Math.max(CHDATA.event.maps[MAPNUM].routes);
+	
+	for (let index = 0; index < maxUnlockedRoute; index++) {
+		
+		if (!compDiffRoute[index]) continue;
+		if (!CHDATA.event.maps[MAPNUM].routes.includes(index)) continue;
+		
+		route = index;
+	}
+
+	return compDiffRoute[route];
+}
+
 function getEnemyComp(letter,mapdata,diff,lastdance) {
 	lastdance = lastdance && (!mapdata.compFPart || mapdata.compFPart == CHDATA.event.maps[MAPNUM].part);
 	var comps;
@@ -1684,6 +1702,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		// console.log(comps);
 	} else {
 		if (mapdata.compDiffPart) mapdata = mapdata.compDiffPart[CHDATA.event.maps[MAPNUM].part];
+		if (mapdata.compDiffRoute) mapdata = getEnemyCompFromRouteCompObject(mapdata.compDiffRoute);
 		comps = (mapdata.compDiffF && lastdance)? mapdata.compDiffF[diff] : mapdata.compDiff[diff];
 		if (mapdata.compDiffC && CHDATA.event.maps[MAPNUM].hp <= 0) comps = mapdata.compDiffC[diff];
 		if (mapdata.compDiffC && MAPDATA[WORLD].maps[MAPNUM].currentBoss && MAPDATA[WORLD].maps[MAPNUM].currentBoss != letter) comps = mapdata.compDiffC[diff];

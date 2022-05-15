@@ -2,3 +2,4 @@
 - enable gimmick sound even before summer 19
 - Start routing : fleet types allowed can change depending on parts (eg: summer 21 E2/E3)
 - additional check doesn't work cause of JSON serialization/deszrialization
+- ChNodeReplacedAfterUnlockRule doesn't work (fixed but need to be tested Fall 17 E4) (need to handle that properly in branching ?)

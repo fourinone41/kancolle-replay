@@ -21907,7 +21907,13 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
 						rules: [
-							ChNodeReplacedAfterUnlockRule(ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:2, 2:5, 3:7 }, 'W'), 1, 'W', 'W*'),
+							ChMultipleRulesRule([
+								ChIsRouteUnlockedRule(1, 'W*'),
+								ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:2, 2:5, 3:7 }, 'W*')
+							], 'AND', 'W*'),
+
+							ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:2, 2:5, 3:7 }, 'W'),
+							
 							ChShipTypeRoutingRule(['aCV'], '>', 0, 'R'),
 							ChShipTypeRoutingRule(['DD'], '<', 2, 'R'),
 
@@ -22047,7 +22053,7 @@ var MAPDATA = {
 						},
 						showNoCompass: true,
 						rules: [
-							ChNodeReplacedAfterUnlockRule(ChFixedRoutingRule('Y'), 1, 'Y', 'Y*'),
+							ChIsRouteNotUnlockedRule(1, 'Y', 'Y*'),
 						]
 					},
 					'Y': {
@@ -22089,9 +22095,12 @@ var MAPDATA = {
 							ChFleetTypeRule(0, 'Z7'),
 							ChAllHaveTagRule([4], 'Z7'),
 
-							ChNodeReplacedAfterUnlockRule( 
-								ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:0, 2:3, 3:6 }, 'Z9')
-							, 2, 'Z9', 'Z9*'),
+							ChMultipleRulesRule([
+								ChIsRouteUnlockedRule(2, 'Z9*'),
+								ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:0, 2:3, 3:6 }, 'Z9*')
+							], 'AND', 'Z9*'),
+							
+							ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:0, 2:3, 3:6 }, 'Z9'),
 
 							ChDefaultRouteRule('Z7')							
 						]
@@ -22197,7 +22206,7 @@ var MAPDATA = {
 						},
 						showNoCompass: true,
 						rules: [
-							ChNodeReplacedAfterUnlockRule(ChFixedRoutingRule('Z8'), 2, 'Z8', 'Z8*'),
+							ChIsRouteUnlockedRule(2, 'Z8', 'Z8*'),
 						]
 					},
 					'Z8': {
@@ -22315,7 +22324,8 @@ var MAPDATA = {
 						},
 						showNoCompass: true,
 						rules: [
-							ChNodeReplacedAfterPartRule(ChFixedRoutingRule('ZZ3'), 2, 'ZZ3', 'ZZ3*'),
+							ChMapPartRule([1], ChFixedRoutingRule('ZZ3')),
+							ChMapPartRule([2], ChFixedRoutingRule('ZZ3*')),
 						]
 					},
 					'ZZ3': {
