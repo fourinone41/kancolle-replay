@@ -31844,6 +31844,10 @@ var MAPDATA = {
 										return `One or less slow (F)BB(V)`;
 									}
 								})
+							], 'AND', 'X'),
+							ChMultipleRulesRule([
+								ChShipCountRoutingRule('<=', 3, 'X'),
+								ChNumberOfShipOfSpeedRule('<=', 5, '<=', 1, 'X')
 							], 'AND', 'X', 'W'),
 						]
 					},
@@ -32155,7 +32159,7 @@ var MAPDATA = {
 							4: {'Casual 1':25,'Casual 2':50,'Casual 3':25},
 						},
 						rules: [
-							ChShipTypeRoutingRule(['AV'], '=', 0, 'O'),
+							ChShipTypeRoutingRule(['AV'], '<=', 0, 'O'),
 							ChLOSRule({ 67: 'T', 54: 'O' }, 2),
 						]
 					},

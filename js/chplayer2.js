@@ -3293,7 +3293,7 @@ function getELoS33(fleet,coef,includeCombined) {
 	for (var i=0; i<ships.length; i++) {
 		var ship = CHDATA.ships[ships[i]];
 		if (!ship) continue;
-		if (CHDATA.sortie && FLEETS1[fleet-1] && FLEETS1[fleet-1].ships[i].retreated) continue;
+		if (CHDATA.sortie && FLEETS1[fleet-1] && FLEETS1[fleet-1].ships[i] && FLEETS1[fleet-1].ships[i].retreated) continue;
 		numShip++;
 		var shiplos = ship.LOS;
 		for (var j=0; j<ship.items.length; j++) {
