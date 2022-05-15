@@ -1818,8 +1818,8 @@ function prepBattle(letter) {
 	// --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
 	// --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
 	// --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
-	const RANDO_MODE = 4;
-	const RUSH_MODE = 0;
+	var RANDO_MODE = 4;
+	var RUSH_MODE = 0;
 
 	for (var i=0; i<compd.c.length; i++) {
 		var sid = compd.c[i];
