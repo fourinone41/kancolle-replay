@@ -2,7 +2,7 @@ const ChrRandomizeBonuses = {};
 
 ChrRandomizeBonuses.maxGroupSize = 15;
 
-ChrRandomizeBonuses.groupNumber = 5;
+ChrRandomizeBonuses.groupNumber = 7;
 
 ChrRandomizeBonuses.bonusMax = 0.15; // --- Rolled at start and on end node
 ChrRandomizeBonuses.accMax = 0.15; // --- Rolled only on start
@@ -116,7 +116,7 @@ ChrRandomizeBonuses.ShipTypes = [
 ];
 
 ChrRandomizeBonuses.GetShipTypes = function () {
-    const number = Math.random() * 5;
+    const number = (Math.random() * 4) + 1;
     const types = [];
 
     while (types.length < number) {

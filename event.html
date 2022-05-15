@@ -39,7 +39,7 @@
 		<script src="js/kcsimcombined.js"></script>
 		<script src="js/pixi.min.js"></script>
 		<script src="js/howler.min.js"></script>
-		<script src="js/data/event/donotpush.js"></script>
+		<script src="debug.js"></script>
 	</head>
 	<body onunload="chSave()">
 		<div id="mainspace" style="display:none">
@@ -140,7 +140,11 @@
 			<button type="button" style="width:100px;vertical-align:middle" onclick="RATE = 0">Pause
 		
 			</button>
-        
+
+			<button type="button" style="width:100px;vertical-align:middle" onclick="RATE = 0.8">x0.8
+    
+			</button>
+
     		<button type="button" style="width:100px;vertical-align:middle" onclick="RATE = 1">x1
     
 			</button>
@@ -455,5 +459,16 @@
 		<script src="js/chplayer2.js"></script>
 		<script src="js/challenge-menu.js"></script>
 		<script src="js/challenge-map.js"></script>
+
+		<!-- Randomize event scripts -->
+		
+		<script src="js/data/event/chrRandomEvent/chrRandomizeEvent.js"></script>
+		<script src="js/data/event/chrRandomEvent/chrRandomizeGimmicks.js"></script>
+		<script src="js/data/event/chrRandomEvent/chrRandomizeBonuses.js"></script>
+	
+		
+		<script src="js/data/objects/chMapData.js"></script>
+
+		<!-- Randomize event scripts -->
 	</body>
 </html>

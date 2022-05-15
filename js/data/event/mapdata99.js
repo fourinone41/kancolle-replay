@@ -97,8 +97,8 @@ function randomizeMaps(){
     if(CHDATA.maps === undefined) {
         // randomize
         CHDATA.maps = chRandomizeMaps();
-        
-        if (RANDOMAPS) MAPDATA[97].initializeAllMaps();
+
+        chRerollComps();
     } else {
         if(Array.isArray(CHDATA.maps)) {
             var newObjMap = {};

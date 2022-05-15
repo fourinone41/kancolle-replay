@@ -45,6 +45,8 @@ MAPDATA[98] = {
         CHDATA.kcdata.gears = {};
     
         CHDATA.kcdata.ships = {};        
+
+        CHDATA.maps = undefined;
     },
     chrProcessAfterFileCreation() {
         for (let id = 1; id < 50; id++){
@@ -301,7 +303,10 @@ MAPDATA[98] = {
     chrRerollMap : () => {
         CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
 
-        if (RANDOMAPS) MAPDATA[97].initializeMap(WORLD, MAPNUM);
+        if (RANDOMAPS) {
+            MAPDATA[97].ChrRandomizeMap(WORLD, MAPNUM);
+            MAPDATA[97].initializeMap(WORLD, MAPNUM);
+        }
         
         chSortieStartChangeDiff();
         CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}

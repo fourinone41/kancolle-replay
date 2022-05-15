@@ -190,15 +190,18 @@ function ChShipHistoricalRoutingRuleMainFleetOnly(groupName, shipTypes, operator
 }
 
 /**
- * 
+ * Do not use
  * @param {ChRule} LOSRule 
  * @param {ChRule} randomRule 
  * @returns 
  */
-function ChIfLosThenElseRandomRule(LOSRule, randomRule) {
-    let rule = new ChRule();
+function ChIfLosFailedThenElseRandomRule(LOSRule, randomRule) {
 
-    rule.type = "custom";
+    const nodefail = LOSRule.LOS[Math.min(...Object.keys(LOSRule.GetLOSArray()))];
+
+    return ChIfThenElseRule(LOSRule, randomRule, ChFixedRoutingRule(nodefail));
+
+    /*rule.type = "custom";
 
     rule.getRouting = () => {
         let node = LOSRule.getRouting();
@@ -238,7 +241,7 @@ function ChIfLosThenElseRandomRule(LOSRule, randomRule) {
     };
 
     rule.getShowLosPlane = () => { return !!rule.conditionCheckedNode; }
-
+*/
     return rule;
 }
 

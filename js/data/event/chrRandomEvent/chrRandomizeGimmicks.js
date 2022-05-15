@@ -20,7 +20,7 @@ ChrRandomizeGimmicks.RandomizeGimmicks = function (type, mapNum, additionnalPara
         gimmickArray.push(new ChGimmick({ node: 'MapWide', type: 'PartClear', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 }, partToClear: additionnalParameters.mapPartRequired }))
     }
 
-    const choosenNodes = ChrRandomizeGimmicks.ChooseNodes(additionnalParameters.mapPartRequired, nodes, abPossible);
+    const choosenNodes = ChrRandomizeGimmicks.ChooseNodes(additionnalParameters.routeUnlockRequired, nodes, abPossible);
 
     while (choosenNodes.length) {
         const choosenNode = choosenNodes.pop();
@@ -84,15 +84,15 @@ ChrRandomizeGimmicks.ChooseNodes = (partUnlocked, nodes, abPossible) => {
     const possibleNodes = [];
 
     const maxGimmickPerDiff = {
-        4: 3,
-        1: 4,
-        2: 5,
-        3: 6,
+        4: 2,
+        1: 3,
+        2: 4,
+        3: 5,
     };
 
     for (const nodeLetter in nodes) {
         if (nodeLetter.includes('Start')) continue;
-        if (partUnlocked && nodes[nodeLetter].hidden && nodes[nodeLetter].hidden >= partUnlocked) continue;
+        if (nodes[nodeLetter].hidden && nodes[nodeLetter].hidden >= partUnlocked) continue;
 
         possibleNodes.push(nodeLetter);
     }
@@ -100,7 +100,7 @@ ChrRandomizeGimmicks.ChooseNodes = (partUnlocked, nodes, abPossible) => {
     // --- Add AB raid
     if (abPossible) possibleNodes.push('AB');
 
-    let numberOfNodes = (Math.random() * 4) + 2;
+    let numberOfNodes = Math.ceil(Math.random() * 5);
     const arrayWithNodes = [];
 
     ChrRandomizeEventHelper.RandomizeArray(possibleNodes);

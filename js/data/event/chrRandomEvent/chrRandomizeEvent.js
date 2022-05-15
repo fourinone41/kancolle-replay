@@ -8,7 +8,7 @@ const ChrRandomizeEventHelper = {};
  */
 ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, currentRulesArray) {
 
-    let safetyCount = 0;
+    /*let safetyCount = 0;
 
     while (safetyCount < 9999) {
         safetyCount++;
@@ -111,7 +111,48 @@ ChrRandomizeEventHelper.MakeShipTypeRouting = function (path, destination, curre
             return;   
         }
 
+    }*/
+
+    const numberOfTypes = ChrRandomizeEventHelper.GetRandomElementFromArray(ChrRandomizeEventHelper.MakeShipTypeRouting.numbers) || 1;
+    const types = [];
+
+    while (types.length < numberOfTypes) {
+        
+        ChrRandomizeEventHelper.RandomizeArray(ChrRandomizeEventHelper.MakeShipTypeRouting.types);
+
+        let finalType = [ChrRandomizeEventHelper.MakeShipTypeRouting.types[0]];
+
+        switch (finalType[0]) {
+            case "aDD":
+                finalType = ['DD', 'DE'];
+                break;
+                
+            case "aSS":
+                finalType = ['SS', 'SSV'];
+                break;
+                
+            case "aCA":
+                finalType = ['CAV', 'CA'];
+                break;
+
+            case "aCV":
+                finalType = ['CV', 'CVL', 'CVB'];
+                break;
+                
+            case "aBB":
+                finalType = ['FBB', 'BB', 'BBV'];
+                break;
+        }
+        
+        for (const type of finalType) {
+            if (!types.includes(type)) types.push(type);
+        }
     }
+
+    const numberOfShips = ChrRandomizeEventHelper.GetRandomElementFromArray(ChrRandomizeEventHelper.MakeShipTypeRouting.numbers);
+    const operator = ChrRandomizeEventHelper.GetRandomElementFromArray(ChrRandomizeEventHelper.MakeShipTypeRouting.operator);
+
+    currentRulesArray.push(ChShipTypeRoutingRule(types, operator, numberOfShips, destination.node))
 }
 
 ChrRandomizeEventHelper.MakeShipTypeRouting.types = [
@@ -121,6 +162,17 @@ ChrRandomizeEventHelper.MakeShipTypeRouting.types = [
     'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'aDD', 'AS',
     'DD', 'CL', 'aBB', 'aCV', 'aCA', 'CVL', 'DE', 'aSS'
 ];
+
+ChrRandomizeEventHelper.MakeShipTypeRouting.numbers = [
+    0,1,2,3
+];
+
+ChrRandomizeEventHelper.MakeShipTypeRouting.operator = [
+    "<=",
+    "=",
+    ">="
+];
+
 ChrRandomizeEventHelper.MakeShipTypeRouting.changes = [
     "++min", 
     //'--min', 
@@ -248,7 +300,8 @@ ChrRandomizeEventHelper.CreateRandomRules = function (previousNode, path) {
     }
 
     // --- 5% chance of select routing
-    if (Math.random() < 0.05) return ChrRandomizeEventHelper.MakeSelectNodeRouting(path);
+    if (Math.random() < 2) return ChrRandomizeEventHelper.MakeSelectNodeRouting(path);
+    //if (Math.random() < 0.05) return ChrRandomizeEventHelper.MakeSelectNodeRouting(path);
 
     // --- Before reset rules, check that there's no route unlock rule 
     /**
@@ -313,6 +366,8 @@ ChrRandomizeEventHelper.CreateRandomRules = function (previousNode, path) {
             routeUnlocks = null;
         }
 
+        const maxNumberOfRules = 2;
+
         if (!currentDestination)  {
             currentDestination = destinations.pop();
 
@@ -324,11 +379,11 @@ ChrRandomizeEventHelper.CreateRandomRules = function (previousNode, path) {
                 return;
             }
             else {
-                let logic = Math.random() > 0.5 ? 'AND' : 'OR';
+                //let logic = Math.random() > 0.5 ? 'AND' : 'OR';
 
                 currentRulesArray = [];
-                let currentNodeRule = ChMultipleRulesRule(currentRulesArray, logic, currentDestination.node);
-                path.nodeData.rules.push(currentNodeRule);
+                /*let currentNodeRule = ChMultipleRulesRule(currentRulesArray, logic, currentDestination.node);
+                path.nodeData.rules.push(currentNodeRule);*/
             }
         }
 
@@ -336,8 +391,9 @@ ChrRandomizeEventHelper.CreateRandomRules = function (previousNode, path) {
         let chosenRule = getRandomRule();
         chosenRule(path, currentDestination, currentRulesArray);
 
-        if (Math.random() > 0.32) {
-            // --- Move to next node after ~ 3 rules
+        if (currentRulesArray.length >= maxNumberOfRules) {
+            // --- Move to next node 
+            path.nodeData.rules = currentRulesArray;
             currentDestination = null;
         }
         
@@ -363,6 +419,7 @@ ChrRandomizeEventHelper.RandomizeArray = function (array) {
  * @param {ChMapData} mapData
  */
  ChrRandomizeEventHelper.CreateStartRules = function (mapData, startPaths) {
+
 
     const rules = [];
 

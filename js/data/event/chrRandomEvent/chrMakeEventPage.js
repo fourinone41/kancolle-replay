@@ -225,11 +225,12 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
     }
 
     let makeStartRules = () => {
+        return;
         map.startCheckRule = ChrRandomizeEventHelper.CreateStartRules(map, paths);
     }
 
     let makeMapRouting = () => {
-
+        return;
         for (const path of paths) {
             
             /**
@@ -254,7 +255,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
     const makeGimmicks = () => {
 
-        let unlockRequired = null;
+        let unlockRequired = 0;
         let lastPart = null;
 
         const abPossible = !!map.enemyRaid;

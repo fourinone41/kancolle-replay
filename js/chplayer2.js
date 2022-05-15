@@ -3,7 +3,10 @@
 // --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
 // --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
 const RANDO_MODE = 4;
-const RUSH_MODE = 0;
+
+// --- 1 => Rush mode
+// --- 2 => TP is slow
+const RUSH_MODE = 2;
 
 function InitUI() {
 	if (!CHDATA.event) return;
@@ -1267,11 +1270,6 @@ function mapPhase(first) {
 				alert("error in branching 3");
 				return;
 			}
-
-			if (rule.type == 'routeSelect') {
-				eventqueue.push([selectNode,[rule.routeSelect]]);
-				return;
-			}
 	
 			if (rule.ruleCanBeChecked())
 				nextletter = rule.getRouting(CHSHIPCOUNT);
@@ -1279,6 +1277,11 @@ function mapPhase(first) {
 			if (nextletter) rule = rule.getValidatedRule(CHSHIPCOUNT);	
 	
 			index++;
+		}
+		
+		if (rule.type == 'routeSelect') {
+			eventqueue.push([selectNode,[rule.routeSelect]]);
+			return;
 		}
 
 		if (!nextletter) {

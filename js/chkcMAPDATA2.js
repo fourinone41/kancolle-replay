@@ -4720,7 +4720,7 @@ var MAPDATA = {
 							1: ['4','5'],
 						},
 						rules: [
-							ChIfLosThenElseRandomRule(ChLOSRule({ 90: '', 87: 'A' }), ChRandomRule({ 'D': .5, 'E': .5 }))
+							ChIfLosFailedThenElseRandomRule(ChLOSRule({ 90: '', 87: 'A' }), ChRandomRule({ 'D': .5, 'E': .5 }))
 						]
 					},
 					'D': {
@@ -5295,12 +5295,12 @@ var MAPDATA = {
 							ChShowCompass(ChFixedRoutingRule('E'))
 						]
 					},
-					'D': {
+					/*'D': {
 						type: 3,
 						x: 213,
 						y: 313,
 						end: true
-					},
+					},*/
 					'E': {
 						type: 4,
 						x: 418,
@@ -6374,6 +6374,7 @@ var MAPDATA = {
 							1: ['4','5'],
 						},
 						rules: [
+							ChShipTypeRoutingRule(['CV', 'CVB'], '<=', 3, 'H'),
 							ChLOSRule({ 3: 'J', 0: 'L' })
 						]
 					},
@@ -7949,12 +7950,6 @@ var MAPDATA = {
 						rules: [
 							ChFixedRoutingRule('L')
 						]
-					},
-					'I': {
-						type: 3,
-						x: 405,
-						y: 206,
-						end: true,
 					},
 					'J': {
 						type: 3,
@@ -11653,13 +11648,13 @@ var MAPDATA = {
 						distance: 5,
 						end: true
 					},
-					'P': {
+					/*'P': {
 						type: 3,
 						x: 642,
 						y: 102,
 						distance: 4,
 						end: true
-					},
+					},*/
 				}
 			},
 			7: {
@@ -12313,7 +12308,7 @@ var MAPDATA = {
 						distance: 5,
 						resource: 0,
 						rules: [
-							ChLOSRule({3:"M",0:"O"})
+							ChLOSRule({3:"M",0:"K"})
 						]
 					},
 					"K": {
@@ -15002,17 +14997,9 @@ var MAPDATA = {
 						x: 727,
 						y: 82,
 						distance: 6,
-						replacedBy: 'J*',
 						rules: [
 							ChFixedRoutingRule('K')
 						]
-					},
-					'J*': {
-						type: 3,
-						x: -100,
-						y: -100,
-						hidden: 1,
-						end: true
 					},
 					'K': {
 						type: 2,
@@ -21906,7 +21893,7 @@ var MAPDATA = {
 						},
 						showNoCompass: true,
 						rules: [
-							ChNodeReplacedAfterUnlockRule(ChFixedRoutingRule('W'), 1, 'W', 'W*'),
+							ChIsRouteUnlockedRule(1, 'W', 'W*'),
 						]
 					},
 					'S': {
@@ -21923,18 +21910,32 @@ var MAPDATA = {
 							ChNodeReplacedAfterUnlockRule(ChShipHistoricalRoutingRule('Nishimura fleet', 'event.historical.nishimura', '>=', { 1:2, 2:5, 3:7 }, 'W'), 1, 'W', 'W*'),
 							ChShipTypeRoutingRule(['aCV'], '>', 0, 'R'),
 							ChShipTypeRoutingRule(['DD'], '<', 2, 'R'),
-							ChNodeReplacedAfterUnlockRule(ChSpeedRule('>=', 10, 'W'), 1, 'W', 'W*'),
 
-							ChNodeReplacedAfterUnlockRule(
+							ChMultipleRulesRule([
+								ChIsRouteUnlockedRule(1, 'W*'),
+								ChSpeedRule('>=', 10, 'W*')
+							], 'AND', 'W*'),
+							
+							ChSpeedRule('>=', 10, 'W'),
+
+							ChMultipleRulesRule([
 								ChMultipleRulesRule([
-									ChMultipleRulesRule([
-										ChShipTypeRoutingRule(['DD'], '>=', 4, 'W'),
-										ChDifficultyRule([1,2], 'W'),
-									], 'OR', 'W'),
-									
-									ChShipTypeRoutingRule(['aBB'], '<=', 2, 'W'),
-								], 'AND', 'W'),
-							1, 'W', 'W*'),
+									ChShipTypeRoutingRule(['DD'], '>=', 4, 'W*'),
+									ChDifficultyRule([1,2], 'W*'),
+								], 'OR', 'W*'),
+								
+								ChShipTypeRoutingRule(['aBB'], '<=', 2, 'W*'),
+								ChIsRouteUnlockedRule(1, 'W*'),
+							], 'AND', 'W*'),
+
+							ChMultipleRulesRule([
+								ChMultipleRulesRule([
+									ChShipTypeRoutingRule(['DD'], '>=', 4, 'W'),
+									ChDifficultyRule([1,2], 'W'),
+								], 'OR', 'W'),
+								
+								ChShipTypeRoutingRule(['aBB'], '<=', 2, 'W'),
+							], 'AND', 'W'),
 
 							ChDefaultRouteRule('R')
 						]
@@ -24755,13 +24756,13 @@ var MAPDATA = {
 							ChFixedRoutingRule('H')
 						]
 					},
-					'E': {
+					/*'E': {
 						type: 3,
 						x: 393,
 						y: 293,
 						distance: 1,
 						end: true
-					},
+					},*/
 					'F': {
 						type: 3,
 						x: 408,
@@ -25335,7 +25336,7 @@ var MAPDATA = {
 								ChSpeedRule('<=', 5, 'Q'),
 								ChShipTypeRoutingRule(['aBB'], '>=', 5, 'Q'),
 							], 'AND', 'Q')),
-							ChShowLOSPlane(ChDefaultRouteRule('H'))
+							ChSelectRouteRule(['H','P']),
 						]
 					},
 					'M': {
@@ -25356,9 +25357,14 @@ var MAPDATA = {
 							4: ['Casual 1','Casual 2'],
 						},
 						rules: [
-							ChShowLOSPlane(ChIsRouteNotUnlockedRule(2, 'Q')),
+							ChIfThenElseRule(
+								ChIsRouteNotUnlockedRule(2, 'Q'),
+								ChShowLOSPlane(ChSelectRouteRule(['Q','O'])),
+							),
+							
 							ChShowLOSPlane(ChShipTypeRoutingRule(['AV', 'AS'], '>', 0, 'Q')),
-							ChShowLOSPlane(ChDefaultRouteRule('W'))
+
+							ChSelectRouteRule(['W','O']),
 						]
 					},
 					'N': {

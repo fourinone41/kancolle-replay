@@ -151,22 +151,43 @@ MAPDATA[97].loadMapFromChData = function (worldNum, mapNum) {
     if (!customMap) return;
 
     customMap = JSON.parse(customMap);
+    const mapSave = MAPDATA[worldNum].maps[mapNum];
 
+    // --- Save some stuff : 
+    const properties =  [
+        "additionalChecks", 
+        "getLock",
+        "startCheck",
+    ];
+
+    const values = [];
+
+    for (const prop of properties) {
+        values[prop] = MAPDATA[worldNum].maps[mapNum][prop];
+    }
+
+    // --- Load the map
     MAPDATA[worldNum].maps[mapNum] = customMap;
+
+    // --- Restore some stuff : 
+    for (const prop of properties) {
+        MAPDATA[worldNum].maps[mapNum][prop] = values[prop];
+    }
         
     MAPDATA[97].loadUnlockFromChData(MAPDATA[worldNum].maps[mapNum]);
-    MAPDATA[97].loadStartCheckFromChData(MAPDATA[worldNum].maps[mapNum]);
+    MAPDATA[97].loadStartCheckFromChData(MAPDATA[worldNum].maps[mapNum], mapSave);
     MAPDATA[97].loadStartBonusesFromChData(MAPDATA[worldNum].maps[mapNum]);
 
     for (const nodeKey in MAPDATA[worldNum].maps[mapNum].nodes) {
-        MAPDATA[97].loadNodeFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
+        MAPDATA[97].loadNodeFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey], mapSave.nodes[nodeKey]);
 
         MAPDATA[97].loadBonusesFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
     }
 }
 
-MAPDATA[97].loadStartCheckFromChData = function (map) {
-    
+MAPDATA[97].loadStartCheckFromChData = function (map, mapSave) {
+    map.startCheckRule = mapSave.startCheckRule;
+    return;
     let rules = [];
 
     for (const rule of map.startCheckRule) {
@@ -263,15 +284,16 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
     }
 }
 
-MAPDATA[97].loadNodeFromChData = function (nodeData) {
+MAPDATA[97].loadNodeFromChData = function (nodeData, nodeSave) {
 
-    let rules = [];
+    /*let rules = [];
 
     for (const rule of nodeData.rules) {
         rules.push(MAPDATA[97].convertRule(rule))
     }
 
-    nodeData.rules = rules;
+    nodeData.rules = rules;*/
+    nodeData.rules = nodeSave.rules;
     
     if (nodeData.endRules) {
         let endRules = [];
@@ -429,4 +451,285 @@ function chrGetLastDance() {
     }
     
     return lastdance;
+}
+
+
+MAPDATA[97].ChrRandomizeEvent = function () {
+return;
+    const rando = () => {
+        try {
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[1].world, 1);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[2].world, 2);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[3].world, 3);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[4].world, 4);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[5].world, 5);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[6].world, 6);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[7].world, 7);  
+        }
+        catch (ex) {
+            console.error(ex);
+            if (confirm('Event Initialization failed, do you want to retry ? (no will refresh without saving changes)')) {
+                rando();
+            }
+            else {
+                CHDATA.maps = undefined;
+                location.reload();
+            }
+        }
+    }
+    rando(); 
+
+    return;
+    //loadObject.Hide();
+}
+
+MAPDATA[97].saveMapData = function (mapnum, map) {
+
+    // --- Delete useless data
+    for (const node in map.nodes) {
+        let nodeData = map.nodes[node];
+
+        delete nodeData.fleetsTypes;
+    }
+
+    localStorage.setItem('chrRandom-' + mapnum, JSON.stringify(map));
+}
+
+MAPDATA[97].ChrRandomizeMap = function (eventNumber, mapNumber) {
+    
+    console.debug(`Randomizing ${MAPDATA[eventNumber].name} E${mapNumber}`);
+
+    /**
+     * @type {ChrRandomizeEventHelper.PathObject[]}
+     */
+    let paths = [];
+    let starts = [];
+    
+    let map = MAPDATA[eventNumber].maps[mapNumber];
+
+    let countSecurity = 0;
+    let checkLoop = () => {
+        countSecurity++;
+        if (countSecurity > 999999) {
+            alert('loop detected');
+            throw 'loop detected';
+        }
+    }
+
+    let constructMapLayout = () => {
+
+        for (const node in map.nodes) {
+            if (node.includes('Start')) starts.push(node);
+        }
+    
+        let constructPaths = (node, nodeFrom) => {
+
+            checkLoop();
+
+            /**
+             * @type {{ rules: ChRule[] }}
+             */
+            let nodeData = map.nodes[node];
+
+            /**
+             * 
+             */
+            let path = {};
+
+            path.node = node;
+            path.nodeData = nodeData;
+
+            // --- Init node data
+            if (!path.nodeData) console.debug(node);
+
+            ChrRandomizeEventHelper.InitNodeData(path.nodeData);
+
+            if (!path.nodeData.rules) { 
+                path.pathEnd = true;
+                return path; 
+            }
+
+            path.paths = [];
+            let nodesDone = [];
+
+            const constructPathOfPath = (rule) => {
+                let nextNode = rule.conditionCheckedNode || rule.fixedNode;
+
+                if (rule.type == 'routeSelect')  {
+
+                    for (const selectNode of rule.routeSelect) {
+                        path.paths.push(constructPaths(selectNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'random')  {
+
+                    for (const randomNode of Object.keys(rule.randomNodes)) {
+                        if (randomNode) path.paths.push(constructPaths(randomNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'ifthenelse')  {
+
+                    constructPathOfPath(rule.ifthenelse.then);
+
+                    if (rule.ifthenelse.else) {
+                        constructPathOfPath(rule.ifthenelse.else);
+                    }
+
+                    return;
+                }
+                
+                if (!nextNode) {
+                    console.debug(rule);
+                    throw 'Error reading rule of node ' + node;
+                }
+
+                if (nextNode.includes("/")) {
+                    for (const nextNodeDetail of nextNode.split('/')) {
+                        path.paths.push(constructPaths(nextNodeDetail, node));
+                        nodesDone.push(nextNodeDetail);
+                    }
+                    return;
+                }
+
+                if (!nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
+                    nodesDone.push(nextNode);
+                }
+
+                nextNode = rule.conditionFailedNode;
+
+                if (nextNode && !nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
+                    nodesDone.push(nextNode);
+                }
+            }
+            
+            for (const rule of path.nodeData.rules) {
+                constructPathOfPath(rule);
+            }
+
+            return path;
+        }
+
+        for (const start of starts) {
+            paths.push(constructPaths(start));
+        }
+
+        console.debug(starts);
+        console.debug(paths);
+    }
+
+    let checkMapLayout = () => {
+        let nodes = [];
+
+        let checkNode = (path) => {
+            nodes.push(path.node);
+
+            if (!path.paths) return;
+
+            for (const nextPath of path.paths) {
+                checkNode(nextPath);
+            }
+        }
+        
+        for (const path of paths) {
+            checkNode(path);
+        }
+
+        for (const node in map.nodes) {
+            if (!nodes.includes(node)) {
+                throw "Error : Node " + node + ` cant be reached`;
+            }
+        }
+    }
+
+    let makeStartRules = () => {
+        return;
+        map.startCheckRule = ChrRandomizeEventHelper.CreateStartRules(map, paths);
+    }
+
+    let makeMapRouting = () => {
+        return;
+        for (const path of paths) {
+            
+            /**
+             * 
+             * @param {ChrRandomizeEventHelper.PathObject} currentPath 
+             */
+            let makeRouting = (currentPath) => {
+                if (!currentPath.paths) return;
+                
+                for (const nextPath of currentPath.paths) {
+
+                    ChrRandomizeEventHelper.CreateRandomRules(currentPath, nextPath);
+
+                    makeRouting(nextPath);
+                }
+            }
+
+            ChrRandomizeEventHelper.CreateRandomRules(null, path);
+            makeRouting(path);
+        }
+    }
+
+    const makeGimmicks = () => {
+
+        let unlockRequired = 0;
+        let lastPart = null;
+
+        const abPossible = !!map.enemyRaid;
+
+        for (const part in map.hiddenRoutes) {
+
+            let partRequired = null;
+
+            if (map.hiddenRoutes[part].unlockRules && map.hiddenRoutes[part].unlockRules.mapPartNumber) partRequired = map.hiddenRoutes[part].unlockRules.mapPartNumber - 1;
+            if (map.hiddenRoutes[part].unlockRules) {
+                const unlockRule = map.hiddenRoutes[part].unlockRules.gimmicks.find(gimmick => gimmick.type == "PartClear");
+
+                if (unlockRule) partRequired = unlockRule.partToClear;
+            }
+
+            map.hiddenRoutes[part].unlockRules = ChrRandomizeGimmicks.RandomizeGimmicks("mapPart", mapNumber, {
+                partToUnlock: part,
+                mapPartRequired : partRequired,
+                routeUnlockRequired: unlockRequired
+            }, map.nodes, abPossible);
+
+            unlockRequired = part;
+            lastPart = partRequired && partRequired > lastPart ? partRequired : lastPart;
+        }
+
+        map.debuffRules = ChrRandomizeGimmicks.RandomizeGimmicks("debuff", mapNumber, {
+            partToUnlock: lastPart,
+            mapPartRequired : lastPart,
+            routeUnlockRequired: unlockRequired
+        }, map.nodes, abPossible);
+    }
+
+    const makeBonuses = () => {
+
+        for (const node in map.nodes) {
+            const nodeData = map.nodes[node];
+            nodeData.bonuses = [];
+        }
+
+        ChrRandomizeBonuses.MakeBonusesFromNodes(paths);
+    }
+
+    
+    constructMapLayout();
+    checkMapLayout();
+    makeStartRules();
+    makeMapRouting();
+    makeGimmicks();
+    makeBonuses();
+
+    MAPDATA[97].saveMapData(mapNumber, map)
 }
