@@ -7694,6 +7694,22 @@ var VOICES = {
 		damage: "assets/voice/523205630.mp3",
 		sunk: "assets/voice/523205641.mp3",
 	},
+	716: {
+		start: "assets/voice/643_start.mp3",
+		attack: "assets/voice/643_attack.mp3",
+		nbattack: "assets/voice/643_nbattack.mp3",
+		damage1: "assets/voice/643_damage1.mp3",
+		damage2: "assets/voice/643_damage2.mp3",
+		damage3: "assets/voice/643_damage3.mp3",
+	},
+	643: {
+		start: "assets/voice/643_start.mp3",
+		attack: "assets/voice/643_attack.mp3",
+		nbattack: "assets/voice/643_nbattack.mp3",
+		damage1: "assets/voice/643_damage1.mp3",
+		damage2: "assets/voice/643_damage2.mp3",
+		damage3: "assets/voice/643_damage3.mp3",
+	}
 }
 
 for (let id in SHIPDATA) {
