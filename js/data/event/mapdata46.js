@@ -2471,19 +2471,7 @@ MAPDATA[46] =
 							ChFleetTypeRule([0], 'C'),
 							ChFleetTypeRule([2], 'A'),
 
-							ChCreateCustomRule({
-								conditionCheckedNode: 'A',
-
-								getRouting: (ships) => {
-									if (ships.c.ids.some(mid => SHIPDATA[mid].type == 'DD' && SHIPDATA[mid].SPD <= 5)) return 'A';
-
-									return '';
-								},
-
-								getDescription: () => {
-									return 'Fleet contains any slow DD (speed boost irrelevent)';
-								}
-							}),
+							ChCreateCustomRuleFromName("46_6_1"),
 
 							ChMultipleRulesRule([
 								ChSpeedRule('>=', 10, 'C'),
@@ -2524,20 +2512,7 @@ MAPDATA[46] =
 						rules: [
 							ChShipTypeRoutingRule(['aBB', 'aCV'], '>=', 7, 'E'),
 
-							ChCreateCustomRule({
-								conditionCheckedNode: 'E',
-
-								getRouting: (ships) => {
-									let hasShinshuu = isShipInList(ships.c.ids,621);
-									if (ships.c.aCV + Math.max(0,ships.c.LHA - +hasShinshuu) >= 5) return 'E';
-
-									return '';
-								},
-
-								getDescription: () => {
-									return `Number of CV(L/B) + LHA (Shinshuumaru doesn't count) >= 5`;
-								}
-							}),
+							ChCreateCustomRuleFromName("46_6_2"),
 
 							ChSpeedRule('>=', 10, 'D'),
 

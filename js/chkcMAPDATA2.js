@@ -15092,40 +15092,7 @@ var MAPDATA = {
 						rules: [
 							ChFleetTypeRule([1, 2], 'A'),
 							ChSpeedRule('<', 10, 'A'),
-							ChCreateCustomRule({
-								type: 'shipIds',
-								historicalGroups: true,
-
-								shipsIds: [471,472,473,474,475,28,29,6,7,481],
-								shipsIdsListName: 'Historicals',
-
-								conditionCheckedNode: "C",
-								conditionFailedNode: "A",
-
-								getDescription: function() {
-									return `Obtain the necessary score through the following:<br>
-									Reach at least 3 on Easy / 4 on Medium / 5 on Hard.<br>
-									The score can be reached by having historic ships in your whole combined fleet.<br>
-									Kamikaze-class destroyers are 2 points each.<br>
-									Satsuki, Fumizuki, Nagatsuki, Mikazuki and Minazuki are 1 point each.`
-								},
-
-								getRouting: function(ships) {
-									let num = 0;
-									let shipIds = ships.ids.concat(ships.escort.ids);
-
-									for (let mid of [471,472,473,474,475]) {
-										if (isShipInList(shipIds,mid)) num += 2;
-									}
-
-									for (let mid of [28,29,6,7,481]) {
-										if (isShipInList(shipIds,mid)) num += 1;
-									}
-
-									if (num >= CHDATA.event.maps[2].diff + 2) return 'C';
-									return 'A';
-								}
-							}),
+							ChCreateCustomRuleFromName("37_2_1"),
 						]
 					},
 					'A': {
@@ -18527,35 +18494,7 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
 						rules: [
-							ChCreateCustomRule({
-								type: 'shipIds',
-
-								conditionCheckedNode: 'N/Q/O',
-
-								getRouting: function (ships) {
-									let count = ships.aBB + ships.aCV;
-									let ids = ships.ids.concat(ships.escort.ids), numH = 0;
-									for (let mid of MAPDATA[39].historical.ceylon) {
-										if (isShipInList(ids,mid)) numH++;
-									}
-									if (numH >= 6) count -= 1 + .1*Math.max(0,numH-6);
-									let letter = (Math.random() < (count-2)*.4)? 'N' : 'Q';
-									this.showLoSPlane = letter;
-									return checkELoS33(getELoS33(1,1,true),{ 3: letter, 0: 'O' });
-								},
-
-								getDescription: () => {
-									return 'Random routing between N and Q (the more historical ships you have, the more likely you\'ll go to Q)<br>Go to O if you lack LOS.';
-								},
-
-								historicalGroups: true,
-								
-								getShipIds: () => {
-									return MAPDATA[39].historical.ceylon;
-								},
-
-								shipsIdsListName: 'Battle of Ceylon'
-							})
+							ChCreateCustomRuleFromName("39_3_1"),
 						]
 					},
 					'N': {
@@ -19758,24 +19697,7 @@ var MAPDATA = {
 							1: ['Easy 1','Easy 2','Easy 3'],
 						},
 						rules: [
-							ChCreateCustomRule({
-								type: 'random',
-								
-								getRouting: () => {
-									let ruleJ = MAPDATA[39].maps[7].hiddenRoutes[1].unlockRules.gimmicks[1];
-									let ruleK = MAPDATA[39].maps[7].hiddenRoutes[1].unlockRules.gimmicks[2];
-
-									let debuffJ = ruleJ.gimmickDone();
-									let debuffK = ruleK.gimmickDone();
-									
-									if (debuffK && !debuffJ) return 'J';
-									if (debuffJ && !debuffK) return 'I';
-									
-									return (Math.random() < .5)? 'I' : 'J';
-								},
-
-								randomNodes: { 'I': .5, 'J': .5 }
-							})
+							ChCreateCustomRuleFromName("39_7_1")
 						]
 					},
 					'F': {
@@ -29504,21 +29426,7 @@ var MAPDATA = {
 
 							ChFleetTypeRule(1, 'U'),
 
-							ChCreateCustomRule({
-								conditionCheckedNode: 'V/U',
-
-								getDescription: () => {
-									return `Random between V and U (more radar = more chances to go to V)`;
-								},
-
-								getRouting: () => {
-									let s = FLEETS1[0].ships;
-									if (FLEETS1[1]) s = s.concat(FLEETS1[1].ships);
-									let radars = checkSurfaceRadar(s);
-
-									return (Math.random() < .5 + .1*(radars.num-3))? 'V' : 'U';
-								}
-							})
+							ChCreateCustomRuleFromName("43_3_1")
 						]
 					},
 					'U': {
@@ -31844,25 +31752,7 @@ var MAPDATA = {
 							ChMultipleRulesRule([
 								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 3, 'X'),
 
-								ChCreateCustomRule({
-									conditionCheckedNode: 'X',
-
-									getRouting: () => {
-										let numSlow = 0;
-
-										for (let n=0; n<2; n++) {
-											for (let ship of FLEETS1[n].ships) {
-												if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
-											}
-										}
-
-										return numSlow <= 1 ? 'X' : '';
-									},
-
-									getDescription: () => {
-										return `One or less slow (F)BB(V)`;
-									}
-								})
+								ChCreateCustomRuleFromName("44_4_1")
 							], 'AND', 'X'),
 							ChMultipleRulesRule([
 								ChShipCountRoutingRule('<=', 3, 'X'),
@@ -32308,25 +32198,7 @@ var MAPDATA = {
 							ChMultipleRulesRule([
 								ChShipTypeRoutingRule(['aBB', 'aCV'], '<=', 3, 'X'),
 
-								ChCreateCustomRule({
-									conditionCheckedNode: 'X',
-
-									getRouting: () => {
-										let numSlow = 0;
-
-										for (let n=0; n<2; n++) {
-											for (let ship of FLEETS1[n].ships) {
-												if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
-											}
-										}
-
-										return numSlow <= 2 ? 'X' : '';
-									},
-
-									getDescription: () => {
-										return `Two or less slow (F)BB(V)`;
-									}
-								})
+								ChCreateCustomRuleFromName("44_4_2")
 							], 'AND', 'X', 'K'),
 						]
 					},
@@ -32348,25 +32220,7 @@ var MAPDATA = {
 							ChMultipleRulesRule([
 								ChShipTypeRoutingRule(['aBB', 'aCV'], '>=', 3, 'K'),
 
-								ChCreateCustomRule({
-									conditionCheckedNode: 'K',
-
-									getRouting: () => {
-										let numSlow = 0;
-
-										for (let n=0; n<2; n++) {
-											for (let ship of FLEETS1[n].ships) {
-												if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
-											}
-										}
-
-										return numSlow > 0 ? 'K' : '';
-									},
-
-									getDescription: () => {
-										return `One or more slow (F)BB(V)`;
-									}
-								})
+								ChCreateCustomRuleFromName("44_4_3")
 							], 'AND', 'K', 'Y'),
 						]
 					},

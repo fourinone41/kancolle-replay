@@ -496,27 +496,28 @@ ChrRandomizeEventHelper.InitNodeData = function(nodeData) {
         0: {
             canReach: false,
             /** @type {ChrRandomizeEventHelper.ShipCountObject} */
-            ships: new ChrRandomizeEventHelper.ShipCountObject(0),
+            //ships: new ChrRandomizeEventHelper.ShipCountObject(0),
         },
         7: {
             canReach: false,
-            ships: new ChrRandomizeEventHelper.ShipCountObject(7),
+            //ships: new ChrRandomizeEventHelper.ShipCountObject(7),
         },
         1: {
             canReach: false,
-            ships: new ChrRandomizeEventHelper.ShipCountObject(1),
+            //ships: new ChrRandomizeEventHelper.ShipCountObject(1),
         },
         2: {
             canReach: false,
-            ships: new ChrRandomizeEventHelper.ShipCountObject(2),
+            //ships: new ChrRandomizeEventHelper.ShipCountObject(2),
         },
         3: {
             canReach: false,
-            ships: new ChrRandomizeEventHelper.ShipCountObject(3),
+            //ships: new ChrRandomizeEventHelper.ShipCountObject(3),
         },                
     };
 
     nodeData.fleetsTypes.ApplyPreviousPathRestrictions = (fleetTypeShipCountObject) => {
+        return;
         for (const fleetType in fleetTypeShipCountObject) {
             const fleetShipCounts = fleetTypeShipCountObject[fleetType];
 
@@ -1126,27 +1127,27 @@ ChrRandomizeEventHelper.PathObject = {
             0: {
                 canReach: false,
                 /** @type {ChrRandomizeEventHelper.ShipCountObject} */
-                ships: new ChrRandomizeEventHelper.ShipCountObject(0),
+                //ships: new ChrRandomizeEventHelper.ShipCountObject(0),
             },
             7: {
                 canReach: false,
                 /** @type {ChrRandomizeEventHelper.ShipCountObject} */
-                ships: new ChrRandomizeEventHelper.ShipCountObject(7),
+                //ships: new ChrRandomizeEventHelper.ShipCountObject(7),
             },
             1: {
                 canReach: false,
                 /** @type {ChrRandomizeEventHelper.ShipCountObject} */
-                ships: new ChrRandomizeEventHelper.ShipCountObject(1),
+                //ships: new ChrRandomizeEventHelper.ShipCountObject(1),
             },
             2: {
                 canReach: false,
                 /** @type {ChrRandomizeEventHelper.ShipCountObject} */
-                ships: new ChrRandomizeEventHelper.ShipCountObject(2),
+                //ships: new ChrRandomizeEventHelper.ShipCountObject(2),
             },
             3: {
                 canReach: false,
                 /** @type {ChrRandomizeEventHelper.ShipCountObject} */
-                ships: new ChrRandomizeEventHelper.ShipCountObject(3),
+                //ships: new ChrRandomizeEventHelper.ShipCountObject(3),
             },                
         }
     },

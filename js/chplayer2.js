@@ -6,7 +6,7 @@ var RANDO_MODE = 4;
 
 // --- 1 => Rush mode
 // --- 2 => TP is slow
-var RUSH_MODE = 2;
+var RUSH_MODE = 1;
 
 function InitUI() {
 	if (!CHDATA.event) return;
@@ -18,7 +18,7 @@ function InitUI() {
 	MAPNUM = CHDATA.event.mapnum;
 	WORLD = CHDATA.event.world;
 
-	if(WORLD > 90) {
+	if(WORLD > 97) {
 		
 		if (WORLD == 98) {
 			$('#tabChr').show();
@@ -1141,17 +1141,19 @@ function chPlayerStart() {
 function chLoadMap(mapnum) {
 	map.removeChildren();
 	world = CHDATA.event.world;
-	if(world > 90){
+	if(world > 97){
 		world = MAPDATA[world].maps[mapnum].world;
 	}
-	map.addChild(PIXI.Sprite.fromImage('assets/maps/'+world+'/'+mapnum+'.png'));
+	const mapPath = MAPDATA[world].maps[mapnum].mapImage ? MAPDATA[world].maps[mapnum].mapImage : 'assets/maps/'+world+'/'+mapnum+'.png';
+	map.addChild(PIXI.Sprite.fromImage(mapPath));
 	if (MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {
 		if (!CHDATA.event.maps[mapnum].routes) CHDATA.event.maps[mapnum].routes = [];
 		for (var key in MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {
 			if (CHDATA.event.maps[mapnum].routes.indexOf(parseInt(key)) == -1) continue;
 			var route = MAPDATA[WORLD].maps[mapnum].hiddenRoutes[key];
 			for (var image of route.images) {
-				var spr = PIXI.Sprite.fromImage('assets/maps/'+world+'/'+image.name);
+				const routeImagePath = route.customName ? route.customName : 'assets/maps/'+world+'/'+image.name;
+				var spr = PIXI.Sprite.fromImage(routeImagePath);
 				spr.position.set(image.x,image.y);
 				map.addChild(spr);
 			}
@@ -1726,7 +1728,8 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 
 		Object.assign(compd, CHDATA.event.comps['E-'+MAPNUM][n][comp]);
 
-		compd.originalComp = ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
+		if (WORLD == 97) compd.originalComp = CHDATA.event.comps['E-'+MAPNUM][n][comp];
+		else ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
 	}
 	return compd;
 }
@@ -2393,7 +2396,8 @@ function endMap() {
 function showRouteUnlock(route,routeId) {
 	var sprs = [], sprsRemove = [];
 	for (var image of route.images) {
-		var spr = PIXI.Sprite.fromImage('assets/maps/'+WORLD+'/'+image.name);
+		const routeImagePath = route.customName ? route.customName : 'assets/maps/'+WORLD+'/'+image.name;
+		var spr = PIXI.Sprite.fromImage(routeImagePath);
 		spr.position.set(image.x,image.y);
 		spr.alpha = 0;
 		map.addChild(spr);

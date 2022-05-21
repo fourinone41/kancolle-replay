@@ -356,7 +356,7 @@ function ChIsMapNotClearedRule(conditionCheckedNode, conditionFailedNode) {
  * Allows to create a fully custom rule dirrectly in branching rules
  * @param {ChRule} ruleProperties
  */
-function ChCreateCustomRule(ruleProperties) {
+function ChCreateCustomRule(ruleName, ruleProperties) {
     let rule = new ChRule();
 
     if (ruleProperties.type) rule.type = ruleProperties.type;
@@ -373,6 +373,8 @@ function ChCreateCustomRule(ruleProperties) {
     if (ruleProperties.shipsIdsListName) rule.shipsIdsListName = ruleProperties.shipsIdsListName;
     if (ruleProperties.historicalGroups) rule.historicalGroups = ruleProperties.historicalGroups;
     if (ruleProperties.randomNodes) rule.randomNodes = ruleProperties.randomNodes;
+
+    rule.customRuleName = ruleName;
 
     return rule;
 }
@@ -572,3 +574,200 @@ function ChFlagshipHasTag(tags, conditionCheckedNode, conditionFailedNode) {
 
     return rule;
 }
+
+function ChCreateCustomRuleFromName(ruleName) {
+    return CUSTOM_RULES[ruleName];
+}
+
+const CUSTOM_RULES = {
+    "37_2_1": ChCreateCustomRule("37_2_1", {
+
+        type: 'shipIds',
+        historicalGroups: true,
+
+        shipsIds: [471,472,473,474,475,28,29,6,7,481],
+        shipsIdsListName: 'Historicals',
+
+        conditionCheckedNode: "C",
+        conditionFailedNode: "A",
+
+        getDescription: function() {
+            return `Obtain the necessary score through the following:<br>
+            Reach at least 3 on Easy / 4 on Medium / 5 on Hard.<br>
+            The score can be reached by having historic ships in your whole combined fleet.<br>
+            Kamikaze-class destroyers are 2 points each.<br>
+            Satsuki, Fumizuki, Nagatsuki, Mikazuki and Minazuki are 1 point each.`
+        },
+
+        getRouting: function(ships) {
+            let num = 0;
+            let shipIds = ships.ids.concat(ships.escort.ids);
+
+            for (let mid of [471,472,473,474,475]) {
+                if (isShipInList(shipIds,mid)) num += 2;
+            }
+
+            for (let mid of [28,29,6,7,481]) {
+                if (isShipInList(shipIds,mid)) num += 1;
+            }
+
+            if (num >= CHDATA.event.maps[2].diff + 2) return 'C';
+            return 'A';
+        }
+    }),
+
+    "39_3_1": ChCreateCustomRule("39_3_1", {
+        type: 'shipIds',
+
+        conditionCheckedNode: 'N/Q/O',
+
+        getRouting: function (ships) {
+            let count = ships.aBB + ships.aCV;
+            let ids = ships.ids.concat(ships.escort.ids), numH = 0;
+            for (let mid of MAPDATA[39].historical.ceylon) {
+                if (isShipInList(ids,mid)) numH++;
+            }
+            if (numH >= 6) count -= 1 + .1*Math.max(0,numH-6);
+            let letter = (Math.random() < (count-2)*.4)? 'N' : 'Q';
+            this.showLoSPlane = letter;
+            return checkELoS33(getELoS33(1,1,true),{ 3: letter, 0: 'O' });
+        },
+
+        getDescription: () => {
+            return 'Random routing between N and Q (the more historical ships you have, the more likely you\'ll go to Q)<br>Go to O if you lack LOS.';
+        },
+
+        historicalGroups: true,
+        
+        getShipIds: () => {
+            return MAPDATA[39].historical.ceylon;
+        },
+
+        shipsIdsListName: 'Battle of Ceylon'
+    }),
+
+    "39_7_1": ChCreateCustomRule("39_7_1", {
+        type: 'random',
+        
+        getRouting: () => {
+            let ruleJ = MAPDATA[39].maps[7].hiddenRoutes[1].unlockRules.gimmicks[1];
+            let ruleK = MAPDATA[39].maps[7].hiddenRoutes[1].unlockRules.gimmicks[2];
+
+            let debuffJ = ruleJ.gimmickDone();
+            let debuffK = ruleK.gimmickDone();
+            
+            if (debuffK && !debuffJ) return 'J';
+            if (debuffJ && !debuffK) return 'I';
+            
+            return (Math.random() < .5)? 'I' : 'J';
+        },
+
+        randomNodes: { 'I': .5, 'J': .5 }
+    }),
+
+    "43_3_1": ChCreateCustomRule("43_3_1", {
+        conditionCheckedNode: 'V/U',
+
+        getDescription: () => {
+            return `Random between V and U (more radar = more chances to go to V)`;
+        },
+
+        getRouting: () => {
+            let s = FLEETS1[0].ships;
+            if (FLEETS1[1]) s = s.concat(FLEETS1[1].ships);
+            let radars = checkSurfaceRadar(s);
+
+            return (Math.random() < .5 + .1*(radars.num-3))? 'V' : 'U';
+        }
+    }),
+
+    "44_4_1" : ChCreateCustomRule("44_4_1", {
+        conditionCheckedNode: 'X',
+
+        getRouting: () => {
+            let numSlow = 0;
+
+            for (let n=0; n<2; n++) {
+                for (let ship of FLEETS1[n].ships) {
+                    if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+                }
+            }
+
+            return numSlow <= 1 ? 'X' : '';
+        },
+
+        getDescription: () => {
+            return `One or less slow (F)BB(V)`;
+        }
+    }),
+
+    "44_4_2": ChCreateCustomRule("44_4_2", {
+        conditionCheckedNode: 'X',
+
+        getRouting: () => {
+            let numSlow = 0;
+
+            for (let n=0; n<2; n++) {
+                for (let ship of FLEETS1[n].ships) {
+                    if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+                }
+            }
+
+            return numSlow <= 2 ? 'X' : '';
+        },
+
+        getDescription: () => {
+            return `Two or less slow (F)BB(V)`;
+        }
+    }),
+
+    "44_4_3": ChCreateCustomRule("44_4_3", {
+        conditionCheckedNode: 'K',
+
+        getRouting: () => {
+            let numSlow = 0;
+
+            for (let n=0; n<2; n++) {
+                for (let ship of FLEETS1[n].ships) {
+                    if (SHIPDATA[ship.mid].SPD <= 5 && ['FBB','BB','BBV'].indexOf(ship.type) != -1) numSlow++;
+                }
+            }
+
+            return numSlow > 0 ? 'K' : '';
+        },
+
+        getDescription: () => {
+            return `One or more slow (F)BB(V)`;
+        }
+    }),
+
+    "46_6_1": ChCreateCustomRule("46_6_1", {
+        conditionCheckedNode: 'A',
+
+        getRouting: (ships) => {
+            if (ships.c.ids.some(mid => SHIPDATA[mid].type == 'DD' && SHIPDATA[mid].SPD <= 5)) return 'A';
+
+            return '';
+        },
+
+        getDescription: () => {
+            return 'Fleet contains any slow DD (speed boost irrelevent)';
+        }
+    }),
+
+    "46_6_2": ChCreateCustomRule("46_6_2", {
+        conditionCheckedNode: 'E',
+
+        getRouting: (ships) => {
+            let hasShinshuu = isShipInList(ships.c.ids,621);
+            if (ships.c.aCV + Math.max(0,ships.c.LHA - +hasShinshuu) >= 5) return 'E';
+
+            return '';
+        },
+
+        getDescription: () => {
+            return `Number of CV(L/B) + LHA (Shinshuumaru doesn't count) >= 5`;
+        }
+    }),
+}
+

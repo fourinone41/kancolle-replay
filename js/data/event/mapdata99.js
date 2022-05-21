@@ -114,6 +114,8 @@ function randomizeMaps(){
 }
 
 function chrIsMapDone(event_id, map_number) {
+    if (!CHDATA) return false;
+    if (!CHDATA.event) return false;
     if (!CHDATA.event.mapClearData) return false;
     if (!CHDATA.event.mapClearData[event_id]) return false;
 
@@ -146,13 +148,12 @@ function chRandomizeMaps() {
 }
 
 function chLoadRandomFile() {
-    if (RANDOMAPS) {
-        // --- Load map data
-        MAPDATA[97].loadFromChData();
-    }
-
-    if (CHDATA.event.comps == undefined) {
-        CHDATA.event.comps = chRandomizeComps();
+    
+    if (CHDATA.event.world == 97) MAPDATA[97].initializeAllMaps();
+    else {
+        if (CHDATA.event.comps == undefined) {
+            CHDATA.event.comps = chRandomizeComps();
+        }
     }
 }
 
@@ -175,8 +176,6 @@ function chRemoveLocks() {
 function chRerollMap() {
     CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
     
-    if (RANDOMAPS) MAPDATA[97].initializeMap(WORLD, MAPNUM);
-
 	chSortieStartChangeDiff();
 	CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
     chLoadSortieInfo(MAPNUM);
@@ -188,13 +187,13 @@ function chRerollMap() {
 
 const DISABLE_RANDO = false;
 
-function chRandomizeComps() {
+function chRandomizeCompsFromMapList(mapList) {
     let comps = {};
 
-    for (let map in CHDATA.maps) {
+    for (let map in mapList) {
 
         let eventNodes = {};
-        let eventNumber = CHDATA.maps[map].world;
+        let eventNumber = mapList[map].world;
         let event = ENEMYCOMPS[MAPDATA[eventNumber].name];
 
         let mapData = MAPDATA[parseInt(eventNumber)].maps[map];
@@ -222,6 +221,10 @@ function chRandomizeComps() {
     }
 
     return comps;
+}
+
+function chRandomizeComps() {
+    return chRandomizeCompsFromMapList(CHDATA.maps);
 }
 
 // --- Todo

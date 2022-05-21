@@ -81,7 +81,7 @@ ChrRandomizeBonuses.MakeBonuses = function(groups, endnode) {
                 new ChShipIdsBonuses({ 
                     type: 'add', 
                     debuffOnly: true,
-                }, group, ChrRandomizeBonuses.GetRoll(ChrRandomizeBonuses.bonusMin, ChrRandomizeBonuses.bonusMax)));
+                }, group, ChrRandomizeBonuses.GetRoll(ChrRandomizeBonuses.bonusMin, ChrRandomizeBonuses.bonusMax + 0.1)));
         }
     }
 

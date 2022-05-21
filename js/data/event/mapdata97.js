@@ -30,21 +30,24 @@ MAPDATA[97] = {
         if (rank != 'S' && rank != 'A') return 0;
         return Math.floor(tp);
     },
-    maps : {
-
-    },
-}
-
-MAPDATA[97].initializeAllMaps = function () {
-
-    for (const mapNumber in CHDATA.maps) {
-        MAPDATA[97].initializeMap(CHDATA.maps[mapNumber].world, mapNumber);
+    maps: {
     }
 }
 
-MAPDATA[97].initializeMap = function (worldNum, mapNum) {
+MAPDATA[97].initializeAllMaps = function () {
+    
+    CHDATA.event.comps = CHDATA.customEventData.comps;
 
-    let oriMapData = MAPDATA[worldNum].maps[mapNum];
+    for (const key in CHDATA.customEventData.eventData) {
+        MAPDATA[97][key] = CHDATA.customEventData.eventData[key];
+    }
+    
+    for (const mapNumber in CHDATA.maps) {
+        MAPDATA[97].initializeMap(mapNumber);
+    }
+}
+
+MAPDATA[97].initializeMap = function (mapNum) {
 
     let mapData = {
         /*name: oriMapData.name,
@@ -90,54 +93,8 @@ MAPDATA[97].initializeMap = function (worldNum, mapNum) {
 
     //mapData.fleetTypes = oriMapData.fleetTypes
 
-    MAPDATA[97].initializeNodes(oriMapData, mapData);
+    //MAPDATA[97].initializeNodes(oriMapData, mapData);
 
-    if (!CHDATA.customMaps) CHDATA.customMaps = {};
-    CHDATA.customMaps[mapNum] = mapData;
-    
-
-    MAPDATA[97].loadFromChData(mapNum); 
-}
-
-MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
-
-    mapData.nodes = {};
-
-    for (const nodeKey in oriMapData.nodes) {
-        mapData.nodes[nodeKey] = "base_node";
-    }
-}
-
-MAPDATA[97].loadFromChData = function (mapNum) {
-    if (CHDATA.customMaps) {
-
-        let maps = mapNum ? { world : mapNum } : CHDATA.maps;
-
-        for (const mapKey in maps) { 
-            // --- init map 
-
-            for (const property in CHDATA.customMaps[mapKey]) {
-                if (property == "nodes") continue;
-                MAPDATA[CHDATA.maps[mapKey].world].maps[mapKey][property] = CHDATA.customMaps[mapKey][property];
-            }
-
-            for (const mapKey in CHDATA.maps) {
-                MAPDATA[97].loadMapFromChData(CHDATA.maps[mapKey].world, mapKey);
-            }
-        }
-
-        //MAPDATA[97].fixBonuses();
-    }
-    else {
-        CHDATA.customMaps = {};
-        MAPDATA[97].initializeAllMaps();
-        MAPDATA[97].loadFromChData();
-    }
-}
-
-
-MAPDATA[97].loadMapFromChData = function (worldNum, mapNum) {
-    
     /*for (const nodeKey in CHDATA.customMaps[mapNum].nodes) {
         
         // --- For each nodes:
@@ -147,20 +104,15 @@ MAPDATA[97].loadMapFromChData = function (worldNum, mapNum) {
 
     }*/
     
-    let customMap = localStorage.getItem('chrRandom-' + mapNum);
-    if (!customMap) return;
-
-    customMap = JSON.parse(customMap);
-    const mapSave = MAPDATA[worldNum].maps[mapNum];
 
     // --- Save some stuff : 
-    const properties =  [
+    /*const properties =  [
         "additionalChecks", 
         "getLock",
         "startCheck",
-    ];
+    ];*/
 
-    const values = [];
+    /*const values = [];
 
     for (const prop of properties) {
         values[prop] = MAPDATA[worldNum].maps[mapNum][prop];
@@ -172,22 +124,41 @@ MAPDATA[97].loadMapFromChData = function (worldNum, mapNum) {
     // --- Restore some stuff : 
     for (const prop of properties) {
         MAPDATA[worldNum].maps[mapNum][prop] = values[prop];
-    }
+    }*/
         
-    MAPDATA[97].loadUnlockFromChData(MAPDATA[worldNum].maps[mapNum]);
-    MAPDATA[97].loadStartCheckFromChData(MAPDATA[worldNum].maps[mapNum], mapSave);
-    MAPDATA[97].loadStartBonusesFromChData(MAPDATA[worldNum].maps[mapNum]);
+    MAPDATA[97].loadUnlockFromChData(MAPDATA[97].maps[mapNum]);
+    MAPDATA[97].loadStartCheckFromChData(MAPDATA[97].maps[mapNum]);
+    MAPDATA[97].loadStartBonusesFromChData(MAPDATA[97].maps[mapNum]);
 
-    for (const nodeKey in MAPDATA[worldNum].maps[mapNum].nodes) {
-        MAPDATA[97].loadNodeFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey], mapSave.nodes[nodeKey]);
+    for (const nodeKey in MAPDATA[97].maps[mapNum].nodes) {
+        const nodeData = MAPDATA[97].maps[mapNum].nodes[nodeKey];
 
-        MAPDATA[97].loadBonusesFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
+        try {
+            
+            MAPDATA[97].loadNodeFromChData(nodeData);
+
+            MAPDATA[97].loadBonusesFromChData(nodeData);
+        } catch (error) {
+            console.debug(nodeData);
+            throw error;
+        }
+    }
+    
+}
+
+MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
+
+    mapData.nodes = {};
+
+    for (const nodeKey in oriMapData.nodes) {
+        mapData.nodes[nodeKey] = "base_node";
     }
 }
 
-MAPDATA[97].loadStartCheckFromChData = function (map, mapSave) {
-    map.startCheckRule = mapSave.startCheckRule;
-    return;
+MAPDATA[97].loadStartCheckFromChData = function (map) {
+    if (!map.startCheckRule) return;
+    /*map.startCheckRule = mapSave.startCheckRule;
+    return;*/
     let rules = [];
 
     for (const rule of map.startCheckRule) {
@@ -278,22 +249,63 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
         case "fleetType": 
             return ChFleetTypeRule(ruleToConvert.fleetType, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
 
+        case "random": 
+            return ChRandomRule(ruleToConvert.randomNodes);
+        
+        case "difficulty": 
+            return ChDifficultyRule(ruleToConvert.difficulties, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "speed": 
+            return ChSpeedRule(ruleToConvert.operator, ruleToConvert.speed, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "ifthenelse": {
+            const ruleIf = ruleToConvert.ifthenelse.if ? this.convertRule(ruleToConvert.ifthenelse.if) : null;
+            const ruleThen = ruleToConvert.ifthenelse.then ? this.convertRule(ruleToConvert.ifthenelse.then): null;
+            const ruleElse = ruleToConvert.ifthenelse.else ? this.convertRule(ruleToConvert.ifthenelse.else): null;
+
+            return ChIfThenElseRule(ruleIf, ruleThen, ruleElse);
+        }
+
+        case 'los': 
+            return ChLOSRule(ruleToConvert.LOS, ruleToConvert.LOSCoef);
+
+        case "shipIds": 
+            return ChShipIdsRoutingRule(ruleToConvert.shipsIds, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "shipCount": 
+            return ChShipCountRoutingRule(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "allShipsMustBe": 
+            return ChAllShipMusteBeOfTypeRule(ruleToConvert.shipTypes, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+
+        case "equipType": 
+            return ChEquipTypeRule(ruleToConvert.equipData, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.shipWithEquipCount, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "custom": 
+            return ChCreateCustomRuleFromName(ruleToConvert.customRuleName);
+
+        case "speedCount": 
+            return ChNumberOfShipOfSpeedRule(ruleToConvert.speedOperator, ruleToConvert.speed, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+
         default:
             console.debug(ruleToConvert);
             throw 'unhandled rule';
     }
 }
 
-MAPDATA[97].loadNodeFromChData = function (nodeData, nodeSave) {
+MAPDATA[97].loadNodeFromChData = function (nodeData) {
 
-    /*let rules = [];
+    if (nodeData.rules) {
+        let rules = [];
 
-    for (const rule of nodeData.rules) {
-        rules.push(MAPDATA[97].convertRule(rule))
+        for (const rule of nodeData.rules) {
+            rules.push(MAPDATA[97].convertRule(rule))
+        }
+    
+        nodeData.rules = rules;
     }
 
-    nodeData.rules = rules;*/
-    nodeData.rules = nodeSave.rules;
+    //nodeData.rules = nodeSave.rules;
     
     if (nodeData.endRules) {
         let endRules = [];
@@ -732,4 +744,28 @@ MAPDATA[97].ChrRandomizeMap = function (eventNumber, mapNumber) {
     makeBonuses();
 
     MAPDATA[97].saveMapData(mapNumber, map)
+}
+
+
+
+MAPDATA[97].chrLoadCustomEventData = function() {
+    return new Promise((resolve) => {
+        let file = document.getElementById("customEventFile").files[0];
+        if (!file) throw 'Event file is required';
+    
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+            let eventData = JSON.parse(event.target.result);
+    
+            CHDATA.customEventData = eventData;
+    
+            // --- Refresh after load
+            //chSave = () => null;
+            //location.reload();
+            resolve();
+        });
+    
+        reader.readAsText(file);
+    });
+	
 }

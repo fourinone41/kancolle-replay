@@ -1,33 +1,52 @@
+const EVENT_DATA = {
+    eventData: {
+        maps: {
+        }
+    },
+    comps: {
+
+    }
+};
+
+
 let makeEventClass = new ChrMakeEvent($('body'));
 
-let events = [];
-
-checkEvents = () => {
-
-    for (const event of events) {
-        event();
-    }
-
-    events = [];
-
-    setTimeout(() => {
-        checkEvents();
-    }, 80);
-}
-
-setTimeout(() => {
-    checkEvents();
-}, 80);
-
 const FILE = localStorage.ch_file;
-var basic = JSON.parse(localStorage['ch_basic'+FILE]);
-var CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
+//var basic = JSON.parse(localStorage['ch_basic'+FILE]);
+//var CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
 
 makeEventClass.InitMapButtons();
 makeEventClass.ChangeMap(1);
 
 function ChrRandomizeEvent() {
-    ChrRandomizeMap(basic.maps[1].world, 1).then((e1) => {
+    const maps = chRandomizeMaps();
+
+    const tasks = [];
+
+    for (let index = 1; index < 8; index++) {
+        tasks.push(ChrRandomizeMap(maps[index].world, index).then((mapData) => {
+            //saveMapData(1, e1);
+            EVENT_DATA.eventData.maps[index] = mapData;
+        }));
+    }
+    
+    Promise.all(tasks).then(() => {
+
+        chInitAbyssalTables ();
+        EVENT_DATA.comps = chRandomizeCompsFromMapList(maps);
+
+        let a = window.document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([JSON.stringify(EVENT_DATA)], {type: 'application/json'}));
+        a.download = 'event_export.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        makeEventClass.ChangeMap(1);
+    });
+    
+    
+    /*ChrRandomizeMap(basic.maps[1].world, 1).then((e1) => {
         saveMapData(1, e1);
 
         ChrRandomizeMap(basic.maps[2].world, 2).then((e2) => {
@@ -55,7 +74,7 @@ function ChrRandomizeEvent() {
         });
     });
 
-    return;
+    return;*/
     //loadObject.Hide();
 }
 
@@ -74,17 +93,7 @@ function saveMapData(mapnum, map) {
 function ChrRandomizeMap(eventNumber, mapNumber) {
     
     console.debug(`Randomizing ${MAPDATA[eventNumber].name} E${mapNumber}`);
-    
-    events.push(() => { loadObject.Show(); });
-
-    events.push(() => {loadObject.Reset()});
-    events.push(() => {loadObject.SetTitle("Randomizing maps")});
-
-    events.push(() => {loadObject.total[0] = 7; });
-    events.push(() => {loadObject.currentProgress[0] = mapNumber - 1; });
-    
-    events.push(() => { loadObject.AddProgress("Randomizing E" + mapNumber + " ... ", 0); });
-    
+        
     /**
      * @type {ChrRandomizeEventHelper.PathObject[]}
      */
@@ -220,7 +229,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
         for (const node in map.nodes) {
             if (!nodes.includes(node)) {
-                events.push(() => { loadObject.SetProgress("Error : Node " + node + " cant be reached", 100, 2); });
+                alert("Error : Node " + node + " cant be reached", 100, 2);
                 throw 'unreachable node';
             }
         }
@@ -281,6 +290,10 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
             unlockRequired = part;
             lastPart = partRequired && partRequired > lastPart ? partRequired : lastPart;
+
+            for (var image of map.hiddenRoutes[part].images) {
+                image.customName = 'assets/maps/'+eventNumber+'/'+image.name;
+            }
         }
 
         map.debuffRules = ChrRandomizeGimmicks.RandomizeGimmicks("debuff", mapNumber, {
@@ -300,50 +313,28 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
         ChrRandomizeBonuses.MakeBonusesFromNodes(paths);
     }
 
-    const delay = 100;
+    const initMapData = () => {
+        map.mapPreviewImage = `assets/maps/${eventNumber}/${mapNumber}m.png`;
+        map.mapImage = `assets/maps/${eventNumber}/${mapNumber}.png`;
+    }
 
     return new Promise((resolve) => {
 
-        events.push(() => { loadObject.SetProgress("Constructing map layout ... ", 0, 1); });
-        setTimeout(() => {
-            constructMapLayout();
-            events.push(() => { loadObject.SetProgress("Map layout constructed ", 100, 1); });
-            events.push(() => { loadObject.SetProgress("Checking map layout ... ", 0, 2); });
-    
-            setTimeout(() => {
-                checkMapLayout();
-                events.push(() => { loadObject.SetProgress("Map layout checked", 100, 2); });
-                events.push(() => { loadObject.SetProgress("Making Start rules", 0, 3); });
-                
-                    setTimeout(() => {
-                        makeStartRules();
-                        events.push(() => { loadObject.SetProgress("Start rules ready", 0, 3); });
-                        events.push(() => { loadObject.SetProgress("Making routing", 10, 3); });
+        initMapData();
 
-                        setTimeout(() => {
-                            makeMapRouting();
-                            events.push(() => { loadObject.SetProgress("Routing complete", 100, 3); });
-                            events.push(() => { loadObject.SetProgress("Creating gimmicks", 100, 3); });
+        constructMapLayout();
 
-                            setTimeout(() => {
-                                makeGimmicks();
-                                events.push(() => { loadObject.SetProgress("Gimmicks ready", 100, 3); });
-                                events.push(() => { loadObject.SetProgress("Creating bonuses", 100, 3); });
-                                
-                                setTimeout(() => {
-                                    makeBonuses();
-                                    events.push(() => { loadObject.SetProgress("Bonuses ready", 100, 3); });
-                                    resolve(map);
-                                }, delay);
-                            }, delay);
-    
-                        }, delay);
+        checkMapLayout();
 
-                    }, delay);
+        makeStartRules();
 
-            }, delay);
-        }, delay);
-    })
+        makeMapRouting();
+
+        makeGimmicks();
+
+        makeBonuses();
+        resolve(map);
+    });
 }
 
 var LoadElement = function() {

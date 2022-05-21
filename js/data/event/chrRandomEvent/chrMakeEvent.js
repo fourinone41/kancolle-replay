@@ -13,6 +13,9 @@ class ChrMakeEvent {
                     <div class="edit" label="Map number" dataField="name"></div>
                     <div class="edit" label="Name" dataField="nameT"></div>
 
+                    <div class="edit" label="Map preview image path" dataField="mapPreviewImage"></div>
+                    <div class="edit" label="Map image path" dataField="mapImage"></div>
+
                     <div class="edit" type="fleetTypes" label="Fleet types" dataField="fleetTypes"></div>
 
                     <div class="edit" type="bgm" label="Map BGM" dataField="bgmMap"></div>
@@ -69,10 +72,10 @@ class ChrMakeEvent {
 
     ChangeMap(mapNumber) {
         //this.currentMap = new ChMapData();
-        this.currentMap = MAPDATA[50].maps[mapNumber];
+        this.currentMap = EVENT_DATA.eventData.maps[mapNumber];
 
         // --- Load map data
-        this.LoadEditors();
+        if (this.currentMap) this.LoadEditors();
     }
 
     LoadEditors() {
@@ -227,7 +230,8 @@ ChrMakeEvent.ArrayEditor = class extends ChrMakeEvent.Editor {
     }
 
     Init() {
-        this.root.html(this.dataSource[this.dataField].join(', '));
+        if (!Array.isArray(this.dataSource[this.dataField])) this.root.html(this.dataSource[this.dataField]);
+        else this.root.html(this.dataSource[this.dataField].join(', '));
 
         this.container.html(this.root);
     }
