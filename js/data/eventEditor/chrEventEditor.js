@@ -2,17 +2,23 @@ Vue.createApp({
 
   data: () => ({
     eventData: new ChEventData(),
-    mapNumber: 0
+    selectedMap: {},
+
+    isMapSelected: false,
   }),
 
   computed: {
-    mapNumberIsZero: function() {
-        return this.mapNumber == 0;
-    }
+
   },
 
   mounted() {
       //this.eventData = MAPDATA[50];
+
+      if (localStorage.getItem("event_editor_current_event")) this.eventData = JSON.parse(localStorage.getItem("event_editor_current_event"));
+
+      window.onbeforeunload = () => {
+        localStorage.setItem("event_editor_current_event", JSON.stringify(this.eventData));
+      };
   },
   
   methods: {
@@ -26,7 +32,15 @@ Vue.createApp({
         this.eventData.maps[lastMap] = newMap; 
         
     },
+        
+    elementChanged(elementData, eventSettingClicked) {
+        
+        this.isMapSelected = !eventSettingClicked;
+
+        if (!eventSettingClicked) this.selectedMap = elementData;
+    },
 },
 })
 .component('MapSelection', MapSelectionComponent)
+.component('MapEditor', MapEditorComponent)
 .mount('#eventEditor');

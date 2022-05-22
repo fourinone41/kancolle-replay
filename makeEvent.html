@@ -56,15 +56,16 @@
 <body>
     <div id="eventEditor">
 
-        <map-selection :maps="eventData.maps" @add-map="addMap"></map-selection>
+        <map-selection :maps="eventData.maps" @add-map="addMap" @element-changed="elementChanged"></map-selection>
 
-        
-        <div v-else="mapNumberIsZero" id="currentView"></div>
+        <map-editor v-if="isMapSelected" :map-data="selectedMap"></map-editor>
+        <event-settings v-else="isMapSelected"></event-settings>
 
     </div>
 </body>
 
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
+<script src="js/data/eventEditor/components/MapEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>
