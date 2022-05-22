@@ -3,6 +3,9 @@ class ChMapData {
         this.name = "";
         this.nameT = "";
 
+        this.mapPreviewImage = "";
+        this.mapImage = "";
+
         this.fleetTypes = [];
         
         this.bgmMap = 0;
