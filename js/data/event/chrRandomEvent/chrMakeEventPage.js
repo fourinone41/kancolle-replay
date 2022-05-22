@@ -27,7 +27,7 @@ function ChrRandomizeEvent() {
         tasks.push(ChrRandomizeMap(maps[index].world, index).then((mapData) => {
             //saveMapData(1, e1);
             EVENT_DATA.eventData.maps[index] = mapData;
-        }));
+        }).catch(error => alert("Error on E"+index+" : "+error)));
     }
     
     Promise.all(tasks).then(() => {
@@ -106,7 +106,6 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
     let checkLoop = () => {
         countSecurity++;
         if (countSecurity > 999999) {
-            alert('loop detected');
             throw 'loop detected';
         }
     }
@@ -229,8 +228,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
         for (const node in map.nodes) {
             if (!nodes.includes(node)) {
-                alert("Error : Node " + node + " cant be reached", 100, 2);
-                throw 'unreachable node';
+                throw "Node " + node + " cant be reached";
             }
         }
     }
