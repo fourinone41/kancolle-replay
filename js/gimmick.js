@@ -15,6 +15,8 @@
  */
 function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalParameters) {
 
+    if (!additionnalParameters) additionnalParameters = {};
+
     /**
      * @type {'debuff' | 'mapPart'}
      */
