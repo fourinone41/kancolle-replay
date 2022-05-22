@@ -43,4 +43,5 @@ Vue.createApp({
 })
 .component('MapSelection', MapSelectionComponent)
 .component('MapEditor', MapEditorComponent)
+.component('EventEditor', EventEditorComponent)
 .mount('#eventEditor');

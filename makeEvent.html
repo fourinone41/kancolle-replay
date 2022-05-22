@@ -59,12 +59,13 @@
         <map-selection :maps="eventData.maps" @add-map="addMap" @element-changed="elementChanged"></map-selection>
 
         <map-editor v-if="isMapSelected" :map-data="selectedMap"></map-editor>
-        <event-settings v-else="isMapSelected"></event-settings>
+        <event-editor v-else="isMapSelected" :event-data="eventData"></event-settings>
 
     </div>
 
     <template id="map-editor">
-		<div class="group-title">
+		<div class="group-title">{{mapData.name}}</div>
+        <div>    
             <ul>
                 <li class="editor" >
                     <label for="nameT">Map name</label>
@@ -73,10 +74,18 @@
             </ul>
         </div>
 	</template>
+
+    <template id="event-editor">
+		<div class="group-title">Event infos</div>
+        <div>
+
+        </div>
+	</template>
 </body>
 
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
 <script src="js/data/eventEditor/components/MapEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/EventEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>

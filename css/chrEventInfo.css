@@ -226,3 +226,11 @@ button.play-bgm {
     font-size: 25px;
     margin-bottom: 15px;
 }
+
+.group-title {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 15px;
+}
