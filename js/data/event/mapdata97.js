@@ -11,8 +11,8 @@ MAPDATA[97] = {
     allowVanguard: true,
     vanguardConsts: { vanguardEvDD1: 20, vanguardEvDD2: 40, vanguardEvOther1: 5, vanguardEvOther2: 20 },
     newResupplyCosts: true,
-    bannerImg: 'assets/maps/98/banner.png',
-    bannerImgAlt: 'assets/maps/98/banner.png',
+    bannerImg: 'assets/maps/98/banner97_1.png',
+    bannerImgAlt: 'assets/maps/98/banner97_2.png',
     allowStrongFF: true,
     friendFleetWaves: {
         1: { date: '2020-07-17' },
@@ -42,6 +42,7 @@ MAPDATA[97] = {
 
 MAPDATA[97].initializeAllMaps = function () {
     
+    if (!CHDATA.event) CHDATA.event = {};
     CHDATA.event.comps = CHDATA.customEventData.comps;
 
     for (const key in CHDATA.customEventData.eventData) {
@@ -775,6 +776,8 @@ MAPDATA[97].chrLoadCustomEventData = function() {
             let eventData = JSON.parse(event.target.result);
     
             CHDATA.customEventData = eventData;
+
+            MAPDATA[97].initializeAllMaps();
     
             // --- Refresh after load
             //chSave = () => null;

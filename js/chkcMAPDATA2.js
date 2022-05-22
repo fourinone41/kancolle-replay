@@ -24877,13 +24877,6 @@ var MAPDATA = {
 							ChLOSRule({ 3: 'W', 0: 'T' }),
 						]
 					},
-					'S': {
-						type: 3,
-						x: 628,
-						y: 158,
-						distance: 6,
-						end: true
-					},
 					'T': {
 						type: 3,
 						x: 658,
