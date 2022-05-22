@@ -1,48 +1,70 @@
+const EVENT_DATA = {
+    eventData: {
+        maps: {
+        }
+    },
+    comps: {
+
+    }
+};
+
+
 let makeEventClass = new ChrMakeEvent($('body'));
 
-let events = [];
-
-checkEvents = () => {
-
-    for (const event of events) {
-        event();
-    }
-
-    events = [];
-
-    setTimeout(() => {
-        checkEvents();
-    }, 80);
-}
-
-setTimeout(() => {
-    checkEvents();
-}, 80);
-
+const FILE = localStorage.ch_file;
+//var basic = JSON.parse(localStorage['ch_basic'+FILE]);
+//var CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
 
 makeEventClass.InitMapButtons();
 makeEventClass.ChangeMap(1);
 
 function ChrRandomizeEvent() {
-    ChrRandomizeMap(48, 1).then((e1) => {
+    const maps = chRandomizeMaps();
+
+    const tasks = [];
+
+    for (let index = 1; index < 8; index++) {
+        tasks.push(ChrRandomizeMap(maps[index].world, index).then((mapData) => {
+            //saveMapData(1, e1);
+            EVENT_DATA.eventData.maps[index] = mapData;
+        }));
+    }
+    
+    Promise.all(tasks).then(() => {
+
+        chInitAbyssalTables ();
+        EVENT_DATA.comps = chRandomizeCompsFromMapList(maps);
+
+        let a = window.document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([JSON.stringify(EVENT_DATA)], {type: 'application/json'}));
+        a.download = 'event_export.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        makeEventClass.ChangeMap(1);
+    });
+    
+    
+    /*ChrRandomizeMap(basic.maps[1].world, 1).then((e1) => {
         saveMapData(1, e1);
 
-        ChrRandomizeMap(48, 2).then((e2) => {
+        ChrRandomizeMap(basic.maps[2].world, 2).then((e2) => {
 
             saveMapData(2, e2);
-            ChrRandomizeMap(48, 3).then((e3) => {
+            ChrRandomizeMap(basic.maps[3].world, 3).then((e3) => {
 
                 saveMapData(3, e3);
-                ChrRandomizeMap(48, 4).then((e4) => {
+                ChrRandomizeMap(basic.maps[4].world, 4).then((e4) => {
 
                     saveMapData(4, e4);
-                    ChrRandomizeMap(48, 5).then((e5) => {
+                    ChrRandomizeMap(basic.maps[5].world, 5).then((e5) => {
 
                         saveMapData(5, e5);
-                        ChrRandomizeMap(48, 6).then((e6) => {
+                        ChrRandomizeMap(basic.maps[6].world, 6).then((e6) => {
 
                             saveMapData(6, e6);
-                            ChrRandomizeMap(48, 7).then((e7) => {
+                            ChrRandomizeMap(basic.maps[7].world, 7).then((e7) => {
                                 saveMapData(7, e7);
                             });
                         });
@@ -52,7 +74,7 @@ function ChrRandomizeEvent() {
         });
     });
 
-    return;
+    return;*/
     //loadObject.Hide();
 }
 
@@ -70,16 +92,8 @@ function saveMapData(mapnum, map) {
 
 function ChrRandomizeMap(eventNumber, mapNumber) {
     
-    events.push(() => { loadObject.Show(); });
-
-    events.push(() => {loadObject.Reset()});
-    events.push(() => {loadObject.SetTitle("Randomizing maps")});
-
-    events.push(() => {loadObject.total[0] = 7; });
-    events.push(() => {loadObject.currentProgress[0] = mapNumber - 1; });
-    
-    events.push(() => { loadObject.AddProgress("Randomizing E" + mapNumber + " ... ", 0); });
-    
+    console.debug(`Randomizing ${MAPDATA[eventNumber].name} E${mapNumber}`);
+        
     /**
      * @type {ChrRandomizeEventHelper.PathObject[]}
      */
@@ -103,7 +117,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
             if (node.includes('Start')) starts.push(node);
         }
     
-        let constructPaths = (node) => {
+        let constructPaths = (node, nodeFrom) => {
 
             checkLoop();
 
@@ -130,17 +144,37 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
             path.paths = [];
             let nodesDone = [];
-            
-            for (const rule of path.nodeData.rules) {
+
+            const constructPathOfPath = (rule) => {
                 let nextNode = rule.conditionCheckedNode || rule.fixedNode;
 
                 if (rule.type == 'routeSelect')  {
 
                     for (const selectNode of rule.routeSelect) {
-                        path.paths.push(constructPaths(selectNode));
+                        path.paths.push(constructPaths(selectNode, node));
                     }
 
-                    continue;
+                    return;
+                }
+
+                if (rule.type == 'random')  {
+
+                    for (const randomNode of Object.keys(rule.randomNodes)) {
+                        if (randomNode) path.paths.push(constructPaths(randomNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'ifthenelse')  {
+
+                    constructPathOfPath(rule.ifthenelse.then);
+
+                    if (rule.ifthenelse.else) {
+                        constructPathOfPath(rule.ifthenelse.else);
+                    }
+
+                    return;
                 }
 
                 if (!nextNode) {
@@ -148,18 +182,21 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
                     throw 'Error reading rule of node ' + node;
                 }
 
-                if (!nodesDone.includes(nextNode)) {
-                    path.paths.push(constructPaths(nextNode));
+                if (!nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
                     nodesDone.push(nextNode);
                 }
 
                 nextNode = rule.conditionFailedNode;
 
-                if (nextNode && !nodesDone.includes(nextNode)) {
-                    path.paths.push(constructPaths(nextNode));
+                if (nextNode && !nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
                     nodesDone.push(nextNode);
                 }
-
+            }
+            
+            for (const rule of path.nodeData.rules) {
+                constructPathOfPath(rule);
             }
 
             return path;
@@ -192,18 +229,19 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
         for (const node in map.nodes) {
             if (!nodes.includes(node)) {
-                events.push(() => { loadObject.SetProgress("Error : Node " + node + " cant be reached", 100, 2); });
+                alert("Error : Node " + node + " cant be reached", 100, 2);
                 throw 'unreachable node';
             }
         }
     }
 
     let makeStartRules = () => {
+        return;
         map.startCheckRule = ChrRandomizeEventHelper.CreateStartRules(map, paths);
     }
 
     let makeMapRouting = () => {
-
+        return;
         for (const path of paths) {
             
             /**
@@ -228,7 +266,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
     const makeGimmicks = () => {
 
-        let unlockRequired = null;
+        let unlockRequired = 0;
         let lastPart = null;
 
         const abPossible = !!map.enemyRaid;
@@ -241,7 +279,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
             if (map.hiddenRoutes[part].unlockRules) {
                 const unlockRule = map.hiddenRoutes[part].unlockRules.gimmicks.find(gimmick => gimmick.type == "PartClear");
 
-                if (unlockRule) partRequired = unlockRule.additionnalParameters.partToClear;
+                if (unlockRule) partRequired = unlockRule.partToClear;
             }
 
             map.hiddenRoutes[part].unlockRules = ChrRandomizeGimmicks.RandomizeGimmicks("mapPart", mapNumber, {
@@ -252,6 +290,10 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
 
             unlockRequired = part;
             lastPart = partRequired && partRequired > lastPart ? partRequired : lastPart;
+
+            for (var image of map.hiddenRoutes[part].images) {
+                image.customName = 'assets/maps/'+eventNumber+'/'+image.name;
+            }
         }
 
         map.debuffRules = ChrRandomizeGimmicks.RandomizeGimmicks("debuff", mapNumber, {
@@ -261,44 +303,38 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
         }, map.nodes, abPossible);
     }
 
-    const delay = 100;
+    const makeBonuses = () => {
+
+        for (const node in map.nodes) {
+            const nodeData = map.nodes[node];
+            nodeData.bonuses = [];
+        }
+
+        ChrRandomizeBonuses.MakeBonusesFromNodes(paths);
+    }
+
+    const initMapData = () => {
+        map.mapPreviewImage = `assets/maps/${eventNumber}/${mapNumber}m.png`;
+        map.mapImage = `assets/maps/${eventNumber}/${mapNumber}.png`;
+    }
 
     return new Promise((resolve) => {
 
-        events.push(() => { loadObject.SetProgress("Constructing map layout ... ", 0, 1); });
-        setTimeout(() => {
-            constructMapLayout();
-            events.push(() => { loadObject.SetProgress("Map layout constructed ", 100, 1); });
-            events.push(() => { loadObject.SetProgress("Checking map layout ... ", 0, 2); });
-    
-            setTimeout(() => {
-                checkMapLayout();
-                events.push(() => { loadObject.SetProgress("Map layout checked", 100, 2); });
-                events.push(() => { loadObject.SetProgress("Making Start rules", 0, 3); });
-                
-                    setTimeout(() => {
-                        makeStartRules();
-                        events.push(() => { loadObject.SetProgress("Start rules ready", 0, 3); });
-                        events.push(() => { loadObject.SetProgress("Making routing", 10, 3); });
+        initMapData();
 
-                        setTimeout(() => {
-                            makeMapRouting();
-                            events.push(() => { loadObject.SetProgress("Routing complete", 100, 3); });
-                            events.push(() => { loadObject.SetProgress("Creating gimmicks", 100, 3); });
+        constructMapLayout();
 
-                            setTimeout(() => {
-                                makeGimmicks();
-                                events.push(() => { loadObject.SetProgress("Gimmicks ready", 100, 3); });
-                                resolve(map);
-                            }, delay);
-    
-                        }, delay);
+        checkMapLayout();
 
-                    }, delay);
+        makeStartRules();
 
-            }, delay);
-        }, delay);
-    })
+        makeMapRouting();
+
+        makeGimmicks();
+
+        makeBonuses();
+        resolve(map);
+    });
 }
 
 var LoadElement = function() {

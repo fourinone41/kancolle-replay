@@ -1132,7 +1132,6 @@ function chProcessKC3File(reader){
 
 function chProcessKC3File2() {
 	var kcdata = CHDATA.kcdata;
-	delete CHDATA.kcdata;
 	
 	CHDATA.player = {
 		name: kcdata.player.name,
@@ -1429,8 +1428,8 @@ function chSave() {
 	basic.config = CHDATA.config;
 	basic.player = CHDATA.player;
 
-	if (CHDATA.customMaps) {
-		basic.customMaps = CHDATA.customMaps;
+	if (CHDATA.customEventData) {
+		basic.customEventData = CHDATA.customEventData;
 	}
 
 	data.ships = CHDATA.ships;
@@ -2233,7 +2232,7 @@ function chToggleShowSF(show) {
 //----------------sortie----------------
 function chLoadSortieInfo(mapnum) {
 	var world = CHDATA.event.world;
-	if(world > 90){
+	if(world > 97){
 		world = MAPDATA[world].maps[mapnum].world;
 	}
 	if (!MAPDATA[world]) return;
@@ -2253,7 +2252,8 @@ function chLoadSortieInfo(mapnum) {
 	$('#srtTitle').html(title);
 	if (title.indexOf('<br>') != -1) $('#srtTitle').css('font-size','20px');
 	else $('#srtTitle').css('font-size','24px');
-	$('#srtMapImg').attr('src','assets/maps/'+world+'/'+mapnum+'m.png');
+	const mapPath = mapdata.mapPreviewImage ? mapdata.mapPreviewImage : 'assets/maps/'+world+'/'+mapnum+'m.png';
+	$('#srtMapImg').attr('src', mapPath);
 	if (!unlocked) {
 		$('#srtMapImg').css('filter','blur(5px) grayscale(1)');
 		$('#srtMapImg').css('-webkit-filter','blur(5px) grayscale(1)');
@@ -2439,7 +2439,7 @@ function chClickedSortieLeft() {
 
 	MAPNUM--;
 	WORLD = CHDATA.event.world;
-	if(WORLD > 90) {
+	if(WORLD > 97) {
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
 
@@ -2452,7 +2452,7 @@ function chClickedSortieRight() {
 
 	MAPNUM++;
 	WORLD = CHDATA.event.world;
-	if(WORLD > 90) {
+	if(WORLD > 97) {
 		WORLD = CHDATA.maps[MAPNUM].world;
 	}
 	

@@ -136,6 +136,7 @@ function ChBonusesParameters () {
  */
 function ChShipIdsBonuses(parameters, shipIds, amount) {
 
+    this.shipIds = shipIds;
     this.parameters = parameters;
 
     this.bonusType = 'ChShipIdsBonuses';
@@ -303,6 +304,7 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
  */
  function ChShipTypeBonuses(parameters, shipTypes, amount) {
 
+    this.shipTypes = shipTypes;
     this.parameters = parameters;
 
     this.bonusType = 'ChShipTypeBonuses';

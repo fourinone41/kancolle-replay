@@ -2,7 +2,10 @@
 // --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
 // --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
 // --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
-var RANDO_MODE = 4;
+var RANDO_MODE = 1;
+
+// --- 1 => Rush mode
+// --- 2 => TP is slow
 var RUSH_MODE = 0;
 
 function InitUI() {
@@ -15,7 +18,7 @@ function InitUI() {
 	MAPNUM = CHDATA.event.mapnum;
 	WORLD = CHDATA.event.world;
 
-	if(WORLD > 90) {
+	if(WORLD > 97) {
 		
 		if (WORLD == 98) {
 			$('#tabChr').show();
@@ -1138,17 +1141,19 @@ function chPlayerStart() {
 function chLoadMap(mapnum) {
 	map.removeChildren();
 	world = CHDATA.event.world;
-	if(world > 90){
+	if(world > 97){
 		world = MAPDATA[world].maps[mapnum].world;
 	}
-	map.addChild(PIXI.Sprite.fromImage('assets/maps/'+world+'/'+mapnum+'.png'));
+	const mapPath = MAPDATA[world].maps[mapnum].mapImage ? MAPDATA[world].maps[mapnum].mapImage : 'assets/maps/'+world+'/'+mapnum+'.png';
+	map.addChild(PIXI.Sprite.fromImage(mapPath));
 	if (MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {
 		if (!CHDATA.event.maps[mapnum].routes) CHDATA.event.maps[mapnum].routes = [];
 		for (var key in MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {
 			if (CHDATA.event.maps[mapnum].routes.indexOf(parseInt(key)) == -1) continue;
 			var route = MAPDATA[WORLD].maps[mapnum].hiddenRoutes[key];
 			for (var image of route.images) {
-				var spr = PIXI.Sprite.fromImage('assets/maps/'+world+'/'+image.name);
+				const routeImagePath = image.customName ? image.customName : 'assets/maps/'+world+'/'+image.name;
+				var spr = PIXI.Sprite.fromImage(routeImagePath);
 				spr.position.set(image.x,image.y);
 				map.addChild(spr);
 			}
@@ -1217,7 +1222,7 @@ function mapPhase(first) {
 			end = rule.getRouting(CHSHIPCOUNT);
 	}
 
-	if (curnode.type == 3) {
+	if (curnode.type == 3 || curnode.type == 2) {
 		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
 			MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps(curletter);
 		}
@@ -1267,11 +1272,6 @@ function mapPhase(first) {
 				alert("error in branching 3");
 				return;
 			}
-
-			if (rule.type == 'routeSelect') {
-				eventqueue.push([selectNode,[rule.routeSelect]]);
-				return;
-			}
 	
 			if (rule.ruleCanBeChecked())
 				nextletter = rule.getRouting(CHSHIPCOUNT);
@@ -1279,6 +1279,11 @@ function mapPhase(first) {
 			if (nextletter) rule = rule.getValidatedRule(CHSHIPCOUNT);	
 	
 			index++;
+		}
+		
+		if (rule.type == 'routeSelect') {
+			eventqueue.push([selectNode,[rule.routeSelect]]);
+			return;
 		}
 
 		if (!nextletter) {
@@ -1656,6 +1661,24 @@ function selectNode(letters) {
 // eventqueue.push([mapBattleNode,[mapship,'D']]);
 // eventqueue.push([prepBattle,[]]);
 
+function getEnemyCompFromRouteCompObject(compDiffRoute) {
+	if (!CHDATA.event.maps[MAPNUM].routes) return compDiffRoute[0];
+	if (!CHDATA.event.maps[MAPNUM].routes.length) return compDiffRoute[0];
+
+	let route = 0;
+	const maxUnlockedRoute = Math.max(CHDATA.event.maps[MAPNUM].routes);
+	
+	for (let index = 0; index < maxUnlockedRoute; index++) {
+		
+		if (!compDiffRoute[index]) continue;
+		if (!CHDATA.event.maps[MAPNUM].routes.includes(index)) continue;
+		
+		route = index;
+	}
+
+	return compDiffRoute[route];
+}
+
 function getEnemyComp(letter,mapdata,diff,lastdance) {
 	lastdance = lastdance && (!mapdata.compFPart || mapdata.compFPart == CHDATA.event.maps[MAPNUM].part);
 	var comps;
@@ -1681,6 +1704,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		// console.log(comps);
 	} else {
 		if (mapdata.compDiffPart) mapdata = mapdata.compDiffPart[CHDATA.event.maps[MAPNUM].part];
+		if (mapdata.compDiffRoute) mapdata = getEnemyCompFromRouteCompObject(mapdata.compDiffRoute);
 		comps = (mapdata.compDiffF && lastdance)? mapdata.compDiffF[diff] : mapdata.compDiff[diff];
 		if (mapdata.compDiffC && CHDATA.event.maps[MAPNUM].hp <= 0) comps = mapdata.compDiffC[diff];
 		if (mapdata.compDiffC && MAPDATA[WORLD].maps[MAPNUM].currentBoss && MAPDATA[WORLD].maps[MAPNUM].currentBoss != letter) comps = mapdata.compDiffC[diff];
@@ -1704,7 +1728,8 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 
 		Object.assign(compd, CHDATA.event.comps['E-'+MAPNUM][n][comp]);
 
-		compd.originalComp = ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
+		if (WORLD == 97) compd.originalComp = CHDATA.event.comps['E-'+MAPNUM][n][comp];
+		else ENEMYCOMPS[MAPDATA[WORLD].name]['E-'+MAPNUM][n][comp];
 	}
 	return compd;
 }
@@ -1849,7 +1874,16 @@ function prepBattle(letter) {
 
 				SHIPDATA[sid].HP = SHIPDATA[compd.originalComp.c[0]].HP;
 
-				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport && MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter) {
+				var currentBoss = false;
+				
+				if (MAPDATA[WORLD].maps[MAPNUM].currentBoss) currentBoss = MAPDATA[WORLD].maps[MAPNUM].currentBoss == letter;
+				else {
+					var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode[0] : MAPDATA[WORLD].maps[MAPNUM].bossnode;
+					var letterboss = (typeof bossnum == 'string')? bossnum : String.fromCharCode(64+bossnum);
+					currentBoss = letterboss == letter;
+				}
+
+				if (RUSH_MODE && !chGetLastDance() && !CHDATA.sortie.reachedTransport && currentBoss) {
 					SHIPDATA[sid].HP = CHDATA.event.maps[MAPNUM].hp - 1;
 				}
 		
@@ -2362,7 +2396,8 @@ function endMap() {
 function showRouteUnlock(route,routeId) {
 	var sprs = [], sprsRemove = [];
 	for (var image of route.images) {
-		var spr = PIXI.Sprite.fromImage('assets/maps/'+WORLD+'/'+image.name);
+		const routeImagePath = image.customName ? image.customName : 'assets/maps/'+WORLD+'/'+image.name;
+		var spr = PIXI.Sprite.fromImage(routeImagePath);
 		spr.position.set(image.x,image.y);
 		spr.alpha = 0;
 		map.addChild(spr);

@@ -72,8 +72,9 @@ class ChrMap  {
         this.map = new PIXI.Container();
         this.stage.addChild(this.map);
         this.map.removeChildren();
-    
-        this.map.addChild(PIXI.Sprite.fromImage('assets/maps/'+world+'/'+mapnum+'.png'));
+
+        const mapPath = MAPDATA[world].maps[mapnum].mapImage ? MAPDATA[world].maps[mapnum].mapImage : 'assets/maps/'+world+'/'+mapnum+'.png';
+        this.map.addChild(PIXI.Sprite.fromImage(mapPath));
         this.map.position.set(MAPOFFX,MAPOFFY);
 
         if (MAPDATA[world].maps[mapnum].hiddenRoutes) {
@@ -83,7 +84,8 @@ class ChrMap  {
                 var route = MAPDATA[world].maps[mapnum].hiddenRoutes[key];
 
                 for (var image of route.images) {
-                    var spr = PIXI.Sprite.fromImage('assets/maps/'+world+'/'+image.name);
+                    const routeImagePath = image.customName ? image.customName : 'assets/maps/'+world+'/'+image.name;
+                    var spr = PIXI.Sprite.fromImage(routeImagePath);
                     spr.position.set(image.x,image.y);
                     this.map.addChild(spr);
                 }

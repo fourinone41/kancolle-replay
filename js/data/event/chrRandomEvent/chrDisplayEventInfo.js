@@ -46,7 +46,7 @@ class ChrDisplayEventInfo {
         // --- load comps 
         this.LoadCHDATA();
 
-        if (RANDOMAPS) {
+        if (CHDATA.event.world == 97) {
             MAPDATA[97].initializeAllMaps();
         }
 
@@ -174,7 +174,8 @@ class ChrDisplayEventInfo {
     };
 
     GetCurrentWorld() {
-        return this.Worlds[this.currentMap].world;
+        if (CHDATA.event.world > 97) return this.Worlds[this.currentMap].world;
+        return CHDATA.event.world;
     }
 
     GetRoutingRules() {

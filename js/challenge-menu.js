@@ -222,7 +222,15 @@ function chMenuSelectedEvent(eventnum) {
 		$('#menuImportOther').hide();
 		$('#menuCreateRandomFile').hide();
 	}
+
+	if (EVENTNUM == 97) {
+		$("#customEventFile").show();
+	} else {
+		$("#customEventFile").hide();
+	}
 }
+
+// MAPDATA[97].chrLoadCustomEventData
 
 function chMenuBackEvent() {
 	$('#menuevents').show();
@@ -267,6 +275,22 @@ function chMenuExtractSettings() {
 }
 
 function chMenuDone() {
+	if (EVENTNUM == 97 && !CHDATA.customEventData) {
+		try {
+			MAPDATA[97].chrLoadCustomEventData().then(() => {
+				chMenuDone();
+				location.reload();
+			}).catch((error) => {
+				console.error(error);
+				alert(error);
+			});
+		} catch (error) {
+			console.error(error);
+			alert(error);
+		}
+		return;
+	} 
+
 	var filenum = 1;
 	for (; filenum<1000; filenum++) {
 		if (!localStorage['ch_basic'+filenum]) break;
@@ -274,7 +298,6 @@ function chMenuDone() {
 	if (filenum >= 1000) return;
 	localStorage.ch_file = FILE = filenum;
 	
-	$('#dialogmainmenu').dialog('close');
 	$(".ui-dialog-titlebar").show();
 	chMenuExtractSettings();
 	chProcessKC3File2();
@@ -288,7 +311,9 @@ function chMenuDone() {
 		MAPDATA[98].chrProcessAfterFileCreation();
 	}
 
+	delete CHDATA.kcdata;
 	chSave();
+	$('#dialogmainmenu').dialog('close');
 }
 
 function chRestrictReward(data) {

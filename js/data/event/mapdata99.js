@@ -97,8 +97,8 @@ function randomizeMaps(){
     if(CHDATA.maps === undefined) {
         // randomize
         CHDATA.maps = chRandomizeMaps();
-        
-        if (RANDOMAPS) MAPDATA[97].initializeAllMaps();
+
+        chRerollComps();
     } else {
         if(Array.isArray(CHDATA.maps)) {
             var newObjMap = {};
@@ -114,6 +114,8 @@ function randomizeMaps(){
 }
 
 function chrIsMapDone(event_id, map_number) {
+    if (!CHDATA) return false;
+    if (!CHDATA.event) return false;
     if (!CHDATA.event.mapClearData) return false;
     if (!CHDATA.event.mapClearData[event_id]) return false;
 
@@ -146,13 +148,12 @@ function chRandomizeMaps() {
 }
 
 function chLoadRandomFile() {
-    if (RANDOMAPS) {
-        // --- Load map data
-        MAPDATA[97].loadFromChData();
-    }
-
-    if (CHDATA.event.comps == undefined) {
-        CHDATA.event.comps = chRandomizeComps();
+    
+    if (CHDATA.event.world == 97) MAPDATA[97].initializeAllMaps();
+    else {
+        if (CHDATA.event.comps == undefined) {
+            CHDATA.event.comps = chRandomizeComps();
+        }
     }
 }
 
@@ -175,8 +176,6 @@ function chRemoveLocks() {
 function chRerollMap() {
     CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
     
-    if (RANDOMAPS) MAPDATA[97].initializeMap(WORLD, MAPNUM);
-
 	chSortieStartChangeDiff();
 	CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
     chLoadSortieInfo(MAPNUM);
@@ -188,13 +187,13 @@ function chRerollMap() {
 
 const DISABLE_RANDO = false;
 
-function chRandomizeComps() {
+function chRandomizeCompsFromMapList(mapList) {
     let comps = {};
 
-    for (let map in CHDATA.maps) {
+    for (let map in mapList) {
 
         let eventNodes = {};
-        let eventNumber = CHDATA.maps[map].world;
+        let eventNumber = mapList[map].world;
         let event = ENEMYCOMPS[MAPDATA[eventNumber].name];
 
         let mapData = MAPDATA[parseInt(eventNumber)].maps[map];
@@ -222,6 +221,10 @@ function chRandomizeComps() {
     }
 
     return comps;
+}
+
+function chRandomizeComps() {
+    return chRandomizeCompsFromMapList(CHDATA.maps);
 }
 
 // --- Todo
@@ -265,6 +268,9 @@ function chLowerHP() {
 }
 
 function chRandomizeComp(compData, mapData, nodeLetter) {
+    // --- Init tables if not done
+    chInitAbyssalTables();
+
     var bossnum = (typeof mapData.bossnode === 'object')? mapData.bossnode : [mapData.bossnode];
     var letterboss = bossnum.map((x) => (typeof x == 'string')? x : String.fromCharCode(64+x));
     let isBoss = letterboss.indexOf(nodeLetter) != -1;
@@ -655,9 +661,14 @@ const strongEnemiesIds = [
     1895,1896,2090,                     // --- Ne kai 1 & 2 & 4
     1953, 1954,                         // --- Summer Ne kai 1 & 2
     2013, 2014,                         // --- Wa-Class B
+    2090,                               // --- Ne kai 4
 ];
+
+var abyssalTablesInitialized = false;
     
 function chInitAbyssalTables () {
+
+    if (abyssalTablesInitialized) return;
 	
 	for (ship_id in SHIPDATA) {
 		if (ship_id >= 1500 && ship_id < 3000) {
@@ -689,6 +700,8 @@ function chInitAbyssalTables () {
 			SHIPDATA[ship_id].ammo = 100;
 		}
 	}
+
+    abyssalTablesInitialized = true;
 }
 
 /**

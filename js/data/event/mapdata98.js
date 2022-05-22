@@ -45,6 +45,8 @@ MAPDATA[98] = {
         CHDATA.kcdata.gears = {};
     
         CHDATA.kcdata.ships = {};        
+
+        CHDATA.maps = undefined;
     },
     chrProcessAfterFileCreation() {
         for (let id = 1; id < 50; id++){
@@ -300,8 +302,6 @@ MAPDATA[98] = {
     },
     chrRerollMap : () => {
         CHDATA.maps[MAPNUM] = chRandomizeMap(MAPNUM);
-
-        if (RANDOMAPS) MAPDATA[97].initializeMap(WORLD, MAPNUM);
         
         chSortieStartChangeDiff();
         CHDATA.event.maps[MAPNUM] = {visited: Array(0), hp: null}
@@ -392,7 +392,7 @@ function chrGetRandomEquipmentId(gearType) {
     let max_id = ABYSSALS_ON ? 1000 : 500;
     let min_id = ABYSSALS_ON ? 1 : 1;
 
-    for (let i = min_id; i < max_id; i++) {
+    for (let i = min_id; i < 1000; i++) {
         if (!EQDATA[i]) continue;
 
         if (gearType && types.indexOf(EQDATA[i].type) == -1) continue;

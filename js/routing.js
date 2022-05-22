@@ -605,6 +605,9 @@ function ChRule () {
                 return CHDATA.event.maps[MAPNUM].debuffed ? this.conditionCheckedNode : this.conditionFailedNode;
             }
 
+            case 'routeSelect': 
+                return true;
+
             default:
                 alert("routing error 2");
                 return;

@@ -5,7 +5,7 @@ MAPDATA[97] = {
     name: 'Random Fiesta',
     date: '2055-02-02',
     diffMode: 2,
-    allowDiffs: [3],
+    allowDiffs: [2,3],
     allowFleets: [0,1,2,3,7],
     allowLBAS: true,
     allowVanguard: true,
@@ -13,6 +13,11 @@ MAPDATA[97] = {
     newResupplyCosts: true,
     bannerImg: 'assets/maps/98/banner.png',
     bannerImgAlt: 'assets/maps/98/banner.png',
+    allowStrongFF: true,
+    friendFleetWaves: {
+        1: { date: '2020-07-17' },
+        2: { date: '2020-08-07' },
+    },
     transportCalc: function(ships,rank) {
         rank = rank || 'S';
         let tp = transportCalcStandard(ships,'S');
@@ -30,21 +35,36 @@ MAPDATA[97] = {
         if (rank != 'S' && rank != 'A') return 0;
         return Math.floor(tp);
     },
-    maps : {
-
-    },
-}
-
-MAPDATA[97].initializeAllMaps = function () {
-
-    for (const mapNumber in CHDATA.maps) {
-        MAPDATA[97].initializeMap(CHDATA.maps[mapNumber].world, mapNumber);
+    friendFleet: {},
+    maps: {
     }
 }
 
-MAPDATA[97].initializeMap = function (worldNum, mapNum) {
+MAPDATA[97].initializeAllMaps = function () {
+    
+    CHDATA.event.comps = CHDATA.customEventData.comps;
 
-    let oriMapData = MAPDATA[worldNum].maps[mapNum];
+    for (const key in CHDATA.customEventData.eventData) {
+        MAPDATA[97][key] = CHDATA.customEventData.eventData[key];
+    }
+    
+    for (const mapNumber in CHDATA.maps) {
+        MAPDATA[97].initializeMap(mapNumber);
+    }
+
+    // --- Init Friend fleets (TODO : have it in the file)
+    for (const eventId in MAPDATA) {
+        if (eventId > 90) continue;
+        if (!MAPDATA[eventId].friendFleet) continue;
+
+        for (const FFkey in MAPDATA[eventId].friendFleet) {
+            
+            MAPDATA[97].friendFleet[FFkey] = MAPDATA[eventId].friendFleet[FFkey];
+        }
+    }
+}
+
+MAPDATA[97].initializeMap = function (mapNum) {
 
     let mapData = {
         /*name: oriMapData.name,
@@ -90,13 +110,57 @@ MAPDATA[97].initializeMap = function (worldNum, mapNum) {
 
     //mapData.fleetTypes = oriMapData.fleetTypes
 
-    MAPDATA[97].initializeNodes(oriMapData, mapData);
+    //MAPDATA[97].initializeNodes(oriMapData, mapData);
 
-    if (!CHDATA.customMaps) CHDATA.customMaps = {};
-    CHDATA.customMaps[mapNum] = mapData;
+    /*for (const nodeKey in CHDATA.customMaps[mapNum].nodes) {
+        
+        // --- For each nodes:
+
+        // --- Load original map for now :(
+        //MAPDATA[worldNum].maps[mapNum].nodes[nodeKey] = MAPDATA[worldNum].maps[mapNum].nodes[nodeKey];
+
+    }*/
     
 
-    MAPDATA[97].loadFromChData(mapNum); 
+    // --- Save some stuff : 
+    /*const properties =  [
+        "additionalChecks", 
+        "getLock",
+        "startCheck",
+    ];*/
+
+    /*const values = [];
+
+    for (const prop of properties) {
+        values[prop] = MAPDATA[worldNum].maps[mapNum][prop];
+    }
+
+    // --- Load the map
+    MAPDATA[worldNum].maps[mapNum] = customMap;
+
+    // --- Restore some stuff : 
+    for (const prop of properties) {
+        MAPDATA[worldNum].maps[mapNum][prop] = values[prop];
+    }*/
+        
+    MAPDATA[97].loadUnlockFromChData(MAPDATA[97].maps[mapNum]);
+    MAPDATA[97].loadStartCheckFromChData(MAPDATA[97].maps[mapNum]);
+    MAPDATA[97].loadStartBonusesFromChData(MAPDATA[97].maps[mapNum]);
+
+    for (const nodeKey in MAPDATA[97].maps[mapNum].nodes) {
+        const nodeData = MAPDATA[97].maps[mapNum].nodes[nodeKey];
+
+        try {
+            
+            MAPDATA[97].loadNodeFromChData(nodeData);
+
+            MAPDATA[97].loadBonusesFromChData(nodeData);
+        } catch (error) {
+            console.debug(nodeData);
+            throw error;
+        }
+    }
+    
 }
 
 MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
@@ -108,66 +172,10 @@ MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
     }
 }
 
-MAPDATA[97].loadFromChData = function (mapNum) {
-    if (CHDATA.customMaps) {
-
-        let maps = mapNum ? { world : mapNum } : CHDATA.maps;
-
-        for (const mapKey in maps) { 
-            // --- init map 
-
-            for (const property in CHDATA.customMaps[mapKey]) {
-                if (property == "nodes") continue;
-                MAPDATA[CHDATA.maps[mapKey].world].maps[mapKey][property] = CHDATA.customMaps[mapKey][property];
-            }
-
-            for (const mapKey in CHDATA.maps) {
-                MAPDATA[97].loadMapFromChData(CHDATA.maps[mapKey].world, mapKey);
-            }
-        }
-
-        //MAPDATA[97].fixBonuses();
-    }
-    else {
-        CHDATA.customMaps = {};
-        MAPDATA[97].initializeAllMaps();
-        MAPDATA[97].loadFromChData();
-    }
-}
-
-
-MAPDATA[97].loadMapFromChData = function (worldNum, mapNum) {
-    
-    /*for (const nodeKey in CHDATA.customMaps[mapNum].nodes) {
-        
-        // --- For each nodes:
-
-        // --- Load original map for now :(
-        //MAPDATA[worldNum].maps[mapNum].nodes[nodeKey] = MAPDATA[worldNum].maps[mapNum].nodes[nodeKey];
-
-    }*/
-    return;
-    
-    let customMap = localStorage.getItem('chrRandom-' + mapNum);
-    if (!customMap) return;
-
-    customMap = JSON.parse(customMap);
-
-    MAPDATA[worldNum].maps[mapNum] = customMap;
-        
-    MAPDATA[97].loadUnlockFromChData(MAPDATA[worldNum].maps[mapNum]);
-    MAPDATA[97].loadStartCheckFromChData(MAPDATA[worldNum].maps[mapNum]);
-    MAPDATA[97].loadStartBonusesFromChData(MAPDATA[worldNum].maps[mapNum]);
-
-    for (const nodeKey in MAPDATA[worldNum].maps[mapNum].nodes) {
-        MAPDATA[97].loadNodeFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
-
-        MAPDATA[97].loadBonusesFromChData(MAPDATA[worldNum].maps[mapNum].nodes[nodeKey]);
-    }
-}
-
 MAPDATA[97].loadStartCheckFromChData = function (map) {
-    
+    if (!map.startCheckRule) return;
+    /*map.startCheckRule = mapSave.startCheckRule;
+    return;*/
     let rules = [];
 
     for (const rule of map.startCheckRule) {
@@ -193,13 +201,31 @@ MAPDATA[97].loadUnlockFromChData = function (map) {
 }
 
 MAPDATA[97].loadStartBonusesFromChData = function (map) {
-    map.startBonus = [];
+    if (map.startBonus) delete map.startBonus;
 }
 
 MAPDATA[97].loadBonusesFromChData = function (nodeData) {
 
-    // --- TODO
-    nodeData.bonuses = [];
+    const bonuses = [];
+
+    if (!nodeData.bonuses) return;
+
+    for (const bonus of nodeData.bonuses) {
+        switch (bonus.bonusType) {
+            case 'ChShipIdsBonuses':
+                bonuses.push(new ChShipIdsBonuses(bonus.parameters, bonus.shipIds.map(x => parseInt(x)), bonus.amount));
+                break;
+
+            case 'ChShipTypeBonuses':
+                bonuses.push(new ChShipTypeBonuses(bonus.parameters, bonus.shipTypes, bonus.amount));
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    nodeData.bonuses = bonuses; 
 }
 
 /**
@@ -240,6 +266,44 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
         case "fleetType": 
             return ChFleetTypeRule(ruleToConvert.fleetType, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
 
+        case "random": 
+            return ChRandomRule(ruleToConvert.randomNodes);
+        
+        case "difficulty": 
+            return ChDifficultyRule(ruleToConvert.difficulties, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "speed": 
+            return ChSpeedRule(ruleToConvert.operator, ruleToConvert.speed, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "ifthenelse": {
+            const ruleIf = ruleToConvert.ifthenelse.if ? this.convertRule(ruleToConvert.ifthenelse.if) : null;
+            const ruleThen = ruleToConvert.ifthenelse.then ? this.convertRule(ruleToConvert.ifthenelse.then): null;
+            const ruleElse = ruleToConvert.ifthenelse.else ? this.convertRule(ruleToConvert.ifthenelse.else): null;
+
+            return ChIfThenElseRule(ruleIf, ruleThen, ruleElse);
+        }
+
+        case 'los': 
+            return ChLOSRule(ruleToConvert.LOS, ruleToConvert.LOSCoef);
+
+        case "shipIds": 
+            return ChShipIdsRoutingRule(ruleToConvert.shipsIds, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "shipCount": 
+            return ChShipCountRoutingRule(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "allShipsMustBe": 
+            return ChAllShipMusteBeOfTypeRule(ruleToConvert.shipTypes, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+
+        case "equipType": 
+            return ChEquipTypeRule(ruleToConvert.equipData, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.shipWithEquipCount, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+
+        case "custom": 
+            return ChCreateCustomRuleFromName(ruleToConvert.customRuleName);
+
+        case "speedCount": 
+            return ChNumberOfShipOfSpeedRule(ruleToConvert.speedOperator, ruleToConvert.speed, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+
         default:
             console.debug(ruleToConvert);
             throw 'unhandled rule';
@@ -248,13 +312,17 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
 
 MAPDATA[97].loadNodeFromChData = function (nodeData) {
 
-    let rules = [];
+    if (nodeData.rules) {
+        let rules = [];
 
-    for (const rule of nodeData.rules) {
-        rules.push(MAPDATA[97].convertRule(rule))
+        for (const rule of nodeData.rules) {
+            rules.push(MAPDATA[97].convertRule(rule))
+        }
+    
+        nodeData.rules = rules;
     }
 
-    nodeData.rules = rules;
+    //nodeData.rules = nodeSave.rules;
     
     if (nodeData.endRules) {
         let endRules = [];
@@ -412,4 +480,437 @@ function chrGetLastDance() {
     }
     
     return lastdance;
+}
+
+
+MAPDATA[97].ChrRandomizeEvent = function () {
+return;
+    const rando = () => {
+        try {
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[1].world, 1);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[2].world, 2);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[3].world, 3);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[4].world, 4);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[5].world, 5);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[6].world, 6);
+            MAPDATA[97].ChrRandomizeMap(CHDATA.maps[7].world, 7);  
+        }
+        catch (ex) {
+            console.error(ex);
+            if (confirm('Event Initialization failed, do you want to retry ? (no will refresh without saving changes)')) {
+                rando();
+            }
+            else {
+                CHDATA.maps = undefined;
+                location.reload();
+            }
+        }
+    }
+    rando(); 
+
+    return;
+    //loadObject.Hide();
+}
+
+MAPDATA[97].saveMapData = function (mapnum, map) {
+
+    // --- Delete useless data
+    for (const node in map.nodes) {
+        let nodeData = map.nodes[node];
+
+        delete nodeData.fleetsTypes;
+    }
+
+    localStorage.setItem('chrRandom-' + mapnum, JSON.stringify(map));
+}
+
+MAPDATA[97].ChrRandomizeMap = function (eventNumber, mapNumber) {
+    
+    console.debug(`Randomizing ${MAPDATA[eventNumber].name} E${mapNumber}`);
+
+    /**
+     * @type {ChrRandomizeEventHelper.PathObject[]}
+     */
+    let paths = [];
+    let starts = [];
+    
+    let map = MAPDATA[eventNumber].maps[mapNumber];
+
+    let countSecurity = 0;
+    let checkLoop = () => {
+        countSecurity++;
+        if (countSecurity > 999999) {
+            alert('loop detected');
+            throw 'loop detected';
+        }
+    }
+
+    let constructMapLayout = () => {
+
+        for (const node in map.nodes) {
+            if (node.includes('Start')) starts.push(node);
+        }
+    
+        let constructPaths = (node, nodeFrom) => {
+
+            checkLoop();
+
+            /**
+             * @type {{ rules: ChRule[] }}
+             */
+            let nodeData = map.nodes[node];
+
+            /**
+             * 
+             */
+            let path = {};
+
+            path.node = node;
+            path.nodeData = nodeData;
+
+            // --- Init node data
+            if (!path.nodeData) console.debug(node);
+
+            ChrRandomizeEventHelper.InitNodeData(path.nodeData);
+
+            if (!path.nodeData.rules) { 
+                path.pathEnd = true;
+                return path; 
+            }
+
+            path.paths = [];
+            let nodesDone = [];
+
+            const constructPathOfPath = (rule) => {
+                let nextNode = rule.conditionCheckedNode || rule.fixedNode;
+
+                if (rule.type == 'routeSelect')  {
+
+                    for (const selectNode of rule.routeSelect) {
+                        path.paths.push(constructPaths(selectNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'random')  {
+
+                    for (const randomNode of Object.keys(rule.randomNodes)) {
+                        if (randomNode) path.paths.push(constructPaths(randomNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'ifthenelse')  {
+
+                    constructPathOfPath(rule.ifthenelse.then);
+
+                    if (rule.ifthenelse.else) {
+                        constructPathOfPath(rule.ifthenelse.else);
+                    }
+
+                    return;
+                }
+                
+                if (!nextNode) {
+                    console.debug(rule);
+                    throw 'Error reading rule of node ' + node;
+                }
+
+                if (nextNode.includes("/")) {
+                    for (const nextNodeDetail of nextNode.split('/')) {
+                        path.paths.push(constructPaths(nextNodeDetail, node));
+                        nodesDone.push(nextNodeDetail);
+                    }
+                    return;
+                }
+
+                if (!nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
+                    nodesDone.push(nextNode);
+                }
+
+                nextNode = rule.conditionFailedNode;
+
+                if (nextNode && !nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
+                    nodesDone.push(nextNode);
+                }
+            }
+            
+            for (const rule of path.nodeData.rules) {
+                constructPathOfPath(rule);
+            }
+
+            return path;
+        }
+
+        for (const start of starts) {
+            paths.push(constructPaths(start));
+        }
+
+        console.debug(starts);
+        console.debug(paths);
+    }
+
+    let checkMapLayout = () => {
+        let nodes = [];
+
+        let checkNode = (path) => {
+            nodes.push(path.node);
+
+            if (!path.paths) return;
+
+            for (const nextPath of path.paths) {
+                checkNode(nextPath);
+            }
+        }
+        
+        for (const path of paths) {
+            checkNode(path);
+        }
+
+        for (const node in map.nodes) {
+            if (!nodes.includes(node)) {
+                throw "Error : Node " + node + ` cant be reached`;
+            }
+        }
+    }
+
+    let makeStartRules = () => {
+        return;
+        map.startCheckRule = ChrRandomizeEventHelper.CreateStartRules(map, paths);
+    }
+
+    let makeMapRouting = () => {
+        return;
+        for (const path of paths) {
+            
+            /**
+             * 
+             * @param {ChrRandomizeEventHelper.PathObject} currentPath 
+             */
+            let makeRouting = (currentPath) => {
+                if (!currentPath.paths) return;
+                
+                for (const nextPath of currentPath.paths) {
+
+                    ChrRandomizeEventHelper.CreateRandomRules(currentPath, nextPath);
+
+                    makeRouting(nextPath);
+                }
+            }
+
+            ChrRandomizeEventHelper.CreateRandomRules(null, path);
+            makeRouting(path);
+        }
+    }
+
+    const makeGimmicks = () => {
+
+        let unlockRequired = 0;
+        let lastPart = null;
+
+        const abPossible = !!map.enemyRaid;
+
+        for (const part in map.hiddenRoutes) {
+
+            let partRequired = null;
+
+            if (map.hiddenRoutes[part].unlockRules && map.hiddenRoutes[part].unlockRules.mapPartNumber) partRequired = map.hiddenRoutes[part].unlockRules.mapPartNumber - 1;
+            if (map.hiddenRoutes[part].unlockRules) {
+                const unlockRule = map.hiddenRoutes[part].unlockRules.gimmicks.find(gimmick => gimmick.type == "PartClear");
+
+                if (unlockRule) partRequired = unlockRule.partToClear;
+            }
+
+            map.hiddenRoutes[part].unlockRules = ChrRandomizeGimmicks.RandomizeGimmicks("mapPart", mapNumber, {
+                partToUnlock: part,
+                mapPartRequired : partRequired,
+                routeUnlockRequired: unlockRequired
+            }, map.nodes, abPossible);
+
+            unlockRequired = part;
+            lastPart = partRequired && partRequired > lastPart ? partRequired : lastPart;
+        }
+
+        map.debuffRules = ChrRandomizeGimmicks.RandomizeGimmicks("debuff", mapNumber, {
+            partToUnlock: lastPart,
+            mapPartRequired : lastPart,
+            routeUnlockRequired: unlockRequired
+        }, map.nodes, abPossible);
+    }
+
+    const makeBonuses = () => {
+
+        for (const node in map.nodes) {
+            const nodeData = map.nodes[node];
+            nodeData.bonuses = [];
+        }
+
+        ChrRandomizeBonuses.MakeBonusesFromNodes(paths);
+    }
+
+    
+    constructMapLayout();
+    checkMapLayout();
+    makeStartRules();
+    makeMapRouting();
+    makeGimmicks();
+    makeBonuses();
+
+    MAPDATA[97].saveMapData(mapNumber, map)
+}
+
+
+
+MAPDATA[97].chrLoadCustomEventData = function() {
+    return new Promise((resolve) => {
+        let file = document.getElementById("customEventFile").files[0];
+        if (!file) throw 'Event file is required';
+    
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+            let eventData = JSON.parse(event.target.result);
+    
+            CHDATA.customEventData = eventData;
+    
+            // --- Refresh after load
+            //chSave = () => null;
+            //location.reload();
+            resolve();
+        });
+    
+        reader.readAsText(file);
+    });
+	
+}
+
+MAPDATA[97].rerollBonuses = function () {
+
+    const map = MAPDATA[WORLD].maps[MAPNUM];
+
+    for (const node in map.nodes) {
+        const nodeData = map.nodes[node];
+        nodeData.bonuses = [];
+    }
+
+    const paths = MAPDATA[97].constructPaths(map);
+
+    ChrRandomizeBonuses.MakeBonusesFromNodes(paths);
+}
+
+MAPDATA[97].constructPaths = function (map) {
+    const paths = [];
+    const starts = [];
+    let countSecurity = 0;
+
+    let checkLoop = () => {
+        countSecurity++;
+        if (countSecurity > 999999) {
+            alert('loop detected');
+            throw 'loop detected';
+        }
+    }
+
+    let constructMapLayout = () => {
+
+        for (const node in map.nodes) {
+            if (node.includes('Start')) starts.push(node);
+        }
+    
+        let constructPaths = (node, nodeFrom) => {
+
+            checkLoop();
+
+            /**
+             * @type {{ rules: ChRule[] }}
+             */
+            let nodeData = map.nodes[node];
+
+            /**
+             * 
+             */
+            let path = {};
+
+            path.node = node;
+            path.nodeData = nodeData;
+
+            // --- Init node data
+            ChrRandomizeEventHelper.InitNodeData(path.nodeData);
+
+            if (!path.nodeData.rules) { 
+                path.pathEnd = true;
+                return path; 
+            }
+
+            path.paths = [];
+            let nodesDone = [];
+
+            const constructPathOfPath = (rule) => {
+                let nextNode = rule.conditionCheckedNode || rule.fixedNode;
+
+                if (rule.type == 'routeSelect')  {
+
+                    for (const selectNode of rule.routeSelect) {
+                        path.paths.push(constructPaths(selectNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'random')  {
+
+                    for (const randomNode of Object.keys(rule.randomNodes)) {
+                        if (randomNode) path.paths.push(constructPaths(randomNode, node));
+                    }
+
+                    return;
+                }
+
+                if (rule.type == 'ifthenelse')  {
+
+                    constructPathOfPath(rule.ifthenelse.then);
+
+                    if (rule.ifthenelse.else) {
+                        constructPathOfPath(rule.ifthenelse.else);
+                    }
+
+                    return;
+                }
+
+                if (!nextNode) {
+                    console.debug(rule);
+                    throw 'Error reading rule of node ' + node;
+                }
+
+                if (!nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
+                    nodesDone.push(nextNode);
+                }
+
+                nextNode = rule.conditionFailedNode;
+
+                if (nextNode && !nodesDone.includes(nextNode) && nextNode != nodeFrom) {
+                    path.paths.push(constructPaths(nextNode, node));
+                    nodesDone.push(nextNode);
+                }
+            }
+            
+            for (const rule of path.nodeData.rules) {
+                constructPathOfPath(rule);
+            }
+
+            return path;
+        }
+
+        for (const start of starts) {
+            paths.push(constructPaths(start));
+        }
+    }
+
+    constructMapLayout();
+
+    return paths;
 }
