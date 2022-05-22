@@ -5,7 +5,7 @@ MAPDATA[97] = {
     name: 'Random Fiesta',
     date: '2055-02-02',
     diffMode: 2,
-    allowDiffs: [3],
+    allowDiffs: [2,3],
     allowFleets: [0,1,2,3,7],
     allowLBAS: true,
     allowVanguard: true,
@@ -13,6 +13,11 @@ MAPDATA[97] = {
     newResupplyCosts: true,
     bannerImg: 'assets/maps/98/banner.png',
     bannerImgAlt: 'assets/maps/98/banner.png',
+    allowStrongFF: true,
+    friendFleetWaves: {
+        1: { date: '2020-07-17' },
+        2: { date: '2020-08-07' },
+    },
     transportCalc: function(ships,rank) {
         rank = rank || 'S';
         let tp = transportCalcStandard(ships,'S');
@@ -30,6 +35,7 @@ MAPDATA[97] = {
         if (rank != 'S' && rank != 'A') return 0;
         return Math.floor(tp);
     },
+    friendFleet: {},
     maps: {
     }
 }
@@ -44,6 +50,17 @@ MAPDATA[97].initializeAllMaps = function () {
     
     for (const mapNumber in CHDATA.maps) {
         MAPDATA[97].initializeMap(mapNumber);
+    }
+
+    // --- Init Friend fleets (TODO : have it in the file)
+    for (const eventId in MAPDATA) {
+        if (eventId > 90) continue;
+        if (!MAPDATA[eventId].friendFleet) continue;
+
+        for (const FFkey in MAPDATA[eventId].friendFleet) {
+            
+            MAPDATA[97].friendFleet[FFkey] = MAPDATA[eventId].friendFleet[FFkey];
+        }
     }
 }
 

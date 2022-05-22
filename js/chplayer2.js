@@ -1152,7 +1152,7 @@ function chLoadMap(mapnum) {
 			if (CHDATA.event.maps[mapnum].routes.indexOf(parseInt(key)) == -1) continue;
 			var route = MAPDATA[WORLD].maps[mapnum].hiddenRoutes[key];
 			for (var image of route.images) {
-				const routeImagePath = route.customName ? route.customName : 'assets/maps/'+world+'/'+image.name;
+				const routeImagePath = image.customName ? image.customName : 'assets/maps/'+world+'/'+image.name;
 				var spr = PIXI.Sprite.fromImage(routeImagePath);
 				spr.position.set(image.x,image.y);
 				map.addChild(spr);
@@ -2396,7 +2396,7 @@ function endMap() {
 function showRouteUnlock(route,routeId) {
 	var sprs = [], sprsRemove = [];
 	for (var image of route.images) {
-		const routeImagePath = route.customName ? route.customName : 'assets/maps/'+WORLD+'/'+image.name;
+		const routeImagePath = image.customName ? image.customName : 'assets/maps/'+WORLD+'/'+image.name;
 		var spr = PIXI.Sprite.fromImage(routeImagePath);
 		spr.position.set(image.x,image.y);
 		spr.alpha = 0;
