@@ -2,11 +2,11 @@
 // --- 2 => enemies have randomized stats, it gets re-rolled every time from their original stat
 // --- 3 => enemies have randomized stats, it gets re-rolled every time from their previous stat
 // --- 4 => if its a boss node, the boss will hav ethe same HP as the original boss
-var RANDO_MODE = 4;
+var RANDO_MODE = 1;
 
 // --- 1 => Rush mode
 // --- 2 => TP is slow
-var RUSH_MODE = 1;
+var RUSH_MODE = 0;
 
 function InitUI() {
 	if (!CHDATA.event) return;
