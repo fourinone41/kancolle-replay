@@ -268,6 +268,9 @@ function chLowerHP() {
 }
 
 function chRandomizeComp(compData, mapData, nodeLetter) {
+    // --- Init tables if not done
+    chInitAbyssalTables();
+
     var bossnum = (typeof mapData.bossnode === 'object')? mapData.bossnode : [mapData.bossnode];
     var letterboss = bossnum.map((x) => (typeof x == 'string')? x : String.fromCharCode(64+x));
     let isBoss = letterboss.indexOf(nodeLetter) != -1;
@@ -660,8 +663,12 @@ const strongEnemiesIds = [
     2013, 2014,                         // --- Wa-Class B
     2090,                               // --- Ne kai 4
 ];
+
+var abyssalTablesInitialized = false;
     
 function chInitAbyssalTables () {
+
+    if (abyssalTablesInitialized) return;
 	
 	for (ship_id in SHIPDATA) {
 		if (ship_id >= 1500 && ship_id < 3000) {
@@ -693,6 +700,8 @@ function chInitAbyssalTables () {
 			SHIPDATA[ship_id].ammo = 100;
 		}
 	}
+
+    abyssalTablesInitialized = true;
 }
 
 /**
