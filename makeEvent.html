@@ -65,20 +65,29 @@
 
     <template id="map-editor">
 		<div class="group-title">{{mapData.name}}</div>
-        <div>    
-            <ul>
-                <li class="editor" >
-                    <label for="nameT">Map name</label>
-                    <input v-model="mapData.nameT" name="nameT"/>
-                </li>
-            </ul>
+        <div class="editor-group">    
+            <table>
+                <tr>
+                    <td>Map name</td>
+                    <td><input v-model="mapData.nameT" name="nameT"/></td>
+                </tr>
+            </table>
         </div>
 	</template>
 
     <template id="event-editor">
 		<div class="group-title">Event infos</div>
-        <div>
-
+        <div class="editor-group">
+            <table>
+                <tr>
+                    <td>Event name</td>
+                    <td><input v-model="eventData.name" name="name"/></td>
+                </tr>
+                <tr>
+                    <td>Event date (used for mechanics, ships/equipments availability, ...)</td>
+                    <td><input v-model="eventData.date" type="date" name="date"/></td>
+                </tr>
+            </ul>
         </div>
 	</template>
 </body>
