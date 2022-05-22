@@ -1,8 +1,8 @@
 const ChrRandomizeBonuses = {};
 
-ChrRandomizeBonuses.maxGroupSize = 15;
+ChrRandomizeBonuses.maxGroupSize = 20;
 
-ChrRandomizeBonuses.groupNumber = 7;
+ChrRandomizeBonuses.groupNumber = 8;
 
 ChrRandomizeBonuses.bonusMax = 0.15; // --- Rolled at start and on end node
 ChrRandomizeBonuses.accMax = 0.15; // --- Rolled only on start
@@ -64,8 +64,8 @@ ChrRandomizeBonuses.MakeBonuses = function(groups, endnode) {
     const bonuses = [];
 
     for (const group of groups) {
-        // --- 30% chance to not apply
-        if (endnode && Math.random() > 0.7) continue;
+        // --- 20% chance to not apply
+        if (endnode && Math.random() > 0.8) continue;
 
         bonuses.push(
             new ChShipIdsBonuses({ 
