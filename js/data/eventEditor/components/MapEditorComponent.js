@@ -5,10 +5,5 @@ const MapEditorComponent = {
         
     },
 
-    template: `
-        
-        <label for="nameT">Map name</label>
-        <input class="simple-editor" v-model="mapData.nameT" name="nameT"/>
-    
-    `
+    template: document.getElementById('map-editor')
 }

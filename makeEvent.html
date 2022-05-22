@@ -62,6 +62,17 @@
         <event-settings v-else="isMapSelected"></event-settings>
 
     </div>
+
+    <template id="map-editor">
+		<div class="group-title">
+            <ul>
+                <li class="editor" >
+                    <label for="nameT">Map name</label>
+                    <input v-model="mapData.nameT" name="nameT"/>
+                </li>
+            </ul>
+        </div>
+	</template>
 </body>
 
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>

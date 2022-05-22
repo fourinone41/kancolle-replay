@@ -180,12 +180,20 @@ div#routing {
     margin-right: 10px;
 }
 
-.edit {
+.edit, .editor {
     display: flex;
+    align-items: baseline;
 }
 
-.edit-label {
+.edit-label,
+.editor label {
     margin-right: 10px;
+    line-height: 20px;
+    
+}
+
+.editor input {
+    line-height: 20px;
 }
 
 button.play-bgm {
