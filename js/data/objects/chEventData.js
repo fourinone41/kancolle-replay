@@ -10,8 +10,8 @@ class ChEventData {
 
         this.allowDiffs = [];
         this.allowFleets = [];
-        this.allowLBAS = false;
-        this.allowVanguard = false;
+        this.allowLBAS = true;
+        this.allowVanguard = true;
 
         this.vanguardConsts = { vanguardEvDD1: 20, vanguardEvDD2: 40, vanguardEvOther1: 5, vanguardEvOther2: 20 };
         this.newResupplyCosts = true;

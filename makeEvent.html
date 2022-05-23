@@ -91,13 +91,47 @@
                 
                 <tr>
                     <td>Event banner</td>
-                    <td><input v-model="eventData.bannerImg"/></td>
+                    <td><input v-model="eventData.bannerImg" style="width: 300px;"/></td>
                     <td><img :src="eventData.bannerImg"/></td>
                 </tr>
 
                 <tr>
                     <td>Available difficulties</td>
                     <td><multi-checkboxes-editor :data-source="eventData.allowDiffs" :item-list="difficultiesItemSource"></multi-checkboxes-editor></td>
+                </tr>
+
+                <tr>
+                    <td>Allowed fleets</td>
+                    <td><multi-checkboxes-editor :data-source="eventData.allowFleets" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
+                </tr>
+                
+                <tr>
+                    <td>Allow LBAS</td>
+                    <td><input type="checkbox" v-model="eventData.allowLBAS" /></td>
+                </tr>
+
+                <tr>
+                    <td>Allow vanguard formation</td>
+                    <td><input type="checkbox" v-model="eventData.allowVanguard" /></td>
+                </tr>
+
+                <tr>
+                    <td>Allow strong friend fleets</td>
+                    <td><input type="checkbox" v-model="eventData.allowStrongFF" /></td>
+                </tr>
+
+                <tr>
+                    <td>Friend fleets waves</td>
+                    <td colspan="2">
+                        <div>
+                            <button @click="addWave">Add wave</button>
+                        </div>
+                        <div v-for="(element, index) in eventData.friendFleetWaves" :key="index" style="display: flex;">
+                            <div style="margin-right:10px;">Wave {{index}}</div>
+                            <input type="date" v-model="element.date" style="margin-right:10px;" @change="recomputeWavesNumbers"></input>
+                            <button @click="deleteWave(element)">Delete</button>
+                        </div>
+                    </td>
                 </tr>
             </ul>
         </div>
