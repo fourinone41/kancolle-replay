@@ -2,6 +2,7 @@ Vue.createApp({
 
   data: () => ({
     eventData: new ChEventData(),
+
     selectedMap: {},
 
     isMapSelected: false,

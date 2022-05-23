@@ -20,6 +20,8 @@ class ChEventData {
         this.friendFleetWaves = {};
 
         this.friendFleet = {};
-        this.maps = {}
+        this.maps = {};
+
+        this.locksData = [];
     }
 }

@@ -92,7 +92,9 @@
                 <tr>
                     <td>Event banner</td>
                     <td><input v-model="eventData.bannerImg" style="width: 300px;"/></td>
-                    <td><img :src="eventData.bannerImg"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><img :src="eventData.bannerImg"/></td>
                 </tr>
 
                 <tr>
@@ -133,8 +135,24 @@
                         </div>
                     </td>
                 </tr>
-            </ul>
-        </div>
+            </table>
+        </div>        
+
+        <div class="group-title">Shiplocks</div>
+        <div class="editor-group">
+            <div>
+                <button @click="addLock">Add lock</button>
+            </div>
+            <div v-for="(element, index) in eventData.locksData" :key="index" style="display: flex; align-items: center;">
+                
+                <div style="margin-right:10px;">Lock image</div>
+                <input v-model="element.image" style="width: 300px;margin-right:10px;"/>
+                <button @click="deleteLock(element)" style="margin-right:10px;">Delete</button>
+                <img :src="element.image"/>
+
+            </div>
+        </div>        
+
 	</template>
 </body>
 

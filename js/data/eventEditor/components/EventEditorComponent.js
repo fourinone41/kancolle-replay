@@ -19,7 +19,7 @@ const EventEditorComponent = {
         
     methods: {
         
-        
+        // Friend fleet waves
         addWave() {
             const now = new Date(new Date(Date.now()));
             const offset = now.getTimezoneOffset();
@@ -52,7 +52,20 @@ const EventEditorComponent = {
             }
 
             this.eventData.friendFleetWaves = waves;
-        }
+        },
+
+        // Ship locks
+        addLock() {
+            this.eventData.locksData.push({
+                image: "",
+                key: "",
+            });
+        },
+
+        deleteLock(element) {
+            
+            this.eventData.locksData = this.eventData.locksData.filter(e => e !== element);
+        },
     },
 
     template: document.getElementById('event-editor')
