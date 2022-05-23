@@ -41,6 +41,7 @@ Vue.createApp({
     },
 },
 })
+.component('MultiCheckboxesEditor', MultiCheckboxesEditorComponent)
 .component('MapSelection', MapSelectionComponent)
 .component('MapEditor', MapEditorComponent)
 .component('EventEditor', EventEditorComponent)

@@ -83,9 +83,21 @@
                     <td>Event name</td>
                     <td><input v-model="eventData.name" name="name"/></td>
                 </tr>
+
                 <tr>
                     <td>Event date (used for mechanics, ships/equipments availability, ...)</td>
                     <td><input v-model="eventData.date" type="date" name="date"/></td>
+                </tr>
+                
+                <tr>
+                    <td>Event banner</td>
+                    <td><input v-model="eventData.bannerImg"/></td>
+                    <td><img :src="eventData.bannerImg"/></td>
+                </tr>
+
+                <tr>
+                    <td>Available difficulties</td>
+                    <td><multi-checkboxes-editor :data-source="eventData.allowDiffs" :item-list="difficultiesItemSource"></multi-checkboxes-editor></td>
                 </tr>
             </ul>
         </div>
@@ -93,6 +105,7 @@
 </body>
 
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
+<script src="js/data/eventEditor/components/MultiCheckboxesEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/MapEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EventEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
