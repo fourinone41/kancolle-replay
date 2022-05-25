@@ -238,3 +238,31 @@ button.play-bgm {
 .editor-group {
     margin-left: 15px;
 }
+
+
+#divFriendFleets div.tabber {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#divFriendFleets div.tabberButton {
+    padding: 10px 20px;
+    background-color: #646464;
+}
+#divFriendFleets div.tabberButton.selected {
+    background-color: #a1a1a1;
+}
+#divFriendFleets div.tabberButton:hover {
+    cursor: pointer;
+    background-color: #a1a1a1;
+}
+#divFriendFleets div.fleetDisplay {
+    margin-top: 10px;
+    display: flex;
+}
+#divFriendFleets div.fleetDisplay div.header div:last-child {
+    margin-left: auto;
+}
+#divFriendFleets div.fleetDisplay div.header div:last-child input {
+    margin-right: -100%;
+}

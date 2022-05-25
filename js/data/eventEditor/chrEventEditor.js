@@ -42,8 +42,15 @@ Vue.createApp({
     },
 },
 })
+.component('vmodal', ModalComponent)
+.component('vshipselector', ShipSelectorComponent)
+.component('vequipselector', EquipSelectorComponent)
+.component('vequipeditor', EquipEditorComponent)
+.component('vshipeditor', ShipEditorComponent)
+.component('vfleeteditor', FleetEditorComponent)
 .component('MultiCheckboxesEditor', MultiCheckboxesEditorComponent)
 .component('MapSelection', MapSelectionComponent)
 .component('MapEditor', MapEditorComponent)
 .component('EventEditor', EventEditorComponent)
+.use(COMMON.i18n)
 .mount('#eventEditor');

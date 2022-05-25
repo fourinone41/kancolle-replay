@@ -9,6 +9,10 @@
     <script src="js/util/jquery-ui/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="js/util/jquery-ui/jquery-ui.css">
     <link rel="stylesheet" href="css/chrEventInfo.css">
+    <link rel="stylesheet" href="css/ModalComponent.css">
+    <link rel="stylesheet" href="css/ShipEquipSelectorComponent.css">
+    <link rel="stylesheet" href="css/ShipEditorComponent.css">
+    <link rel="stylesheet" href="css/EquipEditorComponent.css">
     <script src="js/pixi.min.js"></script>
     <script src="js/bonuses.js"></script>
     <script src="js/routing.js"></script>
@@ -48,7 +52,7 @@
     <script src="js/data/objects/chMapData.js"></script>
     <script src="js/data/objects/chEventData.js"></script>
 
-    
+    <script src="js/data/eventEditor/common.js"></script>
 	<script src="js/vue.global.dev.js"></script>
 	<script src="js/vue-i18n.global.js"></script>
 </head>
@@ -58,9 +62,11 @@
 
         <map-selection :maps="eventData.maps" @add-map="addMap" @element-changed="elementChanged"></map-selection>
 
-        <map-editor v-if="isMapSelected" :map-data="selectedMap"></map-editor>
-        <event-editor v-else="isMapSelected" :event-data="eventData"></event-settings>
+        <div v-if="isMapSelected"><map-editor :map-data="selectedMap"></map-editor></div>
+        <div v-else><event-editor :event-data="eventData"></event-settings></div>
 
+        <vshipselector></vshipselector>
+        <vequipselector></vequipselector>
     </div>
 
     <template id="map-editor">
@@ -152,10 +158,30 @@
 
             </div>
         </div>        
-
+        
+        <div class="group-title">Friend Fleets</div>
+        <div id="divFriendFleets" class="editor-group">
+            <div><input type="button" value="Add Friend Fleet" @click="addFriendFleet"/><input placeholder="Name" maxlength="50" ref="friendFleetName" v-model="friendFleetNewName" @keydown.enter="addFriendFleet"/></div>
+            <div class="tabber">
+                <div v-for="(fleet,key) in eventData.friendFleet" :key="key" class="tabberButton" :class="{selected:key==friendFleetCurrent}" @click="friendFleetCurrent=key">{{key}}</div>
+            </div>
+            <div v-if="friendFleetCurrent" class="fleetDisplay">
+                <div>
+                    <div>{{friendFleetCurrent}}</div>
+                    <div><vfleeteditor :fleet="eventData.friendFleet[friendFleetCurrent]" is-friend-fleet="1"></vfleeteditor></div>
+                </div>
+                <div><input type="button" value="Delete Fleet" @click="deleteFriendFleet(friendFleetCurrent)"/></div>
+            </div>
+        </div>
 	</template>
 </body>
 
+<script src="js/data/eventEditor/i18n.js"></script>
+<script src="js/data/eventEditor/components/ModalComponent.js"></script>
+<script src="js/data/eventEditor/components/ShipEquipSelectorComponent.js"></script>
+<script src="js/data/eventEditor/components/EquipEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ShipEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/FleetEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
 <script src="js/data/eventEditor/components/MultiCheckboxesEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/MapEditorComponent.js"></script>

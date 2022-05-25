@@ -1,0 +1,23 @@
+div.overlayDark {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	opacity: .3;
+	cursor: pointer;
+}
+div.modalContent {
+	position: fixed;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	outline: none;
+}
+div.modalContentMain > * {
+	background-color: #646464;
+	border: 1px solid transparent;
+	box-shadow: 0 0 5px black;
+	padding: 10px;
+}
