@@ -1,0 +1,40 @@
+div.shipEditor div.name {
+	display: flex;
+}
+div.shipEditor div.name input {
+	width: 132px;
+	cursor: pointer;
+}
+div.shipEditor div.name div.delete {
+	width: 20px;
+	text-align: center;
+}
+div.shipEditor div.shipBanner img {
+	cursor: move;
+}
+div.shipEditor div.delete:hover {
+	cursor: pointer;
+	background-color: #990000;
+}
+div.shipEditor div.statsWrap {
+	display: flex;
+	flex-wrap: wrap;
+	width: 160px;
+}
+div.shipEditor div.statsWrap img {
+	vertical-align: middle;
+}
+div.shipEditor div.statsWrap div.statHalf {
+	margin: 0 1px;
+}
+div.shipEditor div.statsWrap div.statHalf input {
+	width: 52px;
+}
+div.shipEditor div.statsWrap div.statWide {
+	display: flex;
+	width: 160px;
+}
+div.shipEditor div.statsWrap div.statWide input {
+	width: 72px;
+	margin-left: auto;
+}

@@ -1,0 +1,13 @@
+div.equipEditor {
+	display: flex;
+	height: 24px;
+}
+div.equipEditor img.equipIcon {
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	cursor: move;
+}
+div.equipEditor div.name input {
+	width: 108px;
+}

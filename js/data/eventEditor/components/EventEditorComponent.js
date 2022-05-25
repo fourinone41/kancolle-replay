@@ -14,7 +14,10 @@ const EventEditorComponent = {
             { key: 2, display: "Surface Task Force" },
             { key: 3, display: "Transport Escort Force" },
             { key: 7, display: "Strike Force" },
-        ]
+        ],
+        
+        friendFleetNewName: '',
+        friendFleetCurrent: '',
     }),
         
     methods: {
@@ -65,6 +68,26 @@ const EventEditorComponent = {
         deleteLock(element) {
             
             this.eventData.locksData = this.eventData.locksData.filter(e => e !== element);
+        },
+        
+        //friend fleet
+        addFriendFleet() {
+            if (!this.friendFleetNewName) {
+                this.$refs.friendFleetName.focus();
+                return;
+            }
+            if (!this.eventData.friendFleet) this.eventData.friendFleet = {};
+            if (!this.eventData.friendFleet[this.friendFleetNewName]) {
+                this.eventData.friendFleet[this.friendFleetNewName] = { ships: [] };
+            }
+            this.friendFleetCurrent = this.friendFleetNewName;
+            this.friendFleetNewName = '';
+        },
+        
+        deleteFriendFleet(key) {
+            this.friendFleetCurrent = '';
+            delete this.eventData.friendFleet[key];
+            if (Object.keys(this.eventData.friendFleet).length <= 0) delete this.eventData.friendFleet;
         },
     },
 
