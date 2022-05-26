@@ -33126,3 +33126,43 @@ function getAllShipsShipIds() {
 	
 	return ships;
 }
+
+function chApplyBonus(bonuses) {
+	for (let ship of getAllShips(true)) {
+		let midBase = getBaseId(ship.mid);
+		for (let bonus of bonuses) {
+			if (bonus.types && !bonus.types.includes(ship.type)) continue;
+			if (bonus.ctypes && !bonus.ctypes.includes(ship.sclass)) continue;
+			if (bonus.idsBase && !bonus.idsBase.includes(midBase)) continue;
+			if (bonus.idsExact && !bonus.idsExact.includes(ship.mid)) continue;
+			
+			if (bonus.typesExclude && bonus.typesExclude.includes(ship.type)) continue;
+			if (bonus.ctypesExclude && bonus.ctypesExclude.includes(ship.sclass)) continue;
+			if (bonus.idsBaseExclude && bonus.idsBaseExclude.includes(midBase)) continue;
+			if (bonus.idsExactExclude && bonus.idsExactExclude.includes(ship.mid)) continue;
+			
+			if (bonus.reqEquipTypes && (bonus.reqEquipTypes.reduce((c,type) => (ship.equiptypes[type] || 0) + c, 0) < (bonus.reqEquipTypesNum || 1))) continue;
+			if (bonus.reqEquipIds && (bonus.reqEquipIds.reduce((c,id) => ship.equips.filter(eq => eq.mid == id).length + c, 0) < (bonus.reqEquipIdsNum || 1))) continue;
+			
+			for (let keys of [['dmg','bonusSpecial'],['acc','bonusSpecialAcc'],['ev','bonusSpecialEv']]) {
+				let keyBonus = keys[0], keyShip = keys[1];
+				if (bonus[keyBonus]) {
+					if (bonus[keyBonus] == -1) {
+						ship[keyShip] = null;
+						continue;
+					}
+					if (!ship[keyShip]) ship[keyShip] = [];
+					let obj = { mod: bonus[keyBonus] };
+					if (bonus.on) obj.on = bonus.on;
+					ship[keyShip].push(obj);
+				}
+			}
+		}
+	}
+}
+
+function chResetBonus() {
+	for (let ship of getAllShips(true)) {
+		ship.bonusSpecial = ship.bonusSpecialAcc = ship.bonusSpecialEv = null;
+	}
+}
