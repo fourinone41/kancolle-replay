@@ -181,7 +181,9 @@ function chFindFile(world) {
 function chLoadFile(file) {
 	localStorage.ch_file = FILE = file;
 	var basic = JSON.parse(localStorage['ch_basic'+FILE]);
-	CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
+	let ch_data = localStorage['ch_data'+FILE];
+	if (ch_data[0] != '{') ch_data = LZString.decompressFromBase64(ch_data);
+	CHDATA = JSON.parse(ch_data);
 	for (var key in basic) CHDATA[key] = basic[key];
 	DIALOGSORT = -1;
 	InitUI();
@@ -1146,6 +1148,7 @@ function mapPhase(first) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
 			}
+			ChGimmickList.updateAll({ node: curletter });
 		}
 		if (curnode.dropoff) {
 			if (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == curletter) {
@@ -1625,8 +1628,10 @@ function prepBattle(letter) {
 	}
 	
 	if (mapdata.debuffAmount) {
-		var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;
-		if (debuffCheck && debuffCheck(CHDATA.event.maps[MAPNUM].debuff)) {
+		let debuffed = false;
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffCheck) debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffCheck(CHDATA.event.maps[MAPNUM].debuff);
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.check();
+		if (debuffed) {
 			if (typeof mapdata.debuffAmount === 'object') {
 				for (var i=0; i<FLEETS2[0].ships.length; i++) {
 					var ship = FLEETS2[0].ships[i];
@@ -1951,7 +1956,8 @@ function endMap() {
 		for (var mapnum in MAPDATA[WORLD].maps) {
 			if (mapnum < MAPNUM) continue;
 			if (mapnum > CHDATA.event.unlocked) continue;
-			if (MAPDATA[WORLD].maps[mapnum].debuffCheck && !CHDATA.event.maps[mapnum].debuffed) {
+			if (CHDATA.event.maps[mapnum].debuffed) continue;
+			if (MAPDATA[WORLD].maps[mapnum].debuffCheck) {
 				if (!CHDATA.event.maps[mapnum].debuff) CHDATA.event.maps[mapnum].debuff = {};
 				if (MAPDATA[WORLD].maps[mapnum].debuffCheck(CHDATA.event.maps[mapnum].debuff)) {
 					CHDATA.event.maps[mapnum].debuffed = true;
@@ -1959,6 +1965,16 @@ function endMap() {
 					alert('DEBUFF');
 				}
 			}
+			if (MAPDATA[WORLD].maps[mapnum].debuffRules) {
+				if (MAPDATA[WORLD].maps[mapnum].debuffRules.check()) {
+					CHDATA.event.maps[mapnum].debuffed = true;
+					alert('DEBUFF');
+				}
+			}
+		}
+		
+		if (CHDATA.sortie.gimmickProgressed) {
+			SM.play('done');
 		}
 		
 		chSave();
@@ -2085,6 +2101,8 @@ function shuttersPostbattle(noshutters) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].debuffGive(FLEETS2,FLEETS1);
 	}
+	ChGimmickList.updateAll({ node: curletter, rank: CHDATA.temp.rank, airState: FLEETS1[0].AS });
+	
 	FLEETS1[0].resetBattle();
 	if (CHDATA.fleets.combined) FLEETS1[1].resetBattle();
 	CHDATA.temp.done = true;
@@ -2993,7 +3011,12 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 	for (var key in hiddenRoutes) {
 		key = parseInt(key);
 		if (CHDATA.event.maps[MAPNUM].routes.indexOf(key) != -1) continue; 
-		if (hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+		if (hiddenRoutes[key].unlock && hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
+			return key;
+		}
+		
+		if (hiddenRoutes[key].unlockRules && hiddenRoutes[key].unlockRules.check()) {
 			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
 			return key;
 		}
@@ -3083,6 +3106,7 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive(airState,totalHPLost);
 	}
+	ChGimmickList.updateAll({ node: 'AB', airState: airState, totalHPLost: totalHPLost });
 	
 	CHAPI.battles.push(BAPI);
 	CHAPI.fleet1 = [];

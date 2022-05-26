@@ -647,6 +647,7 @@ MAPDATA[50] =
 							if (ships.DD + ships.DE < 2) return 'A';
 							if (ships.CL <= 0) return 'A';
 							if (ships.speed >= 10) return 'D';
+							let num = [1,2,3,0][getDiff()-1];
 							if (CHDATA.sortie.numHistorical >= num) return 'D';
 							return 'A';
 						}

@@ -27150,9 +27150,17 @@ var MAPDATA = {
 							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A' || CHDATA.temp.rank == 'B') CHDATA.event.maps[7].debuff.LB = 1;
 						},
 						routeC: function(ships) {
-							this.showLoSPlane = 'H';
+							this.showLoSPlane = null;
+							if (!CHDATA.event.maps[7].routes || CHDATA.event.maps[7].routes.indexOf(1) == -1) {
+								this.showNoCompass = true;
+								return 'P';
+							}
+							this.showNoCompass = false;
+							if (CHDATA.event.maps[7].routes.indexOf(2) != -1) {
+								this.showLoSPlane = 'H';
+							}
 							if (ships.speed <= 5 && ships.aBB + ships.escort.aBB >= 5) this.showLoSPlane = 'Q';
-							return this.showLoSPlane;
+							return this.showLoSPlane || 'P';
 						}
 					},
 					'M': {
@@ -34726,4 +34734,44 @@ function getAllShips(includeFF) {
 		ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
 	}
 	return ships;
+}
+
+function chApplyBonus(bonuses) {
+	for (let ship of getAllShips(true)) {
+		let midBase = getBaseId(ship.mid);
+		for (let bonus of bonuses) {
+			if (bonus.types && !bonus.types.includes(ship.type)) continue;
+			if (bonus.ctypes && !bonus.ctypes.includes(ship.sclass)) continue;
+			if (bonus.idsBase && !bonus.idsBase.includes(midBase)) continue;
+			if (bonus.idsExact && !bonus.idsExact.includes(ship.mid)) continue;
+			
+			if (bonus.typesExclude && bonus.typesExclude.includes(ship.type)) continue;
+			if (bonus.ctypesExclude && bonus.ctypesExclude.includes(ship.sclass)) continue;
+			if (bonus.idsBaseExclude && bonus.idsBaseExclude.includes(midBase)) continue;
+			if (bonus.idsExactExclude && bonus.idsExactExclude.includes(ship.mid)) continue;
+			
+			if (bonus.reqEquipTypes && (bonus.reqEquipTypes.reduce((c,type) => (ship.equiptypes[type] || 0) + c, 0) < (bonus.reqEquipTypesNum || 1))) continue;
+			if (bonus.reqEquipIds && (bonus.reqEquipIds.reduce((c,id) => ship.equips.filter(eq => eq.mid == id).length + c, 0) < (bonus.reqEquipIdsNum || 1))) continue;
+			
+			for (let keys of [['dmg','bonusSpecial'],['acc','bonusSpecialAcc'],['ev','bonusSpecialEv']]) {
+				let keyBonus = keys[0], keyShip = keys[1];
+				if (bonus[keyBonus]) {
+					if (bonus[keyBonus] == -1) {
+						ship[keyShip] = null;
+						continue;
+					}
+					if (!ship[keyShip]) ship[keyShip] = [];
+					let obj = { mod: bonus[keyBonus] };
+					if (bonus.on) obj.on = bonus.on;
+					ship[keyShip].push(obj);
+				}
+			}
+		}
+	}
+}
+
+function chResetBonus() {
+	for (let ship of getAllShips(true)) {
+		ship.bonusSpecial = ship.bonusSpecialAcc = ship.bonusSpecialEv = null;
+	}
 }

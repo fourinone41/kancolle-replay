@@ -1175,7 +1175,7 @@ function chSave() {
 	data.fleets = CHDATA.fleets;
 	data.presets = CHDATA.presets;
 	localStorage.setItem('ch_basic'+FILE,JSON.stringify(basic));
-	localStorage.setItem('ch_data'+FILE,JSON.stringify(data));
+	localStorage.setItem('ch_data'+FILE,LZString.compressToBase64(JSON.stringify(data)));
 	localStorage.setItem('ch_file',FILE);
 }
 
@@ -1982,7 +1982,7 @@ function chLoadSortieInfo(mapnum) {
 	$('#srtTitle').html(title);
 	if (title.indexOf('<br>') != -1) $('#srtTitle').css('font-size','20px');
 	else $('#srtTitle').css('font-size','24px');
-	$('#srtMapImg').attr('src','assets/maps/'+world+'/'+mapnum+'m.png');
+	$('#srtMapImg').attr('src',mapdata.getMapBanner ? mapdata.getMapBanner() : 'assets/maps/'+world+'/'+mapnum+'m.png');
 	if (!unlocked) {
 		$('#srtMapImg').css('filter','blur(5px) grayscale(1)');
 		$('#srtMapImg').css('-webkit-filter','blur(5px) grayscale(1)');
