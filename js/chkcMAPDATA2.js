@@ -13151,7 +13151,7 @@ var MAPDATA = {
 							var nbReiGoShips = isShipInList(ships.ids, 49) +  isShipInList(ships.ids, 425) + isShipInList(ships.ids, 410) + isShipInList(ships.ids, 64) + isShipInList(ships.ids, 183);
 							if (nbReiGoShips >= 4) return 'E';
 							if ( ships.CA === 1 && ships.CL === 1 && ships.CLT === 1 && ships.DD === 3) return 'E';
-							if (ships.CA + ships.CAV >= 0) return (Math.random() < .5)? 'E' : 'B';
+							if (ships.CA + ships.CAV > 0) return (Math.random() < .5)? 'E' : 'B';
 							return 'B';
 						}
 					},
