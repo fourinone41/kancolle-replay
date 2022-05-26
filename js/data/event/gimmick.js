@@ -1,6 +1,6 @@
 /**
  * 
- * @param {'debuff' | 'mapPart'} type 
+ * @param {'debuff' | 'mapPart' | 'route'} type 
  * @param {ChGimmickParameters[]} gimmickData 
  * @param {{
  *  numberOfStepRequired: number
@@ -21,6 +21,8 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionnalPara
      * @type {'debuff' | 'mapPart'}
      */
     this.type = type;
+	// --- Map part by default
+	if (type == "route") this.type = type = 'mapPart';
 
     this.mapPartNumber = mapPartNumber;
 
@@ -285,7 +287,8 @@ function ChGimmick(parameters) {
     this.timesRequiredPerDiff = parameters.timesRequiredPerDiff;
 
     this.ranksRequiredPerDiff = parameters.ranksRequiredPerDiff;
-	if (parameters.rank) this.ranksRequiredPerDiff = { 4: parameters.rank, 1: parameters.rank, 2: parameters.rank, 3: parameters.rank };
+	if (parameters.rank) this.ranksRequiredPerDiff = parameters.ranksRequiredPerDiff = { 4: parameters.rank, 1: parameters.rank, 2: parameters.rank, 3: parameters.rank };
+	if (parameters.airState) this.ranksRequiredPerDiff = parameters.ranksRequiredPerDiff = { 4: parameters.airState, 1: parameters.airState, 2: parameters.airState, 3: parameters.airState };
 
     this.routeUnlockRequired = parameters.routeUnlockRequired;
 

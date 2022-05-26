@@ -74,7 +74,7 @@ MAPDATA[52] =
 						images: [{ name: '1_1.png', x: 0, y: 0 }],
 						unlockRules: new ChGimmickList('route', 2, 1, [
 							{ type: 'battle', node: 'M', rank: 'A', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 } },
-						])
+						], { partToUnlock: 1 })
 					},
 					
 				},
@@ -542,7 +542,7 @@ MAPDATA[52] =
 							{ type: 'battle', node: 'K', rank: 'A', timesRequiredPerDiff: { 1:1, 2:1, 3:1 } },
 							{ type: 'ReachNode', node: 'K', key: 'K_r', timesRequiredPerDiff: { 4:1 } },
 							{ type: 'battle', node: 'L', rank: 'A', timesRequiredPerDiff: { 1:1, 2:1, 3:2 } },
-						])
+						], { partToUnlock: 1 })
 					},
 					2: {
 						images: [{ name: '2_2.png', x: 0, y: 0 }],
@@ -550,7 +550,7 @@ MAPDATA[52] =
 							{ type: 'AirState', node: 'C', airState: 'AS', timesRequiredPerDiff: { 1:1, 2:1, 3:1 } },
 							{ type: 'battle', node: 'P', rank: 'A', timesRequiredPerDiff: { 3:1 } },
 							{ type: 'AirState', node: 'AB', airState: 'AS', timesRequiredPerDiff: { 1:1, 2:1, 3:1 } },
-						], { routeUnlockRequired: 1 } )
+						], { routeUnlockRequired: 1, partToUnlock: 2 } )
 					},
 				},
 				enemyRaid: {
@@ -1040,17 +1040,17 @@ MAPDATA[52] =
 				hiddenRoutes: {
 					1: {
 						images: [{ name: '3_1.png', x: 0, y: 0 }],
-						unlockRules: new ChGimmickList('route', 2, 3, [])
+						unlockRules: new ChGimmickList('route', 2, 3, [], { partToUnlock: 1 })
 					},
 					2: {
 						images: [{ name: '3_2.png', x: 0, y: 0 }],
-						unlockRules: new ChGimmickList('route', 3, 3, [])
+						unlockRules: new ChGimmickList('route', 3, 3, [], { partToUnlock: 2 })
 					},
 					3: {
 						images: [{ name: '3_3.png', x: 0, y: 0 }],
 						unlockRules: new ChGimmickList('route', 3, 3, [
 							{ type: 'battle', node: 'R2', rank: 'S', timesRequiredPerDiff: { 1:1, 2:1, 3:1 } },
-						])
+						], { partToUnlock: 3 })
 					},
 				},
 				enemyRaid: {
@@ -1886,7 +1886,7 @@ MAPDATA[52] =
 						boss: true,
 						setupSpecial: function() {
 							chApplyBonus(MAPDATA[52].maps[3].bonuses.IZSub);
-							if (CHDATA.event.maps[3].debuffed || MAPDATA[52].maps[3].debuffRules.check()) {
+							if (CHDATA.event.maps[3].debuffed || MAPDATA[52].maps[3].debuffRules.checkIfDebuffed()) {
 								chApplyBonus(MAPDATA[52].maps[3].bonuses.debuff);
 							}
 						},

@@ -1246,7 +1246,6 @@ function mapPhase(first) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
 			}
-			ChGimmickList.updateAll({ node: curletter });
 		}
 		if (curnode.dropoff) {
 			if (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == curletter) {
@@ -2376,12 +2375,6 @@ function endMap() {
 				if (MAPDATA[WORLD].maps[mapnum].debuffCheck(CHDATA.event.maps[mapnum].debuff)) {
 					CHDATA.event.maps[mapnum].debuffed = true;
 					SM.play('done');
-					alert('DEBUFF');
-				}
-			}
-			if (MAPDATA[WORLD].maps[mapnum].debuffRules) {
-				if (MAPDATA[WORLD].maps[mapnum].debuffRules.check()) {
-					CHDATA.event.maps[mapnum].debuffed = true;
 					alert('DEBUFF');
 				}
 			}
@@ -3566,7 +3559,6 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive(airState,totalHPLost);
 	}
-	ChGimmickList.updateAll({ node: 'AB', airState: airState, totalHPLost: totalHPLost });
 	
 	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
 		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps('AB', {
