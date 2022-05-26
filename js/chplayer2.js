@@ -2804,6 +2804,7 @@ function chUIUpdateResources() {
 }
 
 function chUIUpdateItems() {
+	if (!CHDATA.event.resources) return;
 	$('#resDamecon').text(CHDATA.event.resources.damecon || 0);
 	$('#resDamegami').text(CHDATA.event.resources.damegami || 0);
 	$('#resRation').text(CHDATA.event.resources.ration || 0);
