@@ -211,7 +211,9 @@ function chFindFile(world) {
 function chLoadFile(file) {
 	localStorage.ch_file = FILE = file;
 	var basic = JSON.parse(localStorage['ch_basic'+FILE]);
-	CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
+	let ch_data = localStorage['ch_data'+FILE];
+	if (ch_data[0] != '{') ch_data = LZString.decompressFromBase64(ch_data);
+	CHDATA = JSON.parse(ch_data);
 	for (var key in basic) CHDATA[key] = basic[key];
 	DIALOGSORT = -1;
 	InitUI();
@@ -1244,6 +1246,7 @@ function mapPhase(first) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
 			}
+			ChGimmickList.updateAll({ node: curletter });
 		}
 		if (curnode.dropoff) {
 			if (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == curletter) {
@@ -2376,6 +2379,16 @@ function endMap() {
 					alert('DEBUFF');
 				}
 			}
+			if (MAPDATA[WORLD].maps[mapnum].debuffRules) {
+				if (MAPDATA[WORLD].maps[mapnum].debuffRules.check()) {
+					CHDATA.event.maps[mapnum].debuffed = true;
+					alert('DEBUFF');
+				}
+			}
+		}
+		
+		if (CHDATA.sortie.gimmickProgressed) {
+			SM.play('done');
 		}
 
 		if (playSoundAfterSortie) {
@@ -3243,6 +3256,7 @@ function chUIUpdateResources() {
 }
 
 function chUIUpdateItems() {
+	if (!CHDATA.event.resources) return;
 	$('#resDamecon').text(CHDATA.event.resources.damecon || 0);
 	$('#resDamegami').text(CHDATA.event.resources.damegami || 0);
 	$('#resRation').text(CHDATA.event.resources.ration || 0);
@@ -3552,6 +3566,7 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive(airState,totalHPLost);
 	}
+	ChGimmickList.updateAll({ node: 'AB', airState: airState, totalHPLost: totalHPLost });
 	
 	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
 		MAPDATA[WORLD].maps[MAPNUM].debuffRules.checkGimmickSteps('AB', {
