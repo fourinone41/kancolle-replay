@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/ShipEquipSelectorComponent.css">
     <link rel="stylesheet" href="css/ShipEditorComponent.css">
     <link rel="stylesheet" href="css/EquipEditorComponent.css">
+    <link rel="stylesheet" href="css/MapEditorComponent.css">
     <script src="js/pixi.min.js"></script>
     <script src="js/bonuses.js"></script>
     <script src="js/routing.js"></script>
@@ -70,26 +71,49 @@
     </div>
 
     <template id="map-editor">
-        <button @click="deleteMap">Delete map</button>
-		<div class="group-title">{{mapData.name}}</div>
-        <div class="editor-group">    
-            <table>
+        <div class="map-editor-groups">
+            <div class="editor-group">  
+                <button @click="deleteMap">Delete map</button>
+                <div class="group-title">{{mapData.name}}</div>
 
-                <tr>
-                    <td>Map name</td>
-                    <td><input v-model="mapData.nameT" name="nameT"/></td>
-                </tr>
-
-                <tr>
-                    <td>Image to display on map selection</td>
-                    <td><input v-model="mapData.mapPreviewImage" style="width: 300px;"/></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img :src="mapData.mapPreviewImage"/></td>
-                </tr>
-
-            </table>
+                <table>
+    
+                    <tr>
+                        <td>Map name</td>
+                        <td><input v-model="mapData.nameT" name="nameT"/></td>
+                    </tr>
+    
+                    <tr>
+                        <td>Image to display on map selection</td>
+                        <td><input v-model="mapData.mapPreviewImage" style="width: 300px;"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><img :src="mapData.mapPreviewImage"/></td>
+                    </tr>
+    
+                    <tr>
+                        <td>Map image</td>
+                        <td><input v-model="mapData.mapImage" style="width: 300px;"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">The map should be 768x435</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Paths to unlock must NOT be visible on the map</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Do not place air nodes, they will be added by the event simulator</td>
+                    </tr>
+    
+                </table>
+            </div>
+    
+    
+            <div class="map-group"> 
+                <img :src="mapData.mapImage"/>
+            </div>
         </div>
+        
 	</template>
 
     <template id="event-editor">
