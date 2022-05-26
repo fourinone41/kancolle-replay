@@ -8,13 +8,7 @@ const EventEditorComponent = {
             { key: 2, display: "Medium" },
             { key: 3, display: "Hard" },
         ],
-        fleetsItemSource: [
-            { key: 0, display: "Single Fleet" },
-            { key: 1, display: "Carrier Task Force" },
-            { key: 2, display: "Surface Task Force" },
-            { key: 3, display: "Transport Escort Force" },
-            { key: 7, display: "Strike Force" },
-        ],
+        fleetsItemSource: COMMON.FLEET_TYPES,
         
         friendFleetNewName: '',
         friendFleetCurrent: '',

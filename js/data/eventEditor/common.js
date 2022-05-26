@@ -70,4 +70,12 @@ var COMMON = {
 	isEquipIdAbyssal: function(id) {
 		return +id > 500;
 	},
+
+	FLEET_TYPES: [
+		{ key: 0, display: "Single Fleet" },
+		{ key: 1, display: "Carrier Task Force" },
+		{ key: 2, display: "Surface Task Force" },
+		{ key: 3, display: "Transport Escort Force" },
+		{ key: 7, display: "Strike Force" },
+	],
 };

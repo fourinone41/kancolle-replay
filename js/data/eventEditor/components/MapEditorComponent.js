@@ -2,6 +2,21 @@ const MapEditorComponent = {
     props: ['mapData', 'eventData'],
     emits: ['mapDeleted'],
 
+    computed: {
+        fleetsItemSource () {
+            const fleets = [];
+            
+            for (const fleetType of this.eventData.allowFleets) {
+
+                const type = COMMON.FLEET_TYPES.find(el => el.key == fleetType);
+
+                fleets.push(type);
+            }
+
+            return fleets;
+        }
+    },
+
     methods: {
         deleteMap () {
             if (confirm("Are you sure you want to delete this map ?")) {
