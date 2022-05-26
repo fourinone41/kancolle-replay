@@ -57,15 +57,29 @@ SoundManager.prototype = {
 	},
 	playBGM: function(num,vol,noloop) {
 		this.stopBGM();
-		if (!vol) vol = (BGMLIST[num].voldef)? BGMLIST[num].voldef : .3;
+
+		let src;
+
+		// --- Custom BGM ? => Play from url
+		if (!BGMLIST[num])  {
+			if (!vol) vol = .3;
+			src = [num];
+		}
+		else {
+			if (!vol) vol = (BGMLIST[num].voldef)? BGMLIST[num].voldef : .3;
+			src = [BGMLIST[num].url];
+		}
+
 		this._bgmVol = vol;
 		if (!this._bgmON) vol = 0;
+
 		this._bgm = new Howl({
-			src:[BGMLIST[num].url],
+			src: src,
 			volume:vol*this._volume,
 			loop:!noloop,
 			html5:true
 		});
+		
 		this._bgm.play();
 		this.BGMnum = num;
 		return this._bgm;

@@ -14,7 +14,7 @@ const MapEditorComponent = {
             }
 
             return fleets;
-        }
+        },
     },
 
     methods: {
@@ -28,7 +28,15 @@ const MapEditorComponent = {
                     }
                 }
             }
-        }
+        },
+
+        playBGM(bgm) {
+            COMMON.SOUND_MANAGER.playBGM(bgm, 1, true);
+        },
+
+        stopBGM(bgm) {
+            COMMON.SOUND_MANAGER.stopBGM();
+        },
     },
 
     template: document.getElementById('map-editor')

@@ -78,4 +78,6 @@ var COMMON = {
 		{ key: 3, display: "Transport Escort Force" },
 		{ key: 7, display: "Strike Force" },
 	],
+
+	SOUND_MANAGER: new SoundManager(),
 };

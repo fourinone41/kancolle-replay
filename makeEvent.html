@@ -92,7 +92,7 @@
                     </tr>
     
                     <tr>
-                        <td>Map image</td>
+                        <td>Map image (Width 662px)</td>
                         <td><input v-model="mapData.mapImage" style="width: 300px;"/></td>
                     </tr>
                     <tr>
@@ -110,6 +110,45 @@
                         <td><multi-checkboxes-editor :data-source="mapData.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
                     </tr>
     
+                </table>
+
+                <div class="group-title">BGMs</div>
+
+                <table>
+                    <tr>
+                        <td>Map BGM</td>
+                        <td><input v-model="mapData.bgmMap" /></td>
+                        <td><button class="play-bgm" @click="playBGM(mapData.bgmMap)">Play</button></td>
+                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Normal battle BGM (day)</td>
+                        <td><input v-model="mapData.bgmDN" /></td>
+                        <td><button class="play-bgm" @click="playBGM(mapData.bgmDN)">Play</button></td>
+                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Normal battle BGM (night)</td>
+                        <td><input v-model="mapData.bgmNN" /></td>
+                        <td><button class="play-bgm" @click="playBGM(mapData.bgmNN)">Play</button></td>
+                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Boss battle BGM (day)</td>
+                        <td><input v-model="mapData.bgmDB" /></td>
+                        <td><button class="play-bgm" @click="playBGM(mapData.bgmDB)">Play</button></td>
+                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Boss battle BGM (night)</td>
+                        <td><input v-model="mapData.bgmNB" /></td>
+                        <td><button class="play-bgm" @click="playBGM(mapData.bgmNB)">Play</button></td>
+                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                    </tr>
                 </table>
             </div>
     
@@ -194,7 +233,7 @@
                 <div style="margin-right:10px;">Name</div>
                 <input v-model="element.name" style="width: 300px;margin-right:10px;"/>
 
-                <div style="margin-right:10px;">Lock image</div>
+                <div style="margin-right:10px;">Lock image (31px x 46px)</div>
                 <input v-model="element.image" style="width: 300px;margin-right:10px;"/>
                 <button @click="deleteLock(element)" style="margin-right:10px;">Delete</button>
                 <img :src="element.image"/>

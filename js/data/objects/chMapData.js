@@ -8,11 +8,11 @@ class ChMapData {
 
         this.fleetTypes = [];
         
-        this.bgmMap = 0;
-        this.bgmDN = 0;
-        this.bgmNN = 0;
-        this.bgmDB = 0;
-        this.bgmNB = 0;
+        this.bgmMap = "";
+        this.bgmDN = "";
+        this.bgmNN = "";
+        this.bgmDB = "";
+        this.bgmNB = "";
 
         this.bossnode = [];
 

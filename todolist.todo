@@ -4,3 +4,9 @@
 - FF, when making random event, add FF when exporting a node
 - Handle diff list per map ? (old maps didn't had diff 3)
 - Winter 17 E3 dissasebled saiun are not given on map unlock ?
+
+- event parse : 
+    - BGM
+    - Tags
+
+- import real event maps
