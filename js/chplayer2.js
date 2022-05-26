@@ -211,7 +211,9 @@ function chFindFile(world) {
 function chLoadFile(file) {
 	localStorage.ch_file = FILE = file;
 	var basic = JSON.parse(localStorage['ch_basic'+FILE]);
-	CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
+	let ch_data = localStorage['ch_data'+FILE];
+	if (ch_data[0] != '{') ch_data = LZString.decompressFromBase64(ch_data);
+	CHDATA = JSON.parse(ch_data);
 	for (var key in basic) CHDATA[key] = basic[key];
 	DIALOGSORT = -1;
 	InitUI();
@@ -2377,6 +2379,10 @@ function endMap() {
 				}
 			}
 		}
+		
+		if (CHDATA.sortie.gimmickProgressed) {
+			SM.play('done');
+		}
 
 		if (playSoundAfterSortie) {
 			SM.play('done');
@@ -3243,6 +3249,7 @@ function chUIUpdateResources() {
 }
 
 function chUIUpdateItems() {
+	if (!CHDATA.event.resources) return;
 	$('#resDamecon').text(CHDATA.event.resources.damecon || 0);
 	$('#resDamegami').text(CHDATA.event.resources.damegami || 0);
 	$('#resRation').text(CHDATA.event.resources.ration || 0);
