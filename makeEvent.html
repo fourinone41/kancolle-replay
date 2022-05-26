@@ -109,6 +109,16 @@
                         <td>Allowed fleets</td>
                         <td><multi-checkboxes-editor :data-source="mapData.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
                     </tr>
+                    
+                    <tr>
+                        <td>Gives lock</td>
+                        <td><vcomboboxeditor :data-source="mapData" :item-list="locksItemSource" data-field="giveLock"></vcomboboxeditor></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Checks lock</td>
+                        <td><multi-checkboxes-editor :data-source="mapData.checkLock" :item-list="locksItemSource"></multi-checkboxes-editor></td>
+                    </tr>
     
                 </table>
 
@@ -266,6 +276,7 @@
 <script src="js/data/eventEditor/components/FleetEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
 <script src="js/data/eventEditor/components/MultiCheckboxesEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ComboBoxEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/MapEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EventEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>

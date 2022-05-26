@@ -14,13 +14,16 @@ class ChMapData {
         this.bgmDB = "";
         this.bgmNB = "";
 
-        this.bossnode = [];
+        this.bossnode = []; // --- todo => computed
 
-        this.overrideBGM = {};
+        this.overrideBGM = {}; // --- Ignored
 
-        this.giveLock = [];
-        this.checkLock = [];
-        this.lockSpecial = false;
+        this.giveLock = ""; 
+        this.checkLock = []; 
+
+        this.lockSpecial = false; // --- Todo => new model with startNode[] property
+        this.giveLockSpecial = []; // --- Todo => new model with startNode[] property
+        this.checkLockSpecial = []; // --- Todo => new model with startNode[] property
 
         this.lbas = 0;
         this.lbasSortie = 0;

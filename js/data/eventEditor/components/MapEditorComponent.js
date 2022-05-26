@@ -15,6 +15,22 @@ const MapEditorComponent = {
 
             return fleets;
         },
+
+        locksItemSource () {
+            const locks = [];
+            
+            for (const lock of this.eventData.locksData) {
+
+                const newLock = {
+                    display: lock.name,
+                    key: lock.name
+                }
+
+                locks.push(newLock);
+            }
+
+            return locks;
+        }
     },
 
     methods: {

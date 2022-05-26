@@ -86,5 +86,6 @@ Vue.createApp({
 .component('MapSelection', MapSelectionComponent)
 .component('MapEditor', MapEditorComponent)
 .component('EventEditor', EventEditorComponent)
+.component('vcomboboxeditor', ComboBoxEditorComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');
