@@ -1410,6 +1410,7 @@ MAPDATA[52] =
 						x: 421,
 						y: 199,
 						distance: 3,
+						hidden: 1,
 						routeS: ['M','S1']
 					},
 					'M': {
