@@ -119,6 +119,16 @@
                         <td>Checks lock</td>
                         <td><multi-checkboxes-editor :data-source="mapData.checkLock" :item-list="locksItemSource"></multi-checkboxes-editor></td>
                     </tr>
+
+                    <tr>
+                        <td>Available LBAS</td>
+                        <td><input type="number" min="0" max="3" v-model="mapData.lbas"/></td>
+                    </tr>
+
+                    <tr>
+                        <td>Available LBAS to sortie</td>
+                        <td><input type="number" min="0" max="3" v-model="mapData.lbasSortie"/></td>
+                    </tr>
     
                 </table>
 

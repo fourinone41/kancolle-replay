@@ -30,6 +30,10 @@ const MapEditorComponent = {
             }
 
             return locks;
+        },
+
+        nodeList () {
+            return Object.keys(this.mapData.nodes);
         }
     },
 

@@ -14,7 +14,7 @@ const ComboBoxEditorComponent = {
             <option disabled value=""> - </option>
             <option v-for="element in this.itemList" v-bind:value="element.key">
                 {{element.display}}
-            </div>
+            </option>
         </select>
     
     `
