@@ -61,7 +61,7 @@ const EventEditorComponent = {
         addLock() {
             this.eventData.locksData.push({
                 image: "",
-                key: "",
+                name: "",
             });
         },
 

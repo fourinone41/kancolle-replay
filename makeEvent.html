@@ -60,7 +60,7 @@
 <body>
     <div id="eventEditor">
 
-        <map-selection :maps="eventData.maps" @add-map="addMap" @element-changed="elementChanged"></map-selection>
+        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged"></map-selection>
 
         <div v-if="isMapSelected"><map-editor :map-data="selectedMap"></map-editor></div>
         <div v-else><event-editor :event-data="eventData"></event-settings></div>
@@ -151,6 +151,9 @@
             </div>
             <div v-for="(element, index) in eventData.locksData" :key="index" style="display: flex; align-items: center;">
                 
+                <div style="margin-right:10px;">Name</div>
+                <input v-model="element.name" style="width: 300px;margin-right:10px;"/>
+
                 <div style="margin-right:10px;">Lock image</div>
                 <input v-model="element.image" style="width: 300px;margin-right:10px;"/>
                 <button @click="deleteLock(element)" style="margin-right:10px;">Delete</button>

@@ -917,3 +917,31 @@ MAPDATA[97].constructPaths = function (map) {
 
     return paths;
 }
+
+MAPDATA[97].ConvertMapEditorFormatToSimulatorFormat = function (eventData) {
+    /*const objectToExport = {};
+
+    for (const property in eventData) {
+        switch (property) {        
+            default:
+                objectToExport[property] = eventData[property];
+                break;
+        }
+    }*/
+    
+    return eventData;
+}
+
+MAPDATA[97].ConvertSimulatorFormatToMapEditorFormat = function (eventData) {
+    /*const objectToExport = {};
+
+    for (const property in eventData) {
+        switch (property) {        
+            default:
+                objectToExport[property] = eventData[property];
+                break;
+        }
+    }*/
+    
+    return eventData;
+}

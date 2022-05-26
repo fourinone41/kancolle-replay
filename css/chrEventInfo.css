@@ -5,9 +5,11 @@ body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
-div#mapButtons {
+div#mapButtons{
     display: flex;
     justify-content: space-around;
+    background-color: #3c3c3c;
+    color: rgb(235, 235, 235) !important;
 }
 
 .mapButton {
