@@ -136,7 +136,7 @@ function chRandomizeMap(MAPNUM) {
         }
     }
 
-    return possible_maps[Math.floor(Math.random()*possible_maps.length)];
+    return {world: '52'};//possible_maps[Math.floor(Math.random()*possible_maps.length)];
 }
 
 function chRandomizeMaps() {
@@ -185,7 +185,7 @@ function chRerollMap() {
     InitUI();
 }
 
-const DISABLE_RANDO = false;
+const DISABLE_RANDO = true;
 
 function chRandomizeCompsFromMapList(mapList) {
     let comps = {};

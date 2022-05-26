@@ -249,7 +249,17 @@ let ChGimmickParameters = {
     /**
      * @type {number} Part to clear to check gimmick of PartClear type
      */
-    partToClear: null
+    partToClear: null,
+
+	/**
+	 *  @type {string} Forced node id (used for standard maps)
+	 */
+	key: '',
+
+	/**
+	 * @type {string} Rank to acheive, use ranksRequiredPerDiff if you need to set rank per diff
+	 */
+	rank: ''
 }
 
 
@@ -269,11 +279,13 @@ function ChGimmick(parameters) {
 
     this.mapPartNumber = parameters.mapPartNumber;
 
-    this.id = `E${this.mapnum}-${this.node}-${parameters.type}`
+    this.id = `E${this.mapnum}-${this.node}-${parameters.type}`;
+	if (parameters.key) this.id += `-${parameters.key}`;
 
     this.timesRequiredPerDiff = parameters.timesRequiredPerDiff;
 
     this.ranksRequiredPerDiff = parameters.ranksRequiredPerDiff;
+	if (parameters.rank) this.ranksRequiredPerDiff = { 4: parameters.rank, 1: parameters.rank, 2: parameters.rank, 3: parameters.rank };
 
     this.routeUnlockRequired = parameters.routeUnlockRequired;
 
