@@ -2,6 +2,10 @@ const MapEditorComponent = {
     props: ['mapData', 'eventData'],
     emits: ['mapDeleted'],
 
+    data: () => ({
+        currentTab: 'mapSettings'
+    }),
+
     computed: {
         fleetsItemSource () {
             const fleets = [];
@@ -31,10 +35,6 @@ const MapEditorComponent = {
 
             return locks;
         },
-
-        nodeList () {
-            return Object.keys(this.mapData.nodes);
-        }
     },
 
     methods: {
@@ -54,8 +54,16 @@ const MapEditorComponent = {
             COMMON.SOUND_MANAGER.playBGM(bgm, 1, true);
         },
 
-        stopBGM(bgm) {
+        stopBGM() {
             COMMON.SOUND_MANAGER.stopBGM();
+        },
+
+        changeTab(tabName) {
+            return this.currentTab = tabName;
+        },
+        
+        selectedTab(tabName) {
+            return tabName == this.currentTab;
         },
     },
 

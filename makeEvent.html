@@ -52,6 +52,7 @@
     
     <script src="js/data/objects/chMapData.js"></script>
     <script src="js/data/objects/chEventData.js"></script>
+    <script src="js/data/objects/chNodeData.js"></script>
 
     <script src="js/data/eventEditor/common.js"></script>
 	<script src="js/vue.global.dev.js"></script>
@@ -71,105 +72,118 @@
     </div>
 
     <template id="map-editor">
+
         <div class="map-editor-groups">
-            <div class="editor-group">  
-                <button @click="deleteMap">Delete map</button>
-                <div class="group-title">{{mapData.name}}</div>
 
-                <table>
+            <div class="map-editor-left-group">  
+                <div class="mapButtons">
+                    <div class="mapButton">{{mapData.name}}</div>
+                    <div class="mapButton" @click="changeTab('mapSettings')">Map settings</div>
+                    <div class="mapButton" @click="changeTab('nodes')">Nodes</div>
+                    <div class="mapButton" @click="deleteMap">Delete map</div>
+                </div>
+
+                <div v-if="selectedTab('mapSettings')" class="map-settings editor-group">
+                    <table>
     
-                    <tr>
-                        <td>Map name</td>
-                        <td><input v-model="mapData.nameT" name="nameT"/></td>
-                    </tr>
+                        <tr>
+                            <td>Map name</td>
+                            <td><input v-model="mapData.nameT" name="nameT"/></td>
+                        </tr>
+        
+                        <tr>
+                            <td>Image to display on map selection</td>
+                            <td><input v-model="mapData.mapPreviewImage" style="width: 300px;"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><img :src="mapData.mapPreviewImage"/></td>
+                        </tr>
+        
+                        <tr>
+                            <td>Map image (Width 662px)</td>
+                            <td><input v-model="mapData.mapImage" style="width: 300px;"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">The map should be 768x435</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Paths to unlock must NOT be visible on the map</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Do not place air nodes, they will be added by the event simulator</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Allowed fleets</td>
+                            <td><multi-checkboxes-editor :data-source="mapData.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Gives lock</td>
+                            <td><vcomboboxeditor :data-source="mapData" :item-list="locksItemSource" data-field="giveLock"></vcomboboxeditor></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Checks lock</td>
+                            <td><multi-checkboxes-editor :data-source="mapData.checkLock" :item-list="locksItemSource"></multi-checkboxes-editor></td>
+                        </tr>
     
-                    <tr>
-                        <td>Image to display on map selection</td>
-                        <td><input v-model="mapData.mapPreviewImage" style="width: 300px;"/></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><img :src="mapData.mapPreviewImage"/></td>
-                    </tr>
+                        <tr>
+                            <td>Available LBAS</td>
+                            <td><input type="number" min="0" max="3" v-model="mapData.lbas"/></td>
+                        </tr>
     
-                    <tr>
-                        <td>Map image (Width 662px)</td>
-                        <td><input v-model="mapData.mapImage" style="width: 300px;"/></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">The map should be 768x435</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Paths to unlock must NOT be visible on the map</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Do not place air nodes, they will be added by the event simulator</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Allowed fleets</td>
-                        <td><multi-checkboxes-editor :data-source="mapData.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Gives lock</td>
-                        <td><vcomboboxeditor :data-source="mapData" :item-list="locksItemSource" data-field="giveLock"></vcomboboxeditor></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Checks lock</td>
-                        <td><multi-checkboxes-editor :data-source="mapData.checkLock" :item-list="locksItemSource"></multi-checkboxes-editor></td>
-                    </tr>
-
-                    <tr>
-                        <td>Available LBAS</td>
-                        <td><input type="number" min="0" max="3" v-model="mapData.lbas"/></td>
-                    </tr>
-
-                    <tr>
-                        <td>Available LBAS to sortie</td>
-                        <td><input type="number" min="0" max="3" v-model="mapData.lbasSortie"/></td>
-                    </tr>
+                        <tr>
+                            <td>Available LBAS to sortie</td>
+                            <td><input type="number" min="0" max="3" v-model="mapData.lbasSortie"/></td>
+                        </tr>
+        
+                    </table>
     
-                </table>
+                    <div class="group-title">BGMs</div>
+    
+                    <table>
+                        <tr>
+                            <td>Map BGM</td>
+                            <td><input v-model="mapData.bgmMap" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmMap)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Normal battle BGM (day)</td>
+                            <td><input v-model="mapData.bgmDN" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmDN)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Normal battle BGM (night)</td>
+                            <td><input v-model="mapData.bgmNN" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmNN)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Boss battle BGM (day)</td>
+                            <td><input v-model="mapData.bgmDB" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmDB)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Boss battle BGM (night)</td>
+                            <td><input v-model="mapData.bgmNB" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmNB)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                    </table>
+                </div>
 
-                <div class="group-title">BGMs</div>
-
-                <table>
-                    <tr>
-                        <td>Map BGM</td>
-                        <td><input v-model="mapData.bgmMap" /></td>
-                        <td><button class="play-bgm" @click="playBGM(mapData.bgmMap)">Play</button></td>
-                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Normal battle BGM (day)</td>
-                        <td><input v-model="mapData.bgmDN" /></td>
-                        <td><button class="play-bgm" @click="playBGM(mapData.bgmDN)">Play</button></td>
-                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Normal battle BGM (night)</td>
-                        <td><input v-model="mapData.bgmNN" /></td>
-                        <td><button class="play-bgm" @click="playBGM(mapData.bgmNN)">Play</button></td>
-                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Boss battle BGM (day)</td>
-                        <td><input v-model="mapData.bgmDB" /></td>
-                        <td><button class="play-bgm" @click="playBGM(mapData.bgmDB)">Play</button></td>
-                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
-                    </tr>
-                    
-                    <tr>
-                        <td>Boss battle BGM (night)</td>
-                        <td><input v-model="mapData.bgmNB" /></td>
-                        <td><button class="play-bgm" @click="playBGM(mapData.bgmNB)">Play</button></td>
-                        <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
-                    </tr>
-                </table>
+                <div v-if="selectedTab('nodes')" class="map-settings">
+                    <vnodelist :map-data="mapData" :event-data="eventData"></vnodelist>
+                </div>
+                
             </div>
     
     
@@ -288,6 +302,8 @@
 <script src="js/data/eventEditor/components/MultiCheckboxesEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/ComboBoxEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/MapEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/NodeListComponent.js"></script>
+<script src="js/data/eventEditor/components/NodeComponent.js"></script>
 <script src="js/data/eventEditor/components/EventEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
