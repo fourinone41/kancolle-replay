@@ -62,7 +62,7 @@
 <body>
     <div id="eventEditor">
 
-        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged"></map-selection>
+        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber"></map-selection>
 
         <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted"></map-editor></div>
         <div v-else><event-editor :event-data="eventData"></event-settings></div>
@@ -78,8 +78,8 @@
             <div class="map-editor-left-group">  
                 <div class="mapButtons">
                     <div class="mapButton">{{mapData.name}}</div>
-                    <div class="mapButton" @click="changeTab('mapSettings')">Map settings</div>
-                    <div class="mapButton" @click="changeTab('nodes')">Nodes</div>
+                    <div class="mapButton" @click="changeTab('mapSettings')" :class="{ mapButtonSelected: selectedTab('mapSettings')}">Map settings</div>
+                    <div class="mapButton" @click="changeTab('nodes')" :class="{ mapButtonSelected: selectedTab('nodes')}">Nodes</div>
                     <div class="mapButton" @click="deleteMap">Delete map</div>
                 </div>
 

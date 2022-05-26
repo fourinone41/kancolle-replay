@@ -1,10 +1,10 @@
 const MapSelectionComponent = {
-    props: ['eventData'],
+    props: ['eventData', 'selectedMap'],
     emits: ['addMap', 'elementChanged'],
 
     data() {return {
         file: null,
-        input: null
+        input: null,
     }},
     
     methods: {
@@ -65,7 +65,11 @@ const MapSelectionComponent = {
             });
             
             this.input.dispatchEvent(event)
-          }
+        },
+
+        isSelectedMap(index) {
+            return this.selectedMap == index;
+        }
     },
 
     mounted() {
@@ -79,9 +83,9 @@ const MapSelectionComponent = {
             <input type="file" v-on:change="fileChanged" id="importFile" />
             <div class="mapButton" @click="showUpload">Import</div>
             <div class="mapButton" @click="exportEventData">Export</div>
-            <div class="mapButton" @click="mapSelectionChanged(0)">Event settings</div>
+            <div class="mapButton" @click="mapSelectionChanged(0)" :class="{ mapButtonSelected: isSelectedMap(0)}">Event settings</div>
 
-            <div class="mapButton" v-for="(map, index) in eventData.maps" :key="index">
+            <div class="mapButton" v-for="(map, index) in eventData.maps" :key="index" :class="{ mapButtonSelected: isSelectedMap(index)}">
                 <div @click="mapSelectionChanged(index)">{{map.name}}</div>
             </div>
 

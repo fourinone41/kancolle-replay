@@ -8,7 +8,7 @@
     width: 100%;
 }
 
-.editor-group {
+.map-editor-groups .editor-group {
     overflow-y: scroll;
     width: 100%;
 }
@@ -25,4 +25,8 @@
 select.mapButton  {
     color: white;
     border-width: 0px;
+}
+
+.mapButton.mapButtonSelected {
+    background-color: #979797;
 }
