@@ -13,8 +13,6 @@ Vue.createApp({
   },
 
   mounted() {
-      //this.eventData = MAPDATA[50];
-
       if (localStorage.getItem("event_editor_current_event")) this.eventData = JSON.parse(localStorage.getItem("event_editor_current_event"));
 
       window.onbeforeunload = () => {
@@ -40,6 +38,28 @@ Vue.createApp({
 
         if (!eventSettingClicked) this.selectedMap = elementData;
     },
+
+    onMapDeleted() {
+      this.elementChanged(null, true);
+
+      this.recomputeMapsNumbers();
+    },
+
+    recomputeMapsNumbers() {
+      // --- recompute map numbers
+      const maps = {};
+
+      let count = 0;
+
+      for (const mapKey in this.eventData.maps) {
+        ++count;
+
+        maps[count] = this.eventData.maps[mapKey];
+        maps[count].name = `E${count}`;
+      }
+
+      this.eventData.maps = maps;
+    }
 },
 })
 .component('vmodal', ModalComponent)
