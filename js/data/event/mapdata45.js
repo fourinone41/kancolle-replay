@@ -1401,7 +1401,7 @@ var MAPDATA45 = {
 						routeC: function(ships) {
 							if (!CHDATA.fleets.combined || CHDATA.fleets.combined == 3) return 'I';
 							if (ships.speed <= 5) return 'G';
-							if (ships.c.aCV) return 'G';
+							if (ships.c.CV + ships.c.CVB) return 'G';
 							if (ships.c.aCV + ships.c.aBB >= 4) return 'G';
 							return 'I';
 						}

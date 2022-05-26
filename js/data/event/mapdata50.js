@@ -647,6 +647,7 @@ MAPDATA[50] =
 							if (ships.DD + ships.DE < 2) return 'A';
 							if (ships.CL <= 0) return 'A';
 							if (ships.speed >= 10) return 'D';
+							let num = [1,2,3,0][getDiff()-1];
 							if (CHDATA.sortie.numHistorical >= num) return 'D';
 							return 'A';
 						}
@@ -5332,7 +5333,7 @@ MAPDATA[50] =
 								}
 							}
 							for (let ship of FLEETS2[0].combinedWith.ships) {
-								if (ship.mid == 1951 || ship.mid == 1952) ship.TACC = 50;
+								if (ship.mid == 1951 || ship.mid == 1952) ship.TACC = 25;
 							}
 						},
 						compDiff: {

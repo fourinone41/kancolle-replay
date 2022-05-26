@@ -181,7 +181,9 @@ function chFindFile(world) {
 function chLoadFile(file) {
 	localStorage.ch_file = FILE = file;
 	var basic = JSON.parse(localStorage['ch_basic'+FILE]);
-	CHDATA = JSON.parse(localStorage['ch_data'+FILE]);
+	let ch_data = localStorage['ch_data'+FILE];
+	if (ch_data[0] != '{') ch_data = LZString.decompressFromBase64(ch_data);
+	CHDATA = JSON.parse(ch_data);
 	for (var key in basic) CHDATA[key] = basic[key];
 	DIALOGSORT = -1;
 	InitUI();
@@ -204,6 +206,10 @@ stage.addChild(mapShutterTop); stage.addChild(mapShutterBottom);
 var map = new PIXI.Container();
 stage.addChild(map);
 var mapnodes = {};
+
+var mapAirBase = PIXI.Sprite.fromImage('assets/maps/airbase.png');
+mapAirBase.pivot.set(13);
+stage.addChild(mapAirBase);
 
 var mapshipS = PIXI.Sprite.fromImage('assets/maps/ship.png');
 mapshipS.defpivotx = 27; mapshipS.defpivoty = 27;
@@ -428,7 +434,7 @@ function chResetMapSpritePos() {
 	bottombar.position.set(0,387);
 	bcompass.pivot.set(150,150); bcompass.rotation = Math.PI/4;
 	bcompass.position.set(35,445);
-	map.alpha = mapship.alpha = bcompass.alpha = bneedle.alpha = bottombar.alpha = 1;
+	map.alpha = mapship.alpha = bcompass.alpha = bneedle.alpha = bottombar.alpha = mapAirBase.alpha = 1;
 	for (var letter in mapnodes) mapnodes[letter].alpha = 1;
 	bneedle.pivot.set(14,101); bneedle.rotation = Math.PI/4;
 	bneedle.position.set(35,445);
@@ -609,6 +615,7 @@ function mapBattleNode(ship,letter) {
 				bcompass.alpha -= .025;
 				bneedle.alpha -= .025;
 				mapship.alpha -= .025;
+				mapAirBase.alpha -= .025;
 				bcompass.x -= 4;
 				bneedle.x -= 4;
 				bcompass.rotation -= .05;
@@ -1098,6 +1105,12 @@ function chLoadMap(mapnum) {
 		}
 	}
 	
+	mapAirBase.visible = false;
+	if (MAPDATA[WORLD].maps[MAPNUM].lbX) {
+		mapAirBase.visible = true;
+		mapAirBase.position.set(MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX, MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY);
+	}
+	
 	chResetMapSpritePos();
 }
 
@@ -1135,6 +1148,7 @@ function mapPhase(first) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
 			}
+			ChGimmickList.updateAll({ node: curletter });
 		}
 		if (curnode.dropoff) {
 			if (!MAPDATA[WORLD].maps[MAPNUM].currentBoss || MAPDATA[WORLD].maps[MAPNUM].currentBoss == curletter) {
@@ -1292,7 +1306,9 @@ function lbSelectPhase() {
 		}
 		if (num <= 3) {
 			for (var i=0; i<areas.length; i++) {
-				areas[i].interactive = (MAPDATA[WORLD].maps[MAPNUM].nodes[areas[i].letter].distance <= getLBASRange(CHDATA.ships['z'+currentBase]));
+				let n = MAPDATA[WORLD].maps[MAPNUM].nodes[areas[i].letter];
+				let dist = Array.isArray(n.distance) ? n.distance[MAPDATA[WORLD].maps[MAPNUM].lbPart-1] : n.distance;
+				areas[i].interactive = (dist <= getLBASRange(CHDATA.ships['z'+currentBase]));
 			}
 			for (var i=0; i<crosshairs.length; i++) {
 				recycle(crosshairs[i]);
@@ -1337,7 +1353,9 @@ function lbSelectPhase() {
 		currentNum = 0;
 	
 		for (var i=0; i<areas.length; i++) {
-			areas[i].interactive = (MAPDATA[WORLD].maps[MAPNUM].nodes[areas[i].letter].distance <= getLBASRange(CHDATA.ships['z'+currentBase]));
+			let n = MAPDATA[WORLD].maps[MAPNUM].nodes[areas[i].letter];
+			let dist = Array.isArray(n.distance) ? n.distance[MAPDATA[WORLD].maps[MAPNUM].lbPart-1] : n.distance;
+			areas[i].interactive = (dist <= getLBASRange(CHDATA.ships['z'+currentBase]));
 		}
 		messageCancel.visible = false;
 		for (var i=0; i<crosshairs.length; i++) {
@@ -1359,7 +1377,9 @@ function lbSelectPhase() {
 		area.pivot.set(10);
 		area.alpha = 0;
 		area.buttonMode = true;
-		area.interactive = (MAPDATA[WORLD].maps[MAPNUM].nodes[letter].distance <= getLBASRange(CHDATA.ships['z'+currentBase]));
+		let n = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
+		let dist = Array.isArray(n.distance) ? n.distance[MAPDATA[WORLD].maps[MAPNUM].lbPart-1] : n.distance;
+		area.interactive = (dist <= getLBASRange(CHDATA.ships['z'+currentBase]));
 		found = found || area.interactive;
 		area.position.set(node.x+MAPOFFX,node.y+MAPOFFY);
 		area.letter = letter;
@@ -1582,28 +1602,36 @@ function prepBattle(letter) {
 		FLEETS2[1].formation = ALLFORMATIONS[compd.f+'E'];
 	}
 	
-	let friendFleet = null;
+	let friendFleets = {};
 	if (mapdata.friendFleetWaves) {
 		let waveNum = CHDATA.fleets.ffWave || Math.max(...Object.keys(mapdata.friendFleetWaves));
 		for (let key in mapdata.friendFleetWaves[waveNum]) {
 			mapdata[key] = mapdata.friendFleetWaves[waveNum][key];
 		}
 	}
+	
+	let getFriendFleet = function(obj) {
+		let friendFleets = obj.friendFleet;
+		let friendFleetsS = (CHDATA.fleets.ff == 2)? (obj.friendFleetSX || obj.friendFleetS) : null;
+		return chLoadFriendFleet(chChooseFriendFleet(friendFleets,friendFleetsS,!!obj.friendFleetSX));
+	};
 	if (mapdata.friendFleet && CHDATA.fleets.ff !== 0) {
-		let friendFleets = mapdata.friendFleet;
-		let friendFleetsS = (CHDATA.fleets.ff == 2)? (mapdata.friendFleetSX || mapdata.friendFleetS) : null;
-		friendFleet = chLoadFriendFleet(chChooseFriendFleet(friendFleets,friendFleetsS,!!mapdata.friendFleetSX));
-		CHDATA.sortie.fleetFriend = friendFleet;
-		console.log(friendFleet);
+		friendFleets.night = CHDATA.sortie.fleetFriend = getFriendFleet(mapdata);
 	}
+	if (mapdata.friendFleetAir && CHDATA.fleets.ff !== 0) {
+		friendFleets.air = CHDATA.sortie.fleetFriendAir = getFriendFleet(mapdata.friendFleetAir);
+	}
+	console.log(friendFleets);
 	
 	if (mapdata.setupSpecial) {
 		mapdata.setupSpecial(); //not reverted until sortie end
 	}
 	
 	if (mapdata.debuffAmount) {
-		var debuffCheck = MAPDATA[WORLD].maps[MAPNUM].debuffCheck;
-		if (debuffCheck && debuffCheck(CHDATA.event.maps[MAPNUM].debuff)) {
+		let debuffed = false;
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffCheck) debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffCheck(CHDATA.event.maps[MAPNUM].debuff);
+		if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) debuffed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.check();
+		if (debuffed) {
 			if (typeof mapdata.debuffAmount === 'object') {
 				for (var i=0; i<FLEETS2[0].ships.length; i++) {
 					var ship = FLEETS2[0].ships[i];
@@ -1730,11 +1758,11 @@ function prepBattle(letter) {
 	} else if (mapdata.nightToDay2) {
 		res = simNightFirstCombined(FLEETS1[0],FLEETS2[0],supportfleet,LBASwaves,BAPI);
 	} else if (compd.ce) {
-		if (CHDATA.fleets.combined) res = sim12vs12(CHDATA.fleets.combined,FLEETS1[0],FLEETS1[1],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleet);
-		else res = sim6vs12(FLEETS1[0],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleet);
+		if (CHDATA.fleets.combined) res = sim12vs12(CHDATA.fleets.combined,FLEETS1[0],FLEETS1[1],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleets);
+		else res = sim6vs12(FLEETS1[0],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleets);
 	} else {
-		if (CHDATA.fleets.combined) res = simCombined(CHDATA.fleets.combined,FLEETS1[0],FLEETS1[1],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleet);
-		else res = sim(FLEETS1[0],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleet);
+		if (CHDATA.fleets.combined) res = simCombined(CHDATA.fleets.combined,FLEETS1[0],FLEETS1[1],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleets);
+		else res = sim(FLEETS1[0],FLEETS2[0],supportfleet,LBASwaves,doNB,NBonly,aironly,landbomb,false,BAPI,true,friendFleets);
 	}
 	if (FLEETS2[0].ships[0].debuff) {
 		if (NBonly) BAPI.yasen.api_boss_damaged = 1;
@@ -1761,6 +1789,29 @@ function prepBattle(letter) {
 	}
 	CHAPI.battles.push(BAPI);
 	$('#code').val(JSON.stringify(CHAPI)); //remove?
+	
+	console.log('BONUS MOD:');
+	for (let ship of getAllShips(true)) {
+		let modDmg = 1, modAcc = 1, modEv = 1;
+		if (ship.bonusSpecial) {
+			for (let bonus of ship.bonusSpecial) {
+				if (!bonus.on) modDmg *= bonus.mod;
+			}
+		}
+		if (ship.bonusSpecialAcc) {
+			for (let bonus of ship.bonusSpecialAcc) {
+				if (!bonus.on) modAcc *= bonus.mod;
+			}
+		}
+		if (ship.bonusSpecialEv) {
+			for (let bonus of ship.bonusSpecialEv) {
+				if (!bonus.on) modEv *= bonus.mod;
+			}
+		}
+		modDmg *= getBonusSpecialPlane(ship);
+		console.log(ship.name + ': ' + modDmg + ' ' + modAcc + ' ' + modEv);
+	}
+	
 	
 	res.NBonly = NBonly;
 	res.landbomb = landbomb;
@@ -1905,7 +1956,8 @@ function endMap() {
 		for (var mapnum in MAPDATA[WORLD].maps) {
 			if (mapnum < MAPNUM) continue;
 			if (mapnum > CHDATA.event.unlocked) continue;
-			if (MAPDATA[WORLD].maps[mapnum].debuffCheck && !CHDATA.event.maps[mapnum].debuffed) {
+			if (CHDATA.event.maps[mapnum].debuffed) continue;
+			if (MAPDATA[WORLD].maps[mapnum].debuffCheck) {
 				if (!CHDATA.event.maps[mapnum].debuff) CHDATA.event.maps[mapnum].debuff = {};
 				if (MAPDATA[WORLD].maps[mapnum].debuffCheck(CHDATA.event.maps[mapnum].debuff)) {
 					CHDATA.event.maps[mapnum].debuffed = true;
@@ -1913,6 +1965,16 @@ function endMap() {
 					alert('DEBUFF');
 				}
 			}
+			if (MAPDATA[WORLD].maps[mapnum].debuffRules) {
+				if (MAPDATA[WORLD].maps[mapnum].debuffRules.check()) {
+					CHDATA.event.maps[mapnum].debuffed = true;
+					alert('DEBUFF');
+				}
+			}
+		}
+		
+		if (CHDATA.sortie.gimmickProgressed) {
+			SM.play('done');
 		}
 		
 		chSave();
@@ -2039,6 +2101,8 @@ function shuttersPostbattle(noshutters) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].debuffGive(FLEETS2,FLEETS1);
 	}
+	ChGimmickList.updateAll({ node: curletter, rank: CHDATA.temp.rank, airState: FLEETS1[0].AS });
+	
 	FLEETS1[0].resetBattle();
 	if (CHDATA.fleets.combined) FLEETS1[1].resetBattle();
 	CHDATA.temp.done = true;
@@ -2061,6 +2125,7 @@ function shuttersPostbattle(noshutters) {
 			}
 		}
 		fleetFriend = null;
+		fleetFriendDay = {};
 		allfleets2 = [];
 		while (dots1.children.length) recycle(dots1.getChildAt(0));
 		while (dots2.children.length) recycle(dots2.getChildAt(0));
@@ -2853,6 +2918,7 @@ function getELoS33(fleet,coef,includeCombined) {
 	for (var i=0; i<ships.length; i++) {
 		var ship = CHDATA.ships[ships[i]];
 		if (!ship) continue;
+		if (CHDATA.sortie && FLEETS1[fleet-1] && FLEETS1[fleet-1].ships[i] && FLEETS1[fleet-1].ships[i].retreated) continue;
 		numShip++;
 		var shiplos = ship.LOS;
 		for (var j=0; j<ship.items.length; j++) {
@@ -2945,7 +3011,12 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 	for (var key in hiddenRoutes) {
 		key = parseInt(key);
 		if (CHDATA.event.maps[MAPNUM].routes.indexOf(key) != -1) continue; 
-		if (hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+		if (hiddenRoutes[key].unlock && hiddenRoutes[key].unlock(CHDATA.event.maps[MAPNUM].debuff || {})) {
+			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
+			return key;
+		}
+		
+		if (hiddenRoutes[key].unlockRules && hiddenRoutes[key].unlockRules.check()) {
 			if (!peekOnly) CHDATA.event.maps[MAPNUM].routes.push(key);
 			return key;
 		}
@@ -2965,6 +3036,7 @@ function mapEnemyRaid() {
 			bcompass.alpha -= .025;
 			bneedle.alpha -= .025;
 			mapship.alpha -= .025;
+			mapAirBase.alpha -= .025;
 			bcompass.x -= 4;
 			bneedle.x -= 4;
 			bcompass.rotation -= .05;
@@ -3034,6 +3106,7 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 		if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 		MAPDATA[WORLD].maps[MAPNUM].enemyRaid.debuffGive(airState,totalHPLost);
 	}
+	ChGimmickList.updateAll({ node: 'AB', airState: airState, totalHPLost: totalHPLost });
 	
 	CHAPI.battles.push(BAPI);
 	CHAPI.fleet1 = [];
@@ -3111,17 +3184,19 @@ function chChooseFriendFleet(friendFleets,friendFleetsStrong,strongExcludes) {
 		if (name == fleetDefault) continue;
 		let fleet = MAPDATA[WORLD].friendFleet[name];
 		let found = false;
-		for (let ship of fleet.ships) {
-			let mid = getBaseId(ship.mid);
-			for (let shipC of curShips) {
-				let midC = getBaseId(shipC.mid);
-				if (mid == midC) { found = true; break; }	
+		if (fleet) {
+			for (let ship of fleet.ships) {
+				let mid = getBaseId(ship.mid);
+				for (let shipC of curShips) {
+					let midC = getBaseId(shipC.mid);
+					if (mid == midC) { found = true; break; }	
+				}
+				if (found) break;
 			}
-			if (found) break;
 		}
 		if (!found) pool.push(name);
 	}
-	if (pool.length <= 0) return fleetDefault;
+	if (pool.length <= 0) return MAPDATA[WORLD].friendFleet[fleetDefault];
 	let nameC = pool[Math.floor(Math.random()*pool.length)];
 	return MAPDATA[WORLD].friendFleet[nameC];
 }

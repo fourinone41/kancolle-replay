@@ -27150,9 +27150,17 @@ var MAPDATA = {
 							if (CHDATA.temp.rank == 'S' || CHDATA.temp.rank == 'A' || CHDATA.temp.rank == 'B') CHDATA.event.maps[7].debuff.LB = 1;
 						},
 						routeC: function(ships) {
-							this.showLoSPlane = 'H';
+							this.showLoSPlane = null;
+							if (!CHDATA.event.maps[7].routes || CHDATA.event.maps[7].routes.indexOf(1) == -1) {
+								this.showNoCompass = true;
+								return 'P';
+							}
+							this.showNoCompass = false;
+							if (CHDATA.event.maps[7].routes.indexOf(2) != -1) {
+								this.showLoSPlane = 'H';
+							}
 							if (ships.speed <= 5 && ships.aBB + ships.escort.aBB >= 5) this.showLoSPlane = 'Q';
-							return this.showLoSPlane;
+							return this.showLoSPlane || 'P';
 						}
 					},
 					'M': {
@@ -27444,7 +27452,7 @@ var MAPDATA = {
 			1839: { AR: 305 },
 		},
 		historical: {
-			nagumo: [93,111,91,110,90, 78,79,86,85, 71,72, 114, 48,132,167,168,169,170,17,18,49],
+			nagumo: [83,111,91,110,90, 78,79,86,85, 71,72, 114, 48,132,167,168,169,170,17,18,49],
 			ozawa: [76,125,124, 69, 23, 479,9,32,33,10],
 			italians: [443,575, 449,448, 444, 441,442, 535],
 			kriegsmarine: [432, 171, 176, 174,175, 431],
@@ -30072,7 +30080,7 @@ var MAPDATA = {
 						},
 						compDiffF: {
 							3: ['Hard 5'],
-							2: ['Medium  5'],
+							2: ['Medium 5'],
 							1: ['Easy 4'],
 							4: ['Casual 3'],
 						},
@@ -30160,13 +30168,13 @@ var MAPDATA = {
 						},
 						compDiff: {
 							3: ['Hard 1'],
-							2: ['Medium  1'],
+							2: ['Medium 1'],
 							1: ['Easy 1','Easy 2'],
 							4: ['Casual 1'],
 						},
 						compDiffF: {
 							3: ['Hard 2'],
-							2: ['Medium  2'],
+							2: ['Medium 2'],
 							1: ['Easy 3'],
 							4: ['Casual 2'],
 						},
@@ -33379,7 +33387,7 @@ var MAPDATA = {
 								}
 							}
 							if (num <= 3 && numSlow <= 1) return 'X';
-							return 'K';
+							return 'W';
 						}
 					},
 					'A': {
@@ -33673,9 +33681,9 @@ var MAPDATA = {
 						},
 						routeC: function(ships) {
 							this.showLoSPlane = null;
-							if (ships.AV + ships.escort.AV <= 0) return 'Q';
+							if (ships.AV + ships.escort.AV <= 0) return 'O';
 							this.showLoSPlane = 'T';
-							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'Q' });
+							return checkELoS33(getELoS33(1,2,true),{ 67: 'T', 54: 'O' });
 						}
 					},
 					'R': {
@@ -34726,4 +34734,44 @@ function getAllShips(includeFF) {
 		ships = ships.concat(CHDATA.sortie.fleetFriend.ships);
 	}
 	return ships;
+}
+
+function chApplyBonus(bonuses) {
+	for (let ship of getAllShips(true)) {
+		let midBase = getBaseId(ship.mid);
+		for (let bonus of bonuses) {
+			if (bonus.types && !bonus.types.includes(ship.type)) continue;
+			if (bonus.ctypes && !bonus.ctypes.includes(ship.sclass)) continue;
+			if (bonus.idsBase && !bonus.idsBase.includes(midBase)) continue;
+			if (bonus.idsExact && !bonus.idsExact.includes(ship.mid)) continue;
+			
+			if (bonus.typesExclude && bonus.typesExclude.includes(ship.type)) continue;
+			if (bonus.ctypesExclude && bonus.ctypesExclude.includes(ship.sclass)) continue;
+			if (bonus.idsBaseExclude && bonus.idsBaseExclude.includes(midBase)) continue;
+			if (bonus.idsExactExclude && bonus.idsExactExclude.includes(ship.mid)) continue;
+			
+			if (bonus.reqEquipTypes && (bonus.reqEquipTypes.reduce((c,type) => (ship.equiptypes[type] || 0) + c, 0) < (bonus.reqEquipTypesNum || 1))) continue;
+			if (bonus.reqEquipIds && (bonus.reqEquipIds.reduce((c,id) => ship.equips.filter(eq => eq.mid == id).length + c, 0) < (bonus.reqEquipIdsNum || 1))) continue;
+			
+			for (let keys of [['dmg','bonusSpecial'],['acc','bonusSpecialAcc'],['ev','bonusSpecialEv']]) {
+				let keyBonus = keys[0], keyShip = keys[1];
+				if (bonus[keyBonus]) {
+					if (bonus[keyBonus] == -1) {
+						ship[keyShip] = null;
+						continue;
+					}
+					if (!ship[keyShip]) ship[keyShip] = [];
+					let obj = { mod: bonus[keyBonus] };
+					if (bonus.on) obj.on = bonus.on;
+					ship[keyShip].push(obj);
+				}
+			}
+		}
+	}
+}
+
+function chResetBonus() {
+	for (let ship of getAllShips(true)) {
+		ship.bonusSpecial = ship.bonusSpecialAcc = ship.bonusSpecialEv = null;
+	}
 }

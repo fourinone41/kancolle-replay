@@ -1079,7 +1079,7 @@ function chProcessKC3File2() {
 			}
 		}
 		
-		if (CHDATA.gears[eqid].ace >= 1) CHDATA.gears[eqid].ace = 7;
+		if (CHDATA.gears[eqid].ace >= 1 && eqd.type != LANDSCOUT) CHDATA.gears[eqid].ace = 7;
 	}
 	
 	if (MAPDATA[CHDATA.event.world].allowLBAS) {
@@ -1175,7 +1175,7 @@ function chSave() {
 	data.fleets = CHDATA.fleets;
 	data.presets = CHDATA.presets;
 	localStorage.setItem('ch_basic'+FILE,JSON.stringify(basic));
-	localStorage.setItem('ch_data'+FILE,JSON.stringify(data));
+	localStorage.setItem('ch_data'+FILE,LZString.compressToBase64(JSON.stringify(data)));
 	localStorage.setItem('ch_file',FILE);
 }
 
@@ -1397,7 +1397,8 @@ function chStart() {
 	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA;
 	MECHANICS.hayabusa65Buff = CHDATA.config.mechanics.softCapIncrease;
 	MECHANICS.eqBonus = CHDATA.config.mechanics.equipBonus;
-	MECHANICS.anchorageTorpNerf = false;//MAPDATA[WORLD].date >= MAPDATA[51].date;
+	MECHANICS.anchorageTorpNerf = MAPDATA[WORLD].date >= MAPDATA[51].date;
+	MECHANICS.aaci8Up = MECHANICS.installRevamp;
 	SIMCONSTS.shellDmgCap = 150;
 	SIMCONSTS.aswDmgCap = 100;
 	SIMCONSTS.torpedoDmgCap = 150;
@@ -1418,6 +1419,9 @@ function chStart() {
 		SIMCONSTS.airDmgCap = 170;
 		SIMCONSTS.supportDmgCap = 170;
 	}
+	SIMCONSTS.enableModSummerBB = WORLD >= 51;
+	SIMCONSTS.enableModSummerCA = WORLD >= 51;
+	SIMCONSTS.enableModFrenchBB = WORLD >= 51;
 	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
 	toggleDDCIBuff(MECHANICS.subFleetAttack);
 
@@ -1978,7 +1982,7 @@ function chLoadSortieInfo(mapnum) {
 	$('#srtTitle').html(title);
 	if (title.indexOf('<br>') != -1) $('#srtTitle').css('font-size','20px');
 	else $('#srtTitle').css('font-size','24px');
-	$('#srtMapImg').attr('src','assets/maps/'+world+'/'+mapnum+'m.png');
+	$('#srtMapImg').attr('src',mapdata.getMapBanner ? mapdata.getMapBanner() : 'assets/maps/'+world+'/'+mapnum+'m.png');
 	if (!unlocked) {
 		$('#srtMapImg').css('filter','blur(5px) grayscale(1)');
 		$('#srtMapImg').css('-webkit-filter','blur(5px) grayscale(1)');
