@@ -4,6 +4,7 @@ Vue.createApp({
     eventData: new ChEventData(),
 
     selectedMap: {},
+    selectedMapNumber: 0,
 
     isMapSelected: false,
   }),
@@ -14,9 +15,11 @@ Vue.createApp({
 
   mounted() {
       if (localStorage.getItem("event_editor_current_event")) this.eventData = JSON.parse(localStorage.getItem("event_editor_current_event"));
+      if (localStorage.getItem("event_editor_selected_map")) this.selectedMapNumber = parseInt(localStorage.getItem("event_editor_selected_map"));
 
       window.onbeforeunload = () => {
         localStorage.setItem("event_editor_current_event", JSON.stringify(this.eventData));
+        localStorage.setItem("event_editor_selected_map", this.selectedMapNumber);
       };
   },
   
@@ -31,8 +34,12 @@ Vue.createApp({
         this.eventData.maps[lastMap] = newMap; 
         
     },
+
+    elementChanged(mapNumber) {
+      this.selectedMapNumber = mapNumber;
+    },
         
-    elementChanged(elementData, eventSettingClicked) {
+    changeSelectedMap(elementData, eventSettingClicked) {
         
         this.isMapSelected = !eventSettingClicked;
 
@@ -40,7 +47,7 @@ Vue.createApp({
     },
 
     onMapDeleted() {
-      this.elementChanged(null, true);
+      this.selectedMapNumber = 0;
 
       this.recomputeMapsNumbers();
     },
@@ -60,7 +67,14 @@ Vue.createApp({
 
       this.eventData.maps = maps;
     }
-},
+  },
+
+  watch: {
+    selectedMapNumber() {
+      if (this.selectedMapNumber == 0) this.changeSelectedMap(null, true);
+      else this.changeSelectedMap(this.eventData.maps[this.selectedMapNumber], false);
+    }
+  }
 })
 .component('vmodal', ModalComponent)
 .component('vshipselector', ShipSelectorComponent)

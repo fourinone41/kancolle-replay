@@ -74,10 +74,20 @@
 		<div class="group-title">{{mapData.name}}</div>
         <div class="editor-group">    
             <table>
+
                 <tr>
                     <td>Map name</td>
                     <td><input v-model="mapData.nameT" name="nameT"/></td>
                 </tr>
+
+                <tr>
+                    <td>Image to display on map selection</td>
+                    <td><input v-model="mapData.mapPreviewImage" style="width: 300px;"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><img :src="mapData.mapPreviewImage"/></td>
+                </tr>
+
             </table>
         </div>
 	</template>

@@ -12,8 +12,8 @@ const MapSelectionComponent = {
             this.$emit('addMap')
         },
         
-        mapSelectionChanged(map, eventSettingClicked) {
-            this.$emit('elementChanged', map, eventSettingClicked);
+        mapSelectionChanged(mapNumber) {
+            this.$emit('elementChanged', mapNumber);
         },
 
         exportEventData() {
@@ -79,10 +79,10 @@ const MapSelectionComponent = {
             <input type="file" v-on:change="fileChanged" id="importFile" />
             <div class="mapButton" @click="showUpload">Import</div>
             <div class="mapButton" @click="exportEventData">Export</div>
-            <div class="mapButton" @click="mapSelectionChanged(null, true)">Event settings</div>
+            <div class="mapButton" @click="mapSelectionChanged(0)">Event settings</div>
 
-            <div class="mapButton" v-for="map in eventData.maps">
-                <div @click="mapSelectionChanged(map, false)">{{map.name}}</div>
+            <div class="mapButton" v-for="(map, index) in eventData.maps" :key="index">
+                <div @click="mapSelectionChanged(index)">{{map.name}}</div>
             </div>
 
             <div class="mapButton" @click="addMap">Add map</div>
