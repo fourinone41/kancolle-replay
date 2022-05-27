@@ -62,7 +62,7 @@ const NodeComponent = {
 
         
 
-    },
+    },    
 
     template: `
     
@@ -122,6 +122,10 @@ const NodeComponent = {
             <tr v-if="displayNodeTypeInfo">
                 <td>Anchor node ?</td>
                 <td><input v-model="nodeData.dropoff" type="checkbox" /></td>
+            </tr>
+
+            <tr>
+                <td cols="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
             </tr>
 
         </table>

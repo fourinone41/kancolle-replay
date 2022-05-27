@@ -89,5 +89,7 @@ Vue.createApp({
 .component('vcomboboxeditor', ComboBoxEditorComponent)
 .component('vnodelist', NodeListComponent)
 .component('vnode', NodeComponent)
+.component('vroutinglist', RoutingListComponent)
+.component('vrouting', RoutingComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');

@@ -1,12 +1,12 @@
 const ComboBoxEditorComponent = {
     props: ['dataSource', 'itemList', 'dataField'],
+    emits: ['changed'],
         
     computed: {
         
     },
 
     methods: {
-
     },
 
     template: `

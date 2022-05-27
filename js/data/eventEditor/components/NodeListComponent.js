@@ -35,6 +35,8 @@ const NodeListComponent = {
     watch: {
         currentNode() {
             this.$emit('nodeChanged', this.mapData.nodes[this.currentNode]);
+
+            if (!this.mapData.nodes[this.currentNode].rules) this.mapData.nodes[this.currentNode].rules = [];
         }
     },
 
