@@ -1,5 +1,6 @@
 const NodeListComponent = {
     props: ['eventData', 'mapData'],
+    emits: ['nodeChanged'],
         
     data: () => ({
         currentNode: 'Select a node',
@@ -19,6 +20,7 @@ const NodeListComponent = {
     methods: {
         addNode() {
             let nodeName = prompt("Node letter ?");
+            if (!nodeName) return;
 
             this.mapData.nodes[nodeName] = new ChNodeData();
 
@@ -27,6 +29,12 @@ const NodeListComponent = {
         
         deleteNode() {
             if (this.currentNode) delete this.mapData.nodes[this.currentNode];
+        }
+    },
+
+    watch: {
+        currentNode() {
+            this.$emit('nodeChanged', this.mapData.nodes[this.currentNode]);
         }
     },
 

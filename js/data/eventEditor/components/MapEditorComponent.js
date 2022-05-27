@@ -3,7 +3,15 @@ const MapEditorComponent = {
     emits: ['mapDeleted'],
 
     data: () => ({
-        currentTab: 'mapSettings'
+        currentTab: 'mapSettings',
+
+        mouseX: 0,
+        mouseY: 0,
+
+        /**
+         * Use getCurrentNode to access this property
+         */
+        _currentNode: null,
     }),
 
     computed: {
@@ -34,10 +42,28 @@ const MapEditorComponent = {
             }
 
             return locks;
-        },
+        }
     },
 
     methods: {
+        getCurrentNode() {
+            if (this.currentTab != 'nodes') return null;
+            return this._currentNode;
+        },
+
+        onMouseMoveOnMap (event) {
+            this.mouseX = event.pageX - event.target.offsetLeft;
+            this.mouseY = event.pageY - event.target.offsetTop;
+        },
+
+        onClickOnMap () {
+            const node = this.getCurrentNode();
+            if (!node) return;
+
+            node.x = this.mouseX;
+            node.y = this.mouseY;
+        },
+
         deleteMap () {
             if (confirm("Are you sure you want to delete this map ?")) {
                 for (const mapkey in this.eventData.maps) {
@@ -65,6 +91,10 @@ const MapEditorComponent = {
         selectedTab(tabName) {
             return tabName == this.currentTab;
         },
+
+        onNodeChanged(node) {
+            this._currentNode = node; 
+        }
     },
 
     template: document.getElementById('map-editor')

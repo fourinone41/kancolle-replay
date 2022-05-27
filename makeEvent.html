@@ -181,14 +181,15 @@
                 </div>
 
                 <div v-if="selectedTab('nodes')" class="map-settings">
-                    <vnodelist :map-data="mapData" :event-data="eventData"></vnodelist>
+                    <vnodelist :map-data="mapData" :event-data="eventData" @node-changed="onNodeChanged"></vnodelist>
                 </div>
                 
             </div>
     
     
             <div class="map-group"> 
-                <img :src="mapData.mapImage"/>
+                <img :src="mapData.mapImage" @mousemove="onMouseMoveOnMap" @click="onClickOnMap"/>
+                <br>X: {{mouseX}} <br> Y: {{mouseY}}
             </div>
         </div>
         

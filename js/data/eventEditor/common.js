@@ -79,5 +79,81 @@ var COMMON = {
 		{ key: 7, display: "Strike Force" },
 	],
 
+    NODE_TYPES: {
+
+        // --- Node type model
+        NODE_MODEL: {
+            type: 0,
+            ambush: false,
+            night2: false,
+            nightToDay2: false,
+            aironly: false,
+            raid: false,
+            resource: 0,
+            amount: null,
+            dropoff: false,
+        },
+
+        // --- Battle nodes
+        NORMAL_BATTLE_NODE: {
+            type: 1,
+        },
+        
+        AMBUSH_NODE: {
+            type: 1,
+            ambush: true,
+        },
+
+        // --- Night battle nodes
+        NIGHT_NODE: {
+            type: 1,
+            night2: true,
+        },
+
+        NIGHT_TO_DAY_NODE: {
+            type: 1,
+            nightToDay2: true,
+        },
+
+        // --- Air battle / air raid nodes
+        AIR_BATTLE_NODE: {
+            type: 1,
+            aironly: true,
+        },
+
+        AIR_RAID_NODE: {
+            type: 1,
+            raid: true,
+        },
+
+        // --- Empty nodes
+        START_POINT: {
+            type: 0,
+        },
+
+        EMPTY_NODE: {
+            type: 3,
+        },
+
+        // --- Ressource nodes
+        RESOURCE_GAIN_NODE: {
+            type: 2,
+            resource: 0,
+            amount: [0],
+        },
+
+        RESOURCE_LOSS_NODE: {
+            type: 4,
+            resource: 0,
+            amount: [0],
+        },
+
+        ANCHOR_RESOURCE_NODE: {
+            type: 2,
+            resource: 0,
+            dropoff: true,
+        },
+    },
+
 	SOUND_MANAGER: new SoundManager(),
 };
