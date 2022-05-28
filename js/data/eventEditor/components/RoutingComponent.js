@@ -11,6 +11,7 @@ const RoutingComponent = {
             { key: 'random', display: "Random routing" },
             { key: 'shipCount', display: "Number of ship in fleet routing" },
             { key: 'speed', display: "Fleet speed rule" },
+            { key: 'ifthenelse', display: "If A then B else C rule" },
         ],
 
         operatorList: [
@@ -58,6 +59,7 @@ const RoutingComponent = {
         getDestination() {
             let returnValue = ' -> ';
 
+            if (this.rule.type == "ifthenelse") return "";
             if (this.rule.type == "random") return "";
             if (this.rule.type == "fixed") return returnValue + this.rule.fixedNode;
 
@@ -65,11 +67,21 @@ const RoutingComponent = {
             if (this.rule.conditionFailedNode) returnValue += ' else ' + this.rule.conditionFailedNode;
 
             return returnValue;
+        },
+
+        initIfThenElse() {
+            if (!this.rule.ifthenelse) this.rule.ifthenelse = {};
+            if (!this.rule.ifthenelse.if) this.rule.ifthenelse.if = new ChRule();
+            if (!this.rule.ifthenelse.then) this.rule.ifthenelse.then = new ChRule();
+            if (!this.rule.ifthenelse.else) this.rule.ifthenelse.else = new ChRule();
         }
     },
 
     watch: {
-        
+        'rule.type'() {
+            // --- Init some data here
+            if (this.rule.type == "ifthenelse") this.initIfThenElse();
+        }
     },
 
     template: `
@@ -122,6 +134,21 @@ const RoutingComponent = {
                 <tr v-if="shouldEditorBeDisplayed('rules')">
                     <td>Rules</td>
                     <td colspan="3"><vroutinglist :rule-list="rule.rules" :map-data="mapData" :condition-checked-node="rule.conditionCheckedNode ? rule.conditionCheckedNode : true"></vroutinglist></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('ifthenelse')">
+                    <td>If</td>
+                    <td colspan="3"><vrouting :rule="rule.ifthenelse.if" :map-data="mapData"></vrouting></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('ifthenelse')">
+                    <td>Then</td>
+                    <td colspan="3"><vrouting :rule="rule.ifthenelse.then" :map-data="mapData"></vrouting></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('ifthenelse')">
+                    <td>Else</td>
+                    <td colspan="3"><vrouting :rule="rule.ifthenelse.else" :map-data="mapData"></vrouting></td>
                 </tr>
                 
                 <tr v-if="shouldEditorBeDisplayed('conditionCheckedNode')">
@@ -183,6 +210,10 @@ const RoutingComponent = {
             operator : true,
             conditionCheckedNode : true,
             conditionFailedNode : true,
+        },
+
+        ifthenelse: {
+            ifthenelse : true,
         },
     }
 }
