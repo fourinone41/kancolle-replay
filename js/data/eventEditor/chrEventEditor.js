@@ -17,6 +17,19 @@ Vue.createApp({
       if (localStorage.getItem("event_editor_current_event")) this.eventData = JSON.parse(localStorage.getItem("event_editor_current_event"));
       if (localStorage.getItem("event_editor_selected_map")) this.selectedMapNumber = parseInt(localStorage.getItem("event_editor_selected_map"));
 
+      // --- Load rules (to access its methods)
+      for (const mapNum in this.eventData.maps) {
+        for (const nodeKey in this.eventData.maps[mapNum].nodes) {
+          const nodeData = this.eventData.maps[mapNum].nodes[nodeKey];
+
+          try {
+            MAPDATA[97].loadNodeFromChData(nodeData);
+          } catch (error) {
+            console.debug(nodeData);
+          }
+        }
+      }
+
       window.onbeforeunload = () => {
         localStorage.setItem("event_editor_current_event", JSON.stringify(this.eventData));
         localStorage.setItem("event_editor_selected_map", this.selectedMapNumber);

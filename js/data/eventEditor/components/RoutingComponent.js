@@ -25,6 +25,8 @@ const RoutingComponent = {
 
         shipTypeList: COMMON.SHIP_TYPES,
 
+        isCollapsed: false,
+
     }),
 
     computed: {
@@ -41,6 +43,14 @@ const RoutingComponent = {
         shouldEditorBeDisplayed(propertyName) {
             if (!RoutingComponent.RULE_TYPE_EDITORS[this.rule.type]) return false;
             return !!RoutingComponent.RULE_TYPE_EDITORS[this.rule.type][propertyName];
+        },
+
+        getDestination() {
+            
+            if (this.rule.type == "fixed") return this.rule.fixedNode;
+
+            if (this.rule.conditionFailedNode) return this.rule.conditionCheckedNode + ' else ' + this.rule.conditionFailedNode;
+            return this.rule.conditionCheckedNode;            
         }
     },
 
@@ -51,7 +61,12 @@ const RoutingComponent = {
     template: `
         <button @click="deleteRule">Delete</button>    
 
-        <div class="editor-group rule-editor">
+        <button v-if="isCollapsed" @click="isCollapsed = false">Show rule</button>    
+        <button v-else @click="isCollapsed = true">Hide rule</button>    
+
+
+        <div v-if="isCollapsed" v-html="rule.getDescription() + ' -> ' + getDestination()"></div>
+        <div v-else class="editor-group rule-editor">
         
             <table>
 
