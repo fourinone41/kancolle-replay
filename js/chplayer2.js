@@ -1147,16 +1147,10 @@ function chLoadMap(mapnum) {
 		world = MAPDATA[world].maps[mapnum].world;
 	}
 	const mapPath = MAPDATA[world].maps[mapnum].mapImage ? MAPDATA[world].maps[mapnum].mapImage : 'assets/maps/'+world+'/'+mapnum+'.png';
+	
 	map.addChild(PIXI.Sprite.fromImage(mapPath));
-	/*const mapImage = document.createElement('img');
-	mapImage.src = mapPath;
 
-	mapImage.addEventListener("load", () => {
-		mapImage.crossOrigin = "*";
-		map.addChild(PIXI.Sprite.fromImage(mapImage));
-	}, false);
 
-*/
 	if (MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {
 		if (!CHDATA.event.maps[mapnum].routes) CHDATA.event.maps[mapnum].routes = [];
 		for (var key in MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {

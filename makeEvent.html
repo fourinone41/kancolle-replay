@@ -184,9 +184,20 @@
                     <button @click="addPart">Add part</button>
                     <div v-for="(part, key) in mapData.parts" :key="key">
                         <div>
-                            Boss node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="currentBoss"></vcomboboxeditor>
-
+                            <button @click="deletePart(key)">Delete</button>
                             <table>
+                                <tr>
+                                
+                                    <td>Boss node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="currentBoss"></vcomboboxeditor></td>
+
+                                </tr>
+                                
+                                <tr>
+                                
+                                    <td>Transport node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="transport" :can-be-null="true"></vcomboboxeditor></td>
+                                    
+                                </tr>
+
                                 <tr>
                                     <td>Map HP</td>
                                 </tr>
@@ -210,7 +221,32 @@
                                     <td>Hard</td>
                                     <td><input v-model="part.maphp[3][1]" type="number" /></td>
                                 </tr>
+                                
+                                <tr>
+                                    <td>Last dance HP</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Casual</td>
+                                    <td><input v-model="part.finalhp[4]" type="number" /></td>
+                                </tr>
+    
+                                <tr>
+                                    <td>Easy</td>
+                                    <td><input v-model="part.finalhp[1]" type="number" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Medium</td>
+                                    <td><input v-model="part.finalhp[2]" type="number" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Hard</td>
+                                    <td><input v-model="part.finalhp[3]" type="number" /></td>
+                                </tr>
                             </table>
+                            <br>
                         </div>
                     </div>
                 </div>

@@ -112,12 +112,16 @@ const MapEditorComponent = {
                   4: { 1: 0 },
                 },
                 finalhp: {
-                  3: 0,
-                  2: 0,
-                  1: 0,
-                  4: 0,
+                    3: 0,
+                    2: 0,
+                    1: 0,
+                    4: 0,
                 },
             };
+        },
+
+        deletePart(partNumber) {
+            delete this.mapData.parts[partNumber];
         }
     },
 
