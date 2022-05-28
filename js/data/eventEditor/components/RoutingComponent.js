@@ -9,6 +9,8 @@ const RoutingComponent = {
             { key: 'shipType', display: "Ship type routing" },
             { key: 'multiRules', display: "Rule group" },
             { key: 'random', display: "Random routing" },
+            { key: 'shipCount', display: "Number of ship in fleet routing" },
+            { key: 'speed', display: "Fleet speed rule" },
         ],
 
         operatorList: [
@@ -22,6 +24,13 @@ const RoutingComponent = {
         logicOperatorList: [
             { key: 'AND', display: "AND" },
             { key: 'OR', display: "OR" },
+        ],
+        
+        speedItemList: [
+            { key: '5', display: "Slow" },
+            { key: '10', display: "Fast" },
+            { key: '15', display: "Fast+" },
+            { key: '20', display: "Fastest" },
         ],
 
         shipTypeList: COMMON.SHIP_TYPES,
@@ -105,6 +114,11 @@ const RoutingComponent = {
                     <td><input v-model="rule.count" type="number" min="0" /></td>
                 </tr>
 
+                <tr v-if="shouldEditorBeDisplayed('speed')">
+                    <td>Speed</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="speedItemList" data-field="speed"/></td>
+                </tr>
+
                 <tr v-if="shouldEditorBeDisplayed('rules')">
                     <td>Rules</td>
                     <td colspan="3"><vroutinglist :rule-list="rule.rules" :map-data="mapData" :condition-checked-node="rule.conditionCheckedNode ? rule.conditionCheckedNode : true"></vroutinglist></td>
@@ -155,6 +169,20 @@ const RoutingComponent = {
 
         random: {
             randomNodes: true,
-        }
+        },
+
+        shipCount: {
+            operator : true,
+            count : true,
+            conditionCheckedNode : true,
+            conditionFailedNode : true,
+        },
+
+        speed: {
+            speed : true,
+            operator : true,
+            conditionCheckedNode : true,
+            conditionFailedNode : true,
+        },
     }
 }
