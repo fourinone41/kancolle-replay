@@ -135,6 +135,16 @@ var COMMON = {
             type: 3,
         },
 
+        ANCHOR_EMPTY_NODE: {
+            type: 3,
+            dropoff: true,
+        },
+
+        REPAIR_NODE: {
+            type: 3,
+			repair: true,
+        },
+
         // --- Ressource nodes
         RESOURCE_GAIN_NODE: {
             type: 2,
