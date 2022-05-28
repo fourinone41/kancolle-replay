@@ -7,6 +7,7 @@ const RoutingComponent = {
         ruleTypeItemList: [            
             { key: 'fixed', display: "Fixed routing" },
             { key: 'shipType', display: "Ship type routing" },
+            { key: 'multiRules', display: "Rule group" },
         ],
 
         operatorList: [
@@ -15,6 +16,11 @@ const RoutingComponent = {
             { key: '<=', display: "<=" },
             { key: '<', display: "<" },
             { key: '>', display: ">" },
+        ],
+
+        logicOperatorList: [
+            { key: 'AND', display: "AND" },
+            { key: 'OR', display: "OR" },
         ],
 
         shipTypeList: COMMON.SHIP_TYPES,
@@ -45,7 +51,7 @@ const RoutingComponent = {
     template: `
         <button @click="deleteRule">Delete</button>    
 
-        <div class="editor-group">
+        <div class="editor-group rule-editor">
         
             <table>
 
@@ -68,10 +74,20 @@ const RoutingComponent = {
                     <td>Operator</td>
                     <td><vcomboboxeditor :data-source="rule" :item-list="operatorList" data-field="operator"/></td>
                 </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('logicOperator')">
+                    <td>Operator</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="logicOperatorList" data-field="logicOperator"/></td>
+                </tr>
                 
                 <tr v-if="shouldEditorBeDisplayed('count')">
                     <td>Number</td>
                     <td><input v-model="rule.count" type="number" min="0" /></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('rules')">
+                    <td>Rules</td>
+                    <td colspan="3"><vroutinglist :rule-list="rule.rules" :map-data="mapData" :condition-checked-node="rule.conditionCheckedNode ? rule.conditionCheckedNode : true"></vroutinglist></td>
                 </tr>
                 
                 <tr v-if="shouldEditorBeDisplayed('conditionCheckedNode')">
@@ -100,6 +116,14 @@ const RoutingComponent = {
             shipTypes : true,
             operator : true,
             count : true,
+            conditionCheckedNode : true,
+            conditionFailedNode : true,
+        },
+
+        multiRules: {
+            logicOperator : true,
+            rules : true,
+            
             conditionCheckedNode : true,
             conditionFailedNode : true,
         },

@@ -30,3 +30,12 @@ select.mapButton  {
 .mapButton.mapButtonSelected {
     background-color: #979797;
 }
+
+.map-settings > .editor-group {
+    
+    height: calc(100vh - 150px) !important;
+}
+
+.map-settings .rule-editor {
+    overflow-y: visible;
+}

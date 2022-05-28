@@ -125,7 +125,7 @@ const NodeComponent = {
             </tr>
 
             <tr>
-                <td cols="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
+                <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
             </tr>
 
         </table>
