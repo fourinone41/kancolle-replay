@@ -17,7 +17,12 @@ const MapSelectionComponent = {
         },
 
         exportEventData() {
-            const dataToExport = JSON.stringify(MAPDATA[97].ConvertMapEditorFormatToSimulatorFormat(this.eventData));
+
+            const dataToExportBeforeConversion = {
+                eventData: this.eventData
+            };
+            
+            const dataToExport = JSON.stringify(MAPDATA[97].ConvertMapEditorFormatToSimulatorFormat(dataToExportBeforeConversion));
 
             let a = window.document.createElement('a');
             a.href = window.URL.createObjectURL(new Blob([dataToExport], {type: 'application/json'}));
@@ -38,8 +43,8 @@ const MapSelectionComponent = {
             }
 
             // load 
-            for (const property in dataParsed) {
-                this.eventData[property] = dataParsed[property];
+            for (const property in dataParsed.eventData) {
+                this.eventData[property] = dataParsed.eventData[property];
             }
         },
 

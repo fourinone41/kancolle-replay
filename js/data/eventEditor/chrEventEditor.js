@@ -36,6 +36,7 @@ Vue.createApp({
     },
 
     elementChanged(mapNumber) {
+
       this.selectedMapNumber = mapNumber;
     },
         

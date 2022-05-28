@@ -42,6 +42,10 @@ const MapEditorComponent = {
             }
 
             return locks;
+        },
+
+        nodeList() {
+            return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
         }
     },
 
@@ -94,6 +98,26 @@ const MapEditorComponent = {
 
         onNodeChanged(node) {
             this._currentNode = node; 
+        },
+
+        addPart() {
+            const key = Object.keys(this.mapData.parts).length + 1;
+
+            this.mapData.parts[key] = {
+                currentBoss: '',
+                maphp: {
+                  3: { 1: 0 },
+                  2: { 1: 0 },
+                  1: { 1: 0 },
+                  4: { 1: 0 },
+                },
+                finalhp: {
+                  3: 0,
+                  2: 0,
+                  1: 0,
+                  4: 0,
+                },
+            };
         }
     },
 

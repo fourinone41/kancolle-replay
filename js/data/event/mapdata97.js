@@ -48,6 +48,12 @@ MAPDATA[97].initializeAllMaps = function () {
     for (const key in CHDATA.customEventData.eventData) {
         MAPDATA[97][key] = CHDATA.customEventData.eventData[key];
     }
+
+    CHDATA.maps = {};
+
+    for (const mapNum in MAPDATA[97].maps) {
+        CHDATA.maps[mapNum] = { world: 97 };
+    }
     
     for (const mapNumber in CHDATA.maps) {
         MAPDATA[97].initializeMap(mapNumber);
@@ -187,18 +193,22 @@ MAPDATA[97].loadStartCheckFromChData = function (map) {
 }
 
 MAPDATA[97].loadUnlockFromChData = function (map) {
-    for (const unlockKey in map.hiddenRoutes) {
+    if (map.hiddenRoutes) {
+        
+        for (const unlockKey in map.hiddenRoutes) {
 
-        /**
-         * @type {ChGimmickList}
-         */
-        const gimmicks = map.hiddenRoutes[unlockKey].unlockRules;
+            /**
+             * @type {ChGimmickList}
+             */
+            const gimmicks = map.hiddenRoutes[unlockKey].unlockRules;
 
-        map.hiddenRoutes[unlockKey].unlockRules = new ChGimmickList(gimmicks.type, gimmicks.mapPartNumber, gimmicks.mapNum, gimmicks.gimmickData, gimmicks.additionnalParameters);
+            map.hiddenRoutes[unlockKey].unlockRules = new ChGimmickList(gimmicks.type, gimmicks.mapPartNumber, gimmicks.mapNum, gimmicks.gimmickData, gimmicks.additionnalParameters);
+        }
     }
 
+
     const debuff = map.debuffRules;
-    if (debuff) map.debuffRules = new ChGimmickList(debuff.type, debuff.mapPartNumber, debuff.mapNum, debuff.gimmickData, debuff.additionnalParameters);
+    if (debuff && debuff.type) map.debuffRules = new ChGimmickList(debuff.type, debuff.mapPartNumber, debuff.mapNum, debuff.gimmickData, debuff.additionnalParameters);
 }
 
 MAPDATA[97].loadStartBonusesFromChData = function (map) {

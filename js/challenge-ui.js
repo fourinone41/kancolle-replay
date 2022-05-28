@@ -319,7 +319,7 @@ function chFillDialogShip(sortmethod) {
 		tr.append($('<td class="left" style="width:40px">'+ship.LVL+'</td>'));
 		tr.append($('<td style="width:120px">'+shipd.name+'</td>'));
 		tr.append($('<td style="width:40px">'+shipd.type+'</td>'));
-		var htmllock = (ship.lock)? '<img src="assets/maps/lock'+ship.lock+'.png" style="position:absolute;margin-left:30px;margin-top:-3px"/>' : '';
+		var htmllock = (ship.lock)? '<img src="'+chGetLockPicture(ship.lock)+'" style="position:absolute;margin-left:30px;margin-top:-3px"/>' : '';
 		tr.append($('<td>'+htmllock+'<img src="assets/icons/'+shipd.image+'" /></td>'));
 		let $stats = chMakeShipStats(ship);
 		tr.append($('<td class="right">'+$stats+'</td>'));
@@ -1767,7 +1767,7 @@ function chGiveLock(fleetnum,slotnum,lock) {
 	if (!sid) return;
 	if (CHDATA.ships[sid].lock) return;
 	CHDATA.ships[sid].lock = lock;
-	$('#fleetlock'+fleetnum+slotnum).attr('src','assets/maps/lock'+lock+'.png');
+	$('#fleetlock'+fleetnum+slotnum).attr('src', chGetLockPicture(lock));
 }
 
 function chGiveLockAllCurrent(lock) {
@@ -1990,7 +1990,7 @@ function chTableSetShip(sid,fleet,slot,noswap) {
 		$('#fleetlbrn'+fleet+slot).text(getLBASRange(ship));
 	}
 	
-	if (ship.lock) $('#fleetlock'+fleet+slot).attr('src','assets/maps/lock'+ship.lock+'.png');
+	if (ship.lock) $('#fleetlock'+fleet+slot).attr('src', chGetLockPicture(ship.lock));
 	else $('#fleetlock'+fleet+slot).attr('src','');
 	
 	var oldsid = CHDATA.fleets[fleet][slot-1];
@@ -2406,17 +2406,17 @@ function chLoadSortieInfo(mapnum) {
 			$('#srtGiveLockMult').show(); $('#srtLockImg').parent().hide();
 			$('#srtGiveLockMult').html('');
 			for (var i=0; i<mapdata.giveLock.length; i++) {
-				$('#srtGiveLockMult').append('<div style="display:inline-block"><img src="assets/maps/lock'+mapdata.giveLock[i]+'.png" style="height:40px;vertical-align:middle"/></div>');
+				$('#srtGiveLockMult').append('<div style="display:inline-block"><img src="'+chGetLockPicture(mapdata.giveLock[i])+'" style="height:40px;vertical-align:middle"/></div>');
 			}
 		}
-		else if (mapdata.giveLock) $('#srtLockImg').attr('src','assets/maps/lock'+mapdata.giveLock+'.png');
-		else if (showHardLock) $('#srtLockImg').attr('src','assets/maps/lock'+mapdata.giveLockHard+'.png');
+		else if (mapdata.giveLock) $('#srtLockImg').attr('src',chGetLockPicture(mapdata.giveLock));
+		else if (showHardLock) $('#srtLockImg').attr('src',chGetLockPicture(mapdata.giveLock));
 		else $('#srtLockImg').attr('src','');
 		$('#srtNoLock').html('');
 		if (mapdata.checkLock || showHardLock) {
 			var locks = (showHardLock)? mapdata.checkLockHard : mapdata.checkLock;
 			for (var i=0; i<locks.length; i++) {
-				$('#srtNoLock').append('<div style="display:inline-block"><img src="assets/maps/lockno.png" style="position:absolute;height:40px"/><img src="assets/maps/lock'+locks[i]+'.png" style="height:40px;vertical-align:middle"/></div>');
+				$('#srtNoLock').append('<div style="display:inline-block"><img src="assets/maps/lockno.png" style="position:absolute;height:40px"/><img src="'+chGetLockPicture(locks[i])+'" style="height:40px;vertical-align:middle"/></div>');
 			}
 		}
 	}
@@ -2435,6 +2435,17 @@ function chLoadSortieInfo(mapnum) {
 	else $('#srtLeft').show();
 	if (MAPNUM >= Object.keys(CHDATA.event.maps).length) $('#srtRight').hide();
 	else $('#srtRight').show();
+}
+
+function chGetLockPicture(lockId) {
+	if (WORLD == 97) {
+		const locks = MAPDATA[97].locksData;
+		const lock = Object.values(locks).find(lockData => lockData.name == lockId);
+		return lock.image;
+	} 	
+	
+	return 'assets/maps/lock'+lockId+'.png';
+	
 }
 
 function chClickedSortieLeft() {
