@@ -9,11 +9,16 @@
     <script src="js/util/jquery-ui/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="js/util/jquery-ui/jquery-ui.css">
     <link rel="stylesheet" href="css/chrEventInfo.css">
+    <link rel="stylesheet" href="css/ModalComponent.css">
+    <link rel="stylesheet" href="css/ShipEquipSelectorComponent.css">
+    <link rel="stylesheet" href="css/ShipEditorComponent.css">
+    <link rel="stylesheet" href="css/EquipEditorComponent.css">
+    <link rel="stylesheet" href="css/MapEditorComponent.css">
     <script src="js/pixi.min.js"></script>
     <script src="js/bonuses.js"></script>
     <script src="js/routing.js"></script>
     <script src="js/routingSpecial.js"></script>
-    <script src="js/gimmick.js"></script>
+    <script src="js/data/event/gimmick.js"></script>
     <script src="js/kcSHIPDATA.js"></script>
     <script src="js/kcEQDATA.js"></script>
     <script src="js/chkcMAPDATA2.js"></script>
@@ -46,12 +51,301 @@
 
     
     <script src="js/data/objects/chMapData.js"></script>
+    <script src="js/data/objects/chEventData.js"></script>
+    <script src="js/data/objects/chNodeData.js"></script>
+
+    <script src="js/data/eventEditor/common.js"></script>
+	<script src="js/vue.global.dev.js"></script>
+	<script src="js/vue-i18n.global.js"></script>
 </head>
+
 <body>
+    <div id="eventEditor">
+
+        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber"></map-selection>
+
+        <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted"></map-editor></div>
+        <div v-else><event-editor :event-data="eventData"></event-settings></div>
+
+        <vshipselector></vshipselector>
+        <vequipselector></vequipselector>
+    </div>
+
+    <template id="map-editor">
+
+        <div class="map-editor-groups">
+
+            <div class="map-editor-left-group">  
+                <div class="mapButtons">
+                    <div class="mapButton">{{mapData.name}}</div>
+                    <div class="mapButton" @click="changeTab('mapSettings')" :class="{ mapButtonSelected: selectedTab('mapSettings')}">Map settings</div>
+                    <div class="mapButton" @click="changeTab('nodes')" :class="{ mapButtonSelected: selectedTab('nodes')}">Nodes</div>
+                    <div class="mapButton" @click="deleteMap">Delete map</div>
+                </div>
+
+                <div v-if="selectedTab('mapSettings')" class="map-settings editor-group">
+                    <table>
     
+                        <tr>
+                            <td>Map name</td>
+                            <td><input v-model="mapData.nameT" name="nameT"/></td>
+                        </tr>
+        
+                        <tr>
+                            <td>Image to display on map selection</td>
+                            <td><input v-model="mapData.mapPreviewImage" style="width: 300px;"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><img :src="mapData.mapPreviewImage"/></td>
+                        </tr>
+        
+                        <tr>
+                            <td>Map image (Width 662px)</td>
+                            <td><input v-model="mapData.mapImage" style="width: 300px;"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">The map should be 768x435</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Paths to unlock must NOT be visible on the map</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Do not place air nodes, they will be added by the event simulator</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Allowed fleets</td>
+                            <td><multi-checkboxes-editor :data-source="mapData.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Gives lock</td>
+                            <td><vcomboboxeditor :data-source="mapData" :item-list="locksItemSource" data-field="giveLock"></vcomboboxeditor></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Checks lock</td>
+                            <td><multi-checkboxes-editor :data-source="mapData.checkLock" :item-list="locksItemSource"></multi-checkboxes-editor></td>
+                        </tr>
+    
+                        <tr>
+                            <td>Available LBAS</td>
+                            <td><input type="number" min="0" max="3" v-model="mapData.lbas"/></td>
+                        </tr>
+    
+                        <tr>
+                            <td>Available LBAS to sortie</td>
+                            <td><input type="number" min="0" max="3" v-model="mapData.lbasSortie"/></td>
+                        </tr>
+        
+                    </table>
+    
+                    <div class="group-title">BGMs</div>
+    
+                    <table>
+                        <tr>
+                            <td>Map BGM</td>
+                            <td><input v-model="mapData.bgmMap" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmMap)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Normal battle BGM (day)</td>
+                            <td><input v-model="mapData.bgmDN" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmDN)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Normal battle BGM (night)</td>
+                            <td><input v-model="mapData.bgmNN" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmNN)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Boss battle BGM (day)</td>
+                            <td><input v-model="mapData.bgmDB" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmDB)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Boss battle BGM (night)</td>
+                            <td><input v-model="mapData.bgmNB" /></td>
+                            <td><button class="play-bgm" @click="playBGM(mapData.bgmNB)">Play</button></td>
+                            <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                        </tr>
+                    </table>
+
+                    <div class="group-title">Parts</div>
+    
+                    <button @click="addPart">Add part</button>
+                    <div v-for="(part, key) in mapData.parts" :key="key">
+                        <div>
+                            Boss node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="currentBoss"></vcomboboxeditor>
+
+                            <table>
+                                <tr>
+                                    <td>Map HP</td>
+                                </tr>
+    
+                                <tr>
+                                    <td>Casual</td>
+                                    <td><input v-model="part.maphp[4][1]" type="number" /></td>
+                                </tr>
+    
+                                <tr>
+                                    <td>Easy</td>
+                                    <td><input v-model="part.maphp[1][1]" type="number" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Medium</td>
+                                    <td><input v-model="part.maphp[2][1]" type="number" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Hard</td>
+                                    <td><input v-model="part.maphp[3][1]" type="number" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="selectedTab('nodes')" class="map-settings">
+                    <vnodelist :map-data="mapData" :event-data="eventData" @node-changed="onNodeChanged"></vnodelist>
+                </div>
+                
+            </div>
+    
+    
+            <div class="map-group"> 
+                <img :src="mapData.mapImage" @mousemove="onMouseMoveOnMap" @click="onClickOnMap"/>
+                <br>X: {{mouseX}} <br> Y: {{mouseY}}
+            </div>
+        </div>
+        
+	</template>
+
+    <template id="event-editor">
+		<div class="group-title">Event infos</div>
+        <div class="editor-group">
+            <table>
+                <tr>
+                    <td>Event name</td>
+                    <td><input v-model="eventData.name" name="name"/></td>
+                </tr>
+
+                <tr>
+                    <td>Event date (used for mechanics, ships/equipments availability, ...)</td>
+                    <td><input v-model="eventData.date" type="date" name="date"/></td>
+                </tr>
+                
+                <tr>
+                    <td>Event banner</td>
+                    <td><input v-model="eventData.bannerImg" style="width: 300px;"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><img :src="eventData.bannerImg"/></td>
+                </tr>
+
+                <tr>
+                    <td>Available difficulties</td>
+                    <td><multi-checkboxes-editor :data-source="eventData.allowDiffs" :item-list="difficultiesItemSource"></multi-checkboxes-editor></td>
+                </tr>
+
+                <tr>
+                    <td>Allowed fleets</td>
+                    <td><multi-checkboxes-editor :data-source="eventData.allowFleets" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
+                </tr>
+                
+                <tr>
+                    <td>Allow LBAS</td>
+                    <td><input type="checkbox" v-model="eventData.allowLBAS" /></td>
+                </tr>
+
+                <tr>
+                    <td>Allow vanguard formation</td>
+                    <td><input type="checkbox" v-model="eventData.allowVanguard" /></td>
+                </tr>
+
+                <tr>
+                    <td>Allow strong friend fleets</td>
+                    <td><input type="checkbox" v-model="eventData.allowStrongFF" /></td>
+                </tr>
+
+                <tr>
+                    <td>Friend fleets waves</td>
+                    <td colspan="2">
+                        <div>
+                            <button @click="addWave">Add wave</button>
+                        </div>
+                        <div v-for="(element, index) in eventData.friendFleetWaves" :key="index" style="display: flex;">
+                            <div style="margin-right:10px;">Wave {{index}}</div>
+                            <input type="date" v-model="element.date" style="margin-right:10px;" @change="recomputeWavesNumbers"></input>
+                            <button @click="deleteWave(element)">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>        
+
+        <div class="group-title">Shiplocks</div>
+        <div class="editor-group">
+            <div>
+                <button @click="addLock">Add lock</button>
+            </div>
+            <div v-for="(element, index) in eventData.locksData" :key="index" style="display: flex; align-items: center;">
+                
+                <div style="margin-right:10px;">Name</div>
+                <input v-model="element.name" style="width: 300px;margin-right:10px;"/>
+
+                <div style="margin-right:10px;">Lock image (31px x 46px)</div>
+                <input v-model="element.image" style="width: 300px;margin-right:10px;"/>
+                <button @click="deleteLock(element)" style="margin-right:10px;">Delete</button>
+                <img :src="element.image"/>
+
+            </div>
+        </div>        
+        
+        <div class="group-title">Friend Fleets</div>
+        <div id="divFriendFleets" class="editor-group">
+            <div><input type="button" value="Add Friend Fleet" @click="addFriendFleet"/><input placeholder="Name" maxlength="50" ref="friendFleetName" v-model="friendFleetNewName" @keydown.enter="addFriendFleet"/></div>
+            <div class="tabber">
+                <div v-for="(fleet,key) in eventData.friendFleet" :key="key" class="tabberButton" :class="{selected:key==friendFleetCurrent}" @click="friendFleetCurrent=key">{{key}}</div>
+            </div>
+            <div v-if="friendFleetCurrent" class="fleetDisplay">
+                <div>
+                    <div>{{friendFleetCurrent}}</div>
+                    <div><vfleeteditor :fleet="eventData.friendFleet[friendFleetCurrent]" is-friend-fleet="1"></vfleeteditor></div>
+                </div>
+                <div><input type="button" value="Delete Fleet" @click="deleteFriendFleet(friendFleetCurrent)"/></div>
+            </div>
+        </div>
+	</template>
 </body>
-<script src="js/data/event/chrRandomEvent/chrMap.js"></script>
+
+<script src="js/data/eventEditor/i18n.js"></script>
+<script src="js/data/eventEditor/components/ModalComponent.js"></script>
+<script src="js/data/eventEditor/components/ShipEquipSelectorComponent.js"></script>
+<script src="js/data/eventEditor/components/EquipEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ShipEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/FleetEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
+<script src="js/data/eventEditor/components/MultiCheckboxesEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ComboBoxEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/MapEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/NodeListComponent.js"></script>
+<script src="js/data/eventEditor/components/NodeComponent.js"></script>
+<script src="js/data/eventEditor/components/RoutingComponent.js"></script>
+<script src="js/data/eventEditor/components/RoutingListComponent.js"></script>
+<script src="js/data/eventEditor/components/EventEditorComponent.js"></script>
+<script src="js/data/eventEditor/chrEventEditor.js"></script>
+<!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>
 <script src="js/data/event/chrRandomEvent/chrMakeEvent.js"></script>
-<script src="js/data/event/chrRandomEvent/chrMakeEventPage.js"></script>
+<script src="js/data/event/chrRandomEvent/chrMakeEventPage.js"></script-->
 </html>

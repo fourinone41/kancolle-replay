@@ -3,21 +3,27 @@ class ChMapData {
         this.name = "";
         this.nameT = "";
 
+        this.mapPreviewImage = "";
+        this.mapImage = "";
+
         this.fleetTypes = [];
         
-        this.bgmMap = 0;
-        this.bgmDN = 0;
-        this.bgmNN = 0;
-        this.bgmDB = 0;
-        this.bgmNB = 0;
+        this.bgmMap = "";
+        this.bgmDN = "";
+        this.bgmNN = "";
+        this.bgmDB = "";
+        this.bgmNB = "";
 
-        this.bossnode = [];
+        this.bossnode = []; // --- todo => computed
 
-        this.overrideBGM = {};
+        this.overrideBGM = {}; // --- Ignored
 
-        this.giveLock = [];
-        this.checkLock = [];
-        this.lockSpecial = false;
+        this.giveLock = ""; 
+        this.checkLock = []; 
+
+        this.lockSpecial = false; // --- Todo => new model with startNode[] property
+        this.giveLockSpecial = []; // --- Todo => new model with startNode[] property
+        this.checkLockSpecial = []; // --- Todo => new model with startNode[] property
 
         this.lbas = 0;
         this.lbasSortie = 0;

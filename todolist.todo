@@ -3,3 +3,12 @@
 - ChNodeReplacedAfterUnlockRule doesn't work (fixed but need to be tested Fall 17 E4) (need to handle that properly in branching ?)
 - FF, when making random event, add FF when exporting a node
 - Handle diff list per map ? (old maps didn't had diff 3)
+- Winter 17 E3 dissasebled saiun are not given on map unlock ?
+
+- event parse : 
+    - BGM
+    - Tags
+
+- import real event maps
+- give lock per start
+- map cors ?

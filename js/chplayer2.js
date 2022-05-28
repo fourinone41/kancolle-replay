@@ -1072,7 +1072,7 @@ function chPlayerStart() {
 	CHDATA.sortie = {};
 	
 	curletter = (MAPDATA[WORLD].maps[MAPNUM].startCheck)? MAPDATA[WORLD].maps[MAPNUM].startCheck(CHSHIPCOUNT) : 'Start';
-	if (MAPDATA[WORLD].maps[MAPNUM].startCheckRule) {
+	if (MAPDATA[WORLD].maps[MAPNUM].startCheckRule && MAPDATA[WORLD].maps[MAPNUM].startCheckRule.length) {
 		curletter = '';
 		let index = 0;
 		let rules = MAPDATA[WORLD].maps[MAPNUM].startCheckRule;
@@ -1127,7 +1127,7 @@ function chPlayerStart() {
 	mapship.position.set(node.x+MAPOFFX,node.y+MAPOFFY);
 	var bossnum = (typeof MAPDATA[WORLD].maps[MAPNUM].bossnode === 'object')? MAPDATA[WORLD].maps[MAPNUM].bossnode[0] : MAPDATA[WORLD].maps[MAPNUM].bossnode;
 	var letterboss = (typeof bossnum == 'string')? bossnum : String.fromCharCode(64+bossnum);
-	var xboss = MAPDATA[WORLD].maps[MAPNUM].nodes[letterboss].x;
+	var xboss = letterboss != '\x00' ? MAPDATA[WORLD].maps[MAPNUM].nodes[letterboss].x : 0;
 	mapship.scale.set(((xboss < node.x)? -1 : 1),1);
 	chLoadMap(MAPNUM);
 	if (CHDATA.fleets.lbas1 || CHDATA.fleets.lbas2 || CHDATA.fleets.lbas3) {
@@ -1148,6 +1148,15 @@ function chLoadMap(mapnum) {
 	}
 	const mapPath = MAPDATA[world].maps[mapnum].mapImage ? MAPDATA[world].maps[mapnum].mapImage : 'assets/maps/'+world+'/'+mapnum+'.png';
 	map.addChild(PIXI.Sprite.fromImage(mapPath));
+	/*const mapImage = document.createElement('img');
+	mapImage.src = mapPath;
+
+	mapImage.addEventListener("load", () => {
+		mapImage.crossOrigin = "*";
+		map.addChild(PIXI.Sprite.fromImage(mapImage));
+	}, false);
+
+*/
 	if (MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {
 		if (!CHDATA.event.maps[mapnum].routes) CHDATA.event.maps[mapnum].routes = [];
 		for (var key in MAPDATA[WORLD].maps[mapnum].hiddenRoutes) {

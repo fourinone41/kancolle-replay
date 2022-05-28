@@ -5,9 +5,11 @@ body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
-div#mapButtons {
+div#mapButtons{
     display: flex;
     justify-content: space-around;
+    background-color: #3c3c3c;
+    color: rgb(235, 235, 235) !important;
 }
 
 .mapButton {
@@ -180,12 +182,20 @@ div#routing {
     margin-right: 10px;
 }
 
-.edit {
+.edit, .editor {
     display: flex;
+    align-items: baseline;
 }
 
-.edit-label {
+.edit-label,
+.editor label {
     margin-right: 10px;
+    line-height: 20px;
+    
+}
+
+.editor input {
+    line-height: 20px;
 }
 
 button.play-bgm {
@@ -217,4 +227,44 @@ button.play-bgm {
     font-weight: bold;
     font-size: 25px;
     margin-bottom: 15px;
+}
+
+.group-title {
+    margin-top: 10px;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.editor-group {
+    margin-left: 15px;
+}
+
+
+#divFriendFleets div.tabber {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#divFriendFleets div.tabberButton {
+    padding: 10px 20px;
+    background-color: #646464;
+}
+#divFriendFleets div.tabberButton.selected {
+    background-color: #a1a1a1;
+}
+#divFriendFleets div.tabberButton:hover {
+    cursor: pointer;
+    background-color: #a1a1a1;
+}
+#divFriendFleets div.fleetDisplay {
+    margin-top: 10px;
+    display: flex;
+}
+#divFriendFleets div.fleetDisplay div.header div:last-child {
+    margin-left: auto;
+}
+#divFriendFleets div.fleetDisplay div.header div:last-child input {
+    margin-right: -100%;
 }

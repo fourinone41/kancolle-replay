@@ -470,7 +470,7 @@ function ChAllHaveTagRule(tagList, conditionCheckedNode, conditionFailedNode) {
     }
 
     rule.getDescription = () => {
-        let tags = tagList.map(x => `<img src="assets/maps/lock${x}.png" />`)
+        let tags = tagList.map(x => `<img src="${chGetLockPicture(x)}" />`)
         return `All ships must have the tag${tagList.length > 1 ? 's' : ''} ${tags.join(' ')}`;
     }
 
@@ -556,7 +556,7 @@ function ChFlagshipHasTag(tags, conditionCheckedNode, conditionFailedNode) {
     }
 
     rule.getDescription = () => {
-        let tagList = tags.map(x => `<img src="assets/maps/lock${x}.png" />`);
+        let tagList = tags.map(x => `<img src="${chGetLockPicture(x)}" />`);
         return `Flagship ${rule.not ? 'doesn\'t have' : 'has'} the following shiplock(s) : ${tagList.join(' ')}`;
     }
 

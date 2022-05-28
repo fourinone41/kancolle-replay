@@ -550,7 +550,7 @@ function chrExecuteFillDialogShip(sortmethod, callback, filter, bannedShips) {
 		tr.append($('<td class="left" style="width:40px">'+ship.LVL+'</td>'));
 		tr.append($('<td style="width:120px">'+shipd.name+'</td>'));
 		tr.append($('<td style="width:40px">'+shipd.type+'</td>'));
-		var htmllock = (ship.lock)? '<img src="assets/maps/lock'+ship.lock+'.png" style="position:absolute;margin-left:30px;margin-top:-3px"/>' : '';
+		var htmllock = (ship.lock)? '<img src="'+chGetLockPicture(ship.lock)+'" style="position:absolute;margin-left:30px;margin-top:-3px"/>' : '';
 		tr.append($('<td>'+htmllock+'<img src="assets/icons/'+shipd.image+'" /></td>'));
 		let $stats = chMakeShipStats(ship);
 		tr.append($('<td class="right">'+$stats+'</td>'));

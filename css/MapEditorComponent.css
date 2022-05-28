@@ -1,0 +1,32 @@
+.map-editor-groups {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.map-editor-left-group {
+    width: 100%;
+}
+
+.map-editor-groups .editor-group {
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.mapButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+.map-settings.editor-group {
+    height: calc(100vh - 100px) !important;
+}
+
+select.mapButton  {
+    color: white;
+    border-width: 0px;
+}
+
+.mapButton.mapButtonSelected {
+    background-color: #979797;
+}
