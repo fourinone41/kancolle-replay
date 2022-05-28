@@ -6,7 +6,18 @@ const RoutingComponent = {
        
         ruleTypeItemList: [            
             { key: 'fixed', display: "Fixed routing" },
+            { key: 'shipType', display: "Ship type routing" },
         ],
+
+        operatorList: [
+            { key: '=', display: "=" },
+            { key: '>=', display: ">=" },
+            { key: '<=', display: "<=" },
+            { key: '<', display: "<" },
+            { key: '>', display: ">" },
+        ],
+
+        shipTypeList: COMMON.SHIP_TYPES,
 
     }),
 
@@ -48,6 +59,31 @@ const RoutingComponent = {
                     <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="fixedNode"/></td>
                 </tr>
 
+                <tr v-if="shouldEditorBeDisplayed('shipTypes')">
+                    <td>Ship types</td>
+                    <td><velementlist :data-source="rule.shipTypes" :item-list="shipTypeList" /></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('operator')">
+                    <td>Operator</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="operatorList" data-field="operator"/></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('count')">
+                    <td>Number</td>
+                    <td><input v-model="rule.count" type="number" min="0" /></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('conditionCheckedNode')">
+                    <td>Node if rule is checked</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="conditionCheckedNode"/></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('conditionFailedNode')">
+                    <td>Node if rule is not checked</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="conditionFailedNode" :can-be-null="true"/></td>
+                </tr>
+
             </table>
         </div> 
     `,
@@ -58,6 +94,14 @@ const RoutingComponent = {
     RULE_TYPE_EDITORS: {
         fixed: {
             fixedNode: true,
-        }
+        },
+
+        shipType: {
+            shipTypes : true,
+            operator : true,
+            count : true,
+            conditionCheckedNode : true,
+            conditionFailedNode : true,
+        },
     }
 }

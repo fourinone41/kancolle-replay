@@ -3,7 +3,7 @@ const NodeListComponent = {
     emits: ['nodeChanged'],
         
     data: () => ({
-        currentNode: 'Select a node',
+        currentNode: 'Start',
     }),
 
     computed: {
