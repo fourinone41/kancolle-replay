@@ -165,7 +165,7 @@ function ChrRandomizeMap(eventNumber, mapNumber) {
                     return;
                 }
 
-                if (rule.type == 'ifthenelse')  {
+                if (rule.type == 'ifthenelse' || rule.type == 'LOSCheckIfRuleChecked')  {
 
                     constructPathOfPath(rule.ifthenelse.then);
 

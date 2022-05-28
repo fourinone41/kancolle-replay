@@ -12,6 +12,7 @@ const RoutingComponent = {
             { key: 'shipCount', display: "Number of ship in fleet routing" },
             { key: 'speed', display: "Fleet speed rule" },
             { key: 'ifthenelse', display: "If A then B else C rule" },
+            { key: 'LOSCheckIfRuleChecked', display: "LOS check if rule checked" },
         ],
 
         operatorList: [
@@ -52,6 +53,7 @@ const RoutingComponent = {
         },
 
         shouldEditorBeDisplayed(propertyName) {
+            if (!this.rule) return false;
             if (!RoutingComponent.RULE_TYPE_EDITORS[this.rule.type]) return false;
             return !!RoutingComponent.RULE_TYPE_EDITORS[this.rule.type][propertyName];
         },
@@ -60,6 +62,7 @@ const RoutingComponent = {
             let returnValue = ' -> ';
 
             if (this.rule.type == "ifthenelse") return "";
+            if (this.rule.type == "LOSCheckIfRuleChecked") return "";
             if (this.rule.type == "random") return "";
             if (this.rule.type == "fixed") return returnValue + this.rule.fixedNode;
 
@@ -70,10 +73,21 @@ const RoutingComponent = {
         },
 
         initIfThenElse() {
-            if (!this.rule.ifthenelse) this.rule.ifthenelse = {};
-            if (!this.rule.ifthenelse.if) this.rule.ifthenelse.if = new ChRule();
+            this.initIf();
             if (!this.rule.ifthenelse.then) this.rule.ifthenelse.then = new ChRule();
             if (!this.rule.ifthenelse.else) this.rule.ifthenelse.else = new ChRule();
+        },
+
+        initLOSCheckIfRuleChecked() {
+            if (!this.rule.ifthenelse) this.rule.ifthenelse = {};
+            if (!this.rule.ifthenelse.if) this.rule.ifthenelse.if = new ChRule();
+
+            if (!this.rule.LOS || !this.rule.LOS[1]) this.rule.LOS = {
+                4: {},
+                1: {},
+                2: {},
+                3: {},
+            }
         }
     },
 
@@ -81,6 +95,7 @@ const RoutingComponent = {
         'rule.type'() {
             // --- Init some data here
             if (this.rule.type == "ifthenelse") this.initIfThenElse();
+            if (this.rule.type == "LOSCheckIfRuleChecked") this.initLOSCheckIfRuleChecked();
         }
     },
 
@@ -135,21 +150,31 @@ const RoutingComponent = {
                     <td>Rules</td>
                     <td colspan="3"><vroutinglist :rule-list="rule.rules" :map-data="mapData" :condition-checked-node="rule.conditionCheckedNode ? rule.conditionCheckedNode : true"></vroutinglist></td>
                 </tr>
-                
-                <tr v-if="shouldEditorBeDisplayed('ifthenelse')">
+
+                <tr v-if="shouldEditorBeDisplayed('if')">
                     <td>If</td>
                     <td colspan="3"><vrouting :rule="rule.ifthenelse.if" :map-data="mapData"></vrouting></td>
                 </tr>
 
-                <tr v-if="shouldEditorBeDisplayed('ifthenelse')">
+                <tr v-if="shouldEditorBeDisplayed('then')">
                     <td>Then</td>
                     <td colspan="3"><vrouting :rule="rule.ifthenelse.then" :map-data="mapData"></vrouting></td>
                 </tr>
 
-                <tr v-if="shouldEditorBeDisplayed('ifthenelse')">
+                <tr v-if="shouldEditorBeDisplayed('else')">
                     <td>Else</td>
                     <td colspan="3"><vrouting :rule="rule.ifthenelse.else" :map-data="mapData"></vrouting></td>
                 </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('LOS')">
+                    <td>LOS</td>
+                    <td colspan="3"><vloseditor :data-source="rule.LOS" :node-list="nodeList" /></td>
+                </tr>                
+
+                <tr v-if="shouldEditorBeDisplayed('LOSCoef')">
+                    <td>LOS coefficient</td>
+                    <td><input v-model="rule.LOSCoef" type="number" min="0" /></td>
+                </tr>                
                 
                 <tr v-if="shouldEditorBeDisplayed('conditionCheckedNode')">
                     <td>Node if rule is checked</td>
@@ -213,7 +238,15 @@ const RoutingComponent = {
         },
 
         ifthenelse: {
-            ifthenelse : true,
+            if : true,
+            then : true,
+            else : true,
+        },
+
+        LOSCheckIfRuleChecked: {
+            if: true,
+            LOS: true,
+            LOSCoef: true,
         },
     }
 }

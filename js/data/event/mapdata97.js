@@ -315,6 +315,9 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
         case "speedCount": 
             return ChNumberOfShipOfSpeedRule(ruleToConvert.speedOperator, ruleToConvert.speed, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
 
+        case "LOSCheckIfRuleChecked": 
+            return ChLOSCheckIfRuleChecked(ruleToConvert.LOS, ruleToConvert.LOSCoef, MAPDATA[97].convertRule(ruleToConvert.ifthenelse.if));
+
         default:
             console.debug(ruleToConvert);
             throw 'unhandled rule';

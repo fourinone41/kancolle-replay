@@ -197,5 +197,12 @@ var COMMON = {
 		{ key: 'CT', display: "CT" },
 	],
 
+	DIFFICULTIES: [
+		{ key: 4, display: "Casual" },
+		{ key: 1, display: "Easy" },
+		{ key: 2, display: "Medium" },
+		{ key: 3, display: "Hard" },
+	],
+
 	SOUND_MANAGER: new SoundManager(),
 };
