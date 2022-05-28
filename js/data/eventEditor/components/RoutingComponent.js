@@ -8,6 +8,7 @@ const RoutingComponent = {
             { key: 'fixed', display: "Fixed routing" },
             { key: 'shipType', display: "Ship type routing" },
             { key: 'multiRules', display: "Rule group" },
+            { key: 'random', display: "Random routing" },
         ],
 
         operatorList: [
@@ -46,11 +47,15 @@ const RoutingComponent = {
         },
 
         getDestination() {
-            
-            if (this.rule.type == "fixed") return this.rule.fixedNode;
+            let returnValue = ' -> ';
 
-            if (this.rule.conditionFailedNode) return this.rule.conditionCheckedNode + ' else ' + this.rule.conditionFailedNode;
-            return this.rule.conditionCheckedNode;            
+            if (this.rule.type == "random") return "";
+            if (this.rule.type == "fixed") return returnValue + this.rule.fixedNode;
+
+            returnValue += this.rule.conditionCheckedNode;            
+            if (this.rule.conditionFailedNode) returnValue += ' else ' + this.rule.conditionFailedNode;
+
+            return returnValue;
         }
     },
 
@@ -65,7 +70,7 @@ const RoutingComponent = {
         <button v-else @click="isCollapsed = true">Hide rule</button>    
 
 
-        <div v-if="isCollapsed" v-html="rule.getDescription() + ' -> ' + getDestination()"></div>
+        <div v-if="isCollapsed" v-html="rule.getDescription() + getDestination()"></div>
         <div v-else class="editor-group rule-editor">
         
             <table>
@@ -115,6 +120,11 @@ const RoutingComponent = {
                     <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="conditionFailedNode" :can-be-null="true"/></td>
                 </tr>
 
+                <tr v-if="shouldEditorBeDisplayed('randomNodes')">
+                    <td>Chances (sum = 1)</td>
+                    <td><vchanceseditor :data-source="rule" :item-list="nodeList" data-field="randomNodes"/></td>
+                </tr>
+
             </table>
         </div> 
     `,
@@ -142,5 +152,9 @@ const RoutingComponent = {
             conditionCheckedNode : true,
             conditionFailedNode : true,
         },
+
+        random: {
+            randomNodes: true,
+        }
     }
 }

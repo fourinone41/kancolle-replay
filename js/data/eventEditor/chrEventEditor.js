@@ -106,5 +106,6 @@ Vue.createApp({
 .component('vroutinglist', RoutingListComponent)
 .component('vrouting', RoutingComponent)
 .component('velementlist', ElementListEditorComponent)
+.component('vchanceseditor', ChancesEditorComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');
