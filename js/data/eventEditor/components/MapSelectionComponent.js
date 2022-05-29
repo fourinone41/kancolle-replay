@@ -1,11 +1,18 @@
 const MapSelectionComponent = {
     props: ['eventData', 'selectedMap'],
-    emits: ['addMap', 'elementChanged'],
+    emits: ['addMap', 'elementChanged', 'eventModeChanged'],
 
-    data() {return {
+    data: () => ({
         file: null,
         input: null,
-    }},
+        
+        fileMode: localStorage.getItem("editorMode") ? localStorage.getItem("editorMode") : 'customFile',
+
+        fileModeItemList: [
+            { key: 'customFile', display: 'Create event' },
+            { key: 'playedEvent', display: 'Edit played event' },
+        ]
+    }),
     
     methods: {
         addMap() {
@@ -77,6 +84,12 @@ const MapSelectionComponent = {
         }
     },
 
+    watch: {
+        fileMode() {
+            this.$emit("eventModeChanged", this.fileMode);
+        }
+    },
+
     mounted() {
         this.input = this.$el.querySelector('input[type=file]');
         this.input.style.display = 'none'
@@ -85,8 +98,9 @@ const MapSelectionComponent = {
     template: `
         
         <div id="mapButtons">
+            <vcomboboxeditor :data-source="this" :item-list="fileModeItemList" data-field="fileMode" class-for-select="mapButton"/>
             <input type="file" v-on:change="fileChanged" id="importFile" />
-            <div class="mapButton" @click="showUpload">Import</div>
+            <div v-if="fileMode=='customFile'" class="mapButton" @click="showUpload">Import</div>
             <div class="mapButton" @click="exportEventData">Export</div>
             <div class="mapButton" @click="mapSelectionChanged(0)" :class="{ mapButtonSelected: isSelectedMap(0)}">Event settings</div>
 

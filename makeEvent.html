@@ -57,14 +57,15 @@
     <script src="js/data/eventEditor/common.js"></script>
 	<script src="js/vue.global.dev.js"></script>
 	<script src="js/vue-i18n.global.js"></script>
+    <script src="reader/lz-string.js"></script>
 </head>
 
 <body>
     <div id="eventEditor">
 
-        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber"></map-selection>
+        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber" @event-mode-changed="fileModeChanged"></map-selection>
 
-        <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted"></map-editor></div>
+        <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted" ></map-editor></div>
         <div v-else><event-editor :event-data="eventData"></event-settings></div>
 
         <vshipselector></vshipselector>
