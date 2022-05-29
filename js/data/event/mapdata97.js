@@ -43,6 +43,12 @@ MAPDATA[97] = {
 MAPDATA[97].initializeAllMaps = function () {
     
     if (!CHDATA.event) CHDATA.event = {};
+
+    if (localStorage.customEventDataToLoad) {
+        CHDATA.customEventData = JSON.parse(localStorage.customEventDataToLoad);
+        localStorage.removeItem('customEventDataToLoad');
+    }
+
     CHDATA.event.comps = CHDATA.customEventData.comps;
 
     for (const key in CHDATA.customEventData.eventData) {
@@ -57,17 +63,6 @@ MAPDATA[97].initializeAllMaps = function () {
     
     for (const mapNumber in CHDATA.maps) {
         MAPDATA[97].initializeMap(mapNumber);
-    }
-
-    // --- Init Friend fleets (TODO : have it in the file)
-    for (const eventId in MAPDATA) {
-        if (eventId > 90) continue;
-        if (!MAPDATA[eventId].friendFleet) continue;
-
-        for (const FFkey in MAPDATA[eventId].friendFleet) {
-            
-            MAPDATA[97].friendFleet[FFkey] = MAPDATA[eventId].friendFleet[FFkey];
-        }
     }
 }
 

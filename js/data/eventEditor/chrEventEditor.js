@@ -53,6 +53,9 @@ Vue.createApp({
 
         if (this.chData.customEventData) {
           basic.customEventData = this.chData.customEventData;
+
+          // --- Override normal load
+          localStorage.setItem('customEventDataToLoad', JSON.stringify(this.chData.customEventData));
         }
 
         basic.maps = this.chData.maps;
