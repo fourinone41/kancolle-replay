@@ -13,6 +13,7 @@ const RoutingComponent = {
             { key: 'speed', display: "Fleet speed rule" },
             { key: 'ifthenelse', display: "If A then B else C rule" },
             { key: 'LOSCheckIfRuleChecked', display: "LOS check if rule checked" },
+            { key: 'allShipsMustBe', display: "All ship must be of type rule" },
         ],
 
         operatorList: [
@@ -114,6 +115,11 @@ const RoutingComponent = {
                 <tr>
                     <td>Rule type</td>
                     <td><vcomboboxeditor :data-source="rule" :item-list="ruleTypeItemList" data-field="type"/></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('not')">
+                    <td>Is not</td>
+                    <td><input type="checkbox" v-model="rule.not" /></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('fixedNode')">
@@ -248,5 +254,12 @@ const RoutingComponent = {
             LOS: true,
             LOSCoef: true,
         },
+
+        allShipsMustBe: {
+            not: true,
+            shipTypes: true,
+            conditionCheckedNode: true,
+            conditionFailedNode: true,
+        }
     }
 }
