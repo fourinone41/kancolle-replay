@@ -7,11 +7,8 @@ const MapEditorComponent = {
 
         mouseX: 0,
         mouseY: 0,
-
-        /**
-         * Use getCurrentNode to access this property
-         */
-        _currentNode: null,
+        
+        currentNode: null,
     }),
 
     computed: {
@@ -50,23 +47,23 @@ const MapEditorComponent = {
     },
 
     methods: {
-        getCurrentNode() {
-            if (this.currentTab != 'nodes') return null;
-            return this._currentNode;
-        },
+        // getCurrentNode() {
+            // if (this.currentTab != 'nodes') return null;
+            // return this.currentNode;
+        // },
 
         onMouseMoveOnMap (event) {
             this.mouseX = event.pageX - event.target.offsetLeft;
             this.mouseY = event.pageY - event.target.offsetTop;
         },
 
-        onClickOnMap () {
-            const node = this.getCurrentNode();
-            if (!node) return;
+        // onClickOnMap () {
+            // const node = this.getCurrentNode();
+            // if (!node) return;
 
-            node.x = this.mouseX;
-            node.y = this.mouseY;
-        },
+            // node.x = this.mouseX;
+            // node.y = this.mouseY;
+        // },
 
         deleteMap () {
             if (confirm("Are you sure you want to delete this map ?")) {
@@ -95,9 +92,23 @@ const MapEditorComponent = {
         selectedTab(tabName) {
             return tabName == this.currentTab;
         },
-
-        onNodeChanged(node) {
-            this._currentNode = node; 
+        
+        addNode(nodeName,x=0,y=0) {
+            this.mapData.nodes[nodeName] = new ChNodeData();
+            this.mapData.nodes[nodeName].x = x;
+            this.mapData.nodes[nodeName].y = y;
+            this.mapData.nodes[nodeName].rules = [];
+            this.onNodeChanged(nodeName);
+        },
+        
+        deleteNode(nodeName) {
+            this.currentNode = null;
+            delete this.mapData.nodes[nodeName];
+        },
+        
+        onNodeChanged(name) {
+            this.currentNode = name; 
+            this.changeTab('nodes');
         },
 
         addPart() {
@@ -123,6 +134,12 @@ const MapEditorComponent = {
         deletePart(partNumber) {
             delete this.mapData.parts[partNumber];
         }
+    },
+    
+    watch: {
+        mapData() {
+            this.currentNode = null;
+        },
     },
 
     template: document.getElementById('map-editor')

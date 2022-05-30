@@ -159,6 +159,7 @@ Vue.createApp({
 .component('vequipeditor', EquipEditorComponent)
 .component('vshipeditor', ShipEditorComponent)
 .component('vfleeteditor', FleetEditorComponent)
+.component('vmapnodeplacer', MapNodePlacerComponent)
 .component('MultiCheckboxesEditor', MultiCheckboxesEditorComponent)
 .component('MapSelection', MapSelectionComponent)
 .component('MapEditor', MapEditorComponent)
