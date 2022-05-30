@@ -22,8 +22,12 @@ const RoutingComponent = {
             { key: 'los', display: "LOS check rule" },
             { key: 'default', display: "Default routing rule" },
             { key: 'shipIds', display: "Ships routing" },
-            { key: 'fleetType', display: "Fleet type" },
+            { key: 'fleetType', display: "Fleet type rule" },
             { key: 'routeSelect', display: "Route selection" },
+            { key: 'shipRetreatedCount', display: "Number of ship retreated rule" },
+            { key: 'difficulty', display: "Difficulty played rule" },
+            { key: 'debuff', display: "Is debuff done rule" },
+            { key: 'speedCount', display: "Number of ships with certain speed rule" },
         ],
 
         operatorList: [
@@ -47,6 +51,7 @@ const RoutingComponent = {
         ],
 
         shipTypeList: COMMON.SHIP_TYPES,
+        difficultiesItemSource: COMMON.DIFFICULTIES,
 
         isCollapsed: false,
     }),
@@ -148,6 +153,13 @@ const RoutingComponent = {
             }
         },
 
+        initDifficulties() {
+            
+            if (!this.rule.difficulties || !this.rule.difficulties.length) {
+                this.rule.difficulties = [];
+            }
+        },
+
     },
 
     watch: {
@@ -158,6 +170,7 @@ const RoutingComponent = {
             if (this.rule.type == "equipData") this.initEquipData();
             if (this.rule.type == "los") this.initLOS();
             if (this.rule.type == "fleetType") this.initFleetType();
+            if (this.rule.type == "difficulty") this.initDifficulties();
         }
     },
 
@@ -196,6 +209,11 @@ const RoutingComponent = {
                 <tr v-if="shouldEditorBeDisplayed('fleetType')">
                     <td>Fleet types</td>
                     <td><velementlist :data-source="rule.fleetType" :item-list="fleetTypeItemList" /></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('difficulties')">
+                    <td>Difficulties</td>
+                    <td><velementlist :data-source="rule.difficulties" :item-list="difficultiesItemSource" /></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('shipsIds')">
@@ -396,5 +414,36 @@ const RoutingComponent = {
         routeSelect: {
             routeSelect: true,
         },
+
+        shipRetreatedCount: {
+            operator : true, 
+            count : true, 
+
+            conditionCheckedNode : true, 
+            conditionFailedNode : true
+        },
+
+        difficulty: {
+            difficulties: true,
+            
+            conditionCheckedNode : true, 
+            conditionFailedNode : true
+        },
+
+        debuff: {
+            conditionCheckedNode : true, 
+            conditionFailedNode : true
+        },
+
+        speedCount: {
+            speed : true, 
+            speedOperator : true,
+
+            count : true, 
+            operator : true,
+
+            conditionCheckedNode : true, 
+            conditionFailedNode : true,
+        }
     }
 }
