@@ -19,6 +19,7 @@ const RoutingComponent = {
             { key: 'los', display: "LOS check rule" },
             { key: 'default', display: "Default routing rule" },
             { key: 'shipIds', display: "Ships routing" },
+            { key: 'fleetType', display: "Fleet type" },
         ],
 
         operatorList: [
@@ -50,7 +51,20 @@ const RoutingComponent = {
     computed: {
         nodeList() {
             return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
-        }
+        },
+
+        fleetTypeItemList () {
+            const fleets = [];
+            
+            for (const fleetType of this.mapData.fleetTypes) {
+
+                const type = COMMON.FLEET_TYPES.find(el => el.key == fleetType);
+
+                fleets.push(type);
+            }
+
+            return fleets;
+        },
     },
 
     methods: {
@@ -113,6 +127,13 @@ const RoutingComponent = {
             }
         },
 
+        initFleetType() {
+            
+            if (!this.rule.fleetType || !this.rule.fleetType.length) {
+                this.rule.fleetType = [];
+            }
+        },
+
     },
 
     watch: {
@@ -122,6 +143,7 @@ const RoutingComponent = {
             if (this.rule.type == "LOSCheckIfRuleChecked") this.initLOSCheckIfRuleChecked();
             if (this.rule.type == "equipData") this.initEquipData();
             if (this.rule.type == "los") this.initLOS();
+            if (this.rule.type == "fleetType") this.initFleetType();
         }
     },
 
@@ -155,6 +177,11 @@ const RoutingComponent = {
                 <tr v-if="shouldEditorBeDisplayed('shipTypes')">
                     <td>Ship types</td>
                     <td><velementlist :data-source="rule.shipTypes" :item-list="shipTypeList" /></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('fleetType')">
+                    <td>Fleet types</td>
+                    <td><velementlist :data-source="rule.fleetType" :item-list="fleetTypeItemList" /></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('shipsIds')">
@@ -329,6 +356,12 @@ const RoutingComponent = {
             shipsIds : true, 
             operator : true, 
             count : true, 
+            conditionCheckedNode : true, 
+            conditionFailedNode : true
+        },
+        
+        fleetType: {
+            fleetType: true,
             conditionCheckedNode : true, 
             conditionFailedNode : true
         }

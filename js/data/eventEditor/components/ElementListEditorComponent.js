@@ -27,7 +27,7 @@ const ElementListEditorComponent = {
 
     methods: {
         addElement() {
-            if (this.selectedElement && !this.dataSource.includes(this.selectedElement)) this.dataSource.push(this.selectedElement);
+            if (this.selectedElement !== null  && this.selectedElement !== undefined && !this.dataSource.includes(this.selectedElement)) this.dataSource.push(this.selectedElement);
         },
 
         deleteElement(elementKey) {
