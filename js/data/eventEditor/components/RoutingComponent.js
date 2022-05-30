@@ -1,5 +1,8 @@
 const RoutingComponent = {
-    props: ['rule', 'mapData'],
+    props: {
+        rule: ChRule, 
+        mapData: Object
+    },
     emits: ['deleteRule'],
         
     data: () => ({
@@ -46,7 +49,6 @@ const RoutingComponent = {
         shipTypeList: COMMON.SHIP_TYPES,
 
         isCollapsed: false,
-
     }),
 
     computed: {
@@ -65,6 +67,17 @@ const RoutingComponent = {
             }
 
             return fleets;
+        },
+
+        mapPartsItemList() {
+            const parts = [];
+            
+            for (const part in this.mapData.parts) {
+
+                parts.push({ display: part, key: part });
+            }
+
+            return parts;
         },
     },
 
@@ -270,6 +283,14 @@ const RoutingComponent = {
                     <td><velementlist :data-source="rule.routeSelect" :item-list="nodeList" /></td>
                 </tr>
 
+                <button v-if="!rule.mapParts" @click="rule.mapParts=[]">Have rule only on certain parts</button>
+                <button v-if="!!rule.mapParts" @click="rule.mapParts=null">Have rule on all part</button>
+
+                <tr v-if="!!rule.mapParts">
+                    <td>Applies to map parts</td>
+                    <td><velementlist :data-source="rule.mapParts" :item-list="mapPartsItemList" /></td>
+                </tr>
+
             </table>
         </div> 
     `,
@@ -374,6 +395,6 @@ const RoutingComponent = {
 
         routeSelect: {
             routeSelect: true,
-        }
+        },
     }
 }
