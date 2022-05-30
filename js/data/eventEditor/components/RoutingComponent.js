@@ -16,6 +16,7 @@ const RoutingComponent = {
             { key: 'allShipsMustBe', display: "All ship must be of type rule" },
             { key: 'isLastDance', display: "Is last dance rule" },
             { key: 'equipType', display: "Equipment rule" },
+            { key: 'los', display: "LOS check rule" },
             { key: '', display: "" },
         ],
 
@@ -67,6 +68,7 @@ const RoutingComponent = {
 
             if (this.rule.type == "ifthenelse") return "";
             if (this.rule.type == "LOSCheckIfRuleChecked") return "";
+            if (this.rule.type == "los") return "";
             if (this.rule.type == "random") return "";
             if (this.rule.type == "fixed") return returnValue + this.rule.fixedNode;
 
@@ -86,6 +88,10 @@ const RoutingComponent = {
             if (!this.rule.ifthenelse) this.rule.ifthenelse = {};
             if (!this.rule.ifthenelse.if) this.rule.ifthenelse.if = new ChRule();
 
+            this.initLOS();
+        }, 
+        
+        initLOS() {
             if (!this.rule.LOS || !this.rule.LOS[1]) this.rule.LOS = {
                 4: {},
                 1: {},
@@ -114,6 +120,7 @@ const RoutingComponent = {
             if (this.rule.type == "ifthenelse") this.initIfThenElse();
             if (this.rule.type == "LOSCheckIfRuleChecked") this.initLOSCheckIfRuleChecked();
             if (this.rule.type == "equipData") this.initEquipData();
+            if (this.rule.type == "los") this.initLOS();
         }
     },
 
@@ -301,6 +308,11 @@ const RoutingComponent = {
             shipWithEquipCount: true,
             conditionCheckedNode: true,
             conditionFailedNode: true,
+        },
+        
+        los: {
+            LOS: true,
+            LOSCoef: true,
         },
         
         model2: {

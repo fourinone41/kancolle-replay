@@ -33105,6 +33105,7 @@ function checkRoute(id) {
 }
 
 function getDiff(defaultValue) {
+	if (!window.CHDATA) return defaultValue;
 	if (!CHDATA.event.maps[MAPNUM].diff) return defaultValue;
 	return CHDATA.event.maps[MAPNUM].diff;
 }
