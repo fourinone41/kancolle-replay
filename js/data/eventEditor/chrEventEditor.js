@@ -174,5 +174,6 @@ Vue.createApp({
 .component('vequipdataruleeditor', EquipmentDataRuleEditorComponent)
 .component('vequiplisteditor', EquipmentListEditorComponent)
 .component('vcountruleeditor', CountRuleEditorComponent)
+.component('vshipidslisteditor', ShipIdsListEditorComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');

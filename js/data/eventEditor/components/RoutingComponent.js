@@ -157,6 +157,11 @@ const RoutingComponent = {
                     <td><velementlist :data-source="rule.shipTypes" :item-list="shipTypeList" /></td>
                 </tr>
 
+                <tr v-if="shouldEditorBeDisplayed('shipsIds')">
+                    <td>Ships</td>
+                    <td><vshipidslisteditor :data-source="rule.shipsIds" /></td>
+                </tr>
+
                 <tr v-if="shouldEditorBeDisplayed('equipData')">
                     <td>Equipment data</td>
                     <td><vequipdataruleeditor :data-source="rule.equipData" /></td>
@@ -321,7 +326,11 @@ const RoutingComponent = {
         },
         
         shipIds: {
-            count: true,
+            shipsIds : true, 
+            operator : true, 
+            count : true, 
+            conditionCheckedNode : true, 
+            conditionFailedNode : true
         }
     }
 }
