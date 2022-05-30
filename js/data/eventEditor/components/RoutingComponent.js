@@ -20,6 +20,7 @@ const RoutingComponent = {
             { key: 'default', display: "Default routing rule" },
             { key: 'shipIds', display: "Ships routing" },
             { key: 'fleetType', display: "Fleet type" },
+            { key: 'routeSelect', display: "Route selection" },
         ],
 
         operatorList: [
@@ -264,6 +265,11 @@ const RoutingComponent = {
                     <td><vchanceseditor :data-source="rule" :item-list="nodeList" data-field="randomNodes"/></td>
                 </tr>
 
+                <tr v-if="shouldEditorBeDisplayed('routeSelect')">
+                    <td>Routes</td>
+                    <td><velementlist :data-source="rule.routeSelect" :item-list="nodeList" /></td>
+                </tr>
+
             </table>
         </div> 
     `,
@@ -364,6 +370,10 @@ const RoutingComponent = {
             fleetType: true,
             conditionCheckedNode : true, 
             conditionFailedNode : true
+        },
+
+        routeSelect: {
+            routeSelect: true,
         }
     }
 }

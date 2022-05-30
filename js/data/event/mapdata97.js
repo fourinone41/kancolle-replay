@@ -204,6 +204,7 @@ MAPDATA[97].loadUnlockFromChData = function (map) {
 
     const debuff = map.debuffRules;
     if (debuff && debuff.type) map.debuffRules = new ChGimmickList(debuff.type, debuff.mapPartNumber, debuff.mapNum, debuff.gimmickData, debuff.additionnalParameters);
+    else delete map.debuffRules;
 }
 
 MAPDATA[97].loadStartBonusesFromChData = function (map) {
