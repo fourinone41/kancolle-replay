@@ -173,5 +173,6 @@ Vue.createApp({
 .component('vloseditor', LOSEditorComponent)
 .component('vequipdataruleeditor', EquipmentDataRuleEditorComponent)
 .component('vequiplisteditor', EquipmentListEditorComponent)
+.component('vcountruleeditor', CountRuleEditorComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');

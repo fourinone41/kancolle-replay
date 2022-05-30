@@ -17,7 +17,8 @@ const RoutingComponent = {
             { key: 'isLastDance', display: "Is last dance rule" },
             { key: 'equipType', display: "Equipment rule" },
             { key: 'los', display: "LOS check rule" },
-            { key: '', display: "" },
+            { key: 'default', display: "Default routing rule" },
+            { key: 'shipIds', display: "Ships routing" },
         ],
 
         operatorList: [
@@ -173,7 +174,7 @@ const RoutingComponent = {
                 
                 <tr v-if="shouldEditorBeDisplayed('count')">
                     <td>Number</td>
-                    <td><input v-model="rule.count" type="number" min="0" /></td>
+                    <td><vcountruleeditor :data-source="rule" data-field="count" /></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('shipWithEquipCount')">
@@ -315,10 +316,12 @@ const RoutingComponent = {
             LOSCoef: true,
         },
         
-        model2: {
-            not: true,
+        default: {
             conditionCheckedNode: true,
-            conditionFailedNode: true,
+        },
+        
+        shipIds: {
+            count: true,
         }
     }
 }
