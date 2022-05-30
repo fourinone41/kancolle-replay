@@ -242,19 +242,20 @@ button.play-bgm {
 }
 
 
-#divFriendFleets div.tabber {
+div.tabber {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+	align-items: center;
 }
-#divFriendFleets div.tabberButton {
+div.tabberButton {
     padding: 10px 20px;
     background-color: #646464;
 }
-#divFriendFleets div.tabberButton.selected {
+div.tabberButton.selected {
     background-color: #a1a1a1;
 }
-#divFriendFleets div.tabberButton:hover {
+div.tabberButton:hover {
     cursor: pointer;
     background-color: #a1a1a1;
 }
@@ -268,3 +269,39 @@ button.play-bgm {
 #divFriendFleets div.fleetDisplay div.header div:last-child input {
     margin-right: -100%;
 }
+
+div.nodePlacer {
+	padding: 20px;
+}
+div.nodePlacer input.invalid {
+	background-color: #ffaaaa;
+}
+div.nodePlacer div.nodePlacerCanvas {
+	outline: 0px solid transparent;
+}
+div.nodePlacer div.nodePlacerControls {
+	display: flex;
+}
+div.nodePlacer div.note {
+	white-space: nowrap;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }

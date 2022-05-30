@@ -135,6 +135,16 @@ var COMMON = {
             type: 3,
         },
 
+        ANCHOR_EMPTY_NODE: {
+            type: 3,
+            dropoff: true,
+        },
+
+        REPAIR_NODE: {
+            type: 3,
+			repair: true,
+        },
+
         // --- Ressource nodes
         RESOURCE_GAIN_NODE: {
             type: 2,
@@ -154,6 +164,45 @@ var COMMON = {
             dropoff: true,
         },
     },
+
+	SHIP_TYPES: [
+		{ key: 'DD', display: "DD" },
+		{ key: 'DE', display: "DE" },
+
+		{ key: 'CL', display: "CL" },
+		{ key: 'CLT', display: "CLT" },
+
+		{ key: 'CA', display: "CA" },
+		{ key: 'CAV', display: "CAV" },
+
+		{ key: 'aBB', display: "(F)BB(V)" },
+		{ key: 'BB', display: "BB" },
+		{ key: 'FBB', display: "FBB" },
+		{ key: 'BBV', display: "BBV" },
+
+
+		{ key: 'SS', display: "SS" },
+		{ key: 'SSV', display: "SSV" },
+
+		{ key: 'aCV', display: "CV(L/B)" },
+		{ key: 'CVL', display: "CVL" },
+		{ key: 'CV', display: "CV" },
+		{ key: 'CVB', display: "CVB" },
+
+		{ key: 'AV', display: "AV" },
+		{ key: 'LHA', display: "LHA" },
+		{ key: 'AS', display: "AS" },
+		{ key: 'AR', display: "AR" },
+		{ key: 'AO', display: "AO" },
+		{ key: 'CT', display: "CT" },
+	],
+
+	DIFFICULTIES: [
+		{ key: 4, display: "Casual" },
+		{ key: 1, display: "Easy" },
+		{ key: 2, display: "Medium" },
+		{ key: 3, display: "Hard" },
+	],
 
 	SOUND_MANAGER: new SoundManager(),
 };

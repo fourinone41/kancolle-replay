@@ -55,16 +55,17 @@
     <script src="js/data/objects/chNodeData.js"></script>
 
     <script src="js/data/eventEditor/common.js"></script>
-	<script src="js/vue.global.dev.js"></script>
-	<script src="js/vue-i18n.global.js"></script>
+    <script src="js/vue.global.dev.js"></script>
+    <script src="js/vue-i18n.global.js"></script>
+    <script src="reader/lz-string.js"></script>
 </head>
 
 <body>
     <div id="eventEditor">
 
-        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber"></map-selection>
+        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber" @event-mode-changed="fileModeChanged"></map-selection>
 
-        <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted"></map-editor></div>
+        <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted" ></map-editor></div>
         <div v-else><event-editor :event-data="eventData"></event-settings></div>
 
         <vshipselector></vshipselector>
@@ -184,9 +185,20 @@
                     <button @click="addPart">Add part</button>
                     <div v-for="(part, key) in mapData.parts" :key="key">
                         <div>
-                            Boss node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="currentBoss"></vcomboboxeditor>
-
+                            <button @click="deletePart(key)">Delete</button>
                             <table>
+                                <tr>
+                                
+                                    <td>Boss node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="currentBoss"></vcomboboxeditor></td>
+
+                                </tr>
+                                
+                                <tr>
+                                
+                                    <td>Transport node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="transport" :can-be-null="true"></vcomboboxeditor></td>
+                                    
+                                </tr>
+
                                 <tr>
                                     <td>Map HP</td>
                                 </tr>
@@ -210,28 +222,56 @@
                                     <td>Hard</td>
                                     <td><input v-model="part.maphp[3][1]" type="number" /></td>
                                 </tr>
+                                
+                                <tr>
+                                    <td>Last dance HP</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Casual</td>
+                                    <td><input v-model="part.finalhp[4]" type="number" /></td>
+                                </tr>
+    
+                                <tr>
+                                    <td>Easy</td>
+                                    <td><input v-model="part.finalhp[1]" type="number" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Medium</td>
+                                    <td><input v-model="part.finalhp[2]" type="number" /></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Hard</td>
+                                    <td><input v-model="part.finalhp[3]" type="number" /></td>
+                                </tr>
                             </table>
+                            <br>
                         </div>
                     </div>
                 </div>
 
                 <div v-if="selectedTab('nodes')" class="map-settings">
-                    <vnodelist :map-data="mapData" :event-data="eventData" @node-changed="onNodeChanged"></vnodelist>
+                    <vnodelist :map-data="mapData" :event-data="eventData" :current-node="currentNode" @node-changed="onNodeChanged" @add-node="addNode" @delete-node="deleteNode"></vnodelist>
+                    <vnode v-if="mapData.nodes[currentNode]" :map-data="mapData" :event-data="eventData" :node-data="mapData.nodes[currentNode]"></vnode>
                 </div>
                 
             </div>
     
     
             <div class="map-group"> 
-                <img :src="mapData.mapImage" @mousemove="onMouseMoveOnMap" @click="onClickOnMap"/>
-                <br>X: {{mouseX}} <br> Y: {{mouseY}}
+                <!-- <img :src="mapData.mapImage" @mousemove="onMouseMoveOnMap" @click="onClickOnMap"/> -->
+                <!-- <br>X: {{mouseX}} <br> Y: {{mouseY}} -->
+                
+                <vmapnodeplacer :map-data="mapData" :current-node="currentNode" @add-node="addNode" @node-changed="onNodeChanged"></vmapnodeplacer>
             </div>
         </div>
         
-	</template>
+    </template>
 
     <template id="event-editor">
-		<div class="group-title">Event infos</div>
+        <div class="group-title">Event infos</div>
         <div class="editor-group">
             <table>
                 <tr>
@@ -325,15 +365,18 @@
                 <div><input type="button" value="Delete Fleet" @click="deleteFriendFleet(friendFleetCurrent)"/></div>
             </div>
         </div>
-	</template>
+    </template>
 </body>
 
 <script src="js/data/eventEditor/i18n.js"></script>
 <script src="js/data/eventEditor/components/ModalComponent.js"></script>
 <script src="js/data/eventEditor/components/ShipEquipSelectorComponent.js"></script>
 <script src="js/data/eventEditor/components/EquipEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/EquipmentListEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/EquipmentDataRuleEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/ShipEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/FleetEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/MapNodePlacerComponent.js"></script>
 <script src="js/data/eventEditor/components/MapSelectionComponent.js"></script>
 <script src="js/data/eventEditor/components/MultiCheckboxesEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/ComboBoxEditorComponent.js"></script>
@@ -343,6 +386,11 @@
 <script src="js/data/eventEditor/components/RoutingComponent.js"></script>
 <script src="js/data/eventEditor/components/RoutingListComponent.js"></script>
 <script src="js/data/eventEditor/components/EventEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ElementListEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ChancesEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/LOSEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/CountRuleEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/ShipIdsListEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>

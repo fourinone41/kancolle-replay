@@ -1,5 +1,5 @@
 const RoutingListComponent = {
-    props: ['ruleList', 'mapData'],
+    props: ['ruleList', 'mapData', 'conditionCheckedNode'],
         
     data: () => ({
         
@@ -11,7 +11,11 @@ const RoutingListComponent = {
 
     methods: {
         addRule() {
-            this.ruleList.push(new ChRule());
+            const newRule = new ChRule();
+
+            if (this.conditionCheckedNode) newRule.conditionCheckedNode = this.conditionCheckedNode;
+
+            this.ruleList.push(newRule);
         },
 
         onDeleteRule(deletedRule) {

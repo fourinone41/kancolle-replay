@@ -43,6 +43,12 @@ MAPDATA[97] = {
 MAPDATA[97].initializeAllMaps = function () {
     
     if (!CHDATA.event) CHDATA.event = {};
+
+    if (localStorage.customEventDataToLoad) {
+        CHDATA.customEventData = JSON.parse(localStorage.customEventDataToLoad);
+        localStorage.removeItem('customEventDataToLoad');
+    }
+
     CHDATA.event.comps = CHDATA.customEventData.comps;
 
     for (const key in CHDATA.customEventData.eventData) {
@@ -57,17 +63,6 @@ MAPDATA[97].initializeAllMaps = function () {
     
     for (const mapNumber in CHDATA.maps) {
         MAPDATA[97].initializeMap(mapNumber);
-    }
-
-    // --- Init Friend fleets (TODO : have it in the file)
-    for (const eventId in MAPDATA) {
-        if (eventId > 90) continue;
-        if (!MAPDATA[eventId].friendFleet) continue;
-
-        for (const FFkey in MAPDATA[eventId].friendFleet) {
-            
-            MAPDATA[97].friendFleet[FFkey] = MAPDATA[eventId].friendFleet[FFkey];
-        }
     }
 }
 
@@ -209,6 +204,7 @@ MAPDATA[97].loadUnlockFromChData = function (map) {
 
     const debuff = map.debuffRules;
     if (debuff && debuff.type) map.debuffRules = new ChGimmickList(debuff.type, debuff.mapPartNumber, debuff.mapNum, debuff.gimmickData, debuff.additionnalParameters);
+    else delete map.debuffRules;
 }
 
 MAPDATA[97].loadStartBonusesFromChData = function (map) {
@@ -245,25 +241,33 @@ MAPDATA[97].loadBonusesFromChData = function (nodeData) {
  * @returns 
  */
 MAPDATA[97].convertRule = function (ruleToConvert) {
+    let rule = null;
+
     switch (ruleToConvert.type) {
         case "fixed":
-            return ChFixedRoutingRule(ruleToConvert.fixedNode);
+            rule = ChFixedRoutingRule(ruleToConvert.fixedNode);
+            break;
             
         case "routeSelect":
-            return ChSelectRouteRule(ruleToConvert.routeSelect);
+            rule =  ChSelectRouteRule(ruleToConvert.routeSelect);
+            break;
 
         case "mapPart":
-            return ChMapPartRuleOld(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChMapPartRuleOld(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
             
         case "isRouteUnlocked":
-            if (ruleToConvert.not) return ChIsRouteNotUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
-            return ChIsRouteUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            if (ruleToConvert.not) rule = ChIsRouteNotUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChIsRouteUnlockedRule(ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "default":
-            return ChDefaultRouteRule(ruleToConvert.conditionCheckedNode);
+            rule = ChDefaultRouteRule(ruleToConvert.conditionCheckedNode);
+            break;
 
         case "shipType":
-            return ChShipTypeRoutingRule(ruleToConvert.shipTypes, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChShipTypeRoutingRule(ruleToConvert.shipTypes, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "multiRules":
             let rulesArray = [];
@@ -272,53 +276,74 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
                 rulesArray.push(MAPDATA[97].convertRule(rule));
             }
 
-            return ChMultipleRulesRule(rulesArray, ruleToConvert.logicOperator, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChMultipleRulesRule(rulesArray, ruleToConvert.logicOperator, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
     
         case "fleetType": 
-            return ChFleetTypeRule(ruleToConvert.fleetType, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChFleetTypeRule(ruleToConvert.fleetType, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "random": 
-            return ChRandomRule(ruleToConvert.randomNodes);
+            rule = ChRandomRule(ruleToConvert.randomNodes);
+            break;
         
         case "difficulty": 
-            return ChDifficultyRule(ruleToConvert.difficulties, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChDifficultyRule(ruleToConvert.difficulties, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "speed": 
-            return ChSpeedRule(ruleToConvert.operator, ruleToConvert.speed, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChSpeedRule(ruleToConvert.operator, ruleToConvert.speed, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "ifthenelse": {
             const ruleIf = ruleToConvert.ifthenelse.if ? this.convertRule(ruleToConvert.ifthenelse.if) : null;
             const ruleThen = ruleToConvert.ifthenelse.then ? this.convertRule(ruleToConvert.ifthenelse.then): null;
             const ruleElse = ruleToConvert.ifthenelse.else ? this.convertRule(ruleToConvert.ifthenelse.else): null;
 
-            return ChIfThenElseRule(ruleIf, ruleThen, ruleElse);
+            rule = ChIfThenElseRule(ruleIf, ruleThen, ruleElse);
+            break;
         }
 
         case 'los': 
-            return ChLOSRule(ruleToConvert.LOS, ruleToConvert.LOSCoef);
+            rule = ChLOSRule(ruleToConvert.LOS, ruleToConvert.LOSCoef);
+            break;
 
         case "shipIds": 
-            return ChShipIdsRoutingRule(ruleToConvert.shipsIds, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChShipIdsRoutingRule(ruleToConvert.shipsIds, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "shipCount": 
-            return ChShipCountRoutingRule(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChShipCountRoutingRule(ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "allShipsMustBe": 
-            return ChAllShipMusteBeOfTypeRule(ruleToConvert.shipTypes, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+            rule = ChAllShipMusteBeOfTypeRule(ruleToConvert.shipTypes, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+            break;
 
         case "equipType": 
-            return ChEquipTypeRule(ruleToConvert.equipData, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.shipWithEquipCount, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule = ChEquipTypeRule(ruleToConvert.equipData, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.shipWithEquipCount, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            break;
 
         case "custom": 
-            return ChCreateCustomRuleFromName(ruleToConvert.customRuleName);
+            rule = ChCreateCustomRuleFromName(ruleToConvert.customRuleName);
+            break;
 
         case "speedCount": 
-            return ChNumberOfShipOfSpeedRule(ruleToConvert.speedOperator, ruleToConvert.speed, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+            rule = ChNumberOfShipOfSpeedRule(ruleToConvert.speedOperator, ruleToConvert.speed, ruleToConvert.operator, ruleToConvert.count, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode)
+            break;
+
+        case "LOSCheckIfRuleChecked": 
+            rule = ChLOSCheckIfRuleChecked(ruleToConvert.LOS, ruleToConvert.LOSCoef, MAPDATA[97].convertRule(ruleToConvert.ifthenelse.if));
+            break;
 
         default:
             console.debug(ruleToConvert);
             throw 'unhandled rule';
     }
+
+    if (ruleToConvert.mapParts) rule.mapParts = ruleToConvert.mapParts;
+
+    return rule;
 }
 
 MAPDATA[97].loadNodeFromChData = function (nodeData) {

@@ -12,3 +12,4 @@
 - import real event maps
 - give lock per start
 - map cors ?
+- ship groups (store in event then allow to choose from ship list)

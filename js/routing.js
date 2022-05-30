@@ -11,7 +11,9 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" 
+     * | "LOSCheckIfRuleChecked" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' 
+     * | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount'}
      */
     this.type = "fixed";
 
@@ -396,7 +398,9 @@ function ChRule () {
                 return ChRule.CompareNumbers(count, this.getCount(), this.operator, this.conditionCheckedNode, this.conditionFailedNode);
             }
 
-            case "ifthenelse": {
+            case "ifthenelse":
+            case "LOSCheckIfRuleChecked": 
+            {
                 if (this.ifthenelse.if.getRouting(ships)) {
                     return this.ifthenelse.then.getRouting(ships);
                 }
@@ -767,7 +771,9 @@ function ChRule () {
                 return `Number of ${ChRule.SpeedArray[this.speed][this.speedOperator]} ships in the fleet ${this.operator} ${this.count}`;
             }
 
-            case "ifthenelse": {
+            case "ifthenelse":
+            case "LOSCheckIfRuleChecked": 
+            {
                 let desc = `If ${this.ifthenelse.if.getDescription()}<br>then ${this.ifthenelse.then.getDescription()}`;
                 
                 if (this.ifthenelse.else) desc += `<br>else ${this.ifthenelse.else.getDescription()}`;
@@ -999,7 +1005,8 @@ function ChRule () {
      * Useful for the ifthenelse rule cause it's the then or the else tha contains the information about compass or los plane value
      */
     this.getValidatedRule = function (ships) {
-        if (this.type == "ifthenelse") {
+        if (this.type == "ifthenelse" || this.type == "LOSCheckIfRuleChecked" ) 
+        {
             if (this.ifthenelse.if.getRouting(ships)) {
                 return this.ifthenelse.then;
             }
@@ -1277,7 +1284,7 @@ function ChIfThenElseRule(ruleIf, ruleThen, ruleElse) {
 
     rule.type = "ifthenelse";
 
-    ruleIf.conditionCheckedNode = true;
+    if (!ruleIf.conditionCheckedNode) ruleIf.conditionCheckedNode = true;
     ruleIf.conditionFailedNode = false;
 
     rule.ifthenelse = {
@@ -1416,7 +1423,7 @@ function ChEquipTypeRule(equipData, operator, count, shipWithEquipCount, conditi
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = rule.ifthenelse.then.conditionFailedNode;
 
-    rule.type = "ifthenelse";
+    rule.type = "LOSCheckIfRuleChecked";
 
     let key = Object.keys(losArray)[0];
 

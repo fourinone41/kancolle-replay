@@ -76,7 +76,7 @@ class ChrDisplayEventInfo {
                     this.unlockPart = 0;
                 }
 
-                if (CHDATA.event.maps[4].part) {
+                if (CHDATA.event.maps[4] && CHDATA.event.maps[4].part) {
                     this.lbPart = CHDATA.event.maps[4].part;
                 }
                 else {
@@ -754,7 +754,7 @@ class ChrDisplayEventInfo {
             }
         }
 
-        if (map.debuffRules && map.debuffRules.gimmicks.length) {
+        if (map.debuffRules && map.debuffRules.gimmicks && map.debuffRules.gimmicks.length) {
             $("#mapInfoMapInfo").append(this.DisplayDebuffInfos(map.debuffRules, map, MAPDATA[this.GetCurrentWorld()]));
         }
 

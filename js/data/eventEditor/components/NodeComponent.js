@@ -20,12 +20,14 @@ const NodeComponent = {
 
             { key: 400, display: "Start point", nodeData: COMMON.NODE_TYPES.START_POINT },
             { key: 401, display: "Empty node", nodeData: COMMON.NODE_TYPES.EMPTY_NODE },
+            { key: 402, display: "Anchor empty node", nodeData: COMMON.NODE_TYPES.ANCHOR_EMPTY_NODE },
+            { key: 403, display: "Repair node", nodeData: COMMON.NODE_TYPES.REPAIR_NODE },
 
             { key: -4, separator: true },
 
             { key: 500, display: "Resource gain node", nodeData: COMMON.NODE_TYPES.RESOURCE_GAIN_NODE },
             { key: 501, display: "Resource loss node", nodeData: COMMON.NODE_TYPES.RESOURCE_LOSS_NODE },
-            { key: 502, display: "Anchor node", nodeData: COMMON.NODE_TYPES.ANCHOR_RESOURCE_NODE },
+            { key: 502, display: "Anchor ressource node", nodeData: COMMON.NODE_TYPES.ANCHOR_RESOURCE_NODE },
         ],
 
         selectedNodeType: null,
@@ -124,8 +126,14 @@ const NodeComponent = {
                 <td><input v-model="nodeData.dropoff" type="checkbox" /></td>
             </tr>
 
+            <tr v-if="displayNodeTypeInfo">
+                <td>Repair node ?</td>
+                <td><input v-model="nodeData.repair" type="checkbox" /></td>
+            </tr>
+
+
             <tr>
-                <td cols="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
+                <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
             </tr>
 
         </table>
