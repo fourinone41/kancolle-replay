@@ -14,6 +14,9 @@ const RoutingComponent = {
             { key: 'ifthenelse', display: "If A then B else C rule" },
             { key: 'LOSCheckIfRuleChecked', display: "LOS check if rule checked" },
             { key: 'allShipsMustBe', display: "All ship must be of type rule" },
+            { key: 'isLastDance', display: "Is last dance rule" },
+            { key: 'equipType', display: "Equipment rule" },
+            { key: '', display: "" },
         ],
 
         operatorList: [
@@ -89,7 +92,20 @@ const RoutingComponent = {
                 2: {},
                 3: {},
             }
-        }
+        }, 
+        
+        initEquipData() {
+            
+            if (!this.rule.equipData || !this.rule.equipData.equipIds) {
+                this.rule.equipData = {
+                    equipIds: [],
+                    equipTypes: [],
+                    LOS: 0, 
+                    haveAllEquips: false
+                }
+            }
+        },
+
     },
 
     watch: {
@@ -97,6 +113,7 @@ const RoutingComponent = {
             // --- Init some data here
             if (this.rule.type == "ifthenelse") this.initIfThenElse();
             if (this.rule.type == "LOSCheckIfRuleChecked") this.initLOSCheckIfRuleChecked();
+            if (this.rule.type == "equipData") this.initEquipData();
         }
     },
 
@@ -131,6 +148,11 @@ const RoutingComponent = {
                     <td>Ship types</td>
                     <td><velementlist :data-source="rule.shipTypes" :item-list="shipTypeList" /></td>
                 </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('equipData')">
+                    <td>Equipment data</td>
+                    <td><vequipdataruleeditor :data-source="rule.equipData" /></td>
+                </tr>
                 
                 <tr v-if="shouldEditorBeDisplayed('operator')">
                     <td>Operator</td>
@@ -145,6 +167,11 @@ const RoutingComponent = {
                 <tr v-if="shouldEditorBeDisplayed('count')">
                     <td>Number</td>
                     <td><input v-model="rule.count" type="number" min="0" /></td>
+                </tr>
+
+                <tr v-if="shouldEditorBeDisplayed('shipWithEquipCount')">
+                    <td>Number of different ships with the equipment</td>
+                    <td><input v-model="rule.shipWithEquipCount" type="number" min="0" /></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('speed')">
@@ -258,6 +285,26 @@ const RoutingComponent = {
         allShipsMustBe: {
             not: true,
             shipTypes: true,
+            conditionCheckedNode: true,
+            conditionFailedNode: true,
+        },
+        
+        isLastDance: {
+            conditionCheckedNode: true,
+            conditionFailedNode: true,
+        },
+        
+        equipType: {
+            equipData: true,
+            operator: true,
+            count: true,
+            shipWithEquipCount: true,
+            conditionCheckedNode: true,
+            conditionFailedNode: true,
+        },
+        
+        model2: {
+            not: true,
             conditionCheckedNode: true,
             conditionFailedNode: true,
         }

@@ -39,3 +39,20 @@ select.mapButton  {
 .map-settings .rule-editor {
     overflow-y: visible;
 }
+
+.equipDataRuleEditor {
+    width: 350px;
+}
+
+.equipDataRuleEditor .equipEditor {
+    width: 350px;
+}
+
+.equipDataRuleEditor .equipEditor .name input {
+    width: 300px;
+    margin-right: 5px;
+}
+
+.equipDataRuleEditor .equipEditor .name {
+    display: flex;
+}

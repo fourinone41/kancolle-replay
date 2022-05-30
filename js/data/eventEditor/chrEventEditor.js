@@ -171,5 +171,7 @@ Vue.createApp({
 .component('velementlist', ElementListEditorComponent)
 .component('vchanceseditor', ChancesEditorComponent)
 .component('vloseditor', LOSEditorComponent)
+.component('vequipdataruleeditor', EquipmentDataRuleEditorComponent)
+.component('vequiplisteditor', EquipmentListEditorComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');

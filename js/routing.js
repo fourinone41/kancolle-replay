@@ -11,7 +11,9 @@ function ChRule () {
     this.logicOperator = "OR";
 
     /**
-     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" | "LOSCheckIfRuleChecked" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount'}
+     * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" 
+     * | "LOSCheckIfRuleChecked" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' 
+     * | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount'}
      */
     this.type = "fixed";
 
