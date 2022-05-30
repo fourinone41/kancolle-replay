@@ -176,5 +176,8 @@ Vue.createApp({
 .component('vequiplisteditor', EquipmentListEditorComponent)
 .component('vcountruleeditor', CountRuleEditorComponent)
 .component('vshipidslisteditor', ShipIdsListEditorComponent)
+.component('vhiddenrouteeditor', HiddenRoutesEditorComponent)
+.component('vgimmicklist', GimmickListComponent)
+.component('vgimmickeditor', GimmickEditorComponent)
 .use(COMMON.i18n)
 .mount('#eventEditor');

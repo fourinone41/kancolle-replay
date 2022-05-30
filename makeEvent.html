@@ -250,6 +250,9 @@
                             <br>
                         </div>
                     </div>
+
+                    <div class="group-title">Hidden routes</div>
+                    <vhiddenrouteeditor :map-data="mapData" :map-number="mapNumber" gimmick-type="mapPart" />
                 </div>
 
                 <div v-if="selectedTab('nodes')" class="map-settings">
@@ -365,6 +368,7 @@
                 <div><input type="button" value="Delete Fleet" @click="deleteFriendFleet(friendFleetCurrent)"/></div>
             </div>
         </div>
+
     </template>
 </body>
 
@@ -391,6 +395,9 @@
 <script src="js/data/eventEditor/components/LOSEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/CountRuleEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/ShipIdsListEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/HiddenRoutesEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/Gimmick/GimmickEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/Gimmick/GimmickListComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>

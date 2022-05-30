@@ -68,6 +68,18 @@ function MapNodePlacer(component,divRender) {
 	this.updateMap = function() {
 		this.layerMap.removeChildren();
 		this.layerMap.addChild(PIXI.Sprite.fromImage(this.component.mapData.mapImage));
+
+		// --- to do : handle updates (img & x & y)
+		for (var key in this.component.mapData.hiddenRoutes) {
+			
+			var route = this.component.mapData.hiddenRoutes[key];
+
+			for (var image of route.images) {
+				var spr = PIXI.Sprite.fromImage(image.customName);
+				spr.position.set(image.x,image.y);
+				this.layerMap.addChild(spr);
+			}
+		}
 	}
 	
 	this._init();

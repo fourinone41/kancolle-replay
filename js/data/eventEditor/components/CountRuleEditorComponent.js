@@ -1,5 +1,5 @@
 const CountRuleEditorComponent = {
-    props: ['dataSource', 'dataField'],
+    props: ['dataSource', 'dataField', 'hideToggleButton', 'type'],
 
     
     data: () => ({
@@ -36,22 +36,22 @@ const CountRuleEditorComponent = {
 
     template: `
     
-        <div v-if="!isCountPerDiff">
+        <div v-if="!isCountPerDiff && !hideToggleButton">
             <button @click="toggleCountPerDiff">Count per difficulty</button>
         </div>
 
-        <div v-else>
+        <div v-else-if="!hideToggleButton">
             <button @click="toggleCountPerDiff">Count</button>
         </div>
 
         <div v-if="!isCountPerDiff">
-            <input v-model="dataSource[dataField]" type="number" min="0" />
+            <input v-model="dataSource[dataField]" :type="type ? type : 'number'" min="0" />
         </div>
 
         <div v-else v-for="diff in diffItemList" :key="diff.key">
 
             {{diff.display}}
-            <input v-model="dataSource[dataField][diff.key]" type="number" min="0" />
+            <input v-model="dataSource[dataField][diff.key]" :type="type ? type : 'number'" min="0" />
         </div>
 
 

@@ -43,27 +43,25 @@ const MapEditorComponent = {
 
         nodeList() {
             return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
-        }
+        },
+
+        
+        mapNumber () {
+            for (const mapkey in this.eventData.maps) {
+                if (this.eventData.maps[mapkey].name == this.mapData.name) {
+                    return mapkey;
+                }
+            }
+            
+            return 0;
+        },
     },
 
     methods: {
-        // getCurrentNode() {
-            // if (this.currentTab != 'nodes') return null;
-            // return this.currentNode;
-        // },
-
         onMouseMoveOnMap (event) {
             this.mouseX = event.pageX - event.target.offsetLeft;
             this.mouseY = event.pageY - event.target.offsetTop;
         },
-
-        // onClickOnMap () {
-            // const node = this.getCurrentNode();
-            // if (!node) return;
-
-            // node.x = this.mouseX;
-            // node.y = this.mouseY;
-        // },
 
         deleteMap () {
             if (confirm("Are you sure you want to delete this map ?")) {
