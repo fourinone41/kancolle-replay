@@ -78,7 +78,7 @@ const HiddenRoutesEditorComponent = {
                     </div>
                 </div>
 
-                <vgimmicklist :gimmick-list="route.unlockRules.gimmicks" :map-data="mapData" />
+                <vgimmicklist :gimmick-list="route.unlockRules" :map-data="mapData" />
 
             </div>
         </div>

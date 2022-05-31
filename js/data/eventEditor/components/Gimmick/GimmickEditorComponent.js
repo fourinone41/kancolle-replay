@@ -85,7 +85,7 @@ const GimmickEditorComponent = {
         <tr v-if="displayEditor('ranksRequiredPerDiff')">
             <td>Rank required per diff</td>
             <td>
-                <div v-else v-for="diff in diffItemList" :key="diff.key">
+                <div v-for="diff in diffItemList" :key="diff.key">
                     {{diff.display}}
                     <vcomboboxeditor :data-source="gimmickData.ranksRequiredPerDiff" :item-list="rankItemList" :data-field="diff.key"/>
                 </div>
@@ -96,7 +96,6 @@ const GimmickEditorComponent = {
     
     `
 }
-
 
 GimmickEditorComponent.GimmickDisplay = {
     battle: {
