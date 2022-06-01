@@ -1,44 +1,66 @@
 (() => {
 
-function MapNodePlacer(component,divRender) {
-	this.component = component;
-	this.renderer = PIXI.autoDetectRenderer(800, 480,{backgroundColor : 0x000000});
+function MapNodePlacer() {
+	this.component = null;
+	this.renderer = null;
 	this.stage = new PIXI.Container();
 	this.nodes = {};
+	this.active = false;
 	
 	this.stage.addChild(this.layerBG = new PIXI.Container());
 	this.stage.addChild(this.layerMap = new PIXI.Container());
+	this.stage.addChild(this.layerRoutes = new PIXI.Container());
 	this.stage.addChild(this.layerNodes = new PIXI.Container());
 	this.stage.addChild(this.layerEdit = new PIXI.Container());
-	divRender.appendChild(this.renderer.view);
 	
-	this.nodeCursor = PIXI.Sprite.fromImage('assets/maps/nodeB.png');
+	this.nodeCursor = SpritePool.get('assets/maps/nodeB.png');
 	this.nodeCursor.alpha = .5;
 	this.nodeCursor.pivot.set(10);
 	
 	this.layerEdit.addChild(this.nodeCursor);
 	this.layerMap.position.set(MapNodePlacer.MAP_OFFSET_X,MapNodePlacer.MAP_OFFSET_Y);
-	this.layerBG.addChild(PIXI.Sprite.fromImage('assets/82_res.images.ImgBackgroundDay.jpg'));
+	this.layerRoutes.position.set(MapNodePlacer.MAP_OFFSET_X,MapNodePlacer.MAP_OFFSET_Y);
+	this.layerBG.addChild(SpritePool.get('assets/82_res.images.ImgBackgroundDay.jpg'));
 	this.layerBG.interactive = this.layerBG.buttonMode = true;
 	this.layerBG.click = function() {
 		this.component.clickedBG(this.nodeCursor.x-MapNodePlacer.MAP_OFFSET_X,this.nodeCursor.y-MapNodePlacer.MAP_OFFSET_Y);
 	}.bind(this);
 	
-	this._init = function() {
+	this.setup = function(component,divRender) {
+		this.active = true;
+		this.component = component;
+		this.renderer = PIXI.autoDetectRenderer(MapNodePlacer.WIDTH, MapNodePlacer.HEIGHT,{backgroundColor : 0x000000});
+		divRender.appendChild(this.renderer.view);
+		
 		this.updateMap();
+		this.updateRoutes();
 		for (let name in this.component.mapData.nodes) {
 			this._createNode(name);
 		}
 		this._animate();
 	}
 	
+	this.onRecycle = function() {
+		this.active = false;
+		for (let name in this.nodes) this._deleteNode(name);
+		this.renderer.destroy(true);
+		this.component = null;
+		this.renderer = null;
+	}
+	
 	this._animate = function(timeNow) {
+		if (!this.active) return;
 		requestAnimationFrame(this._animate);
 		
 		let mouse = this.renderer.plugins.interaction.mouse.global;
 		this.nodeCursor.position.set(Math.round(mouse.x),Math.round(mouse.y));
 		
 		this.nodeCursor.visible = this.component.cursorMode == 'place' && !this.component.nameInvalid;
+		for (let name in this.nodes) {
+			if (!this.component.mapData.nodes[name]) {
+				this._deleteNode(name);
+			}
+		}
 		for (let name in this.component.mapData.nodes) {
 			if (!this.nodes[name]) {
 				this._createNode(name);
@@ -46,58 +68,67 @@ function MapNodePlacer(component,divRender) {
 			this.nodes[name].update();
 			if (this.nodes[name].hovered) this.nodeCursor.visible = false;
 		}
-		for (let name in this.nodes) {
-			if (!this.component.mapData.nodes[name]) {
-				this._deleteNode(name);
-			}
-		}
 		
 		this.renderer.render(this.stage);
 	}.bind(this);
 	
 	this._createNode = function(name) {
 		if (this.nodes[name]) return;
-		this.nodes[name] = new MapNode(this,name);
+		this.nodes[name] = ObjectPool.create(MapNode,[this,name]);
 	}
 	
 	this._deleteNode = function(name) {
-		this.layerNodes.removeChild(this.nodes[name].graphic);
+		ObjectPool.recycle(this.nodes[name]);
 		delete this.nodes[name];
 	}
 	
 	this.updateMap = function() {
-		this.layerMap.removeChildren();
-		this.layerMap.addChild(PIXI.Sprite.fromImage(this.component.mapData.mapImage));
-
-		// --- to do : handle updates (img & x & y)
-		for (var key in this.component.mapData.hiddenRoutes) {
-			
-			var route = this.component.mapData.hiddenRoutes[key];
-
-			for (var image of route.images) {
-				var spr = PIXI.Sprite.fromImage(image.customName);
-				spr.position.set(image.x,image.y);
-				this.layerMap.addChild(spr);
+		let sprs = this.layerMap.children.slice();
+		for (let spr of sprs) {
+			SpritePool.recycle(spr);
+		}
+		if (this.component.mapData.mapImage) {
+			this.layerMap.addChild(SpritePool.get(this.component.mapData.mapImage));
+		}
+	}
+	
+	this.updateRoutes = function() {
+		let sprs = this.layerRoutes.children.slice();
+		for (let spr of sprs) {
+			SpritePool.recycle(spr);
+		}
+		for (let key in this.component.hiddenRoutesImages) {
+			if (!this.component.routeToggles[key]) continue;
+			for (let img of this.component.hiddenRoutesImages[key]) {
+				if (!img.customName) continue;
+				let spr = SpritePool.get(img.customName);
+				if (!spr) continue;
+				spr.position.set(+img.x,+img.y);
+				this.layerRoutes.addChild(spr);
 			}
 		}
 	}
 	
-	this._init();
+	this.destroy = function() {
+		ObjectPool.recycle(this);
+	}
 };
+MapNodePlacer.WIDTH = 800;
+MapNodePlacer.HEIGHT = 480;
 MapNodePlacer.MAP_OFFSET_X = 17;
 MapNodePlacer.MAP_OFFSET_Y = 22;
 
 
-function MapNode(nodePlacer,name) {
-	this.nodePlacer = nodePlacer;
-	this.name = name;
+function MapNode() {
+	this.nodePlacer = null;
+	this.name = null;
 	this.type = '';
 	this.graphic = new PIXI.Container();
-	this.gGlow = PIXI.Sprite.fromImage('assets/maps/nodeGlow.png');
+	this.gGlow = SpritePool.get('assets/maps/nodeGlow.png');
+	this.gNode = null;
 	this.hitbox = new PIXI.Graphics();
 	this.hovered = false;
 
-	this.nodePlacer.layerNodes.addChild(this.graphic);
 	this.graphic.addChild(this.hitbox);
 	this.graphic.addChild(this.gGlow);
 	this.gGlow.pivot.set(28);
@@ -119,20 +150,32 @@ function MapNode(nodePlacer,name) {
 		this.hovered = false;
 	}.bind(this);
 	
+	this.setup = function(nodePlacer,name) {
+		this.name = name;
+		this.nodePlacer = nodePlacer;
+		this.nodePlacer.layerNodes.addChild(this.graphic);
+	}
+	
+	this.onRecycle = function() {
+		this.nodePlacer.layerNodes.removeChild(this.graphic);
+		this.name = null;
+		this.nodePlacer = null;
+	}
+	
 	this.update = function() {
-		let nodeData = this.nodePlacer.component.mapData.nodes[name];
+		let nodeData = this.nodePlacer.component.mapData.nodes[this.name];
+		if (!nodeData) return; 
+		this.graphic.visible = !nodeData.hidden || this.nodePlacer.component.routeToggles[nodeData.hidden] !== false;
 		this.graphic.position.set(nodeData.x+MapNodePlacer.MAP_OFFSET_X,nodeData.y+MapNodePlacer.MAP_OFFSET_Y);
 		this.gGlow.visible = this.hovered || this.nodePlacer.component.currentNode == this.name;
 		let type = this._getImg(nodeData);
 		if (type != this.type) {
 			this.type = type;
 			let typeData = MapNode.NODE_TYPES[type];
-			this.graphic.removeChildren();
-			let sprNew = PIXI.Sprite.fromImage(typeData.img);
-			sprNew.pivot.set(typeData.pivotX,typeData.pivotY);
-			this.graphic.addChild(this.hitbox);
-			this.graphic.addChild(this.gGlow);
-			this.graphic.addChild(sprNew);
+			SpritePool.recycle(this.gNode);
+			this.gNode = SpritePool.get(typeData.img);
+			this.gNode.pivot.set(typeData.pivotX,typeData.pivotY);
+			this.graphic.addChild(this.gNode);
 		}
 	}
 	
@@ -168,6 +211,37 @@ MapNode.NODE_TYPES = {
 	anchor: { img: 'assets/maps/nodeAnchor.png', pivotX: 25, pivotY: 25 },
 };
 
+let ObjectPool = {
+	_pool: {},
+	create: function(ObjectType,args) {
+		let obj = this._pool[ObjectType.name] && this._pool[ObjectType.name].pop() || new ObjectType();
+		obj.setup(...args);
+		return obj;
+	},
+	recycle: function(obj) {
+		obj.onRecycle();
+		if (!this._pool[obj.constructor.name]) this._pool[obj.constructor.name] = [];
+		this._pool[obj.constructor.name].push(obj);
+	},
+};
+
+let SpritePool = {
+	_pool: {},
+	get: function(path) {
+		if (!path) return null;
+		if (this._pool[path] && this._pool[path].length) return this._pool[path].pop();
+		let spr = PIXI.Sprite.fromImage(path);
+		spr.namePath = path;
+		return spr;
+	},
+	recycle: function(spr) {
+		if (!spr) return;
+		if (spr.parent) spr.parent.removeChild(spr);
+		if (!this._pool[spr.namePath]) this._pool[spr.namePath] = [];
+		this._pool[spr.namePath].push(spr);
+	},
+};
+
 
 window.MapNodePlacerComponent = {
 	props: ['mapData','currentNode'],
@@ -175,16 +249,29 @@ window.MapNodePlacerComponent = {
 	
 	data: () => ({
 		nodeNewName: '',
+		nodeNewRoute: null,
 		cursorMode: 'normal',
 		autoNextNode: true,
+		routeToggles: {},
 	}),
 	
 	mounted() {
-		this._nodePlacer = new MapNodePlacer(this,this.$refs.divNodePlacer);
+		this.updateRouteToggles();
+		this._nodePlacer = ObjectPool.create(MapNodePlacer,[this,this.$refs.divNodePlacer]);
 	},
 	
 	computed: {
 		nameInvalid() { return !!this.mapData.nodes[this.nodeNewName]; },
+		
+		hiddenRoutesImages() {
+			let obj = {};
+			for (let key in this.mapData.hiddenRoutes) {
+				obj[key] = this.mapData.hiddenRoutes[key].images.map(img => Object.assign({},img));
+			}
+			return obj;
+		},
+		
+		routeTogglesKeys() { return Object.keys(this.routeToggles).sort((a,b) => +a-+b); },
 	},
 	
 	methods: {
@@ -212,7 +299,7 @@ window.MapNodePlacerComponent = {
 			if (this.cursorMode == 'place') {
 				if (!this.nodeNewName) return;
 				if (this.mapData.nodes[this.nodeNewName]) return;
-				this.$emit('add-node',this.nodeNewName,x,y);
+				this.$emit('add-node',this.nodeNewName,x,y,this.nodeNewRoute);
 				this.setAutoNextNode();
 			}
 		},
@@ -251,13 +338,37 @@ window.MapNodePlacerComponent = {
 			}
 		},
 		
+		updateRouteToggles() {
+			for (let key in this.hiddenRoutesImages) {
+				if (this.routeToggles[key] == null) this.routeToggles[key] = true;
+			}
+			for (let key in this.routeToggles) {
+				if (this.hiddenRoutesImages[key] == null) delete this.routeToggles[key];
+			}
+		},
 		
+		toggleRoute(key) {
+			this.routeToggles[key] = !this.routeToggles[key];
+			this._nodePlacer.updateRoutes();
+		},
 	},
 	
 	watch: {
 		'mapData.mapImage': function() {
 			this._nodePlacer.updateMap();
 		},
+		'hiddenRoutesImages': {
+			handler: function() {
+				this.updateRouteToggles();
+				this._nodePlacer.updateRoutes();
+			},
+			deep: true,
+		},
+	},
+	
+	unmounted() {
+		this._nodePlacer.destroy();
+		this._nodePlacer = null;
 	},
 	
 	template: `
@@ -268,12 +379,23 @@ window.MapNodePlacerComponent = {
 				<div class="tabberButton" :class="{selected:cursorMode=='normal'}" @click="cursorMode='normal'"><img src="assets/cursor.png"/></div>
 				<div class="tabberButton" :class="{selected:cursorMode=='place'}" @click="clickedPlaceButton"><img src="assets/maps/nodeB.png"/></div>
 				<div>
-					<input v-model="nodeNewName" placeholder="New Node Name" maxlength="10" :class="{invalid:nameInvalid}"/>
-					<label><input type="checkbox" v-model="autoNextNode"/>Auto Next Node?</label>
+					<div>
+						<input v-model="nodeNewName" placeholder="New Node Name" maxlength="10" :class="{invalid:nameInvalid}"/>
+						<label><input type="checkbox" v-model="autoNextNode"/>Auto Next Node?</label>
+					</div>
+					<div>
+						<label>Add Placed Nodes to Unlock Route: <input type="number" v-model="nodeNewRoute" min="1" max="9"/></label>
+					</div>
 				</div>
 			</div>
-			<div class="note" v-show="currentNode">WASD/Arrows = Adjust node position</div>
+			<div class="routeControls" v-show="routeTogglesKeys.length">
+				Show Unlockable Routes:
+				<div class="tabber">
+					<div v-for="key in routeTogglesKeys" :key="key" class="tabberButton" :class="{selected:routeToggles[key]}" @click="toggleRoute(key)">{{key}}</div>
+				</div>
+			</div>
 		</div>
+		<div class="note" v-show="currentNode">WASD/Arrows = Adjust node position</div>
 	</div>
 	`
 }

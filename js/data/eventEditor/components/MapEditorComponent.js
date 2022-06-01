@@ -91,10 +91,11 @@ const MapEditorComponent = {
             return tabName == this.currentTab;
         },
         
-        addNode(nodeName,x=0,y=0) {
+        addNode(nodeName,x=0,y=0,route=null) {
             this.mapData.nodes[nodeName] = new ChNodeData();
             this.mapData.nodes[nodeName].x = x;
             this.mapData.nodes[nodeName].y = y;
+			if (route) this.mapData.nodes[nodeName].hidden = route;
             this.mapData.nodes[nodeName].rules = [];
             this.onNodeChanged(nodeName);
         },

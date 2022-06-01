@@ -282,6 +282,9 @@ div.nodePlacer div.nodePlacerCanvas {
 div.nodePlacer div.nodePlacerControls {
 	display: flex;
 }
+div.nodePlacer div.nodePlacerControls div.routeControls {
+	width: 50%;
+}
 div.nodePlacer div.note {
 	white-space: nowrap;
 }
