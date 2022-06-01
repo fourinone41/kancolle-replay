@@ -143,9 +143,23 @@ const NodeComponent = {
                 <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
             </tr>
 
+            
+            <tr>
+                <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
+            </tr>
+
 
         </table>
-    </div>        
+
+        <div class="group-title">Routing</div>
+        <vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist>
+
+        <div class="group-title">End node</div>   
+        Is end node rule (if no rule, use the checkbox value)  
+        <input v-model="nodeData.end" type="checkbox" />
+        <vroutinglist :rule-list="nodeData.endRules" :map-data="mapData"></vroutinglist>
+
+    </div>
     
     `,
 }

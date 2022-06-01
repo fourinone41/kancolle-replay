@@ -28,6 +28,7 @@ const RoutingComponent = {
             { key: 'difficulty', display: "Difficulty played rule" },
             { key: 'debuff', display: "Is debuff done rule" },
             { key: 'speedCount', display: "Number of ships with certain speed rule" },
+            { key: 'isRouteUnlocked', display: "Is route unlocked rule" },
         ],
 
         operatorList: [
@@ -84,6 +85,11 @@ const RoutingComponent = {
 
             return parts;
         },
+        
+        routeUnlockItemList() {
+            if (!this.mapData.hiddenRoutes) return [];
+            return Object.keys(this.mapData.hiddenRoutes).map(route => ({ key: route, display: route}));
+        }
     },
 
     methods: {
@@ -239,6 +245,11 @@ const RoutingComponent = {
                 <tr v-if="shouldEditorBeDisplayed('count')">
                     <td>Number</td>
                     <td><vcountruleeditor :data-source="rule" data-field="count" /></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('routeNumber')">
+                    <td>Route required</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="routeUnlockItemList" data-field="count" :can-be-null="true"/></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('shipWithEquipCount')">
@@ -442,6 +453,14 @@ const RoutingComponent = {
             count : true, 
             operator : true,
 
+            conditionCheckedNode : true, 
+            conditionFailedNode : true,
+        },
+
+        isRouteUnlocked: {
+            routeNumber: true,
+            not: true,
+            
             conditionCheckedNode : true, 
             conditionFailedNode : true,
         }

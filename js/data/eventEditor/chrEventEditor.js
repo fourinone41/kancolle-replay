@@ -90,6 +90,7 @@ Vue.createApp({
       for (const mapNum in this.eventData.maps) {
         for (const nodeKey in this.eventData.maps[mapNum].nodes) {
           const nodeData = this.eventData.maps[mapNum].nodes[nodeKey];
+          if (!nodeData.endRules) nodeData.endRules = [];
 
           try {
             MAPDATA[97].loadNodeFromChData(nodeData);
