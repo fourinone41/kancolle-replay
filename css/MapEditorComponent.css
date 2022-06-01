@@ -10,7 +10,6 @@
 
 .map-editor-groups .editor-group {
     overflow-y: scroll;
-    width: 100%;
 }
 
 .mapButtons {
