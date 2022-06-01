@@ -5,11 +5,9 @@
 - Handle diff list per map ? (old maps didn't had diff 3)
 - Winter 17 E3 dissasebled saiun are not given on map unlock ?
 
-- event parse : 
-    - BGM
-    - Tags
-
 - import real event maps
 - give lock per start
 - map cors ?
 - ship groups (store in event then allow to choose from ship list)
+- deleting route unlock : for now we recompute map parts to "fill the gaps" => find a way to unset where the route is used (routing, debuff, unlocks)
+- deleting phase : same as above

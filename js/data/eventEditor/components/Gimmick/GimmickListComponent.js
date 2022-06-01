@@ -18,11 +18,11 @@ const GimmickListComponent = {
 
     methods: {
         addGimick() {
-            this.gimmickList.push(new ChGimmick({}));
+            this.gimmickList.gimmicks.push(new ChGimmick({}));
         },
 
         deleteGimmick(key) {
-            this.gimmickList.splice(key, 1);
+            this.gimmickList.gimmicks.splice(key, 1);
         }
     },
     
@@ -49,12 +49,12 @@ const GimmickListComponent = {
 
             <tr>
                 <td>Map part</td>
-                <td><vcomboboxeditor :data-source="gimmickList" :item-list="mapPartItemList" :data-field="mapPartNumber" :can-be-null="true"/></td>
+                <td><vcomboboxeditor :data-source="gimmickList" :item-list="mapPartItemList" data-field="mapPartNumber" :can-be-null="true"/></td>
             </tr>
             
             <tr>
                 <td>Route unlock required</td>
-                <td><vcomboboxeditor :data-source="gimmickList" :item-list="routeUnlockItemList" :data-field="routeUnlockRequired" :can-be-null="true"/></td>
+                <td><vcomboboxeditor :data-source="gimmickList" :item-list="routeUnlockItemList" data-field="routeUnlockRequired" :can-be-null="true"/></td>
             </tr>
 
             <tr>

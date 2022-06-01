@@ -13,6 +13,9 @@ const GimmickEditorComponent = {
             return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
         },
 
+        mapPartItemList() {
+            return Object.keys(this.mapData.parts).map(part => ({ key: part, display: part}));
+        },
         
         rankItemList() {
             if (this.gimmickData.type == "battle") return [
@@ -90,6 +93,21 @@ const GimmickEditorComponent = {
                     <vcomboboxeditor :data-source="gimmickData.ranksRequiredPerDiff" :item-list="rankItemList" :data-field="diff.key"/>
                 </div>
             </td>
+        </tr>
+
+        <tr v-if="displayEditor('mapHPPerDiff')">
+            <td>Rank required per diff</td>
+            <td>
+                <div v-for="diff in diffItemList" :key="diff.key">
+                    {{diff.display}}
+                    <input v-model="gimmickData.ranksRequiredPerDiff[diff.key]" type="number" min="0" />
+                </div>
+            </td>
+        </tr>
+
+        <tr v-if="displayEditor('partToClear')">
+            <td>Part to clear</td>
+            <td><vcomboboxeditor :data-source="gimmickData" :item-list="mapPartItemList" data-field="partToClear" /></td>
         </tr>
 
     </table>
@@ -175,7 +193,7 @@ GimmickEditorComponent.GimmickDisplay = {
             }
         },
 
-        editors: []
+        editors: ['mapHPPerDiff']
     },
 
     PartClear: {
@@ -189,7 +207,7 @@ GimmickEditorComponent.GimmickDisplay = {
             }
         },
 
-        editors: []
+        editors: ['partToClear']
     }
 }
 

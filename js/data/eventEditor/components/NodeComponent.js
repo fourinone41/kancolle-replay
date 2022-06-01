@@ -36,7 +36,10 @@ const NodeComponent = {
     }),
 
     computed: {
-        
+        routeUnlockItemList() {
+            if (!this.mapData.hiddenRoutes) return [];
+            return Object.keys(this.mapData.hiddenRoutes).map(route => ({ key: route, display: route}));
+        }
     },
 
     methods: {
@@ -78,6 +81,11 @@ const NodeComponent = {
             <tr>
                 <td>Y position</td>
                 <td><input v-model="nodeData.y" type="number" /></td>
+            </tr>
+            
+            <tr>
+                <td>Route unlock required</td>
+                <td><vcomboboxeditor :data-source="nodeData" :item-list="routeUnlockItemList" data-field="hidden" :can-be-null="true"/></td>
             </tr>
 
             <tr>
@@ -131,10 +139,10 @@ const NodeComponent = {
                 <td><input v-model="nodeData.repair" type="checkbox" /></td>
             </tr>
 
-
             <tr>
                 <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
             </tr>
+
 
         </table>
     </div>        
