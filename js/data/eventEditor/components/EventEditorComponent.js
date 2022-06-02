@@ -142,6 +142,13 @@ const EventEditorComponent = {
                 // --- Map
                 map.mapPreviewImage = `assets/maps/${this.selectedEventToLoad}/${mapnum}m.png`;
                 map.mapImage = `assets/maps/${this.selectedEventToLoad}/${mapnum}.png`;
+
+                // --- Rules 
+                for (const node in map.nodes) {
+                    const nodeData = map.nodes[node];
+                    if (!nodeData.rules) nodeData.rules = [];
+                    if (!nodeData.endRules) nodeData.endRules = [];
+                }
           }
         }
     },
