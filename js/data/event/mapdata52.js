@@ -674,6 +674,7 @@ MAPDATA[52] =
 						routeC: function(ships) {
 							if (ships.CV + ships.CVB) return 'I';
 							if (ships.aBB >= 2) return 'I';
+							if (ships.CA + ships.CAV >= 3) return 'I';
 							if (ships.DD + ships.DE <= 1) return 'I';
 							if (ships.DD + ships.DE >= 5) return 'B';
 							if (ships.DD + ships.DE >= 3) {
@@ -681,7 +682,6 @@ MAPDATA[52] =
 								return 'I';
 							}
 							if (ships.speed <= 5) return 'I';
-							if (ships.aBB + ships.CA + ships.CAV) return 'I';
 							return 'B';
 						}
 					},
