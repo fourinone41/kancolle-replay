@@ -29,6 +29,7 @@
     <script src="js/data/event/mapdata49.js"></script>
     <script src="js/data/event/mapdata50.js"></script>
     <script src="js/data/event/mapdata51.js"></script>
+    <script src="js/data/event/mapdata52.js"></script>
     <script src="js/data/event/mapdata97.js"></script>
     <script src="js/data/event/mapdata99.js"></script>
     <script src="js/kcENEMYCOMP.js"></script>
@@ -38,6 +39,7 @@
     <script src="js/data/event/enemycomp49.js"></script>
     <script src="js/data/event/enemycomp50.js"></script>
     <script src="js/data/event/enemycomp51.js"></script>
+    <script src="js/data/event/enemycomp52.js"></script>
     <script src="js/data/event/enemycomp10.js"></script>
     <script src="js/howler.min.js"></script>
     <script src="js/playersound.js"></script>
@@ -86,7 +88,7 @@
 
                 <div v-if="selectedTab('mapSettings')" class="map-settings editor-group">
                     <table>
-    
+
                         <tr>
                             <td>Map name</td>
                             <td><input v-model="mapData.nameT" name="nameT"/></td>
@@ -113,8 +115,13 @@
                         <tr>
                             <td colspan="2">Do not place air nodes, they will be added by the event simulator</td>
                         </tr>
-                        
+
                         <tr>
+                            <td v-if="isFleetTypePerPart"><button @click="toggleAvailableFleetPerPart">Have fleet types per map</button></td>
+                            <td v-else><button @click="toggleAvailableFleetPerPart">Have fleet types per map part</button></td>
+                        </tr>
+
+                        <tr v-if="!isFleetTypePerPart">
                             <td>Allowed fleets</td>
                             <td><multi-checkboxes-editor :data-source="mapData.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
                         </tr>
@@ -198,6 +205,11 @@
                                     <td>Transport node : <vcomboboxeditor :data-source="part" :item-list="nodeList" data-field="transport" :can-be-null="true"></vcomboboxeditor></td>
                                     
                                 </tr>
+                                
+                                <tr v-if="isFleetTypePerPart">
+                                    <td>Allowed fleets</td>
+                                    <td><multi-checkboxes-editor :data-source="part.fleetTypes" :item-list="fleetsItemSource"></multi-checkboxes-editor></td>
+                                </tr>
 
                                 <tr>
                                     <td>Map HP</td>
@@ -224,25 +236,26 @@
                                 </tr>
                                 
                                 <tr>
-                                    <td>Last dance HP</td>
+                                    <td>Handle last dance HP ?</td>
+                                    <td><input :value="!!part.finalhp" type="checkbox" @click="() => { part.finalhp = !!part.finalhp ? null : { 4:0, 1:0, 2:0, 3:0 }  }" /></td>
                                 </tr>
 
-                                <tr>
+                                <tr v-if="!!part.finalhp">
                                     <td>Casual</td>
                                     <td><input v-model="part.finalhp[4]" type="number" /></td>
                                 </tr>
     
-                                <tr>
+                                <tr v-if="!!part.finalhp">
                                     <td>Easy</td>
                                     <td><input v-model="part.finalhp[1]" type="number" /></td>
                                 </tr>
                                 
-                                <tr>
+                                <tr v-if="!!part.finalhp">
                                     <td>Medium</td>
                                     <td><input v-model="part.finalhp[2]" type="number" /></td>
                                 </tr>
                                 
-                                <tr>
+                                <tr v-if="!!part.finalhp">
                                     <td>Hard</td>
                                     <td><input v-model="part.finalhp[3]" type="number" /></td>
                                 </tr>
@@ -274,9 +287,16 @@
     </template>
 
     <template id="event-editor">
+    
         <div class="group-title">Event infos</div>
         <div class="editor-group">
             <table>
+                <tr>
+                    <td>Load existing event</td>
+                    <td><vcomboboxeditor :data-source="this" :item-list="eventItemList" data-field="selectedEventToLoad"></vcomboboxeditor></td>
+                    <td><button @click="loadExistingEvent">Load</button></td>
+                </tr>
+
                 <tr>
                     <td>Event name</td>
                     <td><input v-model="eventData.name" name="name"/></td>

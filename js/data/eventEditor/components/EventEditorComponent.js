@@ -9,6 +9,14 @@ const EventEditorComponent = {
         friendFleetCurrent: '',
     }),
         
+    computed: {
+        
+        eventItemList() {
+            return Object.keys(MAPDATA).filter(key => key < 90).map(key => ({ key: key, display: MAPDATA[key].name }));
+        }
+
+    },
+
     methods: {
         
         // Friend fleet waves
@@ -78,6 +86,64 @@ const EventEditorComponent = {
             delete this.eventData.friendFleet[key];
             if (Object.keys(this.eventData.friendFleet).length <= 0) delete this.eventData.friendFleet;
         },
+
+        loadExistingEvent() {
+          if (!this.selectedEventToLoad) return;
+    
+          for (const property in this.eventData) {
+              delete this.eventData[property];
+
+          }          
+
+          for (const property in MAPDATA[this.selectedEventToLoad]) {
+            this.eventData[property] = MAPDATA[this.selectedEventToLoad][property];
+          }   
+
+          this.eventData.locksData = [];
+
+          for (const mapnum in this.eventData.maps) {
+                const map = this.eventData.maps[mapnum];
+
+                // --- Locks : 
+                if (map.giveLock) {
+
+                    const _addlock = (lock) => {
+                        if (this.eventData.locksData.find(l => l.name == lock)) return;
+
+                        this.eventData.locksData.push({ image: 'assets/maps/lock'+lock+'.png', name: lock });
+                    };
+
+                    if (Array.isArray(map.giveLock)){
+                        
+                        for (const lock of map.giveLock) {
+                            _addlock(lock);
+                        }
+                    }
+                    else {
+                        _addlock(map.giveLock);
+                    }
+                }
+
+                // --- Parts
+                if (map.hiddenRoutes) {
+
+                    for (var key in map.hiddenRoutes) {
+                        
+                        var route = map.hiddenRoutes[key];
+
+                        for (var image of route.images) {
+                            image.customName = 'assets/maps/'+this.selectedEventToLoad+'/'+image.name;
+                        }
+
+                    }
+
+                }
+
+                // --- Map
+                map.mapPreviewImage = `assets/maps/${this.selectedEventToLoad}/${mapnum}m.png`;
+                map.mapImage = `assets/maps/${this.selectedEventToLoad}/${mapnum}.png`;
+          }
+        }
     },
 
     template: document.getElementById('event-editor')

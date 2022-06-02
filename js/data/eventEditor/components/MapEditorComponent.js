@@ -27,6 +27,7 @@ const MapEditorComponent = {
 
         locksItemSource () {
             const locks = [];
+            if (!this.eventData.locksData) return [];
             
             for (const lock of this.eventData.locksData) {
 
@@ -55,6 +56,10 @@ const MapEditorComponent = {
             
             return 0;
         },
+
+        isFleetTypePerPart() {
+            return !this.mapData.fleetTypes;
+        }
     },
 
     methods: {
@@ -128,10 +133,31 @@ const MapEditorComponent = {
                     4: 0,
                 },
             };
+
+            if (this.isFleetTypePerPart) {
+                this.mapData.parts[key].fleetTypes = [];
+            }
         },
 
         deletePart(partNumber) {
             delete this.mapData.parts[partNumber];
+        },
+
+        toggleAvailableFleetPerPart() {
+            if (this.isFleetTypePerPart) {
+                this.mapData.fleetTypes = [];
+                
+                for (const key in this.mapData.parts) {
+                    delete this.mapData.parts[key].fleetTypes;
+                }
+
+            } else {
+                delete this.mapData.fleetTypes;
+
+                for (const key in this.mapData.parts) {
+                    this.mapData.parts[key].fleetTypes = [];
+                }
+            }
         }
     },
     

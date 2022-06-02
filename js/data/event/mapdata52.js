@@ -361,9 +361,9 @@ MAPDATA[52] =
 							// 1: {'Easy 2':100},
 							// 4: {'Casual 2':100},
 						// },
-						get end() {
-							return !checkRoute(1);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1),
+						],
 						routeC: function(ships) {
 							if (ships.speed <= 20) return 'P';
 							if (ships.aCV >= 3) return 'O';
@@ -647,9 +647,9 @@ MAPDATA[52] =
 							1: {'Easy 1':40,'Easy 2':30,'Easy 3':30},
 							4: {'Casual 1':40,'Casual 2':30,'Casual 3':30},
 						},
-						get end() {
-							return !checkRoute(2);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(2),
+						],
 						route: 'R'
 					},
 					'D': {
@@ -711,9 +711,9 @@ MAPDATA[52] =
 							1: {'Easy 1':35,'Easy 2':25,'Easy 3':25,'Easy 4':15},
 							4: {'Casual 1':35,'Casual 2':25,'Casual 3':25,'Casual 4':15},
 						},
-						get end() {
-							return !checkRoute(1);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1),
+						],
 						route: 'M'
 					},
 					'H': {
@@ -782,9 +782,9 @@ MAPDATA[52] =
 							1: {'Easy 1':30,'Easy 2':35,'Easy 3':35},
 							4: {'Casual 1':20,'Casual 2':45,'Casual 3':35},
 						},
-						get end() {
-							return !checkRoute(1);
-						},
+						endRules: [
+							ChIsRouteNotUnlockedRule(1),
+						],
 						route: 'P'
 					},
 					'M': {

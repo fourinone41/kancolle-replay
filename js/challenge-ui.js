@@ -2440,7 +2440,12 @@ function chLoadSortieInfo(mapnum) {
 function chGetLockPicture(lockId) {
 	if (WORLD == 97) {
 		const locks = MAPDATA[97].locksData;
+
+		if (!locks) return 'assets/maps/lock'+lockId+'.png';
+
 		const lock = Object.values(locks).find(lockData => lockData.name == lockId);
+
+		if (!lock || !lock.image) return 'assets/maps/lock'+lockId+'.png';
 		return lock.image;
 	} 	
 	

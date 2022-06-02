@@ -139,15 +139,6 @@ const NodeComponent = {
                 <td><input v-model="nodeData.repair" type="checkbox" /></td>
             </tr>
 
-            <tr>
-                <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
-            </tr>
-
-            
-            <tr>
-                <td colspan="3"><vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist></td>
-            </tr>
-
 
         </table>
 

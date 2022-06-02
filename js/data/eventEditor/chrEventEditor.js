@@ -6,6 +6,8 @@ Vue.createApp({
     selectedMap: {},
     selectedMapNumber: 0,
 
+    selectedEventToLoad: null,
+
     isMapSelected: false,
 
     /**
