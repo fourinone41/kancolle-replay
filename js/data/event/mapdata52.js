@@ -365,7 +365,7 @@ MAPDATA[52] =
 							return !checkRoute(1);
 						},
 						routeC: function(ships) {
-							if (ships.speed <= 20) return 'P';
+							if (ships.speed >= 20) return 'P';
 							if (ships.aCV >= 3) return 'O';
 							if (ships.DD + ships.DE <= 1) return 'O';
 							return 'P';
