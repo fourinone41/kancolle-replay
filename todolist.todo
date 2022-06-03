@@ -11,3 +11,7 @@
 - ship groups (store in event then allow to choose from ship list)
 - deleting route unlock : for now we recompute map parts to "fill the gaps" => find a way to unset where the route is used (routing, debuff, unlocks)
 - deleting phase : same as above
+
+low importance things i skipped for now :
+- map :
+    - overrideBGM

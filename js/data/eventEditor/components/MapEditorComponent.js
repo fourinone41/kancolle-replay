@@ -59,6 +59,10 @@ const MapEditorComponent = {
 
         isFleetTypePerPart() {
             return !this.mapData.fleetTypes;
+        },
+
+        isMultipleLockMap() {
+            return Array.isArray(this.mapData.giveLock);
         }
     },
 
@@ -157,6 +161,14 @@ const MapEditorComponent = {
                 for (const key in this.mapData.parts) {
                     this.mapData.parts[key].fleetTypes = [];
                 }
+            }
+        },
+
+        toggleMultiLockMap() {
+            if (this.isMultipleLockMap) {
+                this.mapData.giveLock = '';
+            } else {
+                this.mapData.giveLock = [];
             }
         }
     },
