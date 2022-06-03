@@ -74,6 +74,12 @@ const MapEditorComponent = {
             if (!this.mapData.additionalChecksRules) this.mapData.additionalChecksRules = [];
 
             return this.mapData.additionalChecksRules;
+        },
+
+        startCheckRule() {
+            if (!this.mapData.startCheckRule) this.mapData.startCheckRule = [];
+
+            return this.mapData.startCheckRule;
         }
 
     },

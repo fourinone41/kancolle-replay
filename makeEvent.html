@@ -147,7 +147,7 @@
                         </tr>
         
                     </table>
-
+                    
                     <div class="group-title">Additional checks rules</div>
                     <table>
                         <tr>
@@ -158,6 +158,16 @@
                         </tr>
                         <tr>
                             <td><vroutinglist :rule-list="additionalChecksRules" :map-data="mapData" :result-nodes-list="trueFalseNodesList"></vroutinglist></td>
+                        </tr>
+                    </table>
+
+                    <div class="group-title">Start node</div>
+                    <table>
+                        <tr>
+                            <td>If no rule, starts at the node called "Start"</td>
+                        </tr>
+                        <tr>
+                            <td><vroutinglist :rule-list="startCheckRule" :map-data="mapData"></vroutinglist></td>
                         </tr>
                     </table>
     

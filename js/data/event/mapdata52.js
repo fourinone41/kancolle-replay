@@ -1180,6 +1180,12 @@ MAPDATA[52] =
 					if (checkRoute(1) && CHDATA.fleets.combined) return 'Start2';
 					return 'Start1';
 				},
+				startCheckRule: [
+					ChMultipleRulesRule([
+						ChIsRouteUnlockedRule(1, 'Start2'),
+						ChFleetTypeRule([1,2,3], 'Start2'),
+					], 'AND', 'Start2', 'Start1'),
+				],
 				nodes: {
 					'Start1': {
 						type: 0,

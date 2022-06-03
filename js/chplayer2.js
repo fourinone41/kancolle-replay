@@ -1220,7 +1220,7 @@ function mapPhase(first) {
 
 	let end = curnode.end;
 	
-	if (curnode.endRules) {
+	if (curnode.endRules && curnode.endRules.length) {
 		let rule = curnode.endRules[0];
 
 		if (rule.ruleCanBeChecked())
