@@ -9,6 +9,11 @@ const MapEditorComponent = {
         mouseY: 0,
         
         currentNode: null,
+
+        trueFalseNodesList: [
+            { key: true, display: 'Valid' },
+            { key: false, display: 'Not valid' },
+        ]
     }),
 
     computed: {
@@ -63,7 +68,14 @@ const MapEditorComponent = {
 
         isMultipleLockMap() {
             return Array.isArray(this.mapData.giveLock);
+        },
+
+        additionalChecksRules() {
+            if (!this.mapData.additionalChecksRules) this.mapData.additionalChecksRules = [];
+
+            return this.mapData.additionalChecksRules;
         }
+
     },
 
     methods: {

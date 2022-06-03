@@ -1,7 +1,8 @@
 const RoutingComponent = {
     props: {
         rule: ChRule, 
-        mapData: Object
+        mapData: Object,
+        resultNodesList: Array
     },
     emits: ['deleteRule'],
         
@@ -55,24 +56,24 @@ const RoutingComponent = {
         difficultiesItemSource: COMMON.DIFFICULTIES,
 
         isCollapsed: false,
+
+        ifResultNodesList: [
+            { key: true, display: "Valid" },
+            { key: false, display: "Not valid" },
+        ],
+
+        fleetTypeItemList: COMMON.FLEET_TYPES
     }),
 
     computed: {
         nodeList() {
             return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
         },
+        
+        ruleResultNodesList() {
+            if (this.resultNodesList) return this.resultNodesList;
 
-        fleetTypeItemList () {
-            const fleets = [];
-            
-            for (const fleetType of this.mapData.fleetTypes) {
-
-                const type = COMMON.FLEET_TYPES.find(el => el.key == fleetType);
-
-                fleets.push(type);
-            }
-
-            return fleets;
+            return this.nodeList;
         },
 
         mapPartsItemList() {
@@ -204,7 +205,7 @@ const RoutingComponent = {
 
                 <tr v-if="shouldEditorBeDisplayed('fixedNode')">
                     <td>Fixed node</td>
-                    <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="fixedNode"/></td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="ruleResultNodesList" data-field="fixedNode"/></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('shipTypes')">
@@ -264,27 +265,27 @@ const RoutingComponent = {
 
                 <tr v-if="shouldEditorBeDisplayed('rules')">
                     <td>Rules</td>
-                    <td colspan="3"><vroutinglist :rule-list="rule.rules" :map-data="mapData" :condition-checked-node="rule.conditionCheckedNode ? rule.conditionCheckedNode : true"></vroutinglist></td>
+                    <td colspan="3"><vroutinglist :rule-list="rule.rules" :map-data="mapData" :condition-checked-node="rule.conditionCheckedNode ? rule.conditionCheckedNode : true" :result-nodes-list="resultNodesList"></vroutinglist></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('if')">
                     <td>If</td>
-                    <td colspan="3"><vrouting :rule="rule.ifthenelse.if" :map-data="mapData"></vrouting></td>
+                    <td colspan="3"><vrouting :rule="rule.ifthenelse.if" :map-data="mapData" :result-nodes-list="ifResultNodesList"></vrouting></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('then')">
                     <td>Then</td>
-                    <td colspan="3"><vrouting :rule="rule.ifthenelse.then" :map-data="mapData"></vrouting></td>
+                    <td colspan="3"><vrouting :rule="rule.ifthenelse.then" :map-data="mapData" :result-nodes-list="resultNodesList"></vrouting></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('else')">
                     <td>Else</td>
-                    <td colspan="3"><vrouting :rule="rule.ifthenelse.else" :map-data="mapData"></vrouting></td>
+                    <td colspan="3"><vrouting :rule="rule.ifthenelse.else" :map-data="mapData" :result-nodes-list="resultNodesList"></vrouting></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('LOS')">
                     <td>LOS</td>
-                    <td colspan="3"><vloseditor :data-source="rule.LOS" :node-list="nodeList" /></td>
+                    <td colspan="3"><vloseditor :data-source="rule.LOS" :node-list="ruleResultNodesList" /></td>
                 </tr>                
 
                 <tr v-if="shouldEditorBeDisplayed('LOSCoef')">
@@ -294,22 +295,22 @@ const RoutingComponent = {
                 
                 <tr v-if="shouldEditorBeDisplayed('conditionCheckedNode')">
                     <td>Node if rule is checked</td>
-                    <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="conditionCheckedNode"/></td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="ruleResultNodesList" data-field="conditionCheckedNode"/></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('conditionFailedNode')">
                     <td>Node if rule is not checked</td>
-                    <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="conditionFailedNode" :can-be-null="true"/></td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="ruleResultNodesList" data-field="conditionFailedNode" :can-be-null="true"/></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('randomNodes')">
                     <td>Chances (sum = 1)</td>
-                    <td><vchanceseditor :data-source="rule" :item-list="nodeList" data-field="randomNodes"/></td>
+                    <td><vchanceseditor :data-source="rule" :item-list="ruleResultNodesList" data-field="randomNodes"/></td>
                 </tr>
 
                 <tr v-if="shouldEditorBeDisplayed('routeSelect')">
                     <td>Routes</td>
-                    <td><velementlist :data-source="rule.routeSelect" :item-list="nodeList" /></td>
+                    <td><velementlist :data-source="rule.routeSelect" :item-list="ruleResultNodesList" /></td>
                 </tr>
 
                 <button v-if="!rule.mapParts" @click="rule.mapParts=[]">Have rule only on certain parts</button>

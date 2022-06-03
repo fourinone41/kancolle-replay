@@ -62,14 +62,14 @@ MAPDATA[97].initializeAllMaps = function () {
     }
     
     for (const mapNumber in CHDATA.maps) {
-        MAPDATA[97].initializeMap(mapNumber);
+        MAPDATA[97].initializeMap(MAPDATA[97].maps[mapNumber]);
     }
 }
 
-MAPDATA[97].initializeMap = function (mapNum) {
+MAPDATA[97].initializeMap = function (mapData) {
 
-    let mapData = {
-        /*name: oriMapData.name,
+    /*let mapData = {
+        name: oriMapData.name,
         nameT: oriMapData.nameT,
         
         bossnode: oriMapData.bossnode,
@@ -81,8 +81,8 @@ MAPDATA[97].initializeMap = function (mapNum) {
         nameT: oriMapData.nameT,
         nameT: oriMapData.nameT,
         nameT: oriMapData.nameT,
-        nameT: oriMapData.nameT*/
-    };
+        nameT: oriMapData.nameT
+    };*/
 
     /*if (mapData.maphp && !mapData.maphp[3]) {
         mapData.maphp[3] = mapData.maphp[2];
@@ -145,12 +145,12 @@ MAPDATA[97].initializeMap = function (mapNum) {
         MAPDATA[worldNum].maps[mapNum][prop] = values[prop];
     }*/
         
-    MAPDATA[97].loadUnlockFromChData(MAPDATA[97].maps[mapNum]);
-    MAPDATA[97].loadStartCheckFromChData(MAPDATA[97].maps[mapNum]);
-    MAPDATA[97].loadStartBonusesFromChData(MAPDATA[97].maps[mapNum]);
+    MAPDATA[97].loadUnlockFromChData(mapData);
+    MAPDATA[97].loadStartCheckFromChData(mapData);
+    MAPDATA[97].loadStartBonusesFromChData(mapData);
 
-    for (const nodeKey in MAPDATA[97].maps[mapNum].nodes) {
-        const nodeData = MAPDATA[97].maps[mapNum].nodes[nodeKey];
+    for (const nodeKey in mapData.nodes) {
+        const nodeData = mapData.nodes[nodeKey];
 
         try {
             
@@ -175,16 +175,25 @@ MAPDATA[97].initializeNodes = function (oriMapData, mapData) {
 }
 
 MAPDATA[97].loadStartCheckFromChData = function (map) {
-    if (!map.startCheckRule) return;
-    /*map.startCheckRule = mapSave.startCheckRule;
-    return;*/
-    let rules = [];
+    if (map.startCheckRule) {
+        let rules = [];
 
-    for (const rule of map.startCheckRule) {
-        rules.push(MAPDATA[97].convertRule(rule))
+        for (const rule of map.startCheckRule) {
+            rules.push(MAPDATA[97].convertRule(rule))
+        }
+
+        map.startCheckRule = rules;
     }
 
-    map.startCheckRule = rules;
+    if (map.additionalChecksRules) {
+        let rules = [];
+
+        for (const rule of map.additionalChecksRules) {
+            rules.push(MAPDATA[97].convertRule(rule))
+        }
+
+        map.additionalChecksRules = rules;
+    }
 }
 
 MAPDATA[97].loadUnlockFromChData = function (map) {
@@ -352,7 +361,17 @@ MAPDATA[97].loadNodeFromChData = function (nodeData) {
         let rules = [];
 
         for (const rule of nodeData.rules) {
-            rules.push(MAPDATA[97].convertRule(rule))
+            //if (!rule) continue;
+            
+            try {
+                rules.push(MAPDATA[97].convertRule(rule))
+            }
+            catch (e) {
+                console.error('Error converting rule');
+                console.error(nodeData);
+                console.error(rule);
+                throw e;
+            }
         }
     
         nodeData.rules = rules;

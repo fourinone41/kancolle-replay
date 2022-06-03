@@ -147,6 +147,19 @@
                         </tr>
         
                     </table>
+
+                    <div class="group-title">Additional checks rules</div>
+                    <table>
+                        <tr>
+                            <td>You can add rules that will be checked before any sortie.</td>
+                        </tr>
+                        <tr>
+                            <td>If the returned "node" is empty or false, the fleet won't be allowed to sortie</td>
+                        </tr>
+                        <tr>
+                            <td><vroutinglist :rule-list="additionalChecksRules" :map-data="mapData" :result-nodes-list="trueFalseNodesList"></vroutinglist></td>
+                        </tr>
+                    </table>
     
                     <div class="group-title">BGMs</div>
     

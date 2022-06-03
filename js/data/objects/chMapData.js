@@ -44,6 +44,11 @@ class ChMapData {
         this.nodes = {};
 
         /**
+         * @type {ChRule[]} List of rules, returned nodes must be true or false
+         */
+        this.additionalChecksRules = [];
+
+        /**
          * Use this to manage complex locking
          */
         this.lockInfos = {

@@ -13,8 +13,7 @@ const EventEditorComponent = {
         
         eventItemList() {
             return Object.keys(MAPDATA).filter(key => key < 90).map(key => ({ key: key, display: MAPDATA[key].name }));
-        }
-
+        },
     },
 
     methods: {

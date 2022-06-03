@@ -90,16 +90,18 @@ Vue.createApp({
 
       // --- Load rules (to access its methods)
       for (const mapNum in this.eventData.maps) {
+
         for (const nodeKey in this.eventData.maps[mapNum].nodes) {
           const nodeData = this.eventData.maps[mapNum].nodes[nodeKey];
           if (!nodeData.endRules) nodeData.endRules = [];
           if (!nodeData.rules) nodeData.rules = [];
 
-          try {
-            MAPDATA[97].loadNodeFromChData(nodeData);
-          } catch (error) {
-            console.debug(nodeData);
-          }
+        }
+
+        try {
+          MAPDATA[97].initializeMap(this.eventData.maps[mapNum]);
+        } catch (error) {
+          console.error(error);
         }
       }
     },

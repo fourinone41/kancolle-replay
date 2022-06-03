@@ -1728,3 +1728,15 @@ ChRule.SpeedArray = {
         ">=": "Fastest",
     },
 };
+
+/**
+ * If one rule isn't valid, returns false
+ * @param {ChRule[]} rules
+ */
+ChRule.CheckIfAllRulesAreChecked = (rules, ships) => {
+    for (const rule of rules) {
+        if (!rule.getRouting(ships)) return false;
+    }
+
+    return true;
+}

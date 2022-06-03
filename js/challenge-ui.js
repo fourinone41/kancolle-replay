@@ -1603,6 +1603,16 @@ function chDoStartChecks() {
 	
 	if (!CHDATA.event.maps[MAPNUM].routes) CHDATA.event.maps[MAPNUM].routes = [];
 	if (MAPDATA[WORLD].maps[MAPNUM].additionalChecks) MAPDATA[WORLD].maps[MAPNUM].additionalChecks(counts,errors);
+	if (MAPDATA[WORLD].maps[MAPNUM].additionalChecksRules) {
+		chCombineShipCountObjects(counts, countsE);
+
+		if (!ChRule.CheckIfAllRulesAreChecked(MAPDATA[WORLD].maps[MAPNUM].additionalChecksRules, counts)) {
+			errors.push("Additional requirements :");
+			for (const rule of MAPDATA[WORLD].maps[MAPNUM].additionalChecksRules) {
+				errors.push(rule.getDescription());
+			}
+		} 
+	}
 	
 	return errors;
 }
@@ -1904,6 +1914,22 @@ function chCombineShipCount() {
 		CHSHIPCOUNT.c.speed = CHSHIPCOUNT.speed;
 	} else {
 		CHSHIPCOUNT.c = CHSHIPCOUNT;
+	}
+}
+
+function chCombineShipCountObjects(shipCountMainFleet, shipCountEscort) {
+	if (shipCountEscort) {
+		shipCountMainFleet.c = chNewShipCount();
+		for (let key in shipCountMainFleet.c) {
+			if (key == 'ids') {
+				shipCountMainFleet.c.ids = shipCountMainFleet.ids.concat(shipCountMainFleet.escort.ids);
+				continue;
+			}
+			shipCountMainFleet.c[key] = shipCountMainFleet[key] + shipCountMainFleet.escort[key];
+		}
+		shipCountMainFleet.c.speed = shipCountMainFleet.speed;
+	} else {
+		shipCountMainFleet.c = shipCountMainFleet;
 	}
 }
 
