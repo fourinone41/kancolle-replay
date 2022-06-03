@@ -13,7 +13,7 @@ function ChRule () {
     /**
      * @type {"shipType" | "random"| "fixed" | "shipCount" | "multiRules" | "random" | "speed" | "custom" | "ifthenelse" 
      * | "LOSCheckIfRuleChecked" | "allShipsMustBe" | 'isLastDance' | "equipType" | "los" | "default" | "shipIds" | 'fleetType' | 'routeSelect' 
-     * | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount'}
+     * | 'mapPart' | 'isRouteUnlocked' | 'shipRetreatedCount' | 'difficulty' | 'debuff' | 'speedCount' | 'fleetBeenThrough' }
      */
     this.type = "fixed";
 
@@ -612,6 +612,11 @@ function ChRule () {
             case 'routeSelect': 
                 return true;
 
+            case 'fleetBeenThrough': {
+                if (this.not) return !CHDATA.sortie.beenThrough[this.node] ? this.conditionCheckedNode: this.conditionFailedNode;
+                return !!CHDATA.sortie.beenThrough[this.node] ? this.conditionCheckedNode: this.conditionFailedNode;
+            }
+
             default:
                 alert("routing error 2");
                 return;
@@ -935,6 +940,11 @@ function ChRule () {
             case 'debuff': {
                 if (this.not) return 'Debuff is not done';
                 return "Debuff is done";
+            }
+            
+            case 'fleetBeenThrough': {
+                if (this.not) return `Fleet not been through node ${this.node}`;
+                return `Fleet been through node ${this.node}`;
             }
 
             default:
@@ -1649,6 +1659,27 @@ function ChNumberOfShipOfSpeedRule(speedOperator, speed, countOperator, count, c
 
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
+
+    return rule;
+}
+
+function ChFleetBeenThroughRule(node, conditionCheckedNode, conditionFailedNode) {
+    let rule = new ChRule();
+
+    rule.type = "fleetBeenThrough";
+
+    rule.conditionCheckedNode = conditionCheckedNode;
+    rule.conditionFailedNode = conditionFailedNode;
+
+    rule.node = node;
+
+    return rule;
+}
+
+function ChFleetNotBeenThroughRule(node, conditionCheckedNode, conditionFailedNode) {
+    let rule = ChFleetBeenThroughRule(node, conditionCheckedNode, conditionFailedNode);
+
+    rule.not = true;
 
     return rule;
 }

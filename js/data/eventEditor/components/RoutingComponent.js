@@ -30,6 +30,7 @@ const RoutingComponent = {
             { key: 'debuff', display: "Is debuff done rule" },
             { key: 'speedCount', display: "Number of ships with certain speed rule" },
             { key: 'isRouteUnlocked', display: "Is route unlocked rule" },
+            { key: 'fleetBeenThrough', display: "Has fleet been through node rule" },
         ],
 
         operatorList: [
@@ -231,6 +232,11 @@ const RoutingComponent = {
                 <tr v-if="shouldEditorBeDisplayed('equipData')">
                     <td>Equipment data</td>
                     <td><vequipdataruleeditor :data-source="rule.equipData" /></td>
+                </tr>
+                
+                <tr v-if="shouldEditorBeDisplayed('node')">
+                    <td>Node</td>
+                    <td><vcomboboxeditor :data-source="rule" :item-list="nodeList" data-field="node"/></td>
                 </tr>
                 
                 <tr v-if="shouldEditorBeDisplayed('operator')">
@@ -460,6 +466,14 @@ const RoutingComponent = {
 
         isRouteUnlocked: {
             routeNumber: true,
+            not: true,
+            
+            conditionCheckedNode : true, 
+            conditionFailedNode : true,
+        },
+
+        fleetBeenThrough: {
+            node: true,
             not: true,
             
             conditionCheckedNode : true, 

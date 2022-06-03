@@ -344,6 +344,11 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
         case "LOSCheckIfRuleChecked": 
             rule = ChLOSCheckIfRuleChecked(ruleToConvert.LOS, ruleToConvert.LOSCoef, MAPDATA[97].convertRule(ruleToConvert.ifthenelse.if));
             break;
+            
+        case "fleetBeenThrough": 
+            rule = ChFleetBeenThroughRule(ruleToConvert.node, ruleToConvert.conditionCheckedNode, ruleToConvert.conditionFailedNode);
+            rule.not = ruleToConvert.not;
+            break;
 
         default:
             console.debug(ruleToConvert);

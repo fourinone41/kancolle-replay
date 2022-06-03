@@ -1326,6 +1326,10 @@ function mapPhase2(nextletter, rule) {
 	var nextnode = MAPDATA[WORLD].maps[MAPNUM].nodes[nextletter];
 	if (CHDATA.event.maps[MAPNUM].visited.indexOf(nextletter) == -1) CHDATA.event.maps[MAPNUM].visited.push(nextletter);
 	
+	// --- Mark node as visited in this sortie
+	if (!CHDATA.sortie.beenThrough) CHDATA.sortie.beenThrough = [];
+	CHDATA.sortie.beenThrough[nextletter] = CHDATA.sortie.beenThrough[nextletter] ? CHDATA.sortie.beenThrough[nextletter] + 1 : 1;
+	
 	eventqueue.push([wait,[1000]]);
 	
 
