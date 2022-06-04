@@ -4,7 +4,8 @@ const NodeComponent = {
     data: () => ({
         nodeTypeItemList: [            
             { key: 100, display: "Battle", nodeData: COMMON.NODE_TYPES.NORMAL_BATTLE_NODE },
-            { key: 101, display: "Ambush", nodeData: COMMON.NODE_TYPES.AMBUSH_NODE },
+            { key: 101, display: "Sub node battle", nodeData: COMMON.NODE_TYPES.SUBMARINE_BATTLE_NODE },
+            { key: 102, display: "Ambush", nodeData: COMMON.NODE_TYPES.AMBUSH_NODE },
             
             { key: -1, separator: true },
 
@@ -127,6 +128,11 @@ const NodeComponent = {
             <tr v-if="displayNodeTypeInfo">
                 <td>Air raid ?</td>
                 <td><input v-model="nodeData.raid" type="checkbox" /></td>
+            </tr>
+
+            <tr v-if="displayNodeTypeInfo">
+                <td>Sub battle node ?</td>
+                <td><input v-model="nodeData.subonly" type="checkbox" /></td>
             </tr>
 
             <tr v-if="displayNodeTypeInfo">

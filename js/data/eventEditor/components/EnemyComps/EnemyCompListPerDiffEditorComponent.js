@@ -1,19 +1,45 @@
 const EnemyCompListPerDiffEditorComponent = {
-    props: ['compList', 'compObject'],
+    props: ['compList', 'compObject', 'initValues'],
 
     data: () => ({
         compNameCurrent: '',
         compNewName: '',
+
+        formationList: [
+            { key: 1, display: "Line ahead" },
+            { key: 2, display: "Double line" },
+            { key: 3, display: "Diamond" },
+            { key: 4, display: "Echelon" },
+            { key: 5, display: "Line abreast" },
+            { key: 6, display: "Vanguard" },
+
+            { key: -1, separator: true },
+            
+            { key: 11, display: "Cruising Formation 1 (ASW Alert)" },
+            { key: 12, display: "Cruising Formation 2 (Forward Alert)" },
+            { key: 13, display: "Cruising Formation 3 (Ring Formation)" },
+            { key: 14, display: "Cruising Formation 4 (Battle Formation)" },
+        ]
     }),
 
     computed: {
-        
+        isCombined() {
+            if (!this.compNameCurrent) return false;
+            if (!this.compObject[this.compNameCurrent]) return false;
+            return !!this.compObject[this.compNameCurrent].ce;
+        }
     },
 
     methods: {
         addComp() {
             this.compObject[this.compNewName] = { c: [] };
             this.compList[this.compNewName] = 100;
+
+            if (this.initValues) {
+                for (const property in this.initValues) {
+                    this.compObject[this.compNewName][property] = this.initValues[property];
+                }
+            }
 
             this.compNewName = '';
         },
@@ -42,9 +68,17 @@ const EnemyCompListPerDiffEditorComponent = {
             <div v-if="compNameCurrent && compObject[compNameCurrent]" class="fleetDisplay">
                 <div>
                     <div>{{compNameCurrent}}</div>
-                    <div>Odds : <input type="number" min="0" v-model="compList[compNameCurrent]" /> %</div>
+                    <div>Odds <input type="number" min="0" v-model="compList[compNameCurrent]" /> %</div>
+                    <div>Formation <vcomboboxeditor :data-source="compObject[compNameCurrent]" :item-list="formationList" data-field="f"></vcomboboxeditor></div>
                     <div><venemycompshiplist :ship-list="compObject[compNameCurrent].c" /></div>
                 </div>
+                
+                <div v-if="isCombined">
+                    <div>Escort</div>
+                    <div><venemycompshiplist :ship-list="compObject[compNameCurrent].ce" /></div>
+                </div>
+                <div>Bombing only ?<input type="checkbox" v-model="compObject[compNameCurrent].bomb"/></div>
+                <div>No ammo cost ?<input type="checkbox" v-model="compObject[compNameCurrent].noammo"/></div>
                 <div><input type="button" value="Delete Fleet" @click="deleteComp()"/></div>
             </div>
         </div>

@@ -98,6 +98,11 @@ var COMMON = {
         NORMAL_BATTLE_NODE: {
             type: 1,
         },
+
+        SUBMARINE_BATTLE_NODE: {
+            type: 1,
+			subonly: true,
+        },
         
         AMBUSH_NODE: {
             type: 1,

@@ -8,6 +8,15 @@ const NodeEnemyCompEditorComponent = {
     computed: {
         isCompsPerPart() {
             return !!this.nodeData.compDiffPart;
+        },
+
+        initValues() {
+            const values = {};
+
+            if (this.nodeData.raid) values.bomb = true;
+            if (this.nodeData.subonly) values.noammo = true;
+
+            return values;
         }
     },
 
@@ -47,7 +56,7 @@ const NodeEnemyCompEditorComponent = {
 
         <div v-if="!isCompsPerPart" class="group-title">Enemy comp</div>
         <tr v-if="!isCompsPerPart">
-            <venemycomplist :comp-list="nodeData.compDiff" :comp-object="compObject"></venemycomplist>
+            <venemycomplist :comp-list="nodeData.compDiff" :comp-object="compObject" :init-values="initValues"></venemycomplist>
         </tr>
 
     </table>
