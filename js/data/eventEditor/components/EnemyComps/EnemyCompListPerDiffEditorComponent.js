@@ -70,12 +70,12 @@ const EnemyCompListPerDiffEditorComponent = {
                     <div>{{compNameCurrent}}</div>
                     <div>Odds <input type="number" min="0" v-model="compList[compNameCurrent]" /> %</div>
                     <div>Formation <vcomboboxeditor :data-source="compObject[compNameCurrent]" :item-list="formationList" data-field="f"></vcomboboxeditor></div>
-                    <div><venemycompshiplist :ship-list="compObject[compNameCurrent].c" /></div>
+                    <div><vshipidslisteditor :data-source="compObject[compNameCurrent].c" :numberOfShips="6" /></div>
                 </div>
                 
                 <div v-if="isCombined">
                     <div>Escort</div>
-                    <div><venemycompshiplist :ship-list="compObject[compNameCurrent].ce" /></div>
+                    <div><vshipidslisteditor :data-source="compObject[compNameCurrent].ce" :numberOfShips="6" /></div>
                 </div>
                 <div>Bombing only ?<input type="checkbox" v-model="compObject[compNameCurrent].bomb"/></div>
                 <div>No ammo cost ?<input type="checkbox" v-model="compObject[compNameCurrent].noammo"/></div>

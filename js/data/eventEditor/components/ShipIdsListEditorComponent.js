@@ -1,5 +1,5 @@
 const ShipIdsListEditorComponent = {
-    props: ['dataSource'],
+    props: ['dataSource', 'numberOfShips'],
 	emits: [],
 	data: () => ({
 		shipNew: { mstId: 0 },
@@ -8,11 +8,19 @@ const ShipIdsListEditorComponent = {
 	computed: {
         fleet() {
             return this.dataSource.map(shipId => ({ mid: shipId }));
-        }
+        },
+
+		canAddShip() { 
+			if (!this.numberOfShips) return true;
+
+			return this.dataSource.length < this.numberOfShips; 
+		},
 	},
 	methods: {
 		addNewShip() {
             
+			if (!this.canAddShip) return;
+
 			this.dataSource.push(this.shipNew.mid);
 
 			this.shipNew = { mstId: 0 };
@@ -41,7 +49,7 @@ const ShipIdsListEditorComponent = {
 	<div class="fleetEditor">
 		<div style="display:flex">
 			<vshipeditor v-for="(ship, key) in fleet" :key="key" :ship="ship" @ship-set="setShip(ship, key)" :ship-only="true" @ship-delete="deleteShip(ship)" @ship-drag="shipDragged=ship" @ship-dragend="shipDragged=null" @ship-drop="swapShip(ship,shipDragged)"></vshipeditor>
-			<vshipeditor :ship="shipNew" :ship-only="true" @ship-set="addNewShip"></vshipeditor>
+			<vshipeditor v-show="canAddShip" :ship="shipNew" :ship-only="true" @ship-set="addNewShip"></vshipeditor>
 		</div>
 	</div>
 	`

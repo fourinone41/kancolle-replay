@@ -193,7 +193,6 @@ Vue.createApp({
 .component('vnodeenemycompeditor', NodeEnemyCompEditorComponent)
 .component('venemycomplist', EnemyCompListEditorComponent)
 .component('venemycomplistperdiff', EnemyCompListPerDiffEditorComponent)
-.component('venemycompshiplist', EnemyCompShipListEditorComponent)
 
 .use(COMMON.i18n)
 .mount('#eventEditor');
