@@ -83,6 +83,7 @@ Vue.createApp({
           for (var key in basic) this.chData[key] = basic[key];
 
           if (this.chData.customEventData) this.eventData = this.chData.customEventData.eventData;
+          if (!this.eventData.comps) this.eventData.comps = {};
         }
       }
 
@@ -183,7 +184,16 @@ Vue.createApp({
 .component('vcountruleeditor', CountRuleEditorComponent)
 .component('vshipidslisteditor', ShipIdsListEditorComponent)
 .component('vhiddenrouteeditor', HiddenRoutesEditorComponent)
+
+// --- Gimmicks
 .component('vgimmicklist', GimmickListComponent)
 .component('vgimmickeditor', GimmickEditorComponent)
+
+// --- Enemy comps
+.component('vnodeenemycompeditor', NodeEnemyCompEditorComponent)
+.component('venemycomplist', EnemyCompListEditorComponent)
+.component('venemycomplistperdiff', EnemyCompListPerDiffEditorComponent)
+.component('venemycompshiplist', EnemyCompShipListEditorComponent)
+
 .use(COMMON.i18n)
 .mount('#eventEditor');

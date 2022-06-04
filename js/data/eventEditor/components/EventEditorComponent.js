@@ -149,6 +149,8 @@ const EventEditorComponent = {
                     if (!nodeData.endRules) nodeData.endRules = [];
                 }
           }
+
+          this.eventData.comps = ENEMYCOMPS[MAPDATA[this.selectedEventToLoad].name];
         }
     },
 

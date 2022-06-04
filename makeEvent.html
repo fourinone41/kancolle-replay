@@ -292,8 +292,8 @@
                 </div>
 
                 <div v-if="selectedTab('nodes')" class="map-settings">
-                    <vnodelist :map-data="mapData" :event-data="eventData" :current-node="currentNode" @node-changed="onNodeChanged" @add-node="addNode" @delete-node="deleteNode"></vnodelist>
-                    <vnode v-if="mapData.nodes[currentNode]" :map-data="mapData" :event-data="eventData" :node-data="mapData.nodes[currentNode]"></vnode>
+                    <vnodelist :map-data="mapData" :event-data="eventData" :current-node="currentNode" @node-changed="onNodeChanged" @add-node="addNode" @delete-node="deleteNode" ></vnodelist>
+                    <vnode v-if="mapData.nodes[currentNode]" :map-data="mapData" :event-data="eventData" :node-data="mapData.nodes[currentNode]" :comp-object="currentNodeCompObject"></vnode>
                 </div>
                 
             </div>
@@ -441,6 +441,10 @@
 <script src="js/data/eventEditor/components/HiddenRoutesEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Gimmick/GimmickEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Gimmick/GimmickListComponent.js"></script>
+<script src="js/data/eventEditor/components/EnemyComps/EnemyCompListEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/EnemyComps/EnemyCompListPerDiffEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/EnemyComps/NodeEnemyCompEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/EnemyComps/EnemyCompShipListEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>

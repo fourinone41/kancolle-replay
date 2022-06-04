@@ -49,10 +49,12 @@ MAPDATA[97].initializeAllMaps = function () {
         localStorage.removeItem('customEventDataToLoad');
     }
 
-    CHDATA.event.comps = CHDATA.customEventData.comps;
-
     for (const key in CHDATA.customEventData.eventData) {
         MAPDATA[97][key] = CHDATA.customEventData.eventData[key];
+    }
+
+    if (CHDATA.customEventData.eventData && CHDATA.customEventData.eventData.comps) {
+        CHDATA.event.comps = CHDATA.customEventData.eventData.comps;
     }
 
     CHDATA.maps = {};

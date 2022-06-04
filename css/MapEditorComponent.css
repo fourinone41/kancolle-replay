@@ -39,6 +39,10 @@ select.mapButton  {
     overflow-y: visible;
 }
 
+.editor-group-no-scroll {
+    overflow-y: visible !important;
+}
+
 .equipDataRuleEditor {
     width: 350px;
 }

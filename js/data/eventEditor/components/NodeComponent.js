@@ -1,5 +1,5 @@
 const NodeComponent = {
-    props: ['eventData', 'mapData', 'nodeData'],
+    props: ['eventData', 'mapData', 'nodeData', 'compObject'],
         
     data: () => ({
         nodeTypeItemList: [            
@@ -150,6 +150,8 @@ const NodeComponent = {
         <input v-model="nodeData.end" type="checkbox" />
         <vroutinglist :rule-list="nodeData.endRules" :map-data="mapData"></vroutinglist>
 
+        <div class="group-title">Enemy comps</div>   
+        <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject"></vnodeenemycompeditor>
     </div>
     
     `,

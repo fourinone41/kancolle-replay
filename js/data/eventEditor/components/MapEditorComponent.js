@@ -17,6 +17,16 @@ const MapEditorComponent = {
     }),
 
     computed: {
+        currentNodeCompObject() {
+            if (!this.currentNode) return {};
+            
+            if (!this.eventData.comps) this.eventData.comps = {};
+            if (!this.eventData.comps[this.mapData.name]) this.eventData.comps[this.mapData.name] = {};
+            if (!this.eventData.comps[this.mapData.name][this.currentNode]) this.eventData.comps[this.mapData.name][this.currentNode] = {};
+
+            return this.eventData.comps[this.mapData.name][this.currentNode];
+        },
+
         fleetsItemSource () {
             const fleets = [];
             
