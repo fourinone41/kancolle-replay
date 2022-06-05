@@ -191,6 +191,8 @@ Vue.createApp({
 
 // --- Enemy comps
 .component('vnodeenemycompeditor', NodeEnemyCompEditorComponent)
+.component('vnodeenemycompobjectseditor', NodeEnemyCompObjectsEditorComponent)
+
 .component('venemycomplist', EnemyCompListEditorComponent)
 .component('venemycomplistperdiff', EnemyCompListPerDiffEditorComponent)
 

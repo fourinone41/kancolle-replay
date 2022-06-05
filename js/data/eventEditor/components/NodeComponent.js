@@ -157,7 +157,7 @@ const NodeComponent = {
         <vroutinglist :rule-list="nodeData.endRules" :map-data="mapData"></vroutinglist>
 
         <div class="group-title">Enemy comps</div>   
-        <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject"></vnodeenemycompeditor>
+        <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject" ></vnodeenemycompeditor>
     </div>
     
     `,

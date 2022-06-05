@@ -49,10 +49,6 @@ const EnemyCompListPerDiffEditorComponent = {
             this.compNameCurrent = '';
         }
     },
-    
-    watch: {
-        
-    },
 
     template: `
     
