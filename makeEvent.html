@@ -127,13 +127,7 @@
                         </tr>
                         
                         <tr>
-                            <td>Gives lock</td>
-                            <td><vcomboboxeditor :data-source="mapData" :item-list="locksItemSource" data-field="giveLock"></vcomboboxeditor></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>Checks lock</td>
-                            <td><multi-checkboxes-editor :data-source="mapData.checkLock" :item-list="locksItemSource"></multi-checkboxes-editor></td>
+                            <td><vmaplockeditor :map-data="mapData" :event-data="eventData" /></td>
                         </tr>
     
                         <tr>
@@ -445,6 +439,7 @@
 <script src="js/data/eventEditor/components/EnemyComps/EnemyCompListPerDiffEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EnemyComps/NodeEnemyCompEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EnemyComps/NodeEnemyCompObjectsEditorComponent.js"></script>
+<script src="js/data/eventEditor/components/MapLockEditorComponent.js"></script>
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>

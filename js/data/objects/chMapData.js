@@ -52,6 +52,8 @@ class ChMapData {
          * Use this to manage complex locking
          */
         this.lockInfos = {
+            // --- Difficulties to which lock applies
+            difficulties: [],
 
             isTagAllowed: {
                 // --- Per start

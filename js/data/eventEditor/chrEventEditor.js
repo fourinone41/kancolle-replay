@@ -184,6 +184,7 @@ Vue.createApp({
 .component('vcountruleeditor', CountRuleEditorComponent)
 .component('vshipidslisteditor', ShipIdsListEditorComponent)
 .component('vhiddenrouteeditor', HiddenRoutesEditorComponent)
+.component('vmaplockeditor', MapLockEditorComponent)
 
 // --- Gimmicks
 .component('vgimmicklist', GimmickListComponent)

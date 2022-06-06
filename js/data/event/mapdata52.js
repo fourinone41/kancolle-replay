@@ -1123,7 +1123,7 @@ MAPDATA[52] =
 					{ type: 'battle', node: 'W', rank: 'S', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 } },
 					{ type: 'battle', node: 'X', rank: 'S', timesRequiredPerDiff: { 4:1, 1:1, 2:1, 3:1 } },
 				], { lastDanceOnly: true }),
-				additionalChecks: function(ships,errors) {
+				/*additionalChecks: function(ships,errors) {
 					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
 					let lock = CHDATA.fleets.combined ? '52_4' : '52_3';
 					
@@ -1140,6 +1140,30 @@ MAPDATA[52] =
 						if (lock == '52_3') errors.push('Only GREY locks allowed.');
 						else errors.push('Only BLUE locks allowed.');
 					}
+				},*/
+				lockInfos: {
+
+					isTagAllowed: {
+						// --- Per fleet type
+						fleetType: {
+							0: ['52_3'],
+							1: ['52_4'],
+							2: ['52_4'],
+							3: ['52_4'],
+							7: ['52_3'],
+						}
+					},
+		
+					tagGiven: {
+						// --- Per fleet type
+						fleetType: {
+							0: '52_3',
+							1: '52_4',
+							2: '52_4',
+							3: '52_4',
+							7: '52_3',
+						}
+					},
 				},
 				bonuses: {
 					base: [
@@ -1172,8 +1196,8 @@ MAPDATA[52] =
 					],
 				},
 				startCheck: function(ships) {
-					let lock = CHDATA.fleets.combined ? '52_4' : '52_3';
-					chGiveLockAllCurrent(lock);
+					/*let lock = CHDATA.fleets.combined ? '52_4' : '52_3';
+					chGiveLockAllCurrent(lock);*/
 					
 					chApplyBonus(this.bonuses.base);
 					
