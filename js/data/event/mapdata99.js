@@ -641,16 +641,22 @@ const bossIds = [
     2029, 2030, 2031, 2032, 2033, 2034,     // --- Mediterranean Dreadnought Water Princess
     2035, 2036, 2037, 2038, 2039, 2040,     // --- Abyssal Mediterranean Princess Vacation Mode
     2041, 2042, 2043, 2044, 2045, 2046,     // --- European Armoured Carrier Princess
-    2047, 2048,                             // --- Airfield Princess
     2049,                                   // --- New SSH
     2053, 2054, 2055, 2056, 2057, 2058,     // --- Submarine Shark Water Demon
     2059,2060,2061,2062,                    // --- Hi Convoy Princess
     2063,2064,2065,2066,2067,2068,          // --- Abyssal Plum Princess
     2069,2070,2071,2072,                    // --- Yokohama Wharf Princess
     2073,2074,2075,2076,                    // --- Abyssal Jade Princess
-    2077,2078,2079,                         // --- Super Heavy Bombing Airfield Princess 
     2080,2081,2082,2083,                    // --- Winter Entombed Anti-Air Guardian Princess
     2084,2085,2086,2087,2088,2089,          // --- Supply Depot Princess C
+    2097,2098,2099,2100,                    // --- Outer Southern Sea Destroyer Princess
+
+
+    // --- Airfield Princess
+    2047, 2048,                             // --- Base
+    2094, 2096, 2096,                       // --- Base
+    2091,2092,2093,                         // --- Patrol Aircraft Deployment
+    2077,2078,2079,                         // --- Super Heavy Bombing
 
 	9012,9013,9014,9015,9016,9018,9019,9020,9021,9022, // --- Fog fleet
 ];
