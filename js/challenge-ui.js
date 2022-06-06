@@ -1354,7 +1354,9 @@ function chDoStartChecksFleet(fleetnum,errors) {
 		// Complex locks
 		const lockInfos = mdata.lockInfos;
 
-		if (lockInfos.difficulties.includes(CHDATA.event.maps[MAPNUM].diff)) {
+		const difficulties = lockInfos.difficulties ? lockInfos.difficulties : [2,3];
+
+		if (difficulties) {
 			// get tag
 			if (lockInfos.isTagAllowed.startNode && Object.values(lockInfos.isTagAllowed.startNode).length) {
 				// get start node
@@ -1561,8 +1563,10 @@ function chApplyLocksBeforeSortie() {
 	const lockInfos = mdata.lockInfos;
 
 	let lockToApply = null;
+	
+	const difficulties = lockInfos.difficulties ? lockInfos.difficulties : [2,3];
 
-	if (lockInfos.difficulties.includes(CHDATA.event.maps[MAPNUM].diff)) {
+	if (difficulties) {
 		// get tag
 		if (lockInfos.tagGiven.startNode && Object.values(lockInfos.isTagAllowed.startNode).length) {
 			// get start node
