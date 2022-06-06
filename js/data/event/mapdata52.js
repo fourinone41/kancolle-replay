@@ -385,7 +385,7 @@ MAPDATA[52] =
 							ChIsRouteNotUnlockedRule(1),
 						],
 						rules: [
-							ChSpeedRule('<=', 20, 'P'),
+							ChSpeedRule('>=', 20, 'P'),
 							ChShipTypeRoutingRule(['aCV'], '>=', 3, 'O'),
 							ChShipTypeRoutingRule(['DD', 'DE'], '<=', 1, 'O', 'P'),
 						]
