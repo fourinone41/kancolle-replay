@@ -1142,9 +1142,7 @@ MAPDATA[52] =
 					}
 				},*/
 				lockInfos: {
-
 					isTagAllowed: {
-						// --- Per fleet type
 						fleetType: {
 							0: ['52_3'],
 							1: ['52_4'],
@@ -1153,9 +1151,8 @@ MAPDATA[52] =
 							7: ['52_3'],
 						}
 					},
-		
+
 					tagGiven: {
-						// --- Per fleet type
 						fleetType: {
 							0: '52_3',
 							1: '52_4',

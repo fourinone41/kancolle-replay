@@ -1620,14 +1620,15 @@ function chDoStartChecks() {
 function chDoStartChecksFleet(fleetnum,errors) {
 	var mdata = MAPDATA[WORLD].maps[MAPNUM];
 	var first = true;
-
 	let locksToCheck = null;
 
 	if (mdata.lockInfos) {
 		// Complex locks
 		const lockInfos = mdata.lockInfos;
 
-		if (lockInfos.difficulties.includes(CHDATA.event.maps[MAPNUM].diff)) {
+		const difficulties = lockInfos.difficulties ? lockInfos.difficulties : [2,3];
+
+		if (difficulties) {
 			// get tag
 			if (lockInfos.isTagAllowed.startNode && Object.values(lockInfos.isTagAllowed.startNode).length) {
 				// get start node
@@ -1639,17 +1640,17 @@ function chDoStartChecksFleet(fleetnum,errors) {
 					startNode = '';
 					let index = 0;
 					let rules = mdata.startCheckRule;
-			
+
 					while (!startNode) {
-						
+
 						let rule = rules[index];
-			
+
 						if (!rule) {
 							startNode = 'Start'
 						}
-			
+
 						if (rule.ruleCanBeChecked()) startNode = rule.getRouting(CHSHIPCOUNT);
-				
+
 						index++;
 					}
 				}
@@ -1835,8 +1836,10 @@ function chApplyLocksBeforeSortie() {
 	const lockInfos = mdata.lockInfos;
 
 	let lockToApply = null;
+	
+	const difficulties = lockInfos.difficulties ? lockInfos.difficulties : [2,3];
 
-	if (lockInfos.difficulties.includes(CHDATA.event.maps[MAPNUM].diff)) {
+	if (difficulties) {
 		// get tag
 		if (lockInfos.tagGiven.startNode && Object.values(lockInfos.isTagAllowed.startNode).length) {
 			// get start node
@@ -1848,17 +1851,17 @@ function chApplyLocksBeforeSortie() {
 				startNode = '';
 				let index = 0;
 				let rules = mdata.startCheckRule;
-		
+
 				while (!startNode) {
-					
+
 					let rule = rules[index];
-		
+
 					if (!rule) {
 						startNode = 'Start'
 					}
-		
+
 					if (rule.ruleCanBeChecked()) startNode = rule.getRouting(CHSHIPCOUNT);
-			
+
 					index++;
 				}
 			}
