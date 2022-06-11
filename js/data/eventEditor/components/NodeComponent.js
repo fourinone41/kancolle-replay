@@ -148,17 +148,20 @@ const NodeComponent = {
 
         </table>
 
-        <div class="group-title">Routing</div>
-        <vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist>
+        <uigroup title="Routing">
+            <vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist>
+        </uigroup>
 
-        <div class="group-title">End node</div>   
-        Is end node rule (if no rule, use the checkbox value)  
-        <input v-model="nodeData.end" type="checkbox" />
-        <vroutinglist :rule-list="nodeData.endRules" :map-data="mapData"></vroutinglist>
-
-        <div class="group-title">Enemy comps</div>   
-        <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject" ></vnodeenemycompeditor>
-
+        <uigroup title="End node">
+            Is end node rule (if no rule, use the checkbox value)  
+            <input v-model="nodeData.end" type="checkbox" />
+            <vroutinglist :rule-list="nodeData.endRules" :map-data="mapData"></vroutinglist>
+        </uigroup>
+ 
+        <uigroup title="Enemy comps">
+            <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject" ></vnodeenemycompeditor>
+        </uigroup> 
+        
         <uigroup title="Bonuses">
             <button v-if="!!nodeData.bonuses" @click="delete nodeData.bonuses">Disable bonuses</button> 
             <button v-else @click="nodeData.bonuses = []">Handle bonuses</button>
