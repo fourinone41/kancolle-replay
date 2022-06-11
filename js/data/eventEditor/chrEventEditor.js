@@ -186,6 +186,9 @@ Vue.createApp({
 .component('vhiddenrouteeditor', HiddenRoutesEditorComponent)
 .component('vmaplockeditor', MapLockEditorComponent)
 
+// --- UI
+.component('uigroup', GroupComponent)
+
 // --- Gimmicks
 .component('vgimmicklist', GimmickListComponent)
 .component('vgimmickeditor', GimmickEditorComponent)
@@ -196,6 +199,10 @@ Vue.createApp({
 
 .component('venemycomplist', EnemyCompListEditorComponent)
 .component('venemycomplistperdiff', EnemyCompListPerDiffEditorComponent)
+
+// --- Bonuses
+.component('vbonuslist', BonusListComponent)
+.component('vbonuseditor', BonusEditorComponent)
 
 .use(COMMON.i18n)
 .mount('#eventEditor');

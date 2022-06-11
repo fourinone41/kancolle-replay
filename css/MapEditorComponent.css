@@ -83,3 +83,17 @@ button:hover {
 tr > button {
     width: 100%;
 }
+
+.group-title-foldable {
+    padding: 10px;
+    font-size: larger;
+    border: solid 1px gray;
+    background-color: #646464;
+    cursor: pointer;
+    line-height: 30px;
+    margin-top: 10px;
+}
+
+.group-foldable {
+    margin-bottom: 50px;
+}

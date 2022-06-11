@@ -158,6 +158,13 @@ const NodeComponent = {
 
         <div class="group-title">Enemy comps</div>   
         <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject" ></vnodeenemycompeditor>
+
+        <uigroup title="Bonuses">
+            <button v-if="!!nodeData.bonuses" @click="delete nodeData.bonuses">Disable bonuses</button> 
+            <button v-else @click="nodeData.bonuses = []">Handle bonuses</button>
+
+            <vbonuslist v-if="!!nodeData.bonuses" :bonus-list="nodeData.bonuses" :map-data="mapData" />
+        </uigroup>
     </div>
     
     `,
