@@ -5,6 +5,8 @@ const EnemyCompListPerDiffEditorComponent = {
         compNameCurrent: '',
         compNewName: '',
 
+        otherCompSelected: '',
+
         formationList: [
             { key: 1, display: "Line ahead" },
             { key: 2, display: "Double line" },
@@ -27,6 +29,10 @@ const EnemyCompListPerDiffEditorComponent = {
             if (!this.compNameCurrent) return false;
             if (!this.compObject[this.compNameCurrent]) return false;
             return !!this.compObject[this.compNameCurrent].ce;
+        },
+
+        compItemList() {
+            return Object.keys(this.compObject).map(x => ({ key: x, display: x }));
         }
     },
 
@@ -44,6 +50,12 @@ const EnemyCompListPerDiffEditorComponent = {
             this.compNewName = '';
         },
 
+        addExistingComp() {
+            this.compList[this.otherCompSelected] = 100;
+
+            this.otherCompSelected = '';
+        },
+
         deleteComp() {
             delete this.compList[this.compNameCurrent];
             this.compNameCurrent = '';
@@ -54,7 +66,13 @@ const EnemyCompListPerDiffEditorComponent = {
     
         <div class="editor-group editor-group-no-scroll">
             <div>
-                <input type="button" value="Add new comp" @click="addComp"/><input placeholder="Name" maxlength="50" ref="compNameRef" v-model="compNewName" @keydown.enter="addComp"/>
+                <button @click="addComp">Add new comp</button>
+                <input placeholder="Name" maxlength="50" ref="compNameRef" v-model="compNewName" @keydown.enter="addComp"/>
+            </div>
+
+            <div>
+                <button @click="addExistingComp">Add existing comp</button>
+                <vcomboboxeditor :data-source="this" :item-list="compItemList" data-field="otherCompSelected" />
             </div>
             
             <div class="tabber">

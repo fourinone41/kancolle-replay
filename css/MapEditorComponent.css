@@ -59,3 +59,27 @@ select.mapButton  {
 .equipDataRuleEditor .equipEditor .name {
     display: flex;
 }
+
+td {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #818181;
+}
+
+button {
+    background-color: #646464;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    line-height: 50px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    border: none;
+}
+
+button:hover {
+    background-color: #a1a1a1;
+}
+
+tr > button {
+    width: 100%;
+}
