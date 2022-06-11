@@ -14,6 +14,11 @@ const ElementListEditorComponent = {
         getDataSource() {
             const dataSource = [];
 
+            if (!Array.isArray(this.dataSource)) {
+                console.debug(this.dataSource);
+                throw "Datasource isn't an array";
+            }
+
             for (const value of this.dataSource) {
                 const item = Object.values(this.itemList).find(e => e.key == value);
 

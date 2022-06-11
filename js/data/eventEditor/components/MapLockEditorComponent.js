@@ -48,6 +48,16 @@ const MapLockEditorComponent = {
 
             return locks;
         },
+
+        difficulties() {
+            if (!this.mapData.lockInfos) return [];
+            
+            if (!this.mapData.lockInfos.difficulties) {
+                this.mapData.lockInfos.difficulties = [2,3];
+            }
+
+            return this.mapData.lockInfos.difficulties;
+        }
     },
     
     methods: {
@@ -133,7 +143,7 @@ const MapLockEditorComponent = {
         <tr v-if="handleComplexLock">
             <td>
                 Lock applies to difficulties
-                <velementlist :data-source="mapData.lockInfos.difficulties" :item-list="difficultiesItemSource" />
+                <velementlist :data-source="difficulties" :item-list="difficultiesItemSource" />
             </td>
         </tr>
 

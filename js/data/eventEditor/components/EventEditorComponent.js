@@ -120,6 +120,7 @@ const EventEditorComponent = {
                     }
                     else {
                         _addlock(map.giveLock);
+                        map.giveLock = [map.giveLock];
                     }
                 }
 
