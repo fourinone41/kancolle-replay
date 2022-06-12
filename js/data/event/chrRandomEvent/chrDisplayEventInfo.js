@@ -1158,12 +1158,12 @@ class ChrDisplayEventInfo {
                     </ul>
                     <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
                     ${
-                        currentBonus.specificShips ? 
+                        currentBonus.specificShips && currentBonus.specificShips.length ? 
                         `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
                         ''
                     }
                     ${
-                        currentBonus.excludeShips ? 
+                        currentBonus.excludeShips && currentBonus.excludeShips.length ? 
                         `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} not included</div>` :
                         ''
                     }
@@ -1177,12 +1177,12 @@ class ChrDisplayEventInfo {
                     </ul>
                     <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
                     ${
-                        currentBonus.specificShips ? 
+                        currentBonus.specificShips && currentBonus.specificShips.length ? 
                         `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
                         ''
                     }
                     ${
-                        currentBonus.excludeShips ? 
+                        currentBonus.excludeShips && currentBonus.excludeShips.length ? 
                         `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} not included</div>` :
                         ''
                     }
@@ -1259,13 +1259,13 @@ class ChrDisplayEventInfo {
 
                 bonusLine.append(bonusGroupColumn);
 
-                if (currentBonus.requiredFlagshipId) {
+                if (currentBonus.requiredFlagshipId && currentBonus.requiredFlagshipId.length) {
                     bonusGroupColumn.append(`<br>If flagship is ${
                         `<br><div>${currentBonus.requiredFlagshipId.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</div>` 
                     }`);
                 }
 
-                if (currentBonus.requiredFlagshipType) {
+                if (currentBonus.requiredFlagshipType && currentBonus.requiredFlagshipId.length) {
                     bonusGroupColumn.append(`<br>If flagship is ${currentBonus.requiredFlagshipType.join(",")}`);
                 }
 
