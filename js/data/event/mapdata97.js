@@ -261,6 +261,18 @@ MAPDATA[97].convertBonus = function(bonus) {
         case 'ChEquipTypesBonuses':
             return new ChEquipTypesBonuses(bonus.parameters, bonus.equipTypes, bonus.operator, bonus.reqCount, bonus.amount);
             
+        case 'ChEquipTypesComboBonuses':
+            return new ChEquipTypesComboBonuses(bonus.parameters, bonus.comboData, bonus.amount);
+
+        case 'ChDebuffBonuses':
+            return new ChDebuffBonuses(bonus.parameters, bonus.amount);
+
+        case 'ChEquipIdsBonusTable':
+            return new ChEquipIdsBonusTable(bonus.parameters, bonus.equipIds, bonus.tableId, bonus.amount);
+
+        case 'ChShipWithoutBonusesBonuses':
+            return new ChShipWithoutBonusesBonuses(bonus.parameters, bonus.amount);
+            
         case 'none':
             return new ChBonuses(bonus.parameters);
         

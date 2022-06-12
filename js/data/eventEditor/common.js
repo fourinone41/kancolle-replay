@@ -210,4 +210,61 @@ var COMMON = {
 	],
 
 	SOUND_MANAGER: new SoundManager(),
+
+	BASIC_SHIP_CLASS: {
+		18: 'Asashio-class',
+		23: 'Shiratsuyu-class',
+		28: 'Mutsuki-class',
+		30: 'Kagerou-class',
+		38: 'Yuugumo-class',
+	},
+
+	getShipClasses() {
+		if (!this.SHIP_CLASSES) {
+			this.SHIP_CLASSES = [];
+
+			const ships = Object.values(SHIPDATA).sort((shipA, shipB) => shipA.nid - shipB.nid);
+
+			for (const shipData of ships) {
+				if (!shipData.sclass) continue;
+
+				const classData = this.SHIP_CLASSES.find((classD) => shipData.sclass == classD.key);
+
+				if (this.BASIC_SHIP_CLASS[shipData.sclass]) {
+					if (!classData) {
+						this.SHIP_CLASSES.push(({
+							key: shipData.sclass,
+							display: this.BASIC_SHIP_CLASS[shipData.sclass]
+						}));
+					}
+				} else if (!classData) {
+
+					this.SHIP_CLASSES.push(({
+						key: shipData.sclass,
+						display: shipData.name,
+						ships: [shipData.name]
+					}));
+
+				} else {
+					let found = false;
+
+					for (const shipName of classData.ships) {
+						if (shipData.name.includes(shipName)) {
+							found = true;
+							break;
+						}
+					}
+
+					if (!found) {
+						classData.display += ', ' +  shipData.name;
+						classData.ships.push(shipData.name);
+					}
+				}
+			}
+			
+		}
+
+		return this.SHIP_CLASSES;
+	}
+	
 };

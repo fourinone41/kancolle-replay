@@ -20,15 +20,13 @@ const BonusEditorComponent = {
                 key: equipmentType,
                 display: EQTDATA[equipmentType].dname ?  EQTDATA[equipmentType].dname :  EQTDATA[equipmentType].name,
             })
-        )
+        ),
+        
+        shipClassItemList: COMMON.getShipClasses()
 
     }),
 
     computed: {
-        nodeList() {
-            return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
-        },
-
         mapPartItemList() {
             return Object.keys(this.mapData.parts).map(part => ({ key: part, display: part}));
         },
@@ -56,7 +54,31 @@ const BonusEditorComponent = {
 
             if (!bonusType) return;
             return bonusType.editors.includes(key);
+        },
+
+        init() {
+            // --- Init the bonus
+            if (!this.bonusData) return;
+            if (!this.bonusData.bonusType) return;
+
+            const model = new ChBonuses(new ChBonusesParameters());
+
+            for (const property in model) {
+                if (this.bonusData[property] == undefined) this.bonusData[property] = model[property];
+            }
+
+            for (const property in model.parameters) {
+                if (this.bonusData.parameters[property] == undefined) this.bonusData.parameters[property] = model.parameters[property];
+            }
         }
+    },
+
+    beforeMount() {
+        this.init();
+    },
+
+    beforeUpdate() {
+        this.init();
     },
     
     watch: {
@@ -110,9 +132,14 @@ const BonusEditorComponent = {
             <td><vshipidslisteditor :data-source="bonusData.parameters.onlySpecificShips" /></td>
         </tr>
         
-        <tr v-if="displayEditor('shipIds')">
+        <tr v-if="displayEditor('shipIds') && !!bonusData.shipIds">
             <td>Bonus applies to specific allies</td>
             <td><vshipidslisteditor :data-source="bonusData.shipIds" /></td>
+        </tr>
+        
+        <tr v-if="displayEditor('classIds') && !!bonusData.classIds">
+            <td>Bonus applies to specific ally classes</td>
+            <td><velementlist :data-source="bonusData.classIds" :item-list="shipClassItemList" /></td>
         </tr>
         
         <tr v-if="displayEditor('shipTypes')">
@@ -223,7 +250,7 @@ BonusEditorComponent.BonusDisplay = {
             equipTypes: null,
         },
 
-        editors: ["shipIds"]
+        editors: ["shipIds", "classIds"]
     },
 
     ChShipTypeBonuses: {
