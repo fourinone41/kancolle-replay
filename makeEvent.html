@@ -203,6 +203,52 @@
                                 <td><button class="play-bgm" @click="playBGM(mapData.bgmNB)">Play</button></td>
                                 <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
                             </tr>
+
+                            <tr>
+                                <td>Custom BGM per node</td>
+                                <td>
+                                    <button @click="toggleCustomBGM">{{mapData.overrideBGM ? "Disable custom node BGM" : "Enable custom node BGM"}}</button>
+
+                                    Node <vcomboboxeditor :data-source="this" :item-list="nodeList" data-field="currentNodeForCutomBGM"></vcomboboxeditor>
+                                    <button v-if="!!mapData.overrideBGM" @click="addNodeCustomBGM">Add Node</button>
+
+                                    <div v-if="!!mapData.overrideBGM" v-for="(bgmData, node) in mapData.overrideBGM" :key="node">
+
+                                        Node : {{node}}
+                                        <button @click="delete mapData.overrideBGM[node]">Delete</button>
+
+                                        <table>
+                                            <tr>
+                                                <td>Normal battle BGM (day)</td>
+                                                <td><input v-model="bgmData.bgmDN" /></td>
+                                                <td><button class="play-bgm" @click="playBGM(bgmData.bgmDN)">Play</button></td>
+                                                <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>Normal battle BGM (night)</td>
+                                                <td><input v-model="bgmData.bgmNN" /></td>
+                                                <td><button class="play-bgm" @click="playBGM(bgmData.bgmNN)">Play</button></td>
+                                                <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>Boss battle BGM (day)</td>
+                                                <td><input v-model="bgmData.bgmDB" /></td>
+                                                <td><button class="play-bgm" @click="playBGM(bgmData.bgmDB)">Play</button></td>
+                                                <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>Boss battle BGM (night)</td>
+                                                <td><input v-model="bgmData.bgmNB" /></td>
+                                                <td><button class="play-bgm" @click="playBGM(bgmData.bgmNB)">Play</button></td>
+                                                <td><button class="play-bgm" @click="stopBGM()">Stop</button></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
                         </table>
                     </uigroup>
 

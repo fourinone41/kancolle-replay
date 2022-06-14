@@ -13,7 +13,9 @@ const MapEditorComponent = {
         trueFalseNodesList: [
             { key: true, display: 'Valid' },
             { key: false, display: 'Not valid' },
-        ]
+        ],
+
+        currentNodeForCutomBGM: null,
     }),
 
     computed: {
@@ -198,6 +200,19 @@ const MapEditorComponent = {
             } else {
                 this.mapData.giveLock = [];
             }
+        },
+
+        toggleCustomBGM() {
+            this.mapData.overrideBGM = this.mapData.overrideBGM ? null : {};
+        },
+
+        addNodeCustomBGM() {
+            this.mapData.overrideBGM[this.currentNodeForCutomBGM] = {
+                bgmDN: null,
+                bgmNN: null,
+                bgmDB: null,
+                bgmNB: null,
+            };
         }
     },
     
