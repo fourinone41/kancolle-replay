@@ -55,6 +55,7 @@ const JETBOMBER = 57;
 const JETSCOUT = 59;
 const RADARXL = 93;
 const CARRIERSCOUT2 = 94;
+const SECGUNL = 95;
 const OTHER = 99;
 
 //artillery spot/night battle/other combat type
@@ -121,7 +122,7 @@ EQTDATA[MAINGUNM] = {
 	atype: A_GUN,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['CL','CT','CLT','CA','CAV','BB','BBV'],
-	canequipS: [372, 491, 500, 581, 586, 634, 635, 639, 640, 690],
+	canequipS: [372, 491, 500, 581, 586, 634, 635, 639, 640, 690, 911],
 	cannotequipS: [877],
 };
 EQTDATA[MAINGUNL] = {
@@ -139,7 +140,7 @@ EQTDATA[MAINGUNXL] = {
 	atype: A_GUN,
 	improve: {Pshell:1.5,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: [],
-	canequipS: [131, 136, 143, 148, 275, 276, 541, 546, 573],
+	canequipS: [131, 136, 143, 148, 275, 276, 541, 546, 573, 911, 916],
 };
 EQTDATA[SECGUN] = {
 	name: 'Secondary Gun',
@@ -150,6 +151,14 @@ EQTDATA[SECGUN] = {
 	canequip: ['CL','CT','CLT','CA','CAV','FBB','BB','BBV','CVL','CV','CVB','AS','AV','AR','LHA'],
 	canequipS: [500, 717],
 	cannotequipS: [477, 478, 622, 623, 624],
+};
+EQTDATA[SECGUNL] = {
+	name: 'Secondary Gun',
+	image: 4,
+	btype: B_SECGUN,
+	atype: A_GUN,
+	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
+	canequip: ['CA','FBB','BB','BBV','CV','CVB'],
 };
 EQTDATA[SECGUNAA] = {
 	name: 'Secondary Gun',
@@ -219,7 +228,7 @@ EQTDATA[SONARS] = {
 	btype: B_SONAR,
 	improve: {Pshell:.75,Pasw:1,ACCasw:1.3,EVtorp:1.5},
 	canequip: ['DD','CL','CT','CLT','SS','SSV','DE'],
-	canequipS: [352, 372, 380, 381, 382, 450, 491, 500, 529, 534, 536, 546, 554, 586, 591, 592, 626, 645, 650, 690, 699, 707, 713, 717, 879, 885, 889, 900],
+	canequipS: [352, 372, 380, 381, 382, 450, 491, 500, 529, 534, 536, 546, 554, 586, 591, 592, 626, 645, 650, 690, 699, 707, 713, 717, 879, 885, 889, 900, 911, 916],
 	canASWDamage: true,
 };
 EQTDATA[SONARL] = {
@@ -297,7 +306,7 @@ EQTDATA[SEAPLANEBOMBER] = {
 	btype: B_RECON,
 	improve: {LOS:1.15},
 	canequip: ['CAV','BBV','SSV','AV','AO','LandBase'],
-	canequipS: [305, 306, 307, 314, 358, 361, 392, 446, 447, 488, 496, 547, 574, 579, 591, 626, 630, 639, 640, 652, 662, 663, 668, 879],
+	canequipS: [305, 306, 307, 314, 358, 361, 392, 446, 447, 488, 496, 547, 574, 579, 591, 626, 630, 639, 640, 652, 662, 663, 668, 879, 911],
 	cannotequipS: [645, 650, 699, 717, 900],
 	isPlane: true,
 	isfighter: true,
@@ -332,7 +341,7 @@ EQTDATA[AUTOGYRO] = {
 	dname: 'Anti-sub Gyros',
 	image: 21,
 	canequip: ['CAV','BBV','CVL','AS','AO','AR','LHA'],
-	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 663, 668, 690, 713, 885],
+	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 663, 668, 690, 713, 885, 911],
 	cannotequipS: [380, 381, 382, 521, 522, 526, 534, 621, 645, 699, 884, 889, 900],
 	isASWPlane: true,
 	canASWDamage: true,
@@ -393,7 +402,7 @@ EQTDATA[BULGEM] = {
 	dname: 'Torpedo Bulge (Medium)',
 	image: 23,
 	canequip: ['CT','CA','CAV','CVL','AS','AV','AR'],
-	canequipS: [146, 147, 216, 217, 305, 306, 307, 314, 330, 346, 357, 500, 537, 538, 542, 543, 547, 563, 564, 566, 567, 568, 569, 578, 579, 621, 622, 623, 624, 626, 629, 630, 645, 649, 650, 652, 656, 657, 662, 663, 668, 670, 699, 717, 900],
+	canequipS: [146, 147, 216, 217, 305, 306, 307, 314, 330, 346, 357, 500, 537, 538, 542, 543, 547, 563, 564, 566, 567, 568, 569, 578, 579, 621, 622, 623, 624, 626, 629, 630, 645, 649, 650, 652, 656, 657, 662, 663, 668, 670, 699, 717, 900, 915],
 };
 EQTDATA[BULGEL] = {
 	name: 'Torpedo Bulge',
@@ -409,7 +418,7 @@ EQTDATA[LANDINGCRAFT] = {
 	btype: B_LC1,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['AV','LHA'],
-	canequipS: [147, 198, 199, 200, 260, 352, 382, 418, 419, 434, 435, 464, 468, 469, 470, 478, 487, 488, 489, 490, 498, 500, 506, 541, 547, 548, 563, 587, 623, 630, 645, 647, 650, 657, 666, 667, 699, 703, 707, 716, 718, 720, 889, 908],
+	canequipS: [147, 198, 199, 200, 260, 352, 382, 418, 419, 434, 435, 464, 468, 469, 470, 478, 487, 488, 489, 490, 498, 500, 506, 541, 547, 548, 563, 587, 623, 630, 645, 647, 650, 657, 666, 667, 699, 703, 707, 716, 718, 720, 889, 908, 915, 916],
 	cannotequipS: [445, 491],
 };
 EQTDATA[SEARCHLIGHTS] = {
@@ -465,7 +474,7 @@ EQTDATA[FCF] = {
 	image: 28,
 	improve: {Pshell:1,Pnb:1,ACCshell:1,ACCnb:1.3},
 	canequip: ['CL','CT','CLT','CA','CAV','FBB','BB','BBV','CVL','CV','CVB','AS','AV','LHA'],
-	canequipS: [330, 346, 357, 419, 421, 422, 423, 464, 497, 498, 500, 532, 533, 537, 538, 542, 543, 567, 587, 628, 629, 645, 649, 650, 651, 656, 667, 699, 720],
+	canequipS: [330, 346, 357, 419, 421, 422, 423, 464, 497, 498, 500, 532, 533, 537, 538, 542, 543, 567, 587, 628, 629, 645, 649, 650, 651, 656, 667, 699, 720, 915],
 	cannotequipS: [521, 522, 877],
 };
 EQTDATA[DRUM] = {
@@ -513,7 +522,7 @@ EQTDATA[SEAPLANEFIGHTER] = {
 	name: 'Seaplane Fighter',
 	image: 43,
 	canequip: ['CAV','BBV','SSV','AS','AV','AO','LandBase'],
-	canequipS: [136, 148, 275, 276, 358, 361, 446, 447, 488, 496, 541, 546, 547, 573, 592, 621, 626, 652, 668, 879],
+	canequipS: [136, 148, 275, 276, 358, 361, 446, 447, 488, 496, 541, 546, 547, 573, 592, 621, 626, 652, 668, 879, 911],
 	cannotequipS: [645, 650, 699, 717, 900],
 	isPlane: true,
 	isfighter: true,
@@ -526,7 +535,7 @@ EQTDATA[LANDINGTANK] = {
 	btype: B_LC3,
 	improve: {Pshell:1,Pnb:1},
 	canequip: ['SS','SSV','AV','LHA'],
-	canequipS: [147, 198, 199, 200, 352, 418, 464, 468, 470, 478, 487, 488, 489, 490, 497, 500, 506, 541, 547, 548, 564, 568, 569, 573, 578, 587, 588, 623, 647, 656, 657, 662, 663, 666, 667, 668, 670, 908],
+	canequipS: [147, 198, 199, 200, 352, 418, 464, 468, 470, 478, 487, 488, 489, 490, 497, 500, 506, 541, 547, 548, 564, 568, 569, 573, 578, 587, 588, 623, 647, 656, 657, 662, 663, 666, 667, 668, 670, 908, 915, 916],
 	cannotequipS: [445, 491, 581],
 };
 EQTDATA[OILDRUM] = {
@@ -566,7 +575,7 @@ EQTDATA[TRANSPORTITEM] = {
 	image: 41,
 	canequip: ['CAV','BBV','CVL','CV','CVB','SSV','AV','AR','LHA'],
 	canequipS: [500, 530, 539, 605, 645, 650, 699, 717, 900],
-	cannotequipS: [621, 626],
+	cannotequipS: [621, 626, 916],
 };
 EQTDATA[SUBRADAR] = {
 	name: 'Submarine Equipment',
@@ -1560,7 +1569,7 @@ var EQDATA = {
 		name: 'Type 98 Recon Seaplane (Night Scout)',
 		nameJP: '九八式水上偵察機(夜偵)',
 		added: '2014-06-06',
-		type: SEAPLANE,
+		type: SEAPLANE, image: 50,
 		isnightscout: true,
 		ASW: 1,
 		LOS: 3,
@@ -3261,6 +3270,16 @@ var EQDATA = {
 		name: 'Shiden Kai (343rd Air Group) 301st Fighter Squadron',
 		nameJP: '紫電改(三四三空) 戦闘301',
 		added: '2018-02-16',
+		type: INTERCEPTOR,
+		AA: 11,
+		AR: 2,
+		ACC: 2,
+		EV: 4,
+	},
+	264: {
+		name: 'Shiden Kai (343 Air Group) 701st Fighter Squadron',
+		nameJP: '紫電改(三四三空) 戦闘701',
+		added: '2022-06-17',
 		type: INTERCEPTOR,
 		AA: 11,
 		AR: 2,
@@ -5377,6 +5396,102 @@ var EQDATA = {
 		EV: 2,
 		LOS: 8,
 	},
+	463: {
+		name: '15.5cm Triple Secondary Gun Mount Kai Ni',
+		nameJP: '15.5cm三連装副砲改二',
+		added: '2022-06-08',
+		type: SECGUN,
+		FP: 9,
+		AA: 5,
+		AR: 1,
+		ACC: 5,
+		EV: 1,
+		RNG: 2,
+	},
+	464: {
+		name: '10cm Twin High-angle Gun Mount Battery Concentrated Deployment',
+		nameJP: '10cm連装高角砲群 集中配備',
+		added: '2022-06-08',
+		type: SECGUN, image: 16,
+		FP: 3,
+		AA: 12,
+		AR: 2,
+		ACC: 2,
+		EV: 2,
+		RNG: 1,
+	},
+	465: {
+		name: 'Prototype 51cm Triple Gun Mount',
+		nameJP: '試製51cm三連装砲',
+		added: '2022-06-08',
+		type: MAINGUNXL,
+		FP: 36,
+		AA: 5,
+		AR: 2,
+		ACC: -2,
+		EV: -10,
+		RNG: 4,
+	},
+	466: {
+		name: 'Ryuusei Kai (Skilled)',
+		nameJP: '流星改(熟練)',
+		added: '2022-06-17',
+		type: TORPBOMBER,
+		aaResistShip: .6,
+		TP: 13,
+		AA: 3,
+		ACC: 1,
+		ASW: 6,
+		LOS: 5,
+	},
+	467: {
+		name: '5inch Twin Gun Mount (Secondary Armament) Concentrated Deployment',
+		nameJP: '5inch連装砲(副砲配置) 集中配備',
+		added: '2022-06-17',
+		type: SECGUNL, image: 16,
+		FP: 5,
+		AA: 11,
+		AR: 1,
+		ACC: 4,
+		EV: 3,
+		RNG: 1,
+	},
+	468: {
+		name: '38cm Quadruple Gun Mount Kai Deux',
+		nameJP: '38cm四連装砲改 deux',
+		added: '2022-06-30',
+		type: MAINGUNL,
+		FP: 24,
+		AA: 5,
+		AR: 1,
+		ACC: 4,
+		RNG: 2,
+	},
+	469: {
+		name: 'Type 0 Reconnaissance Seaplane Model 11B Kai (Night Recon)',
+		nameJP: '零式水上偵察機11型乙改(夜偵)',
+		added: '2022-06-30',
+		type: SEAPLANE, image: 50,
+		isnightscout: true,
+		FP: 1,
+		AA: 1,
+		ACC: 2,
+		ASW: 6,
+		LOS: 5,
+	},
+	470: {
+		name: '12.7cm Twin Gun Mount Model C Kai 3',
+		nameJP: '12.7cm連装砲C型改三',
+		added: '2022-07-13',
+		type: MAINGUNS,
+		FP: 3,
+		AA: 2,
+		AR: 1,
+		ACC: 1,
+		EV: 1,
+		ASW: 3,
+		RNG: 1,
+	},
 	501: {
 		name: '5inch Single Cannon',
 		nameJP: '5inch単装砲',
@@ -6900,6 +7015,9 @@ var LBASDATA = {
 	453: { distance: 4, cost: 9 },
 	454: { distance: 3, cost: 12 },
 	459: { distance: 7, cost: 13 },
+	264: { distance: 4, cost: 6 },
+	466: { distance: 6, cost: 9 },
+	469: { distance: 7, cost: 5 },
 };
 
 var EXPANSIONSLOTDATA = {
