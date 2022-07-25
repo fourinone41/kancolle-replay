@@ -1,5 +1,5 @@
 const NodeEnemyCompEditorComponent = {
-    props: ['nodeData', 'compObject', 'mapData'],
+    props: ['nodeData', 'compObject', 'mapData', 'allCompsObject'],
 
     data: () => ({
         selectedPartToAdd: null,
@@ -73,12 +73,12 @@ const NodeEnemyCompEditorComponent = {
             <button @click="addPart">Add part</button>
 
             <div v-for="(comps, part) in nodeData.compDiffPart" :key="part">
-                <vnodeenemycompobjectseditor :comp-list="comps" :comp-object="compObject" :init-values="initValues" :map-data="mapData" />
+                <vnodeenemycompobjectseditor :comp-list="comps" :comp-object="compObject" :init-values="initValues" :map-data="mapData" :all-comps-object="allCompsObject" />
             </div>
         </tr>
 
         <tr v-if="!isCompsPerPart">
-            <vnodeenemycompobjectseditor :comp-list="nodeData" :comp-object="compObject" :init-values="initValues" :map-data="mapData" />
+            <vnodeenemycompobjectseditor :comp-list="nodeData" :comp-object="compObject" :init-values="initValues" :map-data="mapData" :all-comps-object="allCompsObject" />
         </tr>
 
 

@@ -57,6 +57,15 @@ const MapLockEditorComponent = {
             }
 
             return this.mapData.lockInfos.difficulties;
+        },
+
+        giveLockDataSource() {
+            if (!Array.isArray(this.mapData.giveLock)) {
+                if (this.mapData.giveLock) this.mapData.giveLock = [this.mapData.giveLock];
+                else this.mapData.giveLock = [];
+            }
+
+            return this.mapData.giveLock;
         }
     },
     
@@ -126,7 +135,7 @@ const MapLockEditorComponent = {
     <table>
         <tr>
             <td>Gives lock</td>
-            <td><velementlist :data-source="mapData.giveLock" :item-list="locksItemSource" /></td>
+            <td><velementlist :data-source="giveLockDataSource" :item-list="locksItemSource" /></td>
         </tr>
 
         <tr>

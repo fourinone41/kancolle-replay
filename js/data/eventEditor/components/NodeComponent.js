@@ -1,5 +1,5 @@
 const NodeComponent = {
-    props: ['eventData', 'mapData', 'nodeData', 'compObject'],
+    props: ['eventData', 'mapData', 'nodeData', 'compObject', 'allCompsObject'],
         
     data: () => ({
         nodeTypeItemList: [            
@@ -159,7 +159,7 @@ const NodeComponent = {
         </uigroup>
  
         <uigroup title="Enemy comps">
-            <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject" ></vnodeenemycompeditor>
+            <vnodeenemycompeditor :node-data="nodeData" :map-data="mapData" :comp-object="compObject" :all-comps-object="allCompsObject"></vnodeenemycompeditor>
         </uigroup> 
         
         <uigroup title="Bonuses">

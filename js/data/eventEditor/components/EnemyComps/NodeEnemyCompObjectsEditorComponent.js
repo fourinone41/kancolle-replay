@@ -1,5 +1,5 @@
 const NodeEnemyCompObjectsEditorComponent = {
-    props: ['compList', 'initValues', 'compObject', 'mapData'],
+    props: ['compList', 'initValues', 'compObject', 'mapData', 'allCompsObject'],
 
     computed: {
         mapPartsItemList() {
@@ -32,7 +32,7 @@ const NodeEnemyCompObjectsEditorComponent = {
     },
 
     template: `
-        <venemycomplist :comp-list="compList.compDiff" :comp-object="compObject" :init-values="initValues"></venemycomplist>
+        <venemycomplist :comp-list="compList.compDiff" :comp-object="compObject" :init-values="initValues" :all-comps-object="allCompsObject"></venemycomplist>
 
 
 
@@ -43,7 +43,7 @@ const NodeEnemyCompObjectsEditorComponent = {
         <div v-else><button @click="toggleLastDanceComps">Handle last dance comps</button></div>
         
         <div v-if="!!compList.compDiffF">Last dance part <vcomboboxeditor :data-source="compList" :item-list="mapPartsItemList" data-field="compFPart" /></div>
-        <venemycomplist v-if="!!compList.compDiffF" :comp-list="compList.compDiffF" :comp-object="compObject" :init-values="initValues"></venemycomplist>
+        <venemycomplist v-if="!!compList.compDiffF" :comp-list="compList.compDiffF" :comp-object="compObject" :init-values="initValues" :all-comps-object="allCompsObject"></venemycomplist>
         
 
 
@@ -53,6 +53,6 @@ const NodeEnemyCompObjectsEditorComponent = {
         <div v-if="!!compList.compDiffC"><button @click="togglePostClearComps">Delete post clear comps</button></div>
         <div v-else><button @click="togglePostClearComps">Handle post clear comps</button></div>
 
-        <venemycomplist v-if="!!compList.compDiffC" :comp-list="compList.compDiffC" :comp-object="compObject" :init-values="initValues"></venemycomplist>
+        <venemycomplist v-if="!!compList.compDiffC" :comp-list="compList.compDiffC" :comp-object="compObject" :init-values="initValues" :all-comps-object="allCompsObject"></venemycomplist>
     `
 }

@@ -1,11 +1,12 @@
 const EnemyCompListPerDiffEditorComponent = {
-    props: ['compList', 'compObject', 'initValues'],
+    props: ['compList', 'compObject', 'initValues', 'allCompsObject'],
 
     data: () => ({
         compNameCurrent: '',
         compNewName: '',
 
         otherCompSelected: '',
+        copyCompSelected: '',
 
         formationList: [
             { key: 1, display: "Line ahead" },
@@ -33,6 +34,10 @@ const EnemyCompListPerDiffEditorComponent = {
 
         compItemList() {
             return Object.keys(this.compObject).map(x => ({ key: x, display: x }));
+        },
+
+        allCompItemList() {
+            return Object.keys(this.allCompsObject).map(x => ({ key: x, display: x }));
         }
     },
 
@@ -56,6 +61,35 @@ const EnemyCompListPerDiffEditorComponent = {
             this.otherCompSelected = '';
         },
 
+        copyExistingComp() {
+
+            let compName = this.copyCompSelected;
+            const index = compName.indexOf("-");
+
+            if (index >= 0) {
+                compName = this.copyCompSelected.substring(index + 1);
+            }
+
+            if (this.compObject[compName]) compName = this.compNewName + (Object.keys(this.compObject).length + 1).toString();
+
+            this.compObject[compName] = { c: [] };
+            Object.assign(this.compObject[compName], this.allCompsObject[this.copyCompSelected]);
+
+            for (const key in this.allCompsObject[this.copyCompSelected]) {
+                if (Array.isArray(this.allCompsObject[this.copyCompSelected][key])) {
+                    this.compObject[compName][key] = [...this.allCompsObject[this.copyCompSelected][key]];
+                }
+            }
+            
+            this.compList[compName] = 100;
+
+            if (this.initValues) {
+                for (const property in this.initValues) {
+                    this.compObject[compName][property] = this.initValues[property];
+                }
+            }
+        },
+
         deleteComp() {
             delete this.compList[this.compNameCurrent];
             this.compNameCurrent = '';
@@ -74,12 +108,17 @@ const EnemyCompListPerDiffEditorComponent = {
                 <button @click="addExistingComp">Add existing comp</button>
                 <vcomboboxeditor :data-source="this" :item-list="compItemList" data-field="otherCompSelected" />
             </div>
+
+            <div>
+                <button @click="copyExistingComp">Copy existing comp</button>
+                <vcomboboxeditor :data-source="this" :item-list="allCompItemList" data-field="copyCompSelected" />
+            </div>
             
             <div class="tabber">
                 <div v-for="(odds, compName) in compList" :key="compName" class="tabberButton" :class="{selected:compName==compNameCurrent}" @click="compNameCurrent=compName">{{compName}}</div>
             </div>
 
-            <div v-if="compNameCurrent && compObject[compNameCurrent]" class="fleetDisplay">
+            <div v-if="compNameCurrent !== undefined && compObject[compNameCurrent]" class="fleetDisplay">
                 <div>
                     <div>{{compNameCurrent}}</div>
                     <div>Odds <input type="number" min="0" v-model="compList[compNameCurrent]" /> %</div>

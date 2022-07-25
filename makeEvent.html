@@ -301,7 +301,8 @@
                                     
                                     <tr>
                                         <td>Handle last dance HP ?</td>
-                                        <td><input :value="!!part.finalhp" type="checkbox" @click="() => { part.finalhp = !!part.finalhp ? null : { 4:0, 1:0, 2:0, 3:0 }  }" /></td>
+                                        <td v-if="!!part.finalhp"><button @click="() => { part.finalhp = null  }" >Disable LD HP</button></td>
+                                        <td v-else ><button @click="() => { part.finalhp = { 4:0, 1:0, 2:0, 3:0 }  }">Enable LD HP</button></td>
                                     </tr>
 
                                     <tr v-if="!!part.finalhp">
@@ -337,7 +338,7 @@
 
                 <div v-if="selectedTab('nodes')" class="map-settings">
                     <vnodelist :map-data="mapData" :event-data="eventData" :current-node="currentNode" @node-changed="onNodeChanged" @add-node="addNode" @delete-node="deleteNode" ></vnodelist>
-                    <vnode v-if="mapData.nodes[currentNode]" :map-data="mapData" :event-data="eventData" :node-data="mapData.nodes[currentNode]" :comp-object="currentNodeCompObject"></vnode>
+                    <vnode v-if="mapData.nodes[currentNode]" :map-data="mapData" :event-data="eventData" :node-data="mapData.nodes[currentNode]" :comp-object="currentNodeCompObject" :all-comps-object="allCompsObject"></vnode>
                 </div>
                 
             </div>

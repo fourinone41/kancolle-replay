@@ -1,5 +1,5 @@
 const EnemyCompListEditorComponent = {
-    props: ['compList', 'compObject', 'initValues'],
+    props: ['compList', 'compObject', 'initValues', 'allCompsObject'],
 
     data: () => ({
         difficultiesItemList: COMMON.DIFFICULTIES,
@@ -31,7 +31,7 @@ const EnemyCompListEditorComponent = {
                 <tr>
                     <td>
 
-                        <venemycomplistperdiff :comp-list="compList[diff.key]" :comp-object="compObject" :init-values="initValues"></venemycomplistperdiff>
+                        <venemycomplistperdiff :comp-list="compList[diff.key]" :comp-object="compObject" :init-values="initValues" :all-comps-object="allCompsObject"></venemycomplistperdiff>
                     
                     </td>
                 </tr>

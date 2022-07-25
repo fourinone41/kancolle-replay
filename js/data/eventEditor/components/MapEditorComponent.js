@@ -23,10 +23,35 @@ const MapEditorComponent = {
             if (!this.currentNode) return {};
             
             if (!this.eventData.comps) this.eventData.comps = {};
-            if (!this.eventData.comps[this.mapData.name]) this.eventData.comps[this.mapData.name] = {};
-            if (!this.eventData.comps[this.mapData.name][this.currentNode]) this.eventData.comps[this.mapData.name][this.currentNode] = {};
+            if (!this.eventData.comps[this.compsKeys]) this.eventData.comps[this.compsKeys] = {};
+            if (!this.eventData.comps[this.compsKeys][this.currentNode]) this.eventData.comps[this.compsKeys][this.currentNode] = {};
 
-            return this.eventData.comps[this.mapData.name][this.currentNode];
+            return this.eventData.comps[this.compsKeys][this.currentNode];
+        },
+
+        compsKeys() {
+            return this.mapData.name[0] + '-' + this.mapData.name[1];
+        },
+
+        allCompsObject () {
+            const comps = {};
+
+            if (!this.currentNode) return comps;
+            
+            if (!this.eventData.comps) this.eventData.comps = comps;
+            if (!this.eventData.comps[this.compsKeys]) this.eventData.comps[this.compsKeys] = comps;
+
+            for (const nodeName in this.eventData.comps[this.compsKeys]) {
+                const nodeComps = this.eventData.comps[this.compsKeys][nodeName];
+
+                for (const compName in nodeComps) {
+                    const key = nodeName + '-' + compName;
+                    comps[key] = {};
+                    Object.assign(comps[key], nodeComps[compName]);
+                }
+            }
+
+            return comps;
         },
 
         fleetsItemSource () {
