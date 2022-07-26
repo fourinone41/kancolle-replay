@@ -92,6 +92,7 @@ function ChRule () {
 
     this.getSpecialCount = (countObject) => {
         if (typeof(countObject) == 'number') return countObject;
+        if (typeof(countObject) == 'string') return parseInt(countObject);
 
         let diff = getDiff(3);
         return countObject[diff];

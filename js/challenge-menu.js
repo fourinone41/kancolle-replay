@@ -403,6 +403,8 @@ function chAddReward(data,forceNew) {
 	if (data.items) {
 		for (var i=0; i<data.items.length; i++) {
 			var mid = typeof data.items[i] === 'object' ? data.items[i].id : data.items[i];
+			var level = typeof data.items[i] === 'object' ? data.items[i].level : data.items[i];
+
 			if (!forceNew) {
 				let gearExisting = null;
 				for (let eqid in CHDATA.gears) {
@@ -424,7 +426,7 @@ function chAddReward(data,forceNew) {
 					itemId: eqid,
 					masterId: mid,
 					lock: 1,
-					stars: 0,
+					stars: level,
 					ace: ((EQTDATA[EQDATA[mid].type].isPlane)? 7 : -1)
 				};
 				CHDATA.gears[eqid] = newequip;
@@ -477,6 +479,9 @@ function chShowReward(data,tracker) {
 			} else if (data.items[ind] == 'apology') {
 				$('#rewardship').css('margin-top','40px');
 				$('#rewardship').attr('src','assets/maps/Apology_scroll.png');
+			} 
+			else if (data.items[ind].image) {
+				$('#rewardship').attr('src', data.items[ind].image);
 			} else {
 				$('#rewardship').attr('src','assets/items/'+EQTDATA[EQDATA[id].type].image+'.png');
 			}
