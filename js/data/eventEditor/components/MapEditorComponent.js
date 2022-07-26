@@ -33,6 +33,11 @@ const MapEditorComponent = {
             return this.mapData.name[0] + '-' + this.mapData.name[1];
         },
 
+        currentNodeForCustomBGMDisplay() {
+            if (this.currentNodeForCutomBGM <= 26) return String.fromCharCode(this.currentNodeForCutomBGM);
+            return this.currentNodeForCutomBGM;
+        },
+
         allCompsObject () {
             const comps = {};
 
@@ -232,6 +237,10 @@ const MapEditorComponent = {
         },
 
         addNodeCustomBGM() {
+            if (this.currentNodeForCutomBGM.length == 1) {
+                this.currentNodeForCutomBGM = this.currentNodeForCutomBGM.charCodeAt(0) - 64;
+            }
+
             this.mapData.overrideBGM[this.currentNodeForCutomBGM] = {
                 bgmDN: null,
                 bgmNN: null,

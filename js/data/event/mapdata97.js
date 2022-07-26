@@ -208,7 +208,7 @@ MAPDATA[97].loadUnlockFromChData = function (map) {
              */
             const gimmicks = map.hiddenRoutes[unlockKey].unlockRules;
 
-            map.hiddenRoutes[unlockKey].unlockRules = new ChGimmickList(gimmicks.type, gimmicks.mapPartNumber, gimmicks.mapNum, gimmicks.gimmickData, gimmicks.additionnalParameters);
+            map.hiddenRoutes[unlockKey].unlockRules = new ChGimmickList(gimmicks.type, gimmicks.mapPartNumber, gimmicks.mapNum, gimmicks.gimmicks, gimmicks.additionnalParameters);
         }
     }
 
@@ -394,6 +394,7 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
     }
 
     if (ruleToConvert.mapParts) rule.mapParts = ruleToConvert.mapParts;
+    if (ruleToConvert.not) rule.not = ruleToConvert.not;
 
     return rule;
 }
