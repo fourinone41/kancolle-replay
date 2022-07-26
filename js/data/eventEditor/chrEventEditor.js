@@ -48,6 +48,7 @@ Vue.createApp({
         
         for (const node of Object.values(map.nodes)) {
           node.boss = false;
+          if (node.hidden) node.hidden = parseInt(node.hidden);
         }
 
         for (const part of Object.values(map.parts)) {
