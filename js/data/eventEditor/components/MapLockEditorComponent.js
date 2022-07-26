@@ -144,7 +144,7 @@ const MapLockEditorComponent = {
         </tr>
 
         <tr>
-            <td>Complex lock logic</td>
+            <td>Complex lock logic (Required if the map gives more than one lock)</td>
             <td v-if="!handleComplexLock"><button @click="toggleComplexLocks">Enable</button></td>
             <td v-else><button @click="toggleComplexLocks">Disable</button></td>
         </tr>

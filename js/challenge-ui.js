@@ -1909,6 +1909,7 @@ function chLoadMainFleet() {
 	FLEETS1[0].loadShips(data[0]);
 	
 	var lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLock;
+	if (Array.isArray(lock) && lock.length == 1) lock = lock[0];
 	if (Array.isArray(lock)) lock = null;
 	if (MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard && CHDATA.event.maps[MAPNUM].diff == 3) lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard;
 	if (lock && !MAPDATA[WORLD].maps[CHDATA.event.mapnum].lockSpecial) {
@@ -1928,6 +1929,7 @@ function chLoadEscortFleet() {
 	
 	var lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLock;
 	if (Array.isArray(lock)) lock = null;
+	if (Array.isArray(lock) && lock.length == 1) lock = lock[0];
 	if (MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard && CHDATA.event.maps[MAPNUM].diff == 3) lock = MAPDATA[WORLD].maps[CHDATA.event.mapnum].giveLockHard;
 	if (lock && !MAPDATA[WORLD].maps[CHDATA.event.mapnum].lockSpecial) {
 		for (var i=0; i<CHDATA.fleets[2].length; i++) {
