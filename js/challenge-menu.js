@@ -481,6 +481,7 @@ function chShowReward(data,tracker) {
 				$('#rewardship').attr('src','assets/maps/Apology_scroll.png');
 			} 
 			else if (data.items[ind].image) {
+				$('#rewardship').css('margin-top','70px');
 				$('#rewardship').attr('src', data.items[ind].image);
 			} else {
 				$('#rewardship').attr('src','assets/items/'+EQTDATA[EQDATA[id].type].image+'.png');
