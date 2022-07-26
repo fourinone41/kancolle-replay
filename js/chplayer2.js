@@ -2243,7 +2243,7 @@ function prepBattle(letter) {
 
 	let end = MAPDATA[WORLD].maps[MAPNUM].nodes[letter].end;
 	
-	if (MAPDATA[WORLD].maps[MAPNUM].nodes[letter].endRules) {
+	if (MAPDATA[WORLD].maps[MAPNUM].nodes[letter].endRules && MAPDATA[WORLD].maps[MAPNUM].nodes[letter].endRules.length) {
 		let rule = MAPDATA[WORLD].maps[MAPNUM].nodes[letter].endRules[0];
 
 		if (rule.ruleCanBeChecked())
@@ -2264,7 +2264,7 @@ function prepMap() {
 
 	let end = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].end;
 	
-	if (MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].endRules) {
+	if (MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].endRules && MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].endRules.length) {
 		let rule = MAPDATA[WORLD].maps[MAPNUM].nodes[curletter].endRules[0];
 
 		if (rule.ruleCanBeChecked())

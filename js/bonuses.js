@@ -113,7 +113,7 @@ function ChBonusesParameters () {
     this.getIds = () => { return -1; };
 
     this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
@@ -146,7 +146,7 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     this.getIds = this.getShipIds = ChBonuses.GetShipIds(shipIds, shipIds);
 
     this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
@@ -277,7 +277,7 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     this.getIds = this.getShipIds;
 
     this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
@@ -316,7 +316,7 @@ function ChShipIdsBonuses(parameters, shipIds, amount) {
     }
 
     this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
@@ -561,11 +561,11 @@ function ChDebuffBonuses(parameters, amount) {
     this.amount = amount;
 
     this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
     
-    if (parameters.onlySpecificShips) {
+    if (parameters.onlySpecificShips && parameters.onlySpecificShips.length) {
         if (typeof(parameters.onlySpecificShips) == 'string') {
             // --- [0] = type
             // --- [1] = the property of the object having the id list
@@ -647,11 +647,11 @@ function ChDebuffBonuses(parameters, amount) {
     this.description = description;
 
     this.bonusToApply = { mod: 1 };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
     
-    if (parameters.onlySpecificShips) {
+    if (parameters.onlySpecificShips && parameters.onlySpecificShips.length) {
         if (typeof(parameters.onlySpecificShips) == 'string') {
             // --- [0] = type
             // --- [1] = the property of the object having the id list
@@ -764,7 +764,7 @@ function ChDebuffBonuses(parameters, amount) {
     }
 
     this.bonusToApply = { mod: amount };
-    if (parameters.on) this.bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) this.bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) this.bonusToApply.debuffBonus = true;
     if (parameters.debuffType) this.bonusToApply.type = parameters.debuffType;
 
@@ -860,7 +860,7 @@ ChBonuses.CheckIfCanBeApplied = (parameters) => {
         if (!parameters.diff.includes(diff)) return false;
     }
 
-    if (parameters.requiredFlagshipId) {
+    if (parameters.requiredFlagshipId && parameters.requiredFlagshipType.length) {
         let ships = ChBonuses.GetBonusShips(parameters);
 
         // --- Check the flagship
@@ -869,7 +869,7 @@ ChBonuses.CheckIfCanBeApplied = (parameters) => {
         if (!parameters.requiredFlagshipId.includes(flagId)) return false;
     }
 
-    if (parameters.requiredFlagshipType) {
+    if (parameters.requiredFlagshipType && parameters.requiredFlagshipType.length) {
         let ships = ChBonuses.GetBonusShips(parameters);
 
         // --- Check the flagship
@@ -889,7 +889,7 @@ ChBonuses.CheckIfCanBeApplied = (parameters) => {
 ChBonuses.GetBonusToApply = (parameters, amount, level) => {
     let bonusToApply = { mod: amount };
 
-    if (parameters.on) bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) bonusToApply.debuffBonus = true;
     if (parameters.debuffType) bonusToApply.type = parameters.debuffType;
     if (parameters.amountPerLevel && level) bonusToApply.mod += (parameters.amountPerLevel * level);
@@ -952,7 +952,7 @@ ChBonuses.GetShipIds = (shipIds) => {
 ChBonuses.ApplyBonusToShip = function (ship, amount, parameters) {
 
     let bonusToApply = { mod: amount };
-    if (parameters.on) bonusToApply.on = parameters.on;
+    if (parameters.on && parameters.on.length) bonusToApply.on = parameters.on;
     if (parameters.debuffOnly) bonusToApply.debuffBonus = true;
     if (parameters.debuffType) bonusToApply.type = parameters.debuffType;
 

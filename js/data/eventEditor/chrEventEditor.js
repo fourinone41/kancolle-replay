@@ -42,7 +42,27 @@ Vue.createApp({
       this.loadEvent();
     },
 
+    beforeSave() {
+      for (const map of Object.values(this.eventData.maps)) {
+        map.bossnode = [];
+        
+        for (const node of Object.values(map.nodes)) {
+          node.boss = false;
+        }
+
+        for (const part of Object.values(map.parts)) {
+          if (part.currentBoss) {
+            map.nodes[part.currentBoss].boss = true;
+            map.bossnode.push(part.currentBoss);
+          }
+
+        }
+      }
+    },
+
     saveEvent() {
+      this.beforeSave();
+
       if (this.fileMode == "customFile") localStorage.setItem("event_editor_current_event", JSON.stringify(this.eventData));
 
       if (this.fileMode == "playedEvent") {
@@ -68,6 +88,24 @@ Vue.createApp({
       localStorage.setItem("event_editor_selected_map", this.selectedMapNumber);
       localStorage.setItem("editorMode", this.fileMode);
     },
+
+
+    exportEventData() {
+      this.beforeSave();
+
+      const dataToExportBeforeConversion = {
+          eventData: this.eventData
+      };
+      
+      const dataToExport = JSON.stringify(MAPDATA[97].ConvertMapEditorFormatToSimulatorFormat(dataToExportBeforeConversion));
+
+      let a = window.document.createElement('a');
+      a.href = window.URL.createObjectURL(new Blob([dataToExport], {type: 'application/json'}));
+      a.download = this.eventData.name.replace(/[^a-zA-Z0-9-]/g, '_') + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+  },
 
     loadEvent() {
       if (this.fileMode == "customFile" && localStorage.getItem("event_editor_current_event")) this.eventData = JSON.parse(localStorage.getItem("event_editor_current_event"));

@@ -1,6 +1,6 @@
 const MapSelectionComponent = {
     props: ['eventData', 'selectedMap'],
-    emits: ['addMap', 'elementChanged', 'eventModeChanged'],
+    emits: ['addMap', 'elementChanged', 'eventModeChanged', 'exportEventData'],
 
     data: () => ({
         file: null,
@@ -18,25 +18,13 @@ const MapSelectionComponent = {
         addMap() {
             this.$emit('addMap')
         },
+
+        exportClicked() {
+            this.$emit('exportEventData')
+        },
         
         mapSelectionChanged(mapNumber) {
             this.$emit('elementChanged', mapNumber);
-        },
-
-        exportEventData() {
-
-            const dataToExportBeforeConversion = {
-                eventData: this.eventData
-            };
-            
-            const dataToExport = JSON.stringify(MAPDATA[97].ConvertMapEditorFormatToSimulatorFormat(dataToExportBeforeConversion));
-
-            let a = window.document.createElement('a');
-            a.href = window.URL.createObjectURL(new Blob([dataToExport], {type: 'application/json'}));
-            a.download = this.eventData.name.replace(/[^a-zA-Z0-9-]/g, '_') + '.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         },
 
         importEventData(dataToImport) {
@@ -101,7 +89,7 @@ const MapSelectionComponent = {
             <vcomboboxeditor :data-source="this" :item-list="fileModeItemList" data-field="fileMode" class-for-select="mapButton"/>
             <input type="file" v-on:change="fileChanged" id="importFile" />
             <div v-if="fileMode=='customFile'" class="mapButton" @click="showUpload">Import</div>
-            <div class="mapButton" @click="exportEventData">Export</div>
+            <div class="mapButton" @click="exportClicked">Export</div>
             <div class="mapButton" @click="mapSelectionChanged(0)" :class="{ mapButtonSelected: isSelectedMap(0)}">Event settings</div>
 
             <div class="mapButton" v-for="(map, index) in eventData.maps" :key="index" :class="{ mapButtonSelected: isSelectedMap(index)}">

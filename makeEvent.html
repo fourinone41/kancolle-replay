@@ -65,7 +65,7 @@
 <body>
     <div id="eventEditor">
 
-        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber" @event-mode-changed="fileModeChanged"></map-selection>
+        <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber" @event-mode-changed="fileModeChanged" @export-event-data="exportEventData"></map-selection>
 
         <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted" ></map-editor></div>
         <div v-else><event-editor :event-data="eventData"></event-settings></div>
