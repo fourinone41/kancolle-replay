@@ -16,6 +16,9 @@ var COMMON = {
 		numShipMax: 6,
 		numShipMaxSF: 7,
 		numEquipMax: 6,
+		
+	
+		customEquipmentsStartId: 6000,
 	},
 	global: {},
 	
@@ -69,6 +72,9 @@ var COMMON = {
 	},
 	isEquipIdAbyssal: function(id) {
 		return +id > 500;
+	},
+	isEquipIdCustom: function(id) {
+		return +id >= this.consts.customEquipmentsStartId;
 	},
 
 	FLEET_TYPES: [
@@ -265,6 +271,24 @@ var COMMON = {
 		}
 
 		return this.SHIP_CLASSES;
-	}
+	},
 	
+	getLastCustomId ()  {
+		let last = this.consts.customEquipmentsStartId;
+
+		for (const eqKey in EQDATA) {
+			if (eqKey < last) continue;
+			last = eqKey;
+		}
+
+		return last;
+	},
+
+	addCustomEquipment(equipmentData) {
+
+		const id = equipmentData.id;
+		EQDATA[id] = equipmentData;
+		COMMON.global.equipSelector.addEquipment(id)
+		COMMON.addEquipmentTranslation(id); 
+	},
 };

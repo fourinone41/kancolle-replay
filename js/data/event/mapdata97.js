@@ -57,6 +57,10 @@ MAPDATA[97].initializeAllMaps = function () {
         CHDATA.event.comps = CHDATA.customEventData.eventData.comps;
     }
 
+    if (CHDATA.customEventData.eventData && CHDATA.customEventData.eventData.assets) {
+        MAPDATA[97].initializeAssets(CHDATA.customEventData.eventData.assets);
+    }
+
     CHDATA.maps = {};
 
     for (const mapNum in MAPDATA[97].maps) {
@@ -65,6 +69,20 @@ MAPDATA[97].initializeAllMaps = function () {
     
     for (const mapNumber in CHDATA.maps) {
         MAPDATA[97].initializeMap(MAPDATA[97].maps[mapNumber]);
+    }
+}
+
+MAPDATA[97].initializeAssets = function(assets) {
+
+    const addEquipment = (equipmentData) => {
+		const id = equipmentData.id;
+		EQDATA[id] = equipmentData;
+    }
+
+    if (assets.equipments) {
+        for (const equipment of assets.equipments) {
+            addEquipment(equipment);
+        }
     }
 }
 

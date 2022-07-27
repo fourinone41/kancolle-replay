@@ -306,6 +306,17 @@ let UI_EQUIPSELECTOR = window.EquipSelectorComponent = {
 			this.doSubmit(btn.id);
 		},
 		onclickBack: METHODS_COMMON.methods.onclickBack,
+
+		addEquipment(id) {
+			for (let lang in SHIP_LIST_ORDER) {
+				let keyName = lang == 'en' ? 'name' : 'nameJP';
+				let name = EQDATA[id][keyName] || '';
+				EQUIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase(), imgName: EQDATA[id].image || EQTDATA[EQDATA[id].type].image });
+			}
+			
+			// --- Todo : do something more optimized
+			recomputeCategories();
+		}
 	},
 	template: `
 	<div v-show="active">
@@ -503,6 +514,10 @@ function init() {
 		}
 	}
 	
+	recomputeCategories();
+}
+
+function recomputeCategories() {
 	let getCategoryEquip = function(types) {
 		let output = { 'player': [], 'enemy': [] };
 		for (let id of Object.keys(EQDATA).sort((a,b)=>+a-+b)) {
@@ -524,11 +539,16 @@ function init() {
 					});
 				}
 			}
-			output[key].push(obj);
+			if (COMMON.isEquipIdCustom(id)) {
+				output["enemy"].push(obj);
+				output["player"].push(obj);
+			} else {
+				output[key].push(obj);
+			}
 		}
 		return output;
 	}
-	
+
 	EQUIP_CATEGORIES['1'] = getCategoryEquip([1]);
 	EQUIP_CATEGORIES['2'] = getCategoryEquip([2]);
 	EQUIP_CATEGORIES['3'] = getCategoryEquip([3,38]);

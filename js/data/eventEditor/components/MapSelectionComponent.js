@@ -96,6 +96,8 @@ const MapSelectionComponent = {
                 <div @click="mapSelectionChanged(index)">{{map.name}}</div>
             </div>
 
+            <div class="mapButton" @click="mapSelectionChanged(-1)" :class="{ mapButtonSelected: isSelectedMap(-1)}">Assets</div>
+
             <div class="mapButton" @click="addMap">Add map</div>
         </div>
     

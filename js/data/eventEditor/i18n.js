@@ -105,19 +105,28 @@ let messages = {
 		},
 	},
 }
+
+COMMON.addEquipmentTranslation = (id) => {
+	let key = 'equip_name_'+EQDATA[id].name;
+	messages.en[key] = EQDATA[id].name;
+	messages.ja[key] = EQDATA[id].nameJP;
+}
+
 for (let id in SHIPDATA) {
 	let key = 'ship_name_'+SHIPDATA[id].name;
 	messages.en[key] = SHIPDATA[id].name;
 	messages.ja[key] = SHIPDATA[id].nameJP;
 }
+
 for (let id in EQDATA) {
-	let key = 'equip_name_'+EQDATA[id].name;
-	messages.en[key] = EQDATA[id].name;
-	messages.ja[key] = EQDATA[id].nameJP;
+	COMMON.addEquipmentTranslation(id);
 }
+
 COMMON.i18n = VueI18n.createI18n({
 	locale: 'en',
 	fallbackLocale: 'en',
 	messages,
 });
+
+
 })();

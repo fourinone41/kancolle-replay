@@ -55,6 +55,7 @@
     <script src="js/data/objects/chMapData.js"></script>
     <script src="js/data/objects/chEventData.js"></script>
     <script src="js/data/objects/chNodeData.js"></script>
+    <script src="js/data/objects/chEquipmentData.js"></script>
 
     <script src="js/data/eventEditor/common.js"></script>
     <script src="js/vue.global.dev.js"></script>
@@ -68,7 +69,8 @@
         <map-selection :event-data="eventData" @add-map="addMap" @element-changed="elementChanged" :selected-map="selectedMapNumber" @event-mode-changed="fileModeChanged" @export-event-data="exportEventData"></map-selection>
 
         <div v-if="isMapSelected"><map-editor :map-data="selectedMap" :event-data="eventData" @map-deleted="onMapDeleted" ></map-editor></div>
-        <div v-else><event-editor :event-data="eventData"></event-settings></div>
+        <div v-if="isEventSelected"><event-editor :event-data="eventData"></event-settings></div>
+        <div v-if="isAssetSelected"><vassetseditor :event-data="eventData" /></div>
 
         <vshipselector></vshipselector>
         <vequipselector></vequipselector>
@@ -530,7 +532,16 @@
 <script src="js/data/eventEditor/components/Bonuses/BonusEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Bonuses/BonusListComponent.js"></script>
 <script src="js/data/eventEditor/components/GroupComponent.js"></script>
+
+<!-- Custom assets -->
+<script src="js/data/eventEditor/components/Assets/AssetsEditorComponent.js"></script>
+
+<script src="js/data/eventEditor/components/Assets/CustomEquipmentComponent.js"></script>
+<script src="js/data/eventEditor/components/Assets/CustomEquipmentListComponent.js"></script>
+
+<!-- Main code -->
 <script src="js/data/eventEditor/chrEventEditor.js"></script>
+
 <!--script src="js/data/event/chrRandomEvent/chrMap.js"></script>
 <script src="js/data/event/chrRandomEvent/chrDisplayEventInfo.js"></script>
 <script src="js/data/event/chrRandomEvent/chrMakeEvent.js"></script>

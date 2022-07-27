@@ -9,6 +9,8 @@ Vue.createApp({
     selectedEventToLoad: null,
 
     isMapSelected: false,
+    isAssetSelected: false,
+    isEventSelected: false,
 
     /**
      * Custom file = create your own event, import and export it
@@ -123,6 +125,7 @@ Vue.createApp({
 
           if (this.chData.customEventData) this.eventData = this.chData.customEventData.eventData;
           if (!this.eventData.comps) this.eventData.comps = {};
+          if (!this.eventData.assets) this.eventData.assets = {};
         }
       }
 
@@ -144,6 +147,13 @@ Vue.createApp({
           console.error(error);
         }
       }
+      
+      // --- Load assets
+      if (this.eventData.assets.equipments) {
+        for (const equipment of this.eventData.assets.equipments) {
+          COMMON.addCustomEquipment(equipment);
+        }
+      }
     },
 
     addMap() {
@@ -162,9 +172,11 @@ Vue.createApp({
       this.selectedMapNumber = mapNumber;
     },
         
-    changeSelectedMap(elementData, eventSettingClicked) {
+    changeSelectedMap(elementData, eventSettingClicked, assetsClicked) {
         
-        this.isMapSelected = !eventSettingClicked;
+        this.isAssetSelected = !!assetsClicked;
+        this.isEventSelected = !!eventSettingClicked;
+        this.isMapSelected = !eventSettingClicked && !assetsClicked;
 
         if (!eventSettingClicked) this.selectedMap = elementData;
     },
@@ -195,6 +207,7 @@ Vue.createApp({
   watch: {
     selectedMapNumber() {
       if (this.selectedMapNumber == 0) this.changeSelectedMap(null, true);
+      else if (this.selectedMapNumber == -1) this.changeSelectedMap(null, false, true);
       else this.changeSelectedMap(this.eventData.maps[this.selectedMapNumber], false);
     }
   }
@@ -242,6 +255,11 @@ Vue.createApp({
 // --- Bonuses
 .component('vbonuslist', BonusListComponent)
 .component('vbonuseditor', BonusEditorComponent)
+
+// --- Custom assets
+.component('vassetseditor', AssetsEditorComponent)
+.component('vcustomequipmenteditor', CustomEquipmentComponent)
+.component('vcustomequipmentlist', CustomEquipmentListComponent)
 
 .use(COMMON.i18n)
 .mount('#eventEditor');
