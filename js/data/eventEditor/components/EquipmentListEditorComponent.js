@@ -1,5 +1,5 @@
 const EquipmentListEditorComponent = {
-    props: ['dataSource', 'handleLevels', 'handleImage'],
+    props: ['dataSource', 'handleLevels', 'handleImage', 'slots'],
     
     data: () => ({
         
@@ -11,10 +11,12 @@ const EquipmentListEditorComponent = {
     methods: {
         addEquipment() {
             this.dataSource.push(null);
+            if (this.slots) this.slots.push(0);
         },
 
         deleteEquipment(key) {
             this.dataSource.splice(key,1);
+            if (this.slots) this.slots.splice(key,1);
         }
     },
 
@@ -23,7 +25,7 @@ const EquipmentListEditorComponent = {
         <button @click="addEquipment">Add</button>
         <div v-for="(equipId, key) in dataSource" :key="key" >
 
-            <div v-if="handleLevels || handleImage">
+            <div v-if="handleLevels || handleImage || !!slots">
                 <vequipeditor :equip-id="!!equipId ? equipId.id : 0" @equip-set="(mstId)=>dataSource[key]= { id: mstId }" @equip-delete="deleteEquipment(key)" />
                 
                 <div v-if="!!dataSource[key] && handleLevels" >
@@ -33,6 +35,10 @@ const EquipmentListEditorComponent = {
                 <div v-if="!!dataSource[key] && handleImage">
                     Image (150px x 150px)<input v-model="equipId.image" />
                     <img :src="equipId.image" />
+                </div>
+
+                <div v-if="!!slots">
+                    Slot size <input v-model="slots[key]" type="number" />
                 </div>
             </div>
             <div v-else>

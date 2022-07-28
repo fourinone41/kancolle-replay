@@ -73,7 +73,7 @@ MAPDATA[97].initializeAllMaps = function (callback) {
             MAPDATA[97].initializeMap(MAPDATA[97].maps[mapNumber]);
         }
 
-        callback();
+        if (!!callback) callback();
     }
 
     if (CHDATA.eventURL) {
@@ -99,11 +99,24 @@ MAPDATA[97].initializeAssets = function(assets) {
 		EQDATA[id] = equipmentData;
     }
 
+    const addShip = (shipData) => {
+		const id = shipData.id;
+		SHIPDATA[id] = shipData;
+    }
+
     if (assets.equipments) {
         for (const equipment of assets.equipments) {
             addEquipment(equipment);
         }
     }
+
+    if (assets.ships) {
+        for (const ship of assets.ships) {
+            addShip(ship);
+        }
+    }
+
+    chFillDialogShip(1);
 }
 
 MAPDATA[97].initializeMap = function (mapData) {

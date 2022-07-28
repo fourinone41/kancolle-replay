@@ -188,10 +188,11 @@ let UI_SHIPSELECTOR = window.ShipSelectorComponent = {
 				let name = SHIPDATA[id][keyName] || '';
 				SHIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase() });
 			}
-			
+		},
+		reloadList() {
 			// --- Todo : do something more optimized
 			recomputeShipCategories();
-		},
+		}
 	},
 	template: `
 	<div v-show="active">

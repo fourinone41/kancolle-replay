@@ -3,10 +3,10 @@ class ChShipData {
         this.id = 0;
 
         this.name = "";
+
+        this.nameJP = "";
             
         this.customImage = "assets/icons/KVerniy.jpg";
-    
-        this.nameJP = "";
     
         this.type = "";
     
@@ -56,7 +56,7 @@ class ChShipData {
     
         this.SPD = 0;
     
-        this.SLOTS = {};
+        this.SLOTS = [];
     
         this.fuel = 0;
     
@@ -104,7 +104,7 @@ class ChShipData {
     
         this.isAntiPTShip = false;
     
-        this.EQUIPS = {};
+        this.EQUIPS = [];
     
         this.TACC = 0;
     
