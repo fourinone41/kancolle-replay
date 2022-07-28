@@ -648,9 +648,9 @@ MAPDATA[47] =
 						friendFleet: ['E1-1','E1-2','E1-3','E1-4','E1-5','E1-6','E1-7'],
 						friendFleetS: ['E1-8','E1-9','E1-10','E1-11','E1-12','E1-8','E1-11','E1-12'],
 						setupSpecial: function() {							
-							SHIPDATA[1906].image = 'S1906_47.jpg';
-							SHIPDATA[1907].image = 'S1906_47.jpg';
-							SHIPDATA[1908].image = 'S1906_47.jpg';
+							chGetShipImagePath(1906) = 'S1906_47.jpg';
+							chGetShipImagePath(1907) = 'S1906_47.jpg';
+							chGetShipImagePath(1908) = 'S1906_47.jpg';
 						},
 						bonuses: [
 							// --- Reset

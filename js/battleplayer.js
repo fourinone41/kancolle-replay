@@ -46,7 +46,7 @@ function fillTableF(API, num, combined, translate) {
 			else $('#name' + num + i).text(fleet[i].mst_id + '. ' + SHIPDATA[fleet[i].mst_id].name);
 		} else $('#name' + num + i).text(fleet[i].mst_id + '.');
 		if (!translate) {
-			if (SHIPDATA[fleet[i].mst_id]) $('#img' + num + i).attr('src', 'assets/icons/' + SHIPDATA[fleet[i].mst_id].image);
+			if (SHIPDATA[fleet[i].mst_id]) $('#img' + num + i).attr('src', chGetShipImagePath(fleet[i].mst_id));
 			var maxhps = (combined) ? 'api_maxhps_combined' : 'api_maxhps';
 			var fparam = (combined) ? 'api_fParam_combined' : 'api_fParam';
 			$('#lvl' + num + i).text(fleet[i].level); $('#hp' + num + i).text(b[maxhps][i + 1]);
@@ -113,7 +113,7 @@ function loadFleetInfo(API, translate) {
 				else $('#name2' + k + i).text(mid + '. ' + SHIPDATA[mid].name);
 			} else $('#name2' + k + i).text(mid + '.');
 			if (!translate) {
-				if (SHIPDATA[mid]) $('#img2' + k + i).attr('src', 'assets/icons/' + SHIPDATA[mid].image);
+				if (SHIPDATA[mid]) $('#img2' + k + i).attr('src', chGetShipImagePath(mid));
 				$('#lvl2' + k + i).text(b.api_ship_lv[i + 1]); $('#hp2' + k + i).text(b.api_maxhps[i + 7]);
 				$('#fp2' + k + i).text(b.api_eParam[i][0]); $('#tp2' + k + i).text(b.api_eParam[i][1]); $('#aa2' + k + i).text(b.api_eParam[i][2]); $('#ar2' + k + i).text(b.api_eParam[i][3]);
 			}
@@ -138,7 +138,7 @@ function loadFleetInfo(API, translate) {
 					else $('#name2c' + k + i).text(mid + '. ' + SHIPDATA[mid].name);
 				} else $('#name2c' + k + i).text(mid + '.');
 				if (!translate) {
-					if (SHIPDATA[mid]) $('#img2c' + k + i).attr('src', 'assets/icons/' + SHIPDATA[mid].image);
+					if (SHIPDATA[mid]) $('#img2c' + k + i).attr('src', chGetShipImagePath(mid));
 					$('#lvl2c' + k + i).text(b.api_ship_lv_combined[i + 1]); $('#hp2c' + k + i).text(b.api_maxhps_combined[i + 7]);
 					$('#fp2c' + k + i).text(b.api_eParam_combined[i][0]); $('#tp2c' + k + i).text(b.api_eParam_combined[i][1]); $('#aa2c' + k + i).text(b.api_eParam_combined[i][2]); $('#ar2c' + k + i).text(b.api_eParam_combined[i][3]);
 				}

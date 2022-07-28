@@ -6,7 +6,7 @@ const ShipEditorComponent = {
 		equipIdxDragged: null,
 	}),
 	computed: {
-		imgPath() { return this.ship.mid ? 'assets/icons/' + SHIPDATA[this.ship.mid].image : 'assets/icons/Kblank.png'; },
+		imgPath() { return COMMON.getShipImagePath(this.ship.mid) },
 		shipName() { return this.ship.mid ? SHIPDATA[this.ship.mid].name : ''; },
 		canAddEquip() { return !!this.ship.mid && this.ship.equips.length < COMMON.consts.numEquipMax; },
 	},

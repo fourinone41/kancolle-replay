@@ -451,7 +451,7 @@ function chShowReward(data,tracker) {
 		$('#rewardshine').css('animation','spin 5s linear infinite');
 		$('#rewardship').css('margin-top','105px');
 		if (tracker < numShips) {
-			$('#rewardship').attr('src','assets/icons/'+SHIPDATA[data.ships[tracker]].image);
+			$('#rewardship').attr('src', chGetShipImagePath(data.ships[tracker]));
 		} else {
 			let imageSpecial = {
 				56: 'assets/maps/22/Shinden_Kai_056_Card.png',

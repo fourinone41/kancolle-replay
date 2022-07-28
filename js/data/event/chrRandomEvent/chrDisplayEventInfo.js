@@ -453,7 +453,7 @@ class ChrDisplayEventInfo {
             // --- Ship image 
             let imgEl = $(`<img>`);
     
-            imgEl.attr("src", `assets/icons/${SHIPDATA[shipId].image}`);
+            imgEl.attr("src", chGetShipImagePath(shipId));
 
             column.append(imgEl);
 
@@ -738,7 +738,7 @@ class ChrDisplayEventInfo {
 
                 for (const shipMid of rule.getShipIds()) {
                     let shipImg = $("<img>");
-                    shipImg.attr("src", 'assets/icons/' + SHIPDATA[shipMid].image);
+                    shipImg.attr("src", chGetShipImagePath(shipMid));
 
                     groupContainer.append(shipImg);
                 }
@@ -1148,7 +1148,7 @@ class ChrDisplayEventInfo {
                     bonusGroupColumn = $(`<td class="bonus-group">${shipClass.name}</td>`);
                 }
                 else {
-                    bonusGroupColumn = $(`<td class="bonus-group">${currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</td>`);
+                    bonusGroupColumn = $(`<td class="bonus-group">${currentBonus.ids.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("")}</td>`);
                 }
             }
             else if (currentBonus.type == 'ChShipTypeBonuses') {
@@ -1166,12 +1166,12 @@ class ChrDisplayEventInfo {
                     <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
                     ${
                         currentBonus.specificShips && currentBonus.specificShips.length ? 
-                        `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
+                        `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("")} only</div>` :
                         ''
                     }
                     ${
                         currentBonus.excludeShips && currentBonus.excludeShips.length ? 
-                        `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} not included</div>` :
+                        `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("")} not included</div>` :
                         ''
                     }
                 </td>`);
@@ -1185,12 +1185,12 @@ class ChrDisplayEventInfo {
                     <div class="operator-after-list">Number required ${currentBonus.reqCount ? ` ${currentBonus.operator} ${currentBonus.reqCount}` : ''}</div>
                     ${
                         currentBonus.specificShips && currentBonus.specificShips.length ? 
-                        `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} only</div>` :
+                        `<br><div>${currentBonus.specificShips.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("")} only</div>` :
                         ''
                     }
                     ${
                         currentBonus.excludeShips && currentBonus.excludeShips.length ? 
-                        `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")} not included</div>` :
+                        `<br><div>${currentBonus.excludeShips.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("")} not included</div>` :
                         ''
                     }
                 </td>`);
@@ -1203,7 +1203,7 @@ class ChrDisplayEventInfo {
             }
             else if (currentBonus.type == 'ChDebuffBonuses') {
                 
-                let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
+                let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("");
                 
                 bonusGroupColumn = $(`
                     <td class="bonus-group">
@@ -1249,7 +1249,7 @@ class ChrDisplayEventInfo {
             }
             else if (currentBonus.type == 'ChCustomBonusEffects') {
                 
-                let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("");
+                let ships = currentBonus.ids == -1 ? 'Whole fleet' : currentBonus.ids.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("");
                 
                 bonusGroupColumn = $(`
                     <td class="bonus-group">
@@ -1268,7 +1268,7 @@ class ChrDisplayEventInfo {
 
                 if (currentBonus.requiredFlagshipId && currentBonus.requiredFlagshipId.length) {
                     bonusGroupColumn.append(`<br>If flagship is ${
-                        `<br><div>${currentBonus.requiredFlagshipId.map((x) => { return `<img src="assets/icons/${SHIPDATA[x].image}" />`; }).join("")}</div>` 
+                        `<br><div>${currentBonus.requiredFlagshipId.map((x) => { return `<img src="${chGetShipImagePath(x)}" />`; }).join("")}</div>` 
                     }`);
                 }
 
@@ -1300,9 +1300,9 @@ class ChrDisplayEventInfo {
                             for (const abyssalMid of currentBonus.parameters.on) {
                                 if (SHIPDATA[abyssalMid].image == image) continue;
 
-                                image = SHIPDATA[abyssalMid].image;
+                                image = chGetShipImagePath(abyssalMid);
 
-                                imageEl.append(`<img src="assets/icons/${image}" />`)
+                                imageEl.append(`<img src="${image}" />`)
                             }
 
                             bonusCellPart.append(imageEl);

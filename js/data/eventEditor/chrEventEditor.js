@@ -149,9 +149,15 @@ Vue.createApp({
       }
       
       // --- Load assets
-      if (this.eventData.assets.equipments) {
+      if (this.eventData.assets && this.eventData.assets.equipments) {
         for (const equipment of this.eventData.assets.equipments) {
           COMMON.addCustomEquipment(equipment);
+        }
+      }
+
+      if (this.eventData.assets && this.eventData.assets.ships) {
+        for (const ship of this.eventData.assets.ships) {
+          COMMON.addCustomShip(ship);
         }
       }
     },
@@ -260,6 +266,8 @@ Vue.createApp({
 .component('vassetseditor', AssetsEditorComponent)
 .component('vcustomequipmenteditor', CustomEquipmentComponent)
 .component('vcustomequipmentlist', CustomEquipmentListComponent)
+.component('vcustomshipeditor', CustomShipComponent)
+.component('vcustomshiplist', CustomShipListComponent)
 
 .use(COMMON.i18n)
 .mount('#eventEditor');

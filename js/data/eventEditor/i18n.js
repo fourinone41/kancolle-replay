@@ -112,10 +112,14 @@ COMMON.addEquipmentTranslation = (id) => {
 	messages.ja[key] = EQDATA[id].nameJP;
 }
 
-for (let id in SHIPDATA) {
+COMMON.addShipTranslation = (id) => {
 	let key = 'ship_name_'+SHIPDATA[id].name;
 	messages.en[key] = SHIPDATA[id].name;
 	messages.ja[key] = SHIPDATA[id].nameJP;
+}
+
+for (let id in SHIPDATA) {
+	COMMON.addShipTranslation(id);
 }
 
 for (let id in EQDATA) {

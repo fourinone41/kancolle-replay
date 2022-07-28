@@ -551,7 +551,7 @@ function chrExecuteFillDialogShip(sortmethod, callback, filter, bannedShips) {
 		tr.append($('<td style="width:120px">'+shipd.name+'</td>'));
 		tr.append($('<td style="width:40px">'+shipd.type+'</td>'));
 		var htmllock = (ship.lock)? '<img src="'+chGetLockPicture(ship.lock)+'" style="position:absolute;margin-left:30px;margin-top:-3px"/>' : '';
-		tr.append($('<td>'+htmllock+'<img src="assets/icons/'+shipd.image+'" /></td>'));
+		tr.append($('<td>'+htmllock+'<img src="'+chGetShipImagePath(ship.masterId)+'" /></td>'));
 		let $stats = chMakeShipStats(ship);
 		tr.append($('<td class="right">'+$stats+'</td>'));
 		tr.append(chMakeShipHeartLock(ship.heartlock, ships[i]));
@@ -1258,10 +1258,11 @@ function chrCreateShipSelectionArea(callback, filter, getBannedShips) {
             selectedShipId = shipId;
 
             let ship = getSelectedShipData();
+            let shipMid = getSelectedShipId();
 
             if (ship) {
                 shipSelectButton.text(ship.name);
-                shipImage.attr('src', "assets/icons/"+ship.image);
+                shipImage.attr('src', chGetShipImagePath(shipMid));
             } else {
                 shipSelectButton.text("Select a ship");
                 shipImage.attr('src', "assets/icons/Kblank.png");

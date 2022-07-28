@@ -19,6 +19,7 @@ var COMMON = {
 		
 	
 		customEquipmentsStartId: 6000,
+		customShipsStartId: 10000,
 	},
 	global: {},
 	
@@ -65,16 +66,23 @@ var COMMON = {
 		return +id > 1500 && +id < 3000;
 	},
 	isShipIdArpeggio: function(id) {
-		return +id > 9000;
+		return +id > 9000 && +id < this.consts.customShipsStartId;
 	},
 	isShipIdCustom: function(id) {
-		return +id > 3000 && +id < 4000;
+		return +id >= this.consts.customShipsStartId;
 	},
 	isEquipIdAbyssal: function(id) {
 		return +id > 500;
 	},
 	isEquipIdCustom: function(id) {
 		return +id >= this.consts.customEquipmentsStartId;
+	},
+
+	getShipImagePath: function(id) {
+		if (!id) return 'assets/icons/Kblank.png';
+		if (!SHIPDATA[id]) return 'assets/icons/Kblank.png';
+		if (SHIPDATA[id].customImage) return SHIPDATA[id].customImage;
+		return 'assets/icons/' + SHIPDATA[id].image;
 	},
 
 	FLEET_TYPES: [
@@ -273,12 +281,23 @@ var COMMON = {
 		return this.SHIP_CLASSES;
 	},
 	
-	getLastCustomId ()  {
+	getLastCustomEquipId ()  {
 		let last = this.consts.customEquipmentsStartId;
 
 		for (const eqKey in EQDATA) {
 			if (eqKey < last) continue;
 			last = eqKey;
+		}
+
+		return last;
+	},
+
+	getLastCustomShipId ()  {
+		let last = this.consts.customShipsStartId;
+
+		for (const shipKey in SHIPDATA) {
+			if (shipKey < last) continue;
+			last = shipKey;
 		}
 
 		return last;
@@ -290,5 +309,13 @@ var COMMON = {
 		EQDATA[id] = equipmentData;
 		COMMON.global.equipSelector.addEquipment(id)
 		COMMON.addEquipmentTranslation(id); 
+	},
+
+	addCustomShip(shipData) {
+
+		const id = shipData.id;
+		SHIPDATA[id] = shipData;
+		COMMON.global.shipSelector.addShip(id)
+		COMMON.addShipTranslation(id); 
 	},
 };

@@ -10,6 +10,7 @@ var DIALOGITEMCATEGORY = -1;
 var DIALOGITEMSHIPID = -1;
 var ITEMNODES = [];
 const CHITEMSMAX = 5; //also used as ex slot index
+const CUSTOM_SHIP_FIRST_ID = 10000;
 
 var MECHANICDATES = {
 	flagProtect: '2013-08-25',
@@ -320,7 +321,7 @@ function chFillDialogShip(sortmethod) {
 		tr.append($('<td style="width:120px">'+shipd.name+'</td>'));
 		tr.append($('<td style="width:40px">'+shipd.type+'</td>'));
 		var htmllock = (ship.lock)? '<img src="'+chGetLockPicture(ship.lock)+'" style="position:absolute;margin-left:30px;margin-top:-3px"/>' : '';
-		tr.append($('<td>'+htmllock+'<img src="assets/icons/'+shipd.image+'" /></td>'));
+		tr.append($('<td>'+htmllock+'<img src="'+chGetShipImagePath(ship.masterId)+'" /></td>'));
 		let $stats = chMakeShipStats(ship);
 		tr.append($('<td class="right">'+$stats+'</td>'));
 		tr.append(chMakeShipHeartLock(ship.heartlock, ships[i]));
@@ -677,7 +678,7 @@ function chDialogShowItems(shipmid,types) {
 			}
 			
 			if (item.heldBy) { 
-				$('#'+this.id+'bgimg').attr('src','assets/icons/'+SHIPDATA[CHDATA.ships[item.heldBy].masterId].image);
+				$('#'+this.id+'bgimg').attr('src',chGetShipImagePath(CHDATA.ships[item.heldBy].masterId));
 			} else {
 				$('#'+this.id+'bgimg').attr('src',null);
 			}
@@ -2051,6 +2052,17 @@ function chCombineShipCountObjects(shipCountMainFleet, shipCountEscort) {
 	}
 }
 
+function chGetShipImagePath(id, damaged) {
+	if (!id) return 'assets/icons/Kblank.png';
+	if (!SHIPDATA[id]) return 'assets/icons/Kblank.png';
+
+	const sData = SHIPDATA[id];
+	if (sData.customImage) return sData.customImage;
+	
+	if (damaged && sData.imageDam) return sData.imageDam;
+	return 'assets/icons/' + sData.image;
+}
+
 function chLoadFleet(sids,fleetnum) {
 	var simships = [];
 	var counts = chNewShipCount();
@@ -2110,7 +2122,7 @@ function chTableSetShip(sid,fleet,slot,noswap) {
 	});
 	$('#fleet'+fleet+slot+' td.t2hpcell').show();
 	$('#fleetname'+fleet+slot).text(shipd.name);
-	$('#fleetimg'+fleet+slot).attr('src','assets/icons/'+shipd.image);
+	$('#fleetimg'+fleet+slot).attr('src',chGetShipImagePath(ship.masterId));
 	if (fleet != 5) $('#fleetimg'+fleet+slot).css('cursor','move');
 	$('#fleetlvl'+fleet+slot).text(ship.LVL);
 	if (ship.LVL > 99) $('#fleetlvl'+fleet+slot).css('font-size','11px');

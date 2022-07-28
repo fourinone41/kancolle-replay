@@ -12,7 +12,7 @@ const CustomEquipmentListComponent = {
     methods: {
         addEquipment() {
             const newEquip = new ChEquipmentData();
-            newEquip.id = COMMON.getLastCustomId() + 1;
+            newEquip.id = +COMMON.getLastCustomEquipId() + 1;
 
             this.equipmentList.push(newEquip);
             COMMON.addCustomEquipment(newEquip);

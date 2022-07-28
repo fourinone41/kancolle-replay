@@ -121,28 +121,28 @@ let UI_SHIPSELECTOR = window.ShipSelectorComponent = {
 		searchInd: 0,
 		
 		buttonsCat1: [
-			{ name: 'DD', imgName: SHIPDATA[9].image, category: 'playerDD' },
-			{ name: 'CL(T)', imgName: SHIPDATA[54].image, category: 'playerCL' },
-			{ name: 'CA(V)', imgName: SHIPDATA[66].image, category: 'playerCA' },
-			{ name: 'BB(V)', imgName: SHIPDATA[80].image, category: 'playerBB' },
-			{ name: 'CVL', imgName: SHIPDATA[89].image, category: 'playerCVL' },
-			{ name: 'CV', imgName: SHIPDATA[83].image, category: 'playerCV' },
-			{ name: 'SS(V)', imgName: SHIPDATA[126].image, category: 'playerSS' },
-			{ name: 'Other', imgName: SHIPDATA[182].image, category: 'playerOther' },
+			{ name: 'DD', imgName: COMMON.getShipImagePath(9), category: 'playerDD' },
+			{ name: 'CL(T)', imgName: COMMON.getShipImagePath(54), category: 'playerCL' },
+			{ name: 'CA(V)', imgName: COMMON.getShipImagePath(66), category: 'playerCA' },
+			{ name: 'BB(V)', imgName: COMMON.getShipImagePath(80), category: 'playerBB' },
+			{ name: 'CVL', imgName: COMMON.getShipImagePath(89), category: 'playerCVL' },
+			{ name: 'CV', imgName: COMMON.getShipImagePath(83), category: 'playerCV' },
+			{ name: 'SS(V)', imgName: COMMON.getShipImagePath(126), category: 'playerSS' },
+			{ name: 'Other', imgName: COMMON.getShipImagePath(182), category: 'playerOther' },
 		],
 		buttonsCat2: [
-			{ name: 'DD', imgName: SHIPDATA[1501].image, category: 'enemyDD' },
-			{ name: 'CL(T)', imgName: SHIPDATA[1505].image, category: 'enemyCL' },
-			{ name: 'CA(V)', imgName: SHIPDATA[1509].image, category: 'enemyCA' },
-			{ name: 'BB(V)', imgName: SHIPDATA[1511].image, category: 'enemyBB' },
-			{ name: 'CV(L)', imgName: SHIPDATA[1512].image, category: 'enemyCV' },
-			{ name: 'SS(V)', imgName: SHIPDATA[1530].image, category: 'enemySS' },
-			{ name: 'Other', imgName: SHIPDATA[1513].image, category: 'enemyOther' },
-			{ name: 'Installation', imgName: SHIPDATA[1556].image, category: 'enemyInstall' },
+			{ name: 'DD', imgName: COMMON.getShipImagePath(1501), category: 'enemyDD' },
+			{ name: 'CL(T)', imgName: COMMON.getShipImagePath(1505), category: 'enemyCL' },
+			{ name: 'CA(V)', imgName: COMMON.getShipImagePath(1509), category: 'enemyCA' },
+			{ name: 'BB(V)', imgName: COMMON.getShipImagePath(1511), category: 'enemyBB' },
+			{ name: 'CV(L)', imgName: COMMON.getShipImagePath(1512), category: 'enemyCV' },
+			{ name: 'SS(V)', imgName: COMMON.getShipImagePath(1530), category: 'enemySS' },
+			{ name: 'Other', imgName: COMMON.getShipImagePath(1513), category: 'enemyOther' },
+			{ name: 'Installation', imgName: COMMON.getShipImagePath(1556), category: 'enemyInstall' },
 		],
 		buttonsCat3: [
-			{ name: 'Arpeggio', imgName: SHIPDATA[9001].image, category: 'arpeggio' },
-			{ name: 'Vita', imgName: SHIPDATA[3003].image, category: 'vita' },
+			{ name: 'Arpeggio', imgName: COMMON.getShipImagePath(9001), category: 'arpeggio' },
+			{ name: 'Vita', imgName: COMMON.getShipImagePath(3003), category: 'vita' },
 			{ name: '???', imgName: null, category: 'secret', secret: true },
 		],
 		
@@ -181,6 +181,17 @@ let UI_SHIPSELECTOR = window.ShipSelectorComponent = {
 			this.doSubmit(remodel.id);
 		},
 		onclickBack: METHODS_COMMON.methods.onclickBack,
+		addShip(id) {
+			for (let lang in SHIP_LIST_ORDER) {
+				let keyName = lang == 'en' ? 'name' : 'nameJP';
+				
+				let name = SHIPDATA[id][keyName] || '';
+				SHIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase() });
+			}
+			
+			// --- Todo : do something more optimized
+			recomputeShipCategories();
+		},
 	},
 	template: `
 	<div v-show="active">
@@ -198,21 +209,21 @@ let UI_SHIPSELECTOR = window.ShipSelectorComponent = {
 				<div>{{$t('selector.ship_section_Shipgirls')}}</div>
 				<div class="buttonWrap">
 					<div v-for="btn in buttonsCat1" class="selButton" @click="onclickButtonCat(btn)">
-						<div><img :src="'assets/icons/' + btn.imgName" /></div>
+						<div><img :src="btn.imgName" /></div>
 						<div>{{$t('selector.ship_cat_'+btn.name)}}</div>
 					</div>
 				</div>
 				<div>{{$t('selector.ship_section_Abyssals')}}</div>
 				<div class="buttonWrap">
 					<div v-for="btn in buttonsCat2" class="selButton" @click="onclickButtonCat(btn)">
-						<div><img :src="'assets/icons/' + btn.imgName" /></div>
+						<div><img :src="btn.imgName" /></div>
 						<div>{{$t('selector.ship_cat_'+btn.name)}}</div>
 					</div>
 				</div>
 				<div>{{$t('selector.ship_section_Extra')}}</div>
 				<div class="buttonWrap">
 					<div v-for="btn in buttonsCat3" :class="{selButton:1,secret:btn.secret}" @click="onclickButtonCat(btn)">
-						<div v-if="btn.imgName"><img :src="'assets/icons/' + btn.imgName" /></div>
+						<div v-if="btn.imgName"><img :src="btn.imgName" /></div>
 						<div>{{$t('selector.ship_cat_'+btn.name)}}</div>
 					</div>
 				</div>
@@ -222,7 +233,7 @@ let UI_SHIPSELECTOR = window.ShipSelectorComponent = {
 				<div id="divShipSelButtonsShip">
 					<div v-for="btn in buttonsChoice" class="selButton">
 						<div @click="onclickButtonShip(btn)">
-							<div><img :src="'assets/icons/' + btn.imgName" /></div>
+							<div><img :src="btn.imgName" /></div>
 							<div>{{btn.name}}</div>
 						</div>
 						<div class="remodelButtonWrap" v-if="btn.remodels">
@@ -311,11 +322,14 @@ let UI_EQUIPSELECTOR = window.EquipSelectorComponent = {
 			for (let lang in SHIP_LIST_ORDER) {
 				let keyName = lang == 'en' ? 'name' : 'nameJP';
 				let name = EQDATA[id][keyName] || '';
-				EQUIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase(), imgName: EQDATA[id].image || EQTDATA[EQDATA[id].type].image });
+
+				const image = EQDATA[id].image || (EQTDATA[EQDATA[id].type] ? EQTDATA[EQDATA[id].type].image : "")
+
+				EQUIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase(), imgName: image });
 			}
 			
 			// --- Todo : do something more optimized
-			recomputeCategories();
+			recomputeEquipmentCategories();
 		}
 	},
 	template: `
@@ -389,11 +403,28 @@ function init() {
 		}
 	}
 	
+	recomputeShipCategories();
+	
+	EQUIP_LIST_ORDER = { 'en': [], 'ja': [] };
+	for (let lang in SHIP_LIST_ORDER) {
+		let keyName = lang == 'en' ? 'name' : 'nameJP';
+		for (let id of Object.keys(EQDATA).sort((a,b)=>+a-+b)) {
+			if (id == 0) continue;
+			let name = EQDATA[id][keyName] || '';
+			EQUIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase(), imgName: EQDATA[id].image || EQTDATA[EQDATA[id].type].image });
+		}
+	}
+	
+	recomputeEquipmentCategories();
+}
+
+function recomputeShipCategories() {
+	
 	let getCategoryF = function(types,keyName) {
 		let lang = keyName == 'name' ? 'en' : 'ja';
 		let remodels = {};
 		for (let id in SHIPDATA) {
-			if (!COMMON.isShipIdKanmusu(id)) continue; 
+			if (!COMMON.isShipIdKanmusu(id) && !COMMON.isShipIdCustom(id)) continue; 
 			let ship = SHIPDATA[id];
 			if (!types.includes(ship.type)) continue;
 			if (ship.prev && types.includes(SHIPDATA[ship.prev].type)) continue;
@@ -420,7 +451,7 @@ function init() {
 			}
 			let obj = {
 				name: nameTop,
-				imgName: shipFinal.image,
+				imgName: COMMON.getShipImagePath(remodels[baseId].at(-1)),
 				remodels: [],
 			};
 			for (let id of remodels[baseId]) {
@@ -439,19 +470,20 @@ function init() {
 	let getCategoryE = function(types,keyName,installOnly) {
 		let output = [];
 		for (let id of Object.keys(SHIPDATA).sort((a,b)=>+a-+b)) {
-			if (!COMMON.isShipIdAbyssal(id)) continue;
+			if (!COMMON.isShipIdAbyssal(id) && !COMMON.isShipIdCustom(id)) continue;
 			let s = SHIPDATA[id];
 			if (types && !types.includes(s.type)) continue;
 			if (!!installOnly != !!s.installtype) continue;
 			output.push({
 				id: id,
 				name: s[keyName],
-				imgName: s.image,
+				imgName: COMMON.getShipImagePath(id),
 			});
 		}
 		return output;
 	}
-	
+
+
 	SHIP_CATEGORIES = { 'en': {}, 'ja': {} };
 	for (let lang in SHIP_CATEGORIES) {
 		let keyName = lang == 'en' ? 'name' : 'nameJP';
@@ -483,7 +515,7 @@ function init() {
 			SHIP_CATEGORIES[lang].arpeggio.push({
 				id: id,
 				name: SHIPDATA[id][keyName],
-				imgName: SHIPDATA[id].image,
+				imgName: COMMON.getShipImagePath(id),
 			});
 		}
 		
@@ -491,7 +523,7 @@ function init() {
 			SHIP_CATEGORIES[lang].vita.push({
 				id: id,
 				name: SHIPDATA[id][keyName],
-				imgName: SHIPDATA[id].image,
+				imgName: COMMON.getShipImagePath(id),
 			});
 		}
 		
@@ -499,25 +531,13 @@ function init() {
 			SHIP_CATEGORIES[lang].secret.push({
 				id: id,
 				name: SHIPDATA[id][keyName],
-				imgName: SHIPDATA[id].image,
+				imgName: COMMON.getShipImagePath(id),
 			});
 		}
 	}
-	
-	EQUIP_LIST_ORDER = { 'en': [], 'ja': [] };
-	for (let lang in SHIP_LIST_ORDER) {
-		let keyName = lang == 'en' ? 'name' : 'nameJP';
-		for (let id of Object.keys(EQDATA).sort((a,b)=>+a-+b)) {
-			if (id == 0) continue;
-			let name = EQDATA[id][keyName] || '';
-			EQUIP_LIST_ORDER[lang].push({ id: id, name: name, nameL: name.toLowerCase(), imgName: EQDATA[id].image || EQTDATA[EQDATA[id].type].image });
-		}
-	}
-	
-	recomputeCategories();
 }
 
-function recomputeCategories() {
+function recomputeEquipmentCategories() {
 	let getCategoryEquip = function(types) {
 		let output = { 'player': [], 'enemy': [] };
 		for (let id of Object.keys(EQDATA).sort((a,b)=>+a-+b)) {

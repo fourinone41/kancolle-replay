@@ -1825,7 +1825,7 @@ function prepBattle(letter) {
 
 		let enemyDiv = $('<div>');
 
-		enemyDiv.append(`<img src="assets/icons/${SHIPDATA[sid].image}"><br>`);
+		enemyDiv.append(`<img src="${chGetShipImagePath(sid)}"><br>`);
 		enemyDiv.append(`${SHIPDATA[sid].name}<br>`);
 
 		// --- Bonuses

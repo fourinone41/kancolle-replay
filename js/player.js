@@ -369,8 +369,7 @@ function createShip(data,side,i,damaged) {
 	var graphic = new PIXI.Container();
 	var sdata = SHIPDATA[parseInt(data[0])];
 	if (!sdata) sdata = SHIPDATA[0];
-	var imgname = ((damaged && sdata.imageDam)? sdata.imageDam : sdata.image)
-	var portrait = PIXI.Sprite.fromImage('assets/icons/'+imgname);
+	var portrait = PIXI.Sprite.fromImage(chGetShipImagePath(data[0],damaged));
 	portrait.position.set((side==1)?11:-3,2);
 	var hpbar = new PIXI.Graphics();
 	hpbar.beginFill(0x00ff00);
@@ -506,7 +505,7 @@ function processAPI(root) {
 		fships.push(root[fleet][i].mst_id);
 		fequips.push(root[fleet][i].equip);
 		if (!SHIPDATA[root[fleet][i].mst_id]) continue;
-		loader2.add('ship'+i,'assets/icons/'+SHIPDATA[root[fleet][i].mst_id].image);
+		loader2.add('ship'+i,chGetShipImagePath(root[fleet][i].mst_id));
 	}
 	if (root.combined) {
 		for (var i=0; i<root.fleet2.length; i++) {
@@ -514,7 +513,7 @@ function processAPI(root) {
 			fshipsC.push(root.fleet2[i].mst_id);
 			fequipsC.push(root.fleet2[i].equip);
 			if (!SHIPDATA[root.fleet2[i].mst_id]) continue;
-			loader2.add('ship'+i+'C','assets/icons/'+SHIPDATA[root.fleet2[i].mst_id].image);
+			loader2.add('ship'+i+'C',chGetShipImagePath(root.fleet2[i].mst_id));
 		}
 	}
 	fleet1 = []; fleet2 = []; fleet1C = []; fleet2C = [];
@@ -589,7 +588,7 @@ function processAPI(root) {
 		for (var i=0; i<data.api_ship_ke.length; i++) {
 			if (!data.api_ship_ke[i] || data.api_ship_ke[i] == -1) continue;
 			if (SHIPDATA[data.api_ship_ke[i]])
-				loader2.add('ship'+b+i,'assets/icons/'+SHIPDATA[data.api_ship_ke[i]].image);
+				loader2.add('ship'+b+i,chGetShipImagePath(data.api_ship_ke[i]));
 			else
 				loader2.add('ship'+b+i,'assets/icons/K.png');
 			var maxhp, nowhp;
@@ -621,7 +620,7 @@ function processAPI(root) {
 			for (var i=0; i<data.api_ship_ke_combined.length; i++) {
 				if (!data.api_ship_ke_combined[i] || data.api_ship_ke_combined[i] == -1) continue;
 				if (SHIPDATA[data.api_ship_ke_combined[i]])
-					loader2.add('shipc'+b+i,'assets/icons/'+SHIPDATA[data.api_ship_ke_combined[i]].image);
+					loader2.add('shipc'+b+i,chGetShipImagePath(data.api_ship_ke_combined[i]));
 				else
 					loader2.add('shipc'+b+i,'assets/icons/K.png');
 				var maxhp, nowhp;
