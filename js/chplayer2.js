@@ -10,160 +10,164 @@ var RUSH_MODE = 0;
 
 function InitUI() {
 	if (!CHDATA.event) return;
-	randomizeMaps();
-	chLoadRandomFile();
 
-	chInitAbyssalTables();
+	const afterLoadingData = () => {
 
-	MAPNUM = CHDATA.event.mapnum;
-	WORLD = CHDATA.event.world;
+		chInitAbyssalTables();
 
-	if(WORLD > 97) {
+		MAPNUM = CHDATA.event.mapnum;
+		WORLD = CHDATA.event.world;
+	
+		if(WORLD > 97) {
+			
+			if (WORLD == 98) {
+				$('#tabChr').show();
+			}
+			else {
+				$('#tabChr').hide();
+			}
+	
+			WORLD = CHDATA.maps[MAPNUM].world;
+		}
 		
-		if (WORLD == 98) {
-			$('#tabChr').show();
+		for (let mechanic in MECHANICDATES) { //refresh mechanics for updates
+			CHDATA.config.mechanics[mechanic] = (MECHANICDATES[mechanic] <= CHDATA.config.mechanicsdate);
 		}
-		else {
-			$('#tabChr').hide();
+		let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[WORLD].date)? MAPDATA[WORLD].date : CHDATA.config.mechanicsdate;
+		setShipDataDate(dataDate);
+		setEquipDataDate(dataDate);
+		
+		if (CHHPREGENTIMER.running) {
+			CHHPREGENTIMER.stop();
 		}
-
-		WORLD = CHDATA.maps[MAPNUM].world;
-	}
-	
-	for (let mechanic in MECHANICDATES) { //refresh mechanics for updates
-		CHDATA.config.mechanics[mechanic] = (MECHANICDATES[mechanic] <= CHDATA.config.mechanicsdate);
-	}
-	let dataDate = (CHDATA.config.mechanicsdate < MAPDATA[WORLD].date)? MAPDATA[WORLD].date : CHDATA.config.mechanicsdate;
-	setShipDataDate(dataDate);
-	setEquipDataDate(dataDate);
-	
-	if (CHHPREGENTIMER.running) {
-		CHHPREGENTIMER.stop();
-	}
-	if (MAPDATA[WORLD].maps[CHDATA.event.unlocked] && MAPDATA[WORLD].maps[CHDATA.event.unlocked].hpRegenTick) {
-		var elapsed = (Date.now() - CHDATA.event.lasttime)/1000 + (CHDATA.event.regenCounter || 0);
-		CHHPREGENTIMER.start(CHDATA.event.unlocked,elapsed);
-	}
-	
-	for (var mapnum in CHDATA.event.maps) {
-		if (!CHDATA.event.maps[mapnum].part) continue;
-		mapChangePart(CHDATA.maps[mapnum].world,mapnum,CHDATA.event.maps[mapnum].part);
-	}
-
-	$('#equipfilters').html('');
-	$('#equipselecttable').html('');
-	$('#chrequipfilters').html('');
-	$('#chrequipselecttable').html('');
-	chDialogItemInit();
-	chrDialogItemInit();
-	DIALOGSORT = null;
-	
-	if (MAPDATA[WORLD].allowFleets.indexOf(7) != -1 && CHDATA.fleets[1].length < 7) CHDATA.fleets[1].push(null);
-	for (var fleetnum in CHDATA.fleets) chFillTable(CHDATA.fleets[fleetnum],fleetnum);
-	if (CHDATA.fleets.combined) chClickedCombine(CHDATA.fleets.combined, true);
-	else chClickedCombine(0,true);
-	chToggleShowSF(CHDATA.fleets.sf);
-	
-	chLoadSortieInfo(CHDATA.event.mapnum);
-	chUIUpdateResources();
-	chUIUpdateItems();
-	
-	var found = false;
-	for (var i=1; i<=3; i++) {
-		if (MAPDATA[WORLD].allowFleets.indexOf(i) != -1) {
-			$('#btncombine'+i).show();
-			found = true;
-		} else {
-			$('#btncombine'+i).hide();
+		if (MAPDATA[WORLD].maps[CHDATA.event.unlocked] && MAPDATA[WORLD].maps[CHDATA.event.unlocked].hpRegenTick) {
+			var elapsed = (Date.now() - CHDATA.event.lasttime)/1000 + (CHDATA.event.regenCounter || 0);
+			CHHPREGENTIMER.start(CHDATA.event.unlocked,elapsed);
 		}
-	}
-	if (MAPDATA[WORLD].allowFleets.indexOf(7) != -1) {
-		$('#btncombineSF').show();
-		found = true;
-	} else {
-		$('#btncombineSF').hide();
-	}
-	if (!found) $('.combinespacec').hide();
-	else $('.combinespacec').show();
+		
+		for (var mapnum in CHDATA.event.maps) {
+			if (!CHDATA.event.maps[mapnum].part) continue;
+			mapChangePart(CHDATA.maps[mapnum].world,mapnum,CHDATA.event.maps[mapnum].part);
+		}
 	
-	if (CHDATA.fleets.supportN) {
-		$('#btnsupportN').css('opacity',1);
-	} else {
-		$('#btnsupportN').css('opacity',.5);
-	}
-	if (CHDATA.fleets.supportB) {
-		$('#btnsupportB').css('opacity',1);
-	} else {
-		$('#btnsupportB').css('opacity',.5);
-	}
-	
-	for (var i=1; i<=3; i++) {
-		if (CHDATA.fleets['lbas'+i]) $('#btnLBAS'+i).css('opacity',1);
-		else $('#btnLBAS'+i).css('opacity',.5);
-	}
-	
-	if (MAPDATA[WORLD].allowLBAS) {
-		$('#tabLBAS').parent().show();
-		var n = MAPDATA[WORLD].lbasSlotCount || 18;
-		SHIPDATA[5001].SLOTS = [n,n,n,n];
-		SHIPDATA[5002].SLOTS = [n,n,n,n];
-		SHIPDATA[5003].SLOTS = [n,n,n,n];
-		for (let i=1; i<=3; i++) {
-			let lbas = CHDATA.ships['z'+i];
-			if (!lbas) continue;
-			for (let j=0; j<lbas.items.length; j++) {
-				if (lbas.items[j] <= 0) continue;
-				let item = CHDATA.gears['x'+lbas.items[j]];
-				SHIPDATA[5000+i].SLOTS[j] = chGetLBASNumPlanes(item);
+		$('#equipfilters').html('');
+		$('#equipselecttable').html('');
+		$('#chrequipfilters').html('');
+		$('#chrequipselecttable').html('');
+		chDialogItemInit();
+		chrDialogItemInit();
+		DIALOGSORT = null;
+		
+		if (MAPDATA[WORLD].allowFleets.indexOf(7) != -1 && CHDATA.fleets[1].length < 7) CHDATA.fleets[1].push(null);
+		for (var fleetnum in CHDATA.fleets) chFillTable(CHDATA.fleets[fleetnum],fleetnum);
+		if (CHDATA.fleets.combined) chClickedCombine(CHDATA.fleets.combined, true);
+		else chClickedCombine(0,true);
+		chToggleShowSF(CHDATA.fleets.sf);
+		
+		chLoadSortieInfo(CHDATA.event.mapnum);
+		chUIUpdateResources();
+		chUIUpdateItems();
+		
+		var found = false;
+		for (var i=1; i<=3; i++) {
+			if (MAPDATA[WORLD].allowFleets.indexOf(i) != -1) {
+				$('#btncombine'+i).show();
+				found = true;
+			} else {
+				$('#btncombine'+i).hide();
 			}
 		}
-	} else {
-		$('#tabLBAS').parent().hide();
-	}
-	
-	if (MAPDATA[WORLD].disableSupport) {
-		$('#tabsupportN').parent().hide();
-		$('#tabsupportB').parent().hide();
-		$('#btnsupportN').hide();
-		$('#btnsupportB').hide();
-	} else {
-		$('#tabsupportN').parent().show();
-		$('#tabsupportB').parent().show();
-		$('#btnsupportN').show();
-		$('#btnsupportB').show();
-	}
-	if (MAPDATA[WORLD].friendFleet) {
-		if (CHDATA.fleets.ff == null) {
-			chSetFriendFleet(1);
+		if (MAPDATA[WORLD].allowFleets.indexOf(7) != -1) {
+			$('#btncombineSF').show();
+			found = true;
 		} else {
-			chSetFriendFleet(CHDATA.fleets.ff);
+			$('#btncombineSF').hide();
 		}
-		$('#btnFF').show();
-	} else {
-		$('#btnFF').hide();
+		if (!found) $('.combinespacec').hide();
+		else $('.combinespacec').show();
+		
+		if (CHDATA.fleets.supportN) {
+			$('#btnsupportN').css('opacity',1);
+		} else {
+			$('#btnsupportN').css('opacity',.5);
+		}
+		if (CHDATA.fleets.supportB) {
+			$('#btnsupportB').css('opacity',1);
+		} else {
+			$('#btnsupportB').css('opacity',.5);
+		}
+		
+		for (var i=1; i<=3; i++) {
+			if (CHDATA.fleets['lbas'+i]) $('#btnLBAS'+i).css('opacity',1);
+			else $('#btnLBAS'+i).css('opacity',.5);
+		}
+		
+		if (MAPDATA[WORLD].allowLBAS) {
+			$('#tabLBAS').parent().show();
+			var n = MAPDATA[WORLD].lbasSlotCount || 18;
+			SHIPDATA[5001].SLOTS = [n,n,n,n];
+			SHIPDATA[5002].SLOTS = [n,n,n,n];
+			SHIPDATA[5003].SLOTS = [n,n,n,n];
+			for (let i=1; i<=3; i++) {
+				let lbas = CHDATA.ships['z'+i];
+				if (!lbas) continue;
+				for (let j=0; j<lbas.items.length; j++) {
+					if (lbas.items[j] <= 0) continue;
+					let item = CHDATA.gears['x'+lbas.items[j]];
+					SHIPDATA[5000+i].SLOTS[j] = chGetLBASNumPlanes(item);
+				}
+			}
+		} else {
+			$('#tabLBAS').parent().hide();
+		}
+		
+		if (MAPDATA[WORLD].disableSupport) {
+			$('#tabsupportN').parent().hide();
+			$('#tabsupportB').parent().hide();
+			$('#btnsupportN').hide();
+			$('#btnsupportB').hide();
+		} else {
+			$('#tabsupportN').parent().show();
+			$('#tabsupportB').parent().show();
+			$('#btnsupportN').show();
+			$('#btnsupportB').show();
+		}
+		if (MAPDATA[WORLD].friendFleet) {
+			if (CHDATA.fleets.ff == null) {
+				chSetFriendFleet(1);
+			} else {
+				chSetFriendFleet(CHDATA.fleets.ff);
+			}
+			$('#btnFF').show();
+		} else {
+			$('#btnFF').hide();
+		}
+		chEnableFriendFleetWaves(MAPDATA[WORLD].friendFleetWaves);
+		
+		chInitPreset();
+		
+		chClickedTab('#tabmain');
+		$('#mainspace').show();
+		
+		if (MAPDATA[WORLD].worldMap) {
+			initWorldMap(MAPDATA[WORLD].worldMap);
+			showWorldMap();
+		} else {
+			hideWorldMap();
+		}
+		
+		let diffNames = { 3: 'HARD', 2: 'NORMAL', 1: 'EASY', 4: 'CASUAL' };
+		if (MAPDATA[WORLD].diffNames) {
+			for (let diff in MAPDATA[WORLD].diffNames) diffNames[diff] = MAPDATA[WORLD].diffNames[diff];
+		}
+		$('#srtDiffHard').val(diffNames[3]);
+		$('#srtDiffMed').val(diffNames[2]);
+		$('#srtDiffEasy').val(diffNames[1]);
+		$('#srtDiffCasual').val(diffNames[4]);
 	}
-	chEnableFriendFleetWaves(MAPDATA[WORLD].friendFleetWaves);
-	
-	chInitPreset();
-	
-	chClickedTab('#tabmain');
-	$('#mainspace').show();
-	
-	if (MAPDATA[WORLD].worldMap) {
-		initWorldMap(MAPDATA[WORLD].worldMap);
-		showWorldMap();
-	} else {
-		hideWorldMap();
-	}
-	
-	let diffNames = { 3: 'HARD', 2: 'NORMAL', 1: 'EASY', 4: 'CASUAL' };
-	if (MAPDATA[WORLD].diffNames) {
-		for (let diff in MAPDATA[WORLD].diffNames) diffNames[diff] = MAPDATA[WORLD].diffNames[diff];
-	}
-	$('#srtDiffHard').val(diffNames[3]);
-	$('#srtDiffMed').val(diffNames[2]);
-	$('#srtDiffEasy').val(diffNames[1]);
-	$('#srtDiffCasual').val(diffNames[4]);
+
+	randomizeMaps();
+	chLoadRandomFile(afterLoadingData);
 }
 
 var WORLD, MAPNUM;

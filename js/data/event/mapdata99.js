@@ -147,13 +147,14 @@ function chRandomizeMaps() {
     return maps;
 }
 
-function chLoadRandomFile() {
+function chLoadRandomFile(afterLoadingData) {
     
-    if (CHDATA.event.world == 97) MAPDATA[97].initializeAllMaps();
+    if (CHDATA.event.world == 97) MAPDATA[97].initializeAllMaps(afterLoadingData);
     else {
         if (CHDATA.event.comps == undefined) {
             CHDATA.event.comps = chRandomizeComps();
         }
+        afterLoadingData();
     }
 }
 

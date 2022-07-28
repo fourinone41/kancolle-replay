@@ -46,10 +46,6 @@ class ChrDisplayEventInfo {
         // --- load comps 
         this.LoadCHDATA();
 
-        if (CHDATA.event.world == 97) {
-            MAPDATA[97].initializeAllMaps();
-        }
-
         // --- Map 
         /**
          * @type {ChrMap}
@@ -60,46 +56,57 @@ class ChrDisplayEventInfo {
             this.DisplayComps(this.currentMap, letter);
         }
 
-        // --- Map buttons
-        for (let mapNum = 0; mapNum < ChrDisplayEventInfo.MAP_COUNT; mapNum++) {
-            let button = $(`<div class="mapButton">E-${mapNum + 1}</div>`);
+        const initAfterLoad = () => {
 
-            button.click(() => {
-                this.currentMap = mapNum + 1;
-                MAPNUM = this.currentMap;
-                WORLD = this.GetCurrentWorld();
+            // --- Map buttons
+            for (let mapNum = 0; mapNum < ChrDisplayEventInfo.MAP_COUNT; mapNum++) {
+                let button = $(`<div class="mapButton">E-${mapNum + 1}</div>`);
 
-                if (CHDATA.event.maps[this.currentMap].routes) {
-                    this.unlockPart = Math.max(...CHDATA.event.maps[this.currentMap].routes)
+                button.click(() => {
+                    this.currentMap = mapNum + 1;
+                    MAPNUM = this.currentMap;
+                    WORLD = this.GetCurrentWorld();
+
+                    if (CHDATA.event.maps[this.currentMap].routes) {
+                        this.unlockPart = Math.max(...CHDATA.event.maps[this.currentMap].routes)
+                    }
+                    else {
+                        this.unlockPart = 0;
+                    }
+
+                    if (CHDATA.event.maps[4] && CHDATA.event.maps[4].part) {
+                        this.lbPart = CHDATA.event.maps[4].part;
+                    }
+                    else {
+                        this.lbPart = 1;
+                    }
+
+                    this.LoadMapAndButtons();                
+
+                    // --- Display map infos
+                    this.DisplayMapInfos();
+
+                    // --- Routing
+                    this.DisplayRouting();
+
+                    this.InitFoldableElement();
+                });
+
+                if (CHDATA.event.mapnum == mapNum + 1) {
+                    button.click();
                 }
-                else {
-                    this.unlockPart = 0;
-                }
 
-                if (CHDATA.event.maps[4] && CHDATA.event.maps[4].part) {
-                    this.lbPart = CHDATA.event.maps[4].part;
-                }
-                else {
-                    this.lbPart = 1;
-                }
-
-                this.LoadMapAndButtons();                
-
-                // --- Display map infos
-                this.DisplayMapInfos();
-
-                // --- Routing
-                this.DisplayRouting();
-
-                this.InitFoldableElement();
-            });
-
-            if (CHDATA.event.mapnum == mapNum + 1) {
-                button.click();
+                $("#mapButtons").append(button)
             }
+        } 
 
-            $("#mapButtons").append(button)
+        
+        if (CHDATA.event.world == 97) {
+            MAPDATA[97].initializeAllMaps(initAfterLoad);
+        } else {
+            initAfterLoad();
         }
+
     }
 
     lbPart = 1;

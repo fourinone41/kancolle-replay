@@ -1428,8 +1428,12 @@ function chSave() {
 	basic.config = CHDATA.config;
 	basic.player = CHDATA.player;
 
-	if (CHDATA.customEventData) {
+	if (CHDATA.customEventData && !CHDATA.eventURL) {
 		basic.customEventData = CHDATA.customEventData;
+	}
+
+	if (CHDATA.eventURL) {
+		basic.eventURL = CHDATA.eventURL;
 	}
 
 	data.ships = CHDATA.ships;

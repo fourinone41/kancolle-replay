@@ -40,35 +40,55 @@ MAPDATA[97] = {
     }
 }
 
-MAPDATA[97].initializeAllMaps = function () {
+MAPDATA[97].initializeAllMaps = function (callback) {
     
     if (!CHDATA.event) CHDATA.event = {};
-
+    
     if (localStorage.customEventDataToLoad) {
         CHDATA.customEventData = JSON.parse(localStorage.customEventDataToLoad);
         localStorage.removeItem('customEventDataToLoad');
     }
 
-    for (const key in CHDATA.customEventData.eventData) {
-        MAPDATA[97][key] = CHDATA.customEventData.eventData[key];
-    }
-
-    if (CHDATA.customEventData.eventData && CHDATA.customEventData.eventData.comps) {
-        CHDATA.event.comps = CHDATA.customEventData.eventData.comps;
-    }
-
-    if (CHDATA.customEventData.eventData && CHDATA.customEventData.eventData.assets) {
-        MAPDATA[97].initializeAssets(CHDATA.customEventData.eventData.assets);
-    }
-
-    CHDATA.maps = {};
-
-    for (const mapNum in MAPDATA[97].maps) {
-        CHDATA.maps[mapNum] = { world: 97 };
-    }
     
-    for (const mapNumber in CHDATA.maps) {
-        MAPDATA[97].initializeMap(MAPDATA[97].maps[mapNumber]);
+    const loadEventData = () => {
+        for (const key in CHDATA.customEventData.eventData) {
+            MAPDATA[97][key] = CHDATA.customEventData.eventData[key];
+        }
+    
+        if (CHDATA.customEventData.eventData && CHDATA.customEventData.eventData.comps) {
+            CHDATA.event.comps = CHDATA.customEventData.eventData.comps;
+        }
+    
+        if (CHDATA.customEventData.eventData && CHDATA.customEventData.eventData.assets) {
+            MAPDATA[97].initializeAssets(CHDATA.customEventData.eventData.assets);
+        }
+    
+        CHDATA.maps = {};
+    
+        for (const mapNum in MAPDATA[97].maps) {
+            CHDATA.maps[mapNum] = { world: 97 };
+        }
+        
+        for (const mapNumber in CHDATA.maps) {
+            MAPDATA[97].initializeMap(MAPDATA[97].maps[mapNumber]);
+        }
+
+        callback();
+    }
+
+    if (CHDATA.eventURL) {
+        $.ajax(CHDATA.eventURL).done(function(data) {
+            if (!data) {
+                return alert("Error loading data");
+            }
+
+            let eventData = JSON.parse(data);
+
+            CHDATA.customEventData = eventData;
+            loadEventData();
+        });
+    } else {
+        loadEventData();
     }
 }
 
@@ -894,6 +914,7 @@ MAPDATA[97].chrLoadCustomEventData = function() {
             reader.addEventListener('load', (event) => {
                 let eventData = JSON.parse(event.target.result);
         
+                CHDATA.eventURL = null;
                 CHDATA.customEventData = eventData;
     
                 MAPDATA[97].initializeAllMaps();
@@ -916,11 +937,14 @@ MAPDATA[97].chrLoadCustomEventData = function() {
                 let eventData = JSON.parse(data);
     
                 CHDATA.customEventData = eventData;
-    
+
+                CHDATA.eventURL = null;
+
                 MAPDATA[97].initializeAllMaps();
         
+                CHDATA.eventURL = url;
                 resolve();
-              });
+            });
         }
     
         
