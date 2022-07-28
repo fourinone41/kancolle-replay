@@ -224,9 +224,14 @@ function chMenuSelectedEvent(eventnum) {
 	}
 
 	if (EVENTNUM == 97) {
-		$("#customEventFile").show();
+		// --- Debug only
+		if (!window.location.hostname.includes("github.io")) {
+			$("#customEventFile").show();
+		}
+		$("#customEventUrl").show();
 	} else {
 		$("#customEventFile").hide();
+		$("#customEventUrl").hide();
 	}
 }
 

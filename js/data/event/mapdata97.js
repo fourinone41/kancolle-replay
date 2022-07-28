@@ -885,23 +885,45 @@ MAPDATA[97].ChrRandomizeMap = function (eventNumber, mapNumber) {
 MAPDATA[97].chrLoadCustomEventData = function() {
     return new Promise((resolve) => {
         let file = document.getElementById("customEventFile").files[0];
-        if (!file) throw 'Event file is required';
-    
-        const reader = new FileReader();
-        reader.addEventListener('load', (event) => {
-            let eventData = JSON.parse(event.target.result);
-    
-            CHDATA.customEventData = eventData;
+        let url =  $("#customEventUrl").val()
 
-            MAPDATA[97].initializeAllMaps();
+        if (!file && !url) throw 'Event file is required';
+
+        if (file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', (event) => {
+                let eventData = JSON.parse(event.target.result);
+        
+                CHDATA.customEventData = eventData;
     
-            // --- Refresh after load
-            //chSave = () => null;
-            //location.reload();
-            resolve();
-        });
+                MAPDATA[97].initializeAllMaps();
+        
+                // --- Refresh after load
+                //chSave = () => null;
+                //location.reload();
+                resolve();
+            });
+        
+            reader.readAsText(file);
+        }
+
+        if (url) {
+            $.ajax(url).done(function(data) {
+                if (!data) {
+                    return alert("Error loading data");
+                }
+
+                let eventData = JSON.parse(data);
     
-        reader.readAsText(file);
+                CHDATA.customEventData = eventData;
+    
+                MAPDATA[97].initializeAllMaps();
+        
+                resolve();
+              });
+        }
+    
+        
     });
 	
 }
