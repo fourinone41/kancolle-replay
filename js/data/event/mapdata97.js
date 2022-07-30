@@ -116,7 +116,7 @@ MAPDATA[97].initializeAssets = function(assets) {
         }
     }
 
-    chFillDialogShip(1);
+    if (typeof(chFillDialogShip) != 'undefined') chFillDialogShip(1);
 }
 
 MAPDATA[97].initializeMap = function (mapData) {
