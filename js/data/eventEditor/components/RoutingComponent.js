@@ -319,6 +319,11 @@ const RoutingComponent = {
                     <td><velementlist :data-source="rule.routeSelect" :item-list="ruleResultNodesList" /></td>
                 </tr>
 
+                <tr>
+                    <td>No compass display</td>
+                    <td><input v-model="rule.noCompass" type="checkbox" /></td>
+                </tr>
+
                 <button v-if="!rule.mapParts" @click="rule.mapParts=[]">Have rule only on certain parts</button>
                 <button v-if="!!rule.mapParts" @click="rule.mapParts=null">Have rule on all part</button>
 

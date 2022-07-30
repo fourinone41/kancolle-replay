@@ -87,7 +87,7 @@ const CustomShipComponent = {
 
                 <tr>
                     <td>Ship Class</td>
-                    <td><vcomboboxeditor :data-source="shipData" :item-list="shipClassItemList" data-field="sclass"/></td>
+                    <td><vcomboboxeditor :data-source="shipData" :item-list="shipClassItemList" data-field="sclass" :can-be-null="true"/></td>
                 </tr>
 
                 <tr>
@@ -200,6 +200,11 @@ const CustomShipComponent = {
                     <td>
                         <vshipeditor :ship="previousShip" @ship-set="setPreviousShip()" :ship-only="true" @ship-delete="deletePreviousShip()"></vshipeditor>
                     </td>
+                </tr>
+                
+                <tr>
+                    <td>Night attack type (Carriers)</td>
+                    <td><input v-model="shipData.nightattack" type="number" /></td>
                 </tr>
             </table>
         </div>

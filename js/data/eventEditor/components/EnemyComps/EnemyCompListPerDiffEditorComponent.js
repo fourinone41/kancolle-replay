@@ -37,7 +37,7 @@ const EnemyCompListPerDiffEditorComponent = {
         },
 
         allCompItemList() {
-            return Object.keys(this.allCompsObject).map(x => ({ key: x, display: x }));
+            return Object.keys(this.allCompsObject).map(x => ({ key: x, display: x })).reverse();
         }
     },
 

@@ -446,6 +446,7 @@ MAPDATA[97].convertRule = function (ruleToConvert) {
 
     if (ruleToConvert.mapParts) rule.mapParts = ruleToConvert.mapParts;
     if (ruleToConvert.not) rule.not = ruleToConvert.not;
+    if (ruleToConvert.noCompass) ChDontShowCompass(rule);
 
     return rule;
 }

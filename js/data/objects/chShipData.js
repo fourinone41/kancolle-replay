@@ -76,6 +76,10 @@ class ChShipData {
     
         this.canAirAttack = false;
     
+        /**
+         * Night attack type 
+         * TODO : be more specific 
+         */
         this.nightattack = 0;
     
         this.iscarrier = false;
