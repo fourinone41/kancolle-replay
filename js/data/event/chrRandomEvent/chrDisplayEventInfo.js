@@ -1367,3 +1367,14 @@ ChrDisplayEventInfo.GetFleetTypeAsString = (type) => {
             return 'Strike force';
     }
 }
+
+function chGetShipImagePath(id, damaged) {
+	if (!id) return 'assets/icons/Kblank.png';
+	if (!SHIPDATA[id]) return 'assets/icons/Kblank.png';
+
+	const sData = SHIPDATA[id];
+	if (sData.customImage) return sData.customImage;
+	
+	if (damaged && sData.imageDam) return sData.imageDam;
+	return 'assets/icons/' + sData.image;
+}
