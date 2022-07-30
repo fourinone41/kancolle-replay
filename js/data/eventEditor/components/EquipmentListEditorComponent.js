@@ -6,6 +6,7 @@ const EquipmentListEditorComponent = {
     }),
         
     computed: {
+        
     },
 
     methods: {
@@ -25,7 +26,7 @@ const EquipmentListEditorComponent = {
         <button @click="addEquipment">Add</button>
         <div v-for="(equipId, key) in dataSource" :key="key" >
 
-            <div v-if="handleLevels || handleImage || !!slots">
+            <div v-if="handleLevels || handleImage">
                 <vequipeditor :equip-id="!!equipId ? equipId.id : 0" @equip-set="(mstId)=>dataSource[key]= { id: mstId }" @equip-delete="deleteEquipment(key)" />
                 
                 <div v-if="!!dataSource[key] && handleLevels" >
@@ -43,6 +44,10 @@ const EquipmentListEditorComponent = {
             </div>
             <div v-else>
                 <vequipeditor :equip-id="equipId" @equip-set="(mstId)=>dataSource[key]=mstId" @equip-delete="deleteEquipment(key)" />
+                
+                <div v-if="!!slots">
+                    Slot size <input v-model="slots[key]" type="number" />
+                </div>
             </div>
         </div>
     

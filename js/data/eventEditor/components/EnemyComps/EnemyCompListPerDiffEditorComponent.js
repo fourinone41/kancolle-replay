@@ -18,10 +18,10 @@ const EnemyCompListPerDiffEditorComponent = {
 
             { key: -1, separator: true },
             
-            { key: 11, display: "Cruising Formation 1 (ASW Alert)" },
-            { key: 12, display: "Cruising Formation 2 (Forward Alert)" },
-            { key: 13, display: "Cruising Formation 3 (Ring Formation)" },
-            { key: 14, display: "Cruising Formation 4 (Battle Formation)" },
+            { key: 111, display: "Cruising Formation 1 (ASW Alert)" },
+            { key: 112, display: "Cruising Formation 2 (Forward Alert)" },
+            { key: 113, display: "Cruising Formation 3 (Ring Formation)" },
+            { key: 114, display: "Cruising Formation 4 (Battle Formation)" },
         ]
     }),
 
@@ -126,6 +126,9 @@ const EnemyCompListPerDiffEditorComponent = {
                     <div><vshipidslisteditor :data-source="compObject[compNameCurrent].c" :numberOfShips="6" /></div>
                 </div>
                 
+                <button v-if="!compObject[compNameCurrent].ce" @click="compObject[compNameCurrent].ce = []">Add Escort Fleet</button>
+                <button v-else @click="delete compObject[compNameCurrent].ce">Remove Escort Fleet</button>
+
                 <div v-if="isCombined">
                     <div>Escort</div>
                     <div><vshipidslisteditor :data-source="compObject[compNameCurrent].ce" :numberOfShips="6" /></div>

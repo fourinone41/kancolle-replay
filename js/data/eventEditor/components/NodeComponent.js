@@ -90,6 +90,11 @@ const NodeComponent = {
             </tr>
 
             <tr>
+                <td>Distance from air base</td>
+                <td><input v-model="nodeData.distance" type="number" /></td>
+            </tr>
+
+            <tr>
                 <td>Node type</td>
                 <td><vcomboboxeditor :data-source="this" :item-list="nodeTypeItemList" data-field="selectedNodeType" /></td>
                 <td><button @click="applySelectedNodeType">Apply node type</button></td>

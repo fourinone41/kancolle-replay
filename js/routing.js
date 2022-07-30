@@ -1372,6 +1372,14 @@ function ChEquipTypeRule(equipData, operator, count, shipWithEquipCount, conditi
 
     rule.type = "equipType";
 
+    for (const eqKey in equipData.equipIds) {
+        equipData.equipIds[eqKey] = +equipData.equipIds[eqKey];
+    }
+    
+    for (const eqKey in equipData.equipTypes) {
+        equipData.equipTypes[eqKey] = +equipData.equipTypes[eqKey];
+    }
+
     rule.conditionCheckedNode = conditionCheckedNode;
     rule.conditionFailedNode = conditionFailedNode;
 

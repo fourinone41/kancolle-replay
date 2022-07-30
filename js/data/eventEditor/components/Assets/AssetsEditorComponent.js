@@ -12,6 +12,14 @@ const AssetsEditorComponent = {
         },
         shipList() {
             if (!this.eventData.assets.ships) this.eventData.assets.ships = [];
+
+            // --- temp fix
+            /*for (const ship of this.eventData.assets.ships) {
+                for (const equKey in ship.EQUIPS) {
+                    ship.EQUIPS[equKey] = ship.EQUIPS[equKey].id;
+                }
+            }*/
+
             return this.eventData.assets.ships;
         },
     },
