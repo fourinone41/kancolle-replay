@@ -40,6 +40,27 @@ const NodeComponent = {
         routeUnlockItemList() {
             if (!this.mapData.hiddenRoutes) return [];
             return Object.keys(this.mapData.hiddenRoutes).map(route => ({ key: route, display: route}));
+        },
+
+        distance() {
+            let partCountForLBAS = 0;
+
+            for (const partKey in this.mapData.parts) {
+                const part = this.mapData.parts[partKey];
+                if (part.lbPart && part.lbPart > partCountForLBAS) partCountForLBAS = part.lbPart;
+            }
+
+            if (partCountForLBAS && !Array.isArray(this.nodeData.distance)) this.nodeData.distance = [this.nodeData.distance];
+            if (!partCountForLBAS && Array.isArray(this.nodeData.distance)) this.nodeData.distance = 0;
+
+            if (Array.isArray(this.nodeData.distance)) {
+                
+                for (let count = 1; count < partCountForLBAS; count++) {
+                    if (!this.nodeData.distance[count]) this.nodeData.distance[count] = 0;
+                }
+            }
+
+            return this.nodeData.distance;
         }
     },
 
@@ -89,9 +110,21 @@ const NodeComponent = {
                 <td><vcomboboxeditor :data-source="nodeData" :item-list="routeUnlockItemList" data-field="hidden" :can-be-null="true"/></td>
             </tr>
 
-            <tr>
+            <tr v-if="!Array.isArray(nodeData.distance)">
                 <td>Distance from air base</td>
                 <td><input v-model="nodeData.distance" type="number" /></td>
+            </tr>
+
+            <tr v-if="Array.isArray(distance)">
+                <td>Distance from air base (per phase)</td>
+                <td>
+                    <table>
+                        <tr v-for="(_, key) of distance" :key="key">
+                            <td>Part {{key + 1}}</td>
+                            <td><input v-model="distance[key]" type="number" /></td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
 
             <tr>

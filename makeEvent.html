@@ -326,6 +326,21 @@
                                     <tr v-if="!!part.finalhp">
                                         <td>Hard</td>
                                         <td><input v-model="part.finalhp[3]" type="number" /></td>
+                                    </tr>           
+                                    
+                                    <tr>
+                                        <td>X position of air base for this part</td>
+                                        <td><input v-model="part.lbX" type="number" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Y position of air base for this part</td>
+                                        <td><input v-model="part.lbY" type="number" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Air base part (use this if only if you want to move AB)</td>
+                                        <td><input v-model="part.lbPart" type="number" /></td>
                                     </tr>
                                 </table>
                                 <br>
