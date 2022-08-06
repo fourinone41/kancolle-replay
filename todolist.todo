@@ -1,4 +1,3 @@
-- shortcut : can take them even tho they aren't unlocked (to test)
 - additional check doesn't work cause of JSON serialization/deszrialization
 - ChNodeReplacedAfterUnlockRule doesn't work (fixed but need to be tested Fall 17 E4) (need to handle that properly in branching ?)
 - FF, when making random event, add FF when exporting a node
@@ -6,12 +5,9 @@
 - Winter 17 E3 dissasebled saiun are not given on map unlock ?
 
 - import real event maps
-- give lock per start
-- map cors ?
-- ship groups (store in event then allow to choose from ship list)
 - deleting route unlock : for now we recompute map parts to "fill the gaps" => find a way to unset where the route is used (routing, debuff, unlocks)
 - deleting phase : same as above
-
-low importance things i skipped for now :
-- map :
-    - overrideBGM
+- Friend fleet HP range is from 0 to 1 (its 1 = 100%, 0.5 = 50% of the HP)
+- Goin back to boss post clear gives the rewards again (And oyoodo goes insane)
+- choose reward level
+- Handle rewards per diff

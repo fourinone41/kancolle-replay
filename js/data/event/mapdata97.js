@@ -70,6 +70,18 @@ MAPDATA[97].initializeAllMaps = function (callback) {
         }
         
         for (const mapNumber in CHDATA.maps) {
+
+            if (CHDATA && CHDATA.event && CHDATA.event.maps && !CHDATA.event.maps[mapNumber]) {
+                // --- new map detected !
+                CHDATA.event.maps[mapNumber] = { visited:[], hp:null };
+                
+                if (CHDATA.config.unlockAll) {                    
+                    for (let n=1; n<100; n++) {
+                        if (!MAPDATA[EVENTNUM].maps[n]) { CHDATA.event.unlocked = n-1; break; }
+                    }
+                }
+            }
+
             MAPDATA[97].initializeMap(MAPDATA[97].maps[mapNumber]);
         }
 
@@ -82,7 +94,7 @@ MAPDATA[97].initializeAllMaps = function (callback) {
                 return alert("Error loading data");
             }
 
-            let eventData = JSON.parse(data);
+            let eventData = typeof(data) == "string" ? JSON.parse(data) : data;
 
             CHDATA.customEventData = eventData;
             loadEventData();
@@ -937,8 +949,8 @@ MAPDATA[97].chrLoadCustomEventData = function() {
 
         if (file) {
             const reader = new FileReader();
-            reader.addEventListener('load', (event) => {
-                let eventData = JSON.parse(event.target.result);
+            reader.addEventListener('load', (event) => {                
+                let eventData = typeof(event.target.result) == "string" ? JSON.parse(event.target.result) : event.target.result;
         
                 CHDATA.eventURL = null;
                 CHDATA.customEventData = eventData;
@@ -960,7 +972,7 @@ MAPDATA[97].chrLoadCustomEventData = function() {
                     return alert("Error loading data");
                 }
 
-                let eventData = JSON.parse(data);
+                let eventData = typeof(data) == "string" ? JSON.parse(data) : data;
     
                 CHDATA.customEventData = eventData;
 
