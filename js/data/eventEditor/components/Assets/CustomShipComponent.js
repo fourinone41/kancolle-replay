@@ -59,6 +59,10 @@ const CustomShipComponent = {
             this.shipData.prev = 0;
             COMMON.reloadShip(this.shipData.id);
         },
+        
+        playVoice(bgm) {
+            COMMON.SOUND_MANAGER.playBGM(bgm, 1, true);
+        },
     },
     
     watch: {
@@ -221,6 +225,47 @@ const CustomShipComponent = {
                 <tr>
                     <td>Night attack type (Carriers)</td>
                     <td><input v-model="shipData.nightattack" type="number" /></td>
+                </tr>
+                
+                <tr>
+                    <td>Battle start line</td>
+                    <td><input v-model="shipData.voice_start"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_start)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Attack line</td>
+                    <td><input v-model="shipData.voice_attack"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_attack)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Night battle attack line (Friendly)</td>
+                    <td><input v-model="shipData.voice_nbattack"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_nbattack)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Shoha damage (Friendly)</td>
+                    <td><input v-model="shipData.voice_damage1"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_damage1)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Shuuha damage (Friendly)</td>
+                    <td><input v-model="shipData.voice_damage2"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_damage2)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Taiha damage (Friendly)</td>
+                    <td><input v-model="shipData.voice_damage3"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_damage3)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Attacked (Abyssal)</td>
+                    <td><input v-model="shipData.voice_damage"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_damage)">Play</button></td>
+                </tr>
+                <tr>
+                    <td>Sinking line</td>
+                    <td><input v-model="shipData.voice_sunk"/></td>
+                    <td><button class="play-bgm" @click="playVoice(shipData.voice_sunk)">Play</button></td>
                 </tr>
             </table>
         </div>

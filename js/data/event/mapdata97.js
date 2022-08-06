@@ -102,6 +102,18 @@ MAPDATA[97].initializeAssets = function(assets) {
     const addShip = (shipData) => {
 		const id = shipData.id;
 		SHIPDATA[id] = shipData;
+        
+        if (typeof(VOICES) != "undefined") {
+
+            const voiceLines = ["start","attack","nbattack","damage1","damage2","damage3","sunk"];
+
+            for (const voiceLine of voiceLines) {
+                if (shipData["voice_"+voiceLine]) {
+                    if (!VOICES[shipData.id]) VOICES[shipData.id] = {};
+                    VOICES[shipData.id][voiceLine] = shipData["voice_"+voiceLine];
+                }
+            }
+        }
     }
 
     if (assets.equipments) {
@@ -307,7 +319,7 @@ MAPDATA[97].convertBonus = function(bonus) {
             return new ChWholeFleetBonuses(bonus.parameters, bonus.amount);
             
         case 'ChEquipIdsBonuses':
-            return new ChEquipIdsBonuses(bonus.parameters, bonus.equipIds, bonus.operator, bonus.reqCount, bonus.amount);
+            return new ChEquipIdsBonuses(bonus.parameters, bonus.equipIds.map(x => parseInt(x)), bonus.operator, bonus.reqCount, bonus.amount);
             
         case 'ChEquipTypesBonuses':
             return new ChEquipTypesBonuses(bonus.parameters, bonus.equipTypes, bonus.operator, bonus.reqCount, bonus.amount);

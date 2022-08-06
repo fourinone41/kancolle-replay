@@ -54,7 +54,7 @@ const GimmickListComponent = {
             
             <tr>
                 <td>Route unlock required</td>
-                <td><vcomboboxeditor :data-source="gimmickList" :item-list="routeUnlockItemList" data-field="routeUnlockRequired" :can-be-null="true"/></td>
+                <td><vcomboboxeditor :data-source="gimmickList.additionnalParameters" :item-list="routeUnlockItemList" data-field="routeUnlockRequired" :can-be-null="true"/></td>
             </tr>
 
             <tr>
