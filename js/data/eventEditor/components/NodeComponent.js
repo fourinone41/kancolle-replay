@@ -61,6 +61,11 @@ const NodeComponent = {
             }
 
             return this.nodeData.distance;
+        },
+        
+
+        friendFleetItemList() {
+            return Object.keys(this.eventData.friendFleet).map(x => ({ key: x, display: x }));
         }
     },
 
@@ -82,6 +87,20 @@ const NodeComponent = {
 
         toggleDisplayNodeTypeInfo() {
             this.displayNodeTypeInfo = !this.displayNodeTypeInfo;
+        },
+
+        toggleFriendFleet() {
+            const enable = !this.nodeData.friendFleet;
+
+            if (enable) {
+                this.nodeData.friendFleet = [];
+                this.nodeData.friendFleetS = [];
+                this.nodeData.friendFleetSX = [];
+            } else {
+                delete this.nodeData.friendFleet;
+                delete this.nodeData.friendFleetS;
+                delete this.nodeData.friendFleetSX;
+            }
         }
     },
 
@@ -188,6 +207,23 @@ const NodeComponent = {
 
         <uigroup title="Routing">
             <vroutinglist :rule-list="nodeData.rules" :map-data="mapData"></vroutinglist>
+        </uigroup>
+
+        <uigroup title="Friend Fleet">
+
+            <button v-if="!nodeData.friendFleet" @click="toggleFriendFleet">Enable Friend Fleet</button>
+            <button v-else @click="toggleFriendFleet">Disable Friend Fleet</button>
+
+            <div v-if="!!nodeData.friendFleet">
+                Normal friend fleet<br>
+                <velementlist v-if="!!nodeData.friendFleet" :data-source="nodeData.friendFleet" :item-list="friendFleetItemList" />
+
+                Strong friend fleet<br>
+                <velementlist v-if="!!nodeData.friendFleet" :data-source="nodeData.friendFleetS" :item-list="friendFleetItemList" />
+
+                Stronger friend fleet <br>
+                <velementlist v-if="!!nodeData.friendFleet" :data-source="nodeData.friendFleetSX" :item-list="friendFleetItemList" />
+            </div>
         </uigroup>
 
         <uigroup title="End node">
