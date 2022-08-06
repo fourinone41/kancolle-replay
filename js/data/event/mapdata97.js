@@ -77,7 +77,7 @@ MAPDATA[97].initializeAllMaps = function (callback) {
                 
                 if (CHDATA.config.unlockAll) {                    
                     for (let n=1; n<100; n++) {
-                        if (!MAPDATA[EVENTNUM].maps[n]) { CHDATA.event.unlocked = n-1; break; }
+                        if (!MAPDATA[97].maps[n]) { CHDATA.event.unlocked = n-1; break; }
                     }
                 }
             }
