@@ -10,7 +10,10 @@ const GimmickEditorComponent = {
 
     computed: {
         nodeList() {
-            return Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
+            const nodes = Object.keys(this.mapData.nodes).map(key => ({ key: key, display: key }));
+            nodes.unshift({ key: "AB", display: "AB" });
+
+            return nodes;
         },
 
         mapPartItemList() {

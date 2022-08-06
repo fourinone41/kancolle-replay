@@ -204,7 +204,7 @@ const NodeComponent = {
             <button v-if="!!nodeData.bonuses" @click="delete nodeData.bonuses">Disable bonuses</button> 
             <button v-else @click="nodeData.bonuses = []">Handle bonuses</button>
 
-            <vbonuslist v-if="!!nodeData.bonuses" :bonus-list="nodeData.bonuses" :map-data="mapData" />
+            <vbonuslist v-if="!!nodeData.bonuses" :bonus-list="nodeData.bonuses" :map-data="mapData" :event-data="eventData" />
         </uigroup>
     </div>
     

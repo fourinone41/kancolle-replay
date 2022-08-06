@@ -1,5 +1,5 @@
 const BonusListComponent = {
-    props: ['bonusList', 'mapData'],
+    props: ['bonusList', 'mapData', 'eventData'],
 
     data: () => ({
         
@@ -36,7 +36,7 @@ const BonusListComponent = {
 
         <div v-for="(bonus, key) in bonusList" :key="key">
             <button @click="deleteBonus(key)">Delete bonus</button>
-            <vbonuseditor :bonus-data="bonus" :map-data="mapData" />
+            <vbonuseditor :bonus-data="bonus" :map-data="mapData" :event-data="eventData" />
         </div>
     
     `

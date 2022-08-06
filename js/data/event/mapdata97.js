@@ -298,7 +298,7 @@ MAPDATA[97].loadBonusesFromChData = function (nodeData) {
 MAPDATA[97].convertBonus = function(bonus) {
     switch (bonus.bonusType) {
         case 'ChShipIdsBonuses':
-            return new ChShipIdsBonuses(bonus.parameters, bonus.shipIds.map(x => parseInt(x)), bonus.amount);
+            return new ChShipIdsBonuses(bonus.parameters, Array.isArray(bonus.shipIds) ? bonus.shipIds.map(x => parseInt(x)) : bonus.shipIds, bonus.amount);
 
         case 'ChShipTypeBonuses':
             return new ChShipTypeBonuses(bonus.parameters, bonus.shipTypes, bonus.amount);

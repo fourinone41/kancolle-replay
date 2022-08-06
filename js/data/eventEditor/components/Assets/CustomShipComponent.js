@@ -16,11 +16,22 @@ const CustomShipComponent = {
         shipClassItemList: COMMON.getShipClasses(),
         
         speedItemList: [
+            { key: 0, display: "None" },
             { key: 5, display: "Slow" },
             { key: 10, display: "Fast" },
             { key: 15, display: "Fast+" },
             { key: 20, display: "Fastest" },
         ],
+
+        installTypeItemList: [
+            { key: 0, display: "Not an installation" },
+            { key: 1, display: "Soft" },
+            { key: 2, display: "Artillery imp" },
+            { key: 3, display: "Supply depot" },
+            { key: 4, display: "Isolated island" },
+            { key: 5, display: "Isolated island (northernmost)" },
+            { key: 6, display: "Harbour (Summer version)" },
+        ]
     }),
 
     computed: {
@@ -165,6 +176,11 @@ const CustomShipComponent = {
                             <tr>
                                 <td>Speed</td>
                                 <td><vcomboboxeditor :data-source="shipData" :item-list="speedItemList" data-field="SPD"/></td>
+                            </tr>
+
+                            <tr>
+                                <td>Installation type</td>
+                                <td><vcomboboxeditor :data-source="shipData" :item-list="installTypeItemList" data-field="installtype"/></td>
                             </tr>
 
                         </table>

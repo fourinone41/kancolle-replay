@@ -57,6 +57,7 @@
     <script src="js/data/objects/chNodeData.js"></script>
     <script src="js/data/objects/chEquipmentData.js"></script>
     <script src="js/data/objects/chShipData.js"></script>
+    <script src="js/data/objects/chEnemyRaid.js"></script>
 
     <script src="js/data/eventEditor/common.js"></script>
     <script src="js/vue.global.dev.js"></script>
@@ -382,6 +383,40 @@
                             </table>
                         </div>
                     </uigroup>
+
+                    <uigroup title="Air raid">
+                        <button @click="toggleMapRaid" v-if="!!mapData.enemyRaid">Disable air raid</button>
+                        <button @click="toggleMapRaid" v-else>Enable air raid</button>
+
+                        <div v-if="!!mapData.enemyRaid">
+
+                            <table>
+                                <tr>
+                                    <td>Trigger per sortie</td>
+                                    <td><vcountruleeditor :data-source="mapData.enemyRaid" data-field="maxNum" :hide-toggle-button="true"/></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Trigger chance</td>
+                                    <td><vcountruleeditor :data-source="mapData.enemyRaid" data-field="chance" :hide-toggle-button="true"/></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>High altitude</td>
+                                    <td><vcountruleeditor :data-source="mapData.enemyRaid" data-field="highAltitude" :hide-toggle-button="true" type="checkbox"/></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Comps</td>
+                                    <td>
+                                        <vnodeenemycompobjectseditor :comp-list="mapData.enemyRaid" :comp-object="airRaidCompObject" :init-values="{ bomb: true }" :map-data="mapData" :all-comps-object="allCompsObject" />
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+
+                    </uigroup>
                 </div>
 
                 <div v-if="selectedTab('nodes')" class="map-settings">
@@ -511,6 +546,13 @@
 
         </uigroup>
 
+        
+        <uigroup title="Ship groups">
+
+            <vhistoricalgroups :event-data="eventData"/>
+
+        </uigroup>
+
     </template>
 </body>
 
@@ -547,6 +589,7 @@
 <script src="js/data/eventEditor/components/MapLockEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Bonuses/BonusEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Bonuses/BonusListComponent.js"></script>
+<script src="js/data/eventEditor/components/HistoricalGroupsComponent.js"></script>
 <script src="js/data/eventEditor/components/GroupComponent.js"></script>
 
 <!-- Custom assets -->

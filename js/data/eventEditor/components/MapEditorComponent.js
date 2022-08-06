@@ -29,6 +29,14 @@ const MapEditorComponent = {
             return this.eventData.comps[this.compsKeys][this.currentNode];
         },
 
+        airRaidCompObject() {            
+            if (!this.eventData.comps) this.eventData.comps = {};
+            if (!this.eventData.comps[this.compsKeys]) this.eventData.comps[this.compsKeys] = {};
+            if (!this.eventData.comps[this.compsKeys]['AB']) this.eventData.comps[this.compsKeys]['AB'] = {};
+
+            return this.eventData.comps[this.compsKeys]['AB'];
+        },
+
         compsKeys() {
             return this.mapData.name[0] + '-' + this.mapData.name[1];
         },
@@ -40,8 +48,6 @@ const MapEditorComponent = {
 
         allCompsObject () {
             const comps = {};
-
-            if (!this.currentNode) return comps;
             
             if (!this.eventData.comps) this.eventData.comps = comps;
             if (!this.eventData.comps[this.compsKeys]) this.eventData.comps[this.compsKeys] = comps;
@@ -122,7 +128,7 @@ const MapEditorComponent = {
             if (!this.mapData.startCheckRule) this.mapData.startCheckRule = [];
 
             return this.mapData.startCheckRule;
-        }
+        },
 
     },
 
@@ -247,6 +253,11 @@ const MapEditorComponent = {
                 bgmDB: null,
                 bgmNB: null,
             };
+        },
+
+        toggleMapRaid() {
+            if (this.mapData.enemyRaid) delete this.mapData.enemyRaid;
+            else this.mapData.enemyRaid = new ChEnemyRaid();
         }
     },
     

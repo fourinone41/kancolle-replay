@@ -1,5 +1,5 @@
 const BonusEditorComponent = {
-    props: ['bonusData', 'mapData'],
+    props: ['bonusData', 'mapData', 'eventData'],
 
     data: () => ({
         
@@ -41,6 +41,12 @@ const BonusEditorComponent = {
                 { key: 'set', display: "Set the bonus value of the ships" },
                 { key: 'add', display: "Bonus stacks with other bonuses" },
             ]
+        },
+
+        shipGroupsItemList() {
+            if (!this.eventData.historicals) this.eventData.historicals = {};
+
+            return Object.keys(this.eventData.historicals).map(group => ({ key: "event.historicals."+group, display: group.replace(/_/g, " ") }));
         }
     },
 
@@ -131,12 +137,23 @@ const BonusEditorComponent = {
             <td>Bonus applies to specific allies</td>
             <td><vshipidslisteditor :data-source="bonusData.parameters.onlySpecificShips" /></td>
         </tr>
-        
-        <tr v-if="displayEditor('shipIds') && !!bonusData.shipIds">
+              
+        <tr v-if="displayEditor('shipIds') && !!bonusData.shipIds && typeof(bonusData.shipIds)!='string'">
             <td>Bonus applies to specific allies</td>
-            <td><vshipidslisteditor :data-source="bonusData.shipIds" /></td>
+            <td>
+                <button @click="bonusData.shipIds = ''">Have bonus per ship group</button>
+                <vshipidslisteditor :data-source="bonusData.shipIds" />
+            </td>
         </tr>
-        
+
+        <tr v-if="displayEditor('shipIds') && bonusData.shipIds !== undefined && typeof(bonusData.shipIds)=='string'">
+            <td>Bonus applies to specific ally group</td>
+            <td>
+                <button @click="bonusData.shipIds = []">Have bonus per ship group</button>
+                <vcomboboxeditor :data-source="bonusData" :item-list="shipGroupsItemList" data-field="shipIds"/>
+            </td>
+        </tr>
+
         <tr v-if="displayEditor('classIds') && !!bonusData.classIds">
             <td>Bonus applies to specific ally classes</td>
             <td><velementlist :data-source="bonusData.classIds" :item-list="shipClassItemList" /></td>

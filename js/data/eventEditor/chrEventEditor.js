@@ -243,6 +243,7 @@ Vue.createApp({
 .component('vshipidslisteditor', ShipIdsListEditorComponent)
 .component('vhiddenrouteeditor', HiddenRoutesEditorComponent)
 .component('vmaplockeditor', MapLockEditorComponent)
+.component('vhistoricalgroups', HistoricalGroupsComponent)
 
 // --- UI
 .component('uigroup', GroupComponent)

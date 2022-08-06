@@ -48,7 +48,9 @@ const CustomShipListComponent = {
         <button v-if="shipList.length" @click="deleteShip">Delete Ship</button>
 
         <div v-for="(ship, key) in shipList" :key="key">
-            <vcustomshipeditor :ship-data="ship" />
+            <uigroup :title="ship.name">
+                <vcustomshipeditor :ship-data="ship" />
+            </uigroup>
         </div>
     
     `
