@@ -2328,7 +2328,7 @@ function endMap() {
 					}
 				}
 			}
-		} else if (CHDATA.event.unlocked == MAPNUM || (CHDATA.config.unlockAll && !CHDATA.event.maps[MAPNUM].clear)) {
+		} else if ((CHDATA.event.unlocked == MAPNUM || CHDATA.config.unlockAll) && !CHDATA.event.maps[MAPNUM].clear) {
 			if (CHDATA.config.unlockAll) CHDATA.event.maps[MAPNUM].clear = 1;
 			else increaseNumberOfMapCleared();
 			cleared = true;
@@ -2725,7 +2725,8 @@ function showResults() {
 	
 	var cleared = CHDATA.event.unlocked == MAPNUM
 		&& CHDATA.event.maps[MAPNUM].hp <= 0
-		&& (!MAPDATA[WORLD].maps[MAPNUM].parts || !MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[MAPNUM].part+1]);
+		&& (!MAPDATA[WORLD].maps[MAPNUM].parts || !MAPDATA[WORLD].maps[MAPNUM].parts[CHDATA.event.maps[MAPNUM].part+1])
+		&& !CHDATA.event.maps[MAPNUM].clear;
 	var rlaurel;
 	addTimeout(function() {
 		rlaurel = getFromPool('resultlaurel','assets/maps/resultlaurel.png');
