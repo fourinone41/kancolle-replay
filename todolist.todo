@@ -8,5 +8,4 @@
 - deleting route unlock : for now we recompute map parts to "fill the gaps" => find a way to unset where the route is used (routing, debuff, unlocks)
 - deleting phase : same as above
 - Friend fleet HP range is from 0 to 1 (its 1 = 100%, 0.5 = 50% of the HP)
-- Handle rewards per diff
 - Equipment list weird display
