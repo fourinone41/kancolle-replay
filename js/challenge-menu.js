@@ -358,12 +358,15 @@ function chRestrictReward(data) {
 function chAddReward(data,forceNew) {
 	if (data.ships) {
 		for (var i=0; i<data.ships.length; i++) {
+			const mid = typeof data.ships[i] === 'object' ? data.ships[i].mid : data.ships[i];
+			const shipLevel = typeof data.ships[i] === 'object' ? data.ships[i].LVL : ((mid > 9000)? 20 : 1);
+
 			if (!forceNew) {
 				let shipExisting = null;
 				for (let sid in CHDATA.ships) {
 					let shipC = CHDATA.ships[sid];
 					if (!shipC.disabled) continue;
-					if (getBaseId(shipC.masterId) == data.ships[i] && (!shipExisting || shipC.LVL > shipExisting.LVL)) {
+					if (getBaseId(shipC.masterId) == mid && (!shipExisting || shipC.LVL > shipExisting.LVL)) {
 						shipExisting = shipC;
 					}
 				}
@@ -372,23 +375,22 @@ function chAddReward(data,forceNew) {
 					continue;
 				}
 			}
-			var mid = data.ships[i];
 			if (!SHIPDATA[mid]) continue;
 			for (var j=0; j<100; j++) {
 				var sid = 'x'+(90000+j);
 				if (CHDATA.ships[sid]) continue;
 				var sdata = SHIPDATA[mid];
-				var lvl = (mid > 9000)? 20 : 1;
+
 				var newship = {
 					HP: [sdata.HP,sdata.HP],
-					LVL: lvl,
+					LVL: shipLevel,
 					FP: sdata.FP,
 					TP: sdata.TP,
 					AA: sdata.AA,
 					AR: sdata.AR,
-					EV: sdata.EVbase + Math.floor((sdata.EV-sdata.EVbase)*lvl/99),
-					LOS: sdata.LOSbase + Math.floor((sdata.LOS-sdata.LOSbase)*lvl/99),
-					ASW: sdata.ASWbase + Math.floor((sdata.ASW-sdata.ASWbase)*lvl/99),
+					EV: sdata.EVbase + Math.floor((sdata.EV-sdata.EVbase)*shipLevel/99),
+					LOS: sdata.LOSbase + Math.floor((sdata.LOS-sdata.LOSbase)*shipLevel/99),
+					ASW: sdata.ASWbase + Math.floor((sdata.ASW-sdata.ASWbase)*shipLevel/99),
 					LUK: sdata.LUK,
 					RNG: sdata.RNG,
 					ammo: 10,
@@ -451,7 +453,8 @@ function chShowReward(data,tracker) {
 		$('#rewardshine').css('animation','spin 5s linear infinite');
 		$('#rewardship').css('margin-top','105px');
 		if (tracker < numShips) {
-			$('#rewardship').attr('src', chGetShipImagePath(data.ships[tracker]));
+			const id = typeof(data.ships[tracker]) == 'object' ? data.ships[tracker].mid : data.ships[tracker];
+			$('#rewardship').attr('src', chGetShipImagePath(id));
 		} else {
 			let imageSpecial = {
 				56: 'assets/maps/22/Shinden_Kai_056_Card.png',

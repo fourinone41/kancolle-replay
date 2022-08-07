@@ -1,5 +1,5 @@
 const ShipEditorComponent = {
-	props: ['ship','shipOnly'],
+	props: ['ship','shipOnly', 'editors'],
 	emits: ['ship-set','ship-delete','ship-drag','ship-dragend','ship-drop'],
 	data: () => ({
 		equipIdNew: 0,
@@ -64,6 +64,12 @@ const ShipEditorComponent = {
 		_refocusShip() {
 			setTimeout(() => this.$refs.shipButton && this.$refs.shipButton.focus(),1);
 		},
+
+		displayEditor(editorName) {
+			if (!this.editors) return true;
+
+			return !!this.editors[editorName];
+		}
 	},
 	template: `
 	<div class="shipEditor" v-if="ship">
@@ -74,16 +80,16 @@ const ShipEditorComponent = {
 		<div :class="{shipBanner:ship.mid}"><img :src="imgPath" @dragstart="$emit('ship-drag')" @dragover.prevent="" @dragend="$emit('ship-dragend')" @drop.prevent="$emit('ship-drop')"/></div>
 		<div v-if="ship.mid && !shipOnly">
 			<div class="statsWrap">
-				<div class="statHalf"><img src="assets/stats/lv.png" title="Level"/><input type="number" v-model.number="ship.LVL" min="1" max="999"/></div>
+				<div class="statHalf" v-if="displayEditor('LVL')"><img src="assets/stats/lv.png" title="Level"/><input type="number" v-model.number="ship.LVL" min="1" max="999"/></div>
 				<div class="statHalf"></div>
-				<div class="statHalf"><img src="assets/stats/fp.png" title="Firepower"/><input type="number" v-model.number="ship.FP" min="1" max="999"/></div>
-				<div class="statHalf"><img src="assets/stats/tp.png" title="Torpedo"/><input type="number" v-model.number="ship.TP" min="1" max="999"/></div>
-				<div class="statHalf"><img src="assets/stats/aa.png" title="Anti-Air"/><input type="number" v-model.number="ship.AA" min="1" max="999"/></div>
-				<div class="statHalf"><img src="assets/stats/ar.png" title="Armour"/><input type="number" v-model.number="ship.AR" min="1" max="999"/></div>
-				<div class="statWide" v-if="ship.damage">HP Min %:<input type="number" v-model.number="ship.damage[0]" min="0" max="1" step=".01"/></div>
-				<div class="statWide" v-if="ship.damage">HP Max %:<input type="number" v-model.number="ship.damage[1]" min="0" max="1" step=".01"/></div>
+				<div class="statHalf" v-if="displayEditor('FP')"><img src="assets/stats/fp.png" title="Firepower"/><input type="number" v-model.number="ship.FP" min="1" max="999"/></div>
+				<div class="statHalf" v-if="displayEditor('TP')"><img src="assets/stats/tp.png" title="Torpedo"/><input type="number" v-model.number="ship.TP" min="1" max="999"/></div>
+				<div class="statHalf" v-if="displayEditor('AA')"><img src="assets/stats/aa.png" title="Anti-Air"/><input type="number" v-model.number="ship.AA" min="1" max="999"/></div>
+				<div class="statHalf" v-if="displayEditor('AR')"><img src="assets/stats/ar.png" title="Armour"/><input type="number" v-model.number="ship.AR" min="1" max="999"/></div>
+				<div class="statWide" v-if="displayEditor('HP') && ship.damage">HP Min %:<input type="number" v-model.number="ship.damage[0]" min="0" max="1" step=".01"/></div>
+				<div class="statWide" v-if="displayEditor('HP') && ship.damage">HP Max %:<input type="number" v-model.number="ship.damage[1]" min="0" max="1" step=".01"/></div>
 			</div>
-			<div class="equipsWrap">
+			<div class="equipsWrap" v-if="displayEditor('EQUIPS')">
 				<vequipeditor v-for="(equipId,idx) in this.ship.equips" :equip-id="equipId" @equip-set="(mstId)=>this.ship.equips[idx]=mstId" @equip-delete="deleteEquip(idx)" @equip-drag="equipIdxDragged=idx" @equip-dragend="equipIdxDragged=null" @equip-drop="swapEquip(idx,equipIdxDragged)"></vequipeditor>
 				<vequipeditor v-show="canAddEquip" :equip-id="equipIdNew" @equip-set="addNewEquip"></vequipeditor>
 			</div>

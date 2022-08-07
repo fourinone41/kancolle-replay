@@ -160,6 +160,8 @@ Vue.createApp({
           COMMON.addCustomShip(ship);
         }
       }
+
+      window.debugEvent = this.eventData;
     },
 
     addMap() {
@@ -241,6 +243,7 @@ Vue.createApp({
 .component('vequiplisteditor', EquipmentListEditorComponent)
 .component('vcountruleeditor', CountRuleEditorComponent)
 .component('vshipidslisteditor', ShipIdsListEditorComponent)
+.component('vshipdatalisteditor', ShipDataListEditorComponent)
 .component('vhiddenrouteeditor', HiddenRoutesEditorComponent)
 .component('vmaplockeditor', MapLockEditorComponent)
 .component('vhistoricalgroups', HistoricalGroupsComponent)
