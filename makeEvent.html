@@ -382,6 +382,47 @@
                                 
                             </table>
                         </div>
+                        
+                        
+                        <button v-if="!mapData.rewardPerDiff" @click="mapData.rewardPerDiff={ 
+                            4: { ships: [], firstOnly: false, items: []  },
+                            1: { ships: [], firstOnly: false, items: []  },
+                            2: { ships: [], firstOnly: false, items: []  },
+                            3: { ships: [], firstOnly: false, items: []  },
+                        }">Enable rewards per difficulty</button>
+                        <button v-else @click="mapData.rewardPerDiff=null">Disable rewards per difficulty</button>
+
+                        <div v-if="!!mapData.rewardPerDiff">
+
+                            <div v-for="(diff, key) in [{ d:'Casual', id:4 }, { d:'Easy', id:1 }, { d:'Medium', id:2 }, { d:'Hard', id:3 }]" :key="key">
+
+                                <uigroup :title="diff.d">
+                                    <table>
+                                        <tr>
+                                            <td>Ships</td>
+                                            <td><vshipdatalisteditor :data-source="mapData.rewardPerDiff[diff.id].ships" :numberOfShips="99" :editors="{ LVL: true }"/></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td>First only ?</td>
+                                            <td><input type="checkbox" :value="mapData.rewardPerDiff[diff.id].firstOnly"/></td>
+                                        </tr>
+        
+                                        <tr>
+                                            <td>Equipments</td>
+                                            <td>
+                                                <div class="equipDataRuleEditor">
+                                                    <vequiplisteditor :data-source="mapData.rewardPerDiff[diff.id].items" handle-levels="true" handle-image="true" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        
+                                    </table>
+                                </uigroup>
+                                
+                            </div>
+                            
+                        </div>
                     </uigroup>
 
                     <uigroup title="Air raid">

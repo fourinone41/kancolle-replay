@@ -2365,12 +2365,32 @@ function endMap() {
 		$('#noclick').hide();
 		if (cleared) {
 			var reward = MAPDATA[WORLD].maps[MAPNUM].reward;
+			const rewardsToGive = {
+				ships: [],
+				items: []
+			};
+
 			if (reward) {
 				if (reward[3]) reward = reward[CHDATA.event.maps[MAPNUM].diff];
 				if (reward.firstOnly || reward.limit) reward = chRestrictReward(reward);
-				chAddReward(reward);
-				chShowReward(reward);
+
+				if (reward.ships) rewardsToGive.ships.push(...reward.ships);
+				if (reward.items) rewardsToGive.items.push(...reward.items);
+
 			}
+
+			var reward = MAPDATA[WORLD].maps[MAPNUM].rewardPerDiff;
+			if (reward && reward[CHDATA.event.maps[MAPNUM].diff]) {
+				reward = reward[CHDATA.event.maps[MAPNUM].diff];
+
+				if (reward.firstOnly || reward.limit) reward = chRestrictReward(reward);
+				
+				if (reward.ships) rewardsToGive.ships.push(...reward.ships);
+				if (reward.items) rewardsToGive.items.push(...reward.items);
+			}
+
+			chAddReward(rewardsToGive);
+			chShowReward(rewardsToGive);
 		}
 		
 		for (var mapnum in MAPDATA[WORLD].maps) {
