@@ -240,6 +240,7 @@ stage.addChild(mapShutterTop); stage.addChild(mapShutterBottom);
 var map = new PIXI.Container();
 stage.addChild(map);
 var mapnodes = {};
+const mapNodeLetters = {};
 
 var mapAirBase = PIXI.Sprite.fromImage('assets/maps/airbase.png');
 mapAirBase.pivot.set(13);
@@ -548,6 +549,37 @@ function addMapNode(letter,type) {
 	if (mapnodes[letter]) stage.removeChild(mapnodes[letter]);
 	mapnodes[letter] = nodeG;
 	stage.addChildAt(nodeG,stage.getChildIndex(mapship));
+
+	// --- Remove node letters 
+	if (mapNodeLetters[letter])
+	{
+		while (mapNodeLetters[letter].length)
+		{
+			const letterSprite = mapNodeLetters[letter].pop();
+			stage.removeChild(letterSprite);
+		}
+	}
+
+	// --- Add node letters
+	if (node.letterOffsetX !== undefined && node.letterOffsetY !== undefined) {		
+		var offset = -10;	
+		mapNodeLetters[letter] = [];
+
+		for (const char of letter) {
+			if (/[A-Z0-9]/g.test(char.toUpperCase())) {
+				const path = "assets/maps/letters/"+ char.toUpperCase() +".png";
+
+				const letterSprite = PIXI.Sprite.fromImage(path);
+				letterSprite.pivot.set(offset + node.letterOffsetX, -10 + node.letterOffsetY);
+				letterSprite.position.set(node.x+MAPOFFX,node.y+MAPOFFY);
+				offset -= 10;
+				stage.addChild(letterSprite);
+				mapNodeLetters[letter].push(letterSprite);
+				stage.addChildAt(letterSprite,stage.getChildIndex(nodeG));
+			}
+		}
+	}
+
 	console.log(stage.getChildIndex(map));
 }
 
@@ -655,6 +687,11 @@ function mapBattleNode(ship,letter) {
 				bcompass.rotation -= .05;
 				bottombar.y += 2;
 				for (var lettr in mapnodes) mapnodes[lettr].alpha -= .025;
+				for (const lettr in mapNodeLetters) {
+					for (const letterSprite of mapNodeLetters[lettr]) {
+						letterSprite.alpha -= .025;
+					}
+				}
 				return (map.alpha <= 0);
 			},[]]);
 			SM.fadeBGM();
@@ -1171,6 +1208,14 @@ function chLoadMap(mapnum) {
 
 	for (var letter in mapnodes) { stage.removeChild(mapnodes[letter]); }
 	mapnodes = {};
+
+	for (const letter in mapNodeLetters) {
+		for (const letterSprite of mapNodeLetters[letter]) {
+			stage.removeChild(letterSprite);
+		}
+		delete mapNodeLetters[letter];
+	}
+
 	for (var i=0; i<CHDATA.event.maps[mapnum].visited.length; i++) {
 		var letter = CHDATA.event.maps[mapnum].visited[i];
 		if (letter == 'Start') continue;

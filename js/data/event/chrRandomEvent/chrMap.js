@@ -15,6 +15,8 @@ class ChrMap  {
 
         this.map = new PIXI.Container();
         this.stage.addChild(this.map);
+
+        this.mapNodeLetters = [];
     }
 
     AddMapNode(letter, type, world, mapnum) {
@@ -64,6 +66,35 @@ class ChrMap  {
         }
 
         this.stage.addChild(nodeG);
+
+        // --- Remove node letters 
+        if (this.mapNodeLetters[letter])
+        {
+            while (this.mapNodeLetters[letter].length)
+            {
+                const letterSprite = this.mapNodeLetters[letter].pop();
+                stage.removeChild(letterSprite);
+            }
+        }
+
+        // --- Add node letters
+        if (node.letterOffsetX !== undefined && node.letterOffsetY !== undefined) {		
+            var offset = -10;	
+            this.mapNodeLetters[letter] = [];
+
+            for (const char of letter) {
+                if (/[A-Z0-9]/g.test(char.toUpperCase())) {
+                    const path = "assets/maps/letters/"+ char.toUpperCase() +".png";
+
+                    const letterSprite = PIXI.Sprite.fromImage(path);
+                    letterSprite.pivot.set(offset + node.letterOffsetX, -10 + node.letterOffsetY);
+                    letterSprite.position.set(node.x+MAPOFFX,node.y+MAPOFFY);
+                    offset -= 10;
+                    this.stage.addChild(letterSprite);
+                    this.mapNodeLetters[letter].push(letterSprite);
+                }
+            }
+        }
     }
     
     LoadMap(world, mapnum, part, lbPart) {
