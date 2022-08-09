@@ -166,10 +166,14 @@ const MapEditorComponent = {
             return tabName == this.currentTab;
         },
         
-        addNode(nodeName,x=0,y=0,route=null) {
+        addNode(nodeName,x=0,y=0,route=null, displayLetter = false) {
             this.mapData.nodes[nodeName] = new ChNodeData();
             this.mapData.nodes[nodeName].x = x;
             this.mapData.nodes[nodeName].y = y;
+            if (displayLetter)  {
+                this.mapData.nodes[nodeName].letterOffsetX = 0;
+                this.mapData.nodes[nodeName].letterOffsetY = 0;
+            }
 			if (route) this.mapData.nodes[nodeName].hidden = route;
             this.mapData.nodes[nodeName].rules = [];
             this.onNodeChanged(nodeName);

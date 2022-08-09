@@ -125,6 +125,16 @@ const NodeComponent = {
             </tr>
             
             <tr>
+                <td>Letter offset X</td>
+                <td><input v-model="nodeData.letterOffsetX" type="number" /></td>
+            </tr>
+
+            <tr>
+                <td>Letter offset Y</td>
+                <td><input v-model="nodeData.letterOffsetY" type="number" /></td>
+            </tr>
+            
+            <tr>
                 <td>Route unlock required</td>
                 <td><vcomboboxeditor :data-source="nodeData" :item-list="routeUnlockItemList" data-field="hidden" :can-be-null="true"/></td>
             </tr>

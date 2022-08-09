@@ -118,7 +118,6 @@ MapNodePlacer.HEIGHT = 480;
 MapNodePlacer.MAP_OFFSET_X = 17;
 MapNodePlacer.MAP_OFFSET_Y = 22;
 
-
 function MapNode() {
 	this.nodePlacer = null;
 	this.name = null;
@@ -149,6 +148,8 @@ function MapNode() {
 	this.hitbox.mouseout = function() {
 		this.hovered = false;
 	}.bind(this);
+
+	this.letters = [];
 	
 	this.setup = function(nodePlacer,name) {
 		this.name = name;
@@ -167,6 +168,29 @@ function MapNode() {
 		if (!nodeData) return; 
 		this.graphic.visible = !nodeData.hidden || this.nodePlacer.component.routeToggles[nodeData.hidden] !== false;
 		this.graphic.position.set(nodeData.x+MapNodePlacer.MAP_OFFSET_X,nodeData.y+MapNodePlacer.MAP_OFFSET_Y);
+
+
+		while (this.letters.length)
+		{
+			const letter = this.letters.pop();
+			SpritePool.recycle(letter);
+		}
+
+		if (nodeData.letterOffsetX !== undefined && nodeData.letterOffsetY !== undefined) {		
+			var offset = -10;	
+			for (const letter of this.name) {
+				if (/[A-Z0-9]/g.test(letter.toUpperCase())) {
+					const path = "assets/maps/letters/"+ letter.toUpperCase() +".png";
+
+					const letterSprite = SpritePool.get(path);
+					letterSprite.pivot.set(offset + nodeData.letterOffsetX, -10 + nodeData.letterOffsetY);
+					offset -= 10;
+					this.graphic.addChild(letterSprite);
+					this.letters.push(letterSprite);
+				}
+			}
+		}
+
 		this.gGlow.visible = this.hovered || this.nodePlacer.component.currentNode == this.name;
 		let type = this._getImg(nodeData);
 		if (type != this.type) {
@@ -252,6 +276,7 @@ window.MapNodePlacerComponent = {
 		nodeNewRoute: null,
 		cursorMode: 'normal',
 		autoNextNode: true,
+		addLetter: false,
 		routeToggles: {},
 	}),
 	
@@ -299,7 +324,7 @@ window.MapNodePlacerComponent = {
 			if (this.cursorMode == 'place') {
 				if (!this.nodeNewName) return;
 				if (this.mapData.nodes[this.nodeNewName]) return;
-				this.$emit('add-node',this.nodeNewName,x,y,this.nodeNewRoute);
+				this.$emit('add-node',this.nodeNewName,x,y,this.nodeNewRoute, this.addLetter);
 				this.setAutoNextNode();
 			}
 		},
@@ -382,6 +407,7 @@ window.MapNodePlacerComponent = {
 					<div>
 						<input v-model="nodeNewName" placeholder="New Node Name" maxlength="10" :class="{invalid:nameInvalid}"/>
 						<label><input type="checkbox" v-model="autoNextNode"/>Auto Next Node?</label>
+						<label><input type="checkbox" v-model="addLetter"/>Add letter on the map</label>
 					</div>
 					<div>
 						<label>Add Placed Nodes to Unlock Route: <input type="number" v-model="nodeNewRoute" min="1" max="9"/></label>
