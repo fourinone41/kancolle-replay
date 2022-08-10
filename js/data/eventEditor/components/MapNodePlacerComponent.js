@@ -5,12 +5,14 @@ function MapNodePlacer() {
 	this.renderer = null;
 	this.stage = new PIXI.Container();
 	this.nodes = {};
+	this.paths = {};
 	this.active = false;
 	
 	this.stage.addChild(this.layerBG = new PIXI.Container());
 	this.stage.addChild(this.layerMap = new PIXI.Container());
 	this.stage.addChild(this.layerRoutes = new PIXI.Container());
 	this.stage.addChild(this.layerNodes = new PIXI.Container());
+	this.stage.addChild(this.layerPaths = new PIXI.Container());
 	this.stage.addChild(this.layerEdit = new PIXI.Container());
 	
 	this.nodeCursor = SpritePool.get('assets/maps/nodeB.png');
@@ -20,6 +22,7 @@ function MapNodePlacer() {
 	this.layerEdit.addChild(this.nodeCursor);
 	this.layerMap.position.set(MapNodePlacer.MAP_OFFSET_X,MapNodePlacer.MAP_OFFSET_Y);
 	this.layerRoutes.position.set(MapNodePlacer.MAP_OFFSET_X,MapNodePlacer.MAP_OFFSET_Y);
+	this.layerPaths.position.set(MapNodePlacer.MAP_OFFSET_X,MapNodePlacer.MAP_OFFSET_Y);
 	this.layerBG.addChild(SpritePool.get('assets/82_res.images.ImgBackgroundDay.jpg'));
 	this.layerBG.interactive = this.layerBG.buttonMode = true;
 	this.layerBG.click = function() {
@@ -36,6 +39,11 @@ function MapNodePlacer() {
 		this.updateRoutes();
 		for (let name in this.component.mapData.nodes) {
 			this._createNode(name);
+		}
+		// Path
+		if (!this.component.mapData.paths) this.component.mapData.paths = [];
+		for (let name in this.component.mapData.paths) {
+			this._createPath(name);
 		}
 		this._animate();
 	}
@@ -68,6 +76,21 @@ function MapNodePlacer() {
 			this.nodes[name].update();
 			if (this.nodes[name].hovered) this.nodeCursor.visible = false;
 		}
+
+		// Paths 
+
+		for (let pathName in this.paths) {
+			if (!this.component.mapData.paths[pathName]) {
+				this._deletePath(pathName);
+			}
+		}
+
+		for (let name in this.component.mapData.paths) {
+			if (!this.paths[name]) {
+				this._createPath(name);
+			}
+			this.paths[name].update();
+		}
 		
 		this.renderer.render(this.stage);
 	}.bind(this);
@@ -80,6 +103,16 @@ function MapNodePlacer() {
 	this._deleteNode = function(name) {
 		ObjectPool.recycle(this.nodes[name]);
 		delete this.nodes[name];
+	}
+
+	this._createPath = function(name) {
+		if (this.paths[name]) return;
+		this.paths[name] = ObjectPool.create(MapPath,[this,name]);
+	}
+	
+	this._deletePath = function(name) {
+		ObjectPool.recycle(this.paths[name]);
+		delete this.paths[name];
 	}
 	
 	this.updateMap = function() {
@@ -176,7 +209,7 @@ function MapNode() {
 			SpritePool.recycle(letter);
 		}
 
-		if (nodeData.letterOffsetX !== undefined && nodeData.letterOffsetY !== undefined) {		
+		if (nodeData.letterOffsetX !== undefined && nodeData.letterOffsetY !== undefined && nodeData.letterOffsetX !== null && nodeData.letterOffsetY !== null) {		
 			var offset = -10;	
 			for (const letter of this.name) {
 				if (/[A-Z0-9]/g.test(letter.toUpperCase())) {
@@ -220,6 +253,117 @@ function MapNode() {
 		return 'empty';
 	}
 }
+
+function MapPath() {
+	this.nodePlacer = null;
+	this.name = null;
+	this.graphic = new PIXI.Container();
+	//this.gGlow = SpritePool.get('assets/maps/nodeGlow.png');
+	this.gPath = null;
+	//this.hitbox = new PIXI.Graphics();
+	this.hovered = false;
+
+	//this.graphic.addChild(this.hitbox);
+	//this.graphic.addChild(this.gGlow);
+	//this.gGlow.pivot.set(28);
+	//this.gGlow.visible = false;
+	//this.hitbox.beginFill(0);
+	//this.hitbox.drawCircle(15,15,15);
+	//this.hitbox.pivot.set(15);
+	//this.hitbox.alpha = 0;
+	//this.hitbox.interactive = this.hitbox.buttonMode = true;
+	//this.hitbox.click = function() {
+	//	this.nodePlacer.layerNodes.removeChild(this.graphic);
+	//	this.nodePlacer.layerNodes.addChild(this.graphic);
+	//	this.nodePlacer.component.clickedNode(this.name);
+	//}.bind(this);
+	//this.hitbox.mouseover = function() {
+	//	this.hovered = true;
+	//}.bind(this);
+	//this.hitbox.mouseout = function() {
+	//	this.hovered = false;
+	//}.bind(this);
+
+	this.paths = [];
+	
+	this.setup = function(nodePlacer,name) {
+		this.name = name;
+		this.nodePlacer = nodePlacer;
+		this.nodePlacer.layerPaths.addChild(this.graphic);
+	}
+	
+	this.onRecycle = function() {
+		this.nodePlacer.layerPaths.removeChild(this.graphic);
+		this.name = null;
+		this.nodePlacer = null;
+	}
+	
+	this.update = function() {
+
+		let pathData = this.nodePlacer.component.mapData.paths[this.name];
+		let nodeA = this.nodePlacer.component.mapData.nodes[pathData.nodeA];
+		let nodeB = this.nodePlacer.component.mapData.nodes[pathData.nodeB];
+
+		// remove
+		while (this.paths.length) {
+			const rectangleToDelete = this.paths.pop();
+			this.graphic.removeChild(rectangleToDelete);
+		}
+
+		// create
+		const rectangle = new PIXI.Graphics();
+
+		rectangle.lineStyle(3, this.hovered ? 0x000000 : 0xcbcde9, 0.75);
+
+		const a = nodeA.x - nodeB.x;
+		const b = nodeA.y - nodeB.y;
+		const h = Math.sqrt(Math.pow(Math.abs(a), 2) + Math.pow(Math.abs(b), 2));
+		var timesRequired = (h / 15);
+		const aStep = (a / timesRequired) * -1;
+		const bStep = (b / timesRequired) * -1;
+		const aSpaceStep = (a / (timesRequired) * .25) * -1;
+		const bSpaceStep = (b / (timesRequired) * .25) * -1;
+		timesRequired *= 0.75;
+
+		var aOffSet = nodeA.x + (aStep);
+		var bOffset = nodeA.y + (bStep);
+		
+		rectangle.moveTo(aOffSet, bOffset);
+
+		var security = 0;
+		while (Math.sqrt(Math.pow(Math.abs(nodeA.x - aOffSet), 2) + Math.pow(Math.abs(nodeA.y - bOffset), 2)) < h) {
+
+			rectangle.lineTo(aOffSet, bOffset);
+
+			aOffSet += aSpaceStep;
+			bOffset += bSpaceStep;
+
+			rectangle.moveTo(aOffSet, bOffset);
+
+			aOffSet += aStep;
+			bOffset += bStep;
+
+			security++;
+			if (security > 1000) break;
+		}
+
+		rectangle.interactive = true;
+		rectangle.click = function() {
+			//this.nodePlacer.component.clickedNode(this.name);
+		}.bind(this);
+		rectangle.mouseover = function() {
+			this.hovered = true;
+		}.bind(this);
+		rectangle.mouseout = function() {
+			this.hovered = false;
+		}.bind(this);
+
+		this.graphic.addChild(rectangle);
+		this.paths.push(rectangle);
+		
+	}
+}
+
 MapNode.NODE_TYPES = {
 	white: { img: 'assets/maps/nodeW.png', pivotX: 10, pivotY: 10 },
 	battle: { img: 'assets/maps/nodeR.png', pivotX: 10, pivotY: 10 },
@@ -376,6 +520,14 @@ window.MapNodePlacerComponent = {
 			this.routeToggles[key] = !this.routeToggles[key];
 			this._nodePlacer.updateRoutes();
 		},
+
+		generatePaths() {
+			return;
+			this.mapData.paths.push({
+				nodeA: "K",
+				nodeB: "Y",
+			});
+		}
 	},
 	
 	watch: {
@@ -422,6 +574,7 @@ window.MapNodePlacerComponent = {
 			</div>
 		</div>
 		<div class="note" v-show="currentNode">WASD/Arrows = Adjust node position</div>
+		<div class="tabberButton" @click="generatePaths()">Generate paths</div>
 	</div>
 	`
 }

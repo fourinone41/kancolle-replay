@@ -561,7 +561,7 @@ function addMapNode(letter,type) {
 	}
 
 	// --- Add node letters
-	if (node.letterOffsetX !== undefined && node.letterOffsetY !== undefined) {		
+	if (node.letterOffsetX !== undefined && node.letterOffsetY !== undefined  && node.letterOffsetX !== null && node.letterOffsetY !== null) {		
 		var offset = -10;	
 		mapNodeLetters[letter] = [];
 

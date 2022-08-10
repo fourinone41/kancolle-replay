@@ -127,11 +127,13 @@ const NodeComponent = {
             <tr>
                 <td>Letter offset X</td>
                 <td><input v-model="nodeData.letterOffsetX" type="number" /></td>
+                <td><button @click="delete nodeData.letterOffsetX">Clear</button></td>
             </tr>
 
             <tr>
                 <td>Letter offset Y</td>
                 <td><input v-model="nodeData.letterOffsetY" type="number" /></td>
+                <td><button @click="delete nodeData.letterOffsetY">Clear</button></td>
             </tr>
             
             <tr>
