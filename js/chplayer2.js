@@ -471,6 +471,11 @@ function chResetMapSpritePos() {
 	bcompass.position.set(35,445);
 	map.alpha = mapship.alpha = bcompass.alpha = bneedle.alpha = bottombar.alpha = mapAirBase.alpha = 1;
 	for (var letter in mapnodes) mapnodes[letter].alpha = 1;
+	for (const lettr in mapNodeLetters) {
+		for (const letterSprite of mapNodeLetters[lettr]) {
+			letterSprite.alpha = 1;
+		}
+	}
 	bneedle.pivot.set(14,101); bneedle.rotation = Math.PI/4;
 	bneedle.position.set(35,445);
 	mapship.pivot.set(mapship.defpivotx,mapship.defpivoty);
@@ -479,13 +484,17 @@ function chResetMapSpritePos() {
 
 
 
-function addMapNode(letter,type) {
+function addMapNode(letter,type,forceWhite) {
 	var node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
 	if (node.aironly && WORLD <= 27 && WORLD > 20) return; //already drawn on Summer 2014 map
 	var hidden = node.hidden && (!CHDATA.event.maps[MAPNUM].routes || CHDATA.event.maps[MAPNUM].routes.indexOf(node.hidden) == -1);
 	if (hidden) return;
 	var nodeG = null;
-	if (node.aironly) {
+	if (forceWhite) {
+		nodeG = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
+		nodeG.pivot.set(10,10);
+	}
+	else if (node.aironly) {
 		if (CHDATA.event.maps[MAPNUM].visited.indexOf(letter) == -1) {
 			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
 			nodeG.pivot.set(10,10);
@@ -619,7 +628,8 @@ function mapMoveShip(ship,x,y) {
 
 var FORMSELECTED;
 function mapBattleNode(ship,letter) {
-	if (!mapnodes[letter]) addMapNode(letter);
+	if (mapnodes[letter]) stage.removeChild(mapnodes[letter]);
+	addMapNode(letter);
 	let node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
 	if ((node.aironly || node.raid || node.night2 || node.nightToDay2 || node.ambush) && (WORLD > 27 || WORLD <= 20)) addMapNode(letter);
 
@@ -1228,6 +1238,14 @@ function chLoadMap(mapnum) {
 			if (node.replacedBy && CHDATA.event.maps[MAPNUM].routes.indexOf(MAPDATA[WORLD].maps[MAPNUM].nodes[node.replacedBy].hidden) != -1) continue;
 			if ((node.aironly||node.raid||node.night2||node.nightToDay2||node.ambush) && CHDATA.event.maps[mapnum].visited.indexOf(letter) == -1) addMapNode(letter);
 		}
+	}
+
+	for (var letter in MAPDATA[WORLD].maps[MAPNUM].nodes) {
+		var node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
+		if (node.replacedBy && CHDATA.event.maps[MAPNUM].routes.indexOf(MAPDATA[WORLD].maps[MAPNUM].nodes[node.replacedBy].hidden) != -1) continue;
+		if (node.letterOffsetX === undefined && node.letterOffsetY === undefined) continue;
+		if (node.letterOffsetX === null && node.letterOffsetY === null) continue;
+		if (CHDATA.event.maps[mapnum].visited.indexOf(letter) == -1) addMapNode(letter, null, true);
 	}
 	
 	mapAirBase.visible = false;
@@ -3572,6 +3590,11 @@ function mapEnemyRaid() {
 			bcompass.rotation -= .05;
 			bottombar.y += 2;
 			for (var lettr in mapnodes) mapnodes[lettr].alpha -= .025;
+			for (const lettr in mapNodeLetters) {
+				for (const letterSprite of mapNodeLetters[lettr]) {
+					letterSprite.alpha -= .025;
+				}
+			}
 			return (map.alpha <= 0);
 		},[]]);
 		SM.fadeBGM();

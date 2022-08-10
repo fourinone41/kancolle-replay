@@ -73,7 +73,7 @@ class ChrMap  {
             while (this.mapNodeLetters[letter].length)
             {
                 const letterSprite = this.mapNodeLetters[letter].pop();
-                stage.removeChild(letterSprite);
+                this.stage.removeChild(letterSprite);
             }
         }
 

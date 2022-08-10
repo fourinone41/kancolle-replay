@@ -347,7 +347,7 @@ function MapPath() {
 			if (security > 1000) break;
 		}
 
-		rectangle.interactive = true;
+		rectangle.interactive = rectangle.buttonMode = true;
 		rectangle.click = function() {
 			//this.nodePlacer.component.clickedNode(this.name);
 		}.bind(this);
