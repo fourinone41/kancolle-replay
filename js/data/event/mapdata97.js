@@ -117,7 +117,7 @@ MAPDATA[97].initializeAssets = function(assets) {
         
         if (typeof(VOICES) != "undefined") {
 
-            const voiceLines = ["start","attack","nbattack","damage1","damage2","damage3","sunk"];
+            const voiceLines = ["start","attack","nbattack","damage","damage1","damage2","damage3","sunk"];
 
             for (const voiceLine of voiceLines) {
                 if (shipData["voice_"+voiceLine]) {
