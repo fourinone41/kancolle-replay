@@ -2529,6 +2529,17 @@ function showRouteUnlock(route,routeId) {
 			map.addChild(spr);
 			sprs.push(spr);
 		}
+		
+		if (node.replacedBy && MAPDATA[WORLD].maps[MAPNUM].nodes[node.replacedBy].hidden != routeId) continue;
+		if (node.letterOffsetX === undefined && node.letterOffsetY === undefined) continue;
+		if (node.letterOffsetX === null && node.letterOffsetY === null) continue;
+		var spr = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
+		spr.position.set(node.x,node.y);
+		spr.alpha = 0;
+		spr.pivot.set(10);
+		map.addChild(spr);
+		sprs.push(spr);
+			
 	}
 	updates.push([function() {
 		var done = false;
