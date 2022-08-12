@@ -303,12 +303,19 @@ function MapPath() {
 		let pathData = this.nodePlacer.component.mapData.paths[this.name];
 		let nodeA = this.nodePlacer.component.mapData.nodes[pathData.nodeA];
 		let nodeB = this.nodePlacer.component.mapData.nodes[pathData.nodeB];
+		let hiddenA = pathData.hiddenA;
+		let hiddenB = pathData.hiddenB;
+
+		
 
 		// remove
 		while (this.paths.length) {
 			const rectangleToDelete = this.paths.pop();
 			this.graphic.removeChild(rectangleToDelete);
 		}
+
+		if (hiddenA && !this.nodePlacer.component.routeToggles[hiddenA]) return;
+		if (hiddenB && !this.nodePlacer.component.routeToggles[hiddenB]) return;
 
 		// create
 		const rectangle = new PIXI.Graphics();
@@ -522,11 +529,9 @@ window.MapNodePlacerComponent = {
 		},
 
 		generatePaths() {
-			return;
-			this.mapData.paths.push({
-				nodeA: "K",
-				nodeB: "Y",
-			});
+			const pathGeneration = new PathGeneration(this.mapData);
+			pathGeneration.generatePaths();
+			this.mapData.paths = pathGeneration.pathsGenerated;
 		}
 	},
 	
@@ -577,6 +582,127 @@ window.MapNodePlacerComponent = {
 		<div class="tabberButton" @click="generatePaths()">Generate paths</div>
 	</div>
 	`
+}
+
+function PathGeneration(map) {
+
+	this.pathsGenerated = [];
+	
+    this.countSecurity = 0;
+    this.checkLoop = () => {
+        this.countSecurity++;
+        if (this.countSecurity > 99999) {
+            throw 'loop detected';
+        }
+    }
+
+	this.constructPathOfPath = (path, rule, node) => {
+		let nextNode = rule.conditionCheckedNode || rule.fixedNode;
+
+		if (rule.type == 'routeSelect')  {
+
+			for (const selectNode of rule.routeSelect) {
+				this.generateOnePath(selectNode, node);
+			}
+
+			return;
+		}
+
+		if (rule.type == 'random')  {
+
+			for (const randomNode of Object.keys(rule.randomNodes)) {
+				if (randomNode) this.generateOnePath(randomNode, node);
+			}
+
+			return;
+		}
+
+		if (rule.type == 'ifthenelse' || rule.type == 'LOSCheckIfRuleChecked')  {
+
+			this.constructPathOfPath(path, rule.ifthenelse.then, node);
+
+			if (rule.ifthenelse.else) {
+				this.constructPathOfPath(path, rule.ifthenelse.else, node);
+			}
+
+			return;
+		}
+
+		if (!nextNode) {
+			console.debug(rule);
+			throw 'Error reading rule of node ' + node;
+		}
+
+		this.generateOnePath(nextNode, node);
+
+		nextNode = rule.conditionFailedNode;
+
+		if (nextNode) {
+			this.generateOnePath(nextNode, node);
+		}
+	}
+
+	this.constructPaths = (node) => {
+
+		this.checkLoop();
+
+		/**
+		 * @type {{ rules: ChRule[] }}
+		 */
+		let nodeData = map.nodes[node];
+
+		/**
+		 * 
+		 */
+		let path = {};
+
+		path.node = node;
+		path.nodeData = nodeData;
+
+		// --- Init node data
+		if (!path.nodeData.rules) { 
+			path.pathEnd = true;
+			return path; 
+		}
+
+		for (const rule of path.nodeData.rules) {
+			this.constructPathOfPath(path, rule, node);
+		}
+	}
+
+	this.generatePaths = () => {
+
+        for (const node in map.nodes) {
+            this.constructPaths(node);
+        }
+    }
+
+	this.generateOnePath = (nodeStart, nodeEnd) => {
+
+		const nodeStartData = map.nodes[nodeStart];
+		const nodeEndData = map.nodes[nodeEnd];
+
+		var exists = false;
+
+		for (const pathMade of this.pathsGenerated) {
+			if (pathMade.nodeA == nodeStart && pathMade.nodeB == nodeEnd) exists = true;
+			if (pathMade.nodeB == nodeStart && pathMade.nodeA == nodeEnd) exists = true;
+		}
+
+		if (!exists) {
+			this.pathsGenerated.push({
+				nodeA: nodeStart,
+				nodeB: nodeEnd,
+				hiddenA: nodeStartData.hidden,
+				hiddenB: nodeEndData.hidden,
+				endA: !nodeStartData.rules || !nodeStartData.rules.length,
+				endB: !nodeEndData.rules || !nodeEndData.rules.length,
+				offsetX: 0,
+				offsetY: 0,
+			});
+		}
+
+	}
 }
 
 })();
