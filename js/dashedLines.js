@@ -129,6 +129,8 @@ var DashLine = /** @class */ (function () {
             }
             var remaining = length - offsetEnd;
             var done = 0;
+            var dashDone = 0;
+            var arrowDrawn = false;
             // let count = 0
             while (remaining > 0) { // && count++ < 1000) {
                 var dashSize = this.dash[dashIndex] * this.scale - dashStart;
@@ -148,7 +150,17 @@ var DashLine = /** @class */ (function () {
                 x0 += cos * dist;
                 y0 += sin * dist;
                 
-                if (endWithArrow && done == 0) {
+
+                if (dashIndex % 2) {
+                    this.graphics.moveTo(x0, y0);
+                }
+                else if (done > offsetStart && (remaining - dist > 0 || remaining - dist < -1)) {
+                    this.graphics.lineTo(x0, y0);
+                    dashDone++;
+                } 
+
+                if (endWithArrow && dashDone == 1 && !arrowDrawn) {
+                    arrowDrawn = true;
                     // --- Draw end arrow
                     const arrow = PIXI.Sprite.fromImage("assets/maps/arrow.png");
                     this.graphics.addChild(arrow)
@@ -159,12 +171,6 @@ var DashLine = /** @class */ (function () {
                     arrow.rotation = (angle - (Math.PI/2));
                 }
 
-                if (dashIndex % 2) {
-                    this.graphics.moveTo(x0, y0);
-                }
-                else if (done > offsetStart && (remaining - dist > 0 || remaining - dist < -1)) {
-                    this.graphics.lineTo(x0, y0);
-                } 
                 remaining -= dist;
                 done += dist;
                 dashIndex++;

@@ -319,11 +319,11 @@ function MapPath() {
 		this.graphic.addChild(gLine);
 		this.paths.push(gLine);
 
-		var offsetStart = 13;
-		if (pathData.startA) offsetStart = 30;
+		var offsetStart = 10;
+		if (pathData.nodeAOffset) offsetStart = pathData.nodeAOffset;
 
-		var offsetEnd = 13;
-		if (pathData.startB) offsetEnd = 30;
+		var offsetEnd = 10;
+		if (pathData.nodeBOffset) offsetEnd = pathData.nodeBOffset;
 
 		line.moveTo(nodeA.x,nodeA.y);
 		line.lineTo(nodeB.x,nodeB.y, true, offsetStart, offsetEnd, pathData.endB || pathData.endA);
@@ -701,17 +701,28 @@ function PathGeneration(map) {
 			if (pathMade.nodeB == nodeStart && pathMade.nodeA == nodeEnd) exists = true;
 		}
 
-		const pointA = {
-			x: nodeStartData.x,
-			y: nodeStartData.y,
-		};
-
-		const pointB = {
-			x: nodeEndData.x,
-			y: nodeEndData.y,
-		};
-
 		if (!exists) {
+			const pointA = {
+				x: nodeStartData.x,
+				y: nodeStartData.y,
+			};
+
+			const pointB = {
+				x: nodeEndData.x,
+				y: nodeEndData.y,
+			};
+			
+			getOffset = function(nodeData) {
+				if (nodeData.start) return 30;
+				if (nodeData.dropoff) return 25;
+
+				if (nodeData.type == COMMON.NODE_TYPES.NORMAL_BATTLE_NODE.type) {
+					if (nodeData.raid) return 20;
+					if (nodeData.boss) return 20;
+				}
+				return 10;
+			}
+
 			this.pathsGenerated.push({
 				nodeA: nodeStart,
 				nodeB: nodeEnd,
@@ -723,6 +734,8 @@ function PathGeneration(map) {
 				endB: !nodeEndData.rules || !nodeEndData.rules.length,
 				startA: nodeStart.includes("Start"),
 				startB: nodeEnd.includes("Start"),
+				nodeAOffset: getOffset(nodeStartData),
+				nodeBOffset: getOffset(nodeEndData),
 			});
 		}
 
