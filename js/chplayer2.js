@@ -2695,6 +2695,96 @@ function shuttersPostbattle(noshutters) {
 	addTimeout(function() { ecomplete = true; }, 600);
 }
 
+function MapPath() {
+	this.name = null;
+	this.graphic = new PIXI.Container();
+	this.pathLayer = null;
+
+	this.paths = [];
+	
+	this.setup = function(pathLayer, name) {
+		this.name = name;
+		this.pathLayer = pathLayer;
+		this.pathLayer.addChild(this.graphic);
+	}
+	
+	this.onRecycle = function() {
+		this.pathLayer.removeChild(this.graphic);
+		this.name = null;
+		this.pathLayer = null;
+	}
+	
+	this.update = function() {
+
+		let pathData = MAPDATA[WORLD].maps[MAPNUM].paths[this.name];
+		let nodeA = MAPDATA[WORLD].maps[MAPNUM].nodes[pathData.nodeA];
+		let nodeB = MAPDATA[WORLD].maps[MAPNUM].nodes[pathData.nodeB];
+		let hiddenA = pathData.hiddenA;
+		let hiddenB = pathData.hiddenB;
+
+		// remove
+		while (this.paths.length) {
+			const rectangleToDelete = this.paths.pop();
+			this.graphic.removeChild(rectangleToDelete);
+		}
+
+		if (hiddenA && !this.nodePlacer.component.routeToggles[hiddenA]) return;
+		if (hiddenB && !this.nodePlacer.component.routeToggles[hiddenB]) return;
+
+		// create
+		const rectangle = new PIXI.Graphics();
+
+		rectangle.lineStyle(3, this.hovered ? 0x000000 : 0xcbcde9, 0.75);
+
+		const a = nodeA.x - nodeB.x;
+		const b = nodeA.y - nodeB.y;
+		const h = Math.sqrt(Math.pow(Math.abs(a), 2) + Math.pow(Math.abs(b), 2));
+		var timesRequired = (h / 15);
+		const aStep = (a / timesRequired) * -1;
+		const bStep = (b / timesRequired) * -1;
+		const aSpaceStep = (a / (timesRequired) * .25) * -1;
+		const bSpaceStep = (b / (timesRequired) * .25) * -1;
+		timesRequired *= 0.75;
+
+		var aOffSet = nodeA.x + (aStep);
+		var bOffset = nodeA.y + (bStep);
+		
+		rectangle.moveTo(aOffSet, bOffset);
+
+		var security = 0;
+		while (Math.sqrt(Math.pow(Math.abs(nodeA.x - aOffSet), 2) + Math.pow(Math.abs(nodeA.y - bOffset), 2)) < h) {
+
+			rectangle.lineTo(aOffSet, bOffset);
+
+			aOffSet += aSpaceStep;
+			bOffset += bSpaceStep;
+
+			rectangle.moveTo(aOffSet, bOffset);
+
+			aOffSet += aStep;
+			bOffset += bStep;
+
+			security++;
+			if (security > 1000) break;
+		}
+
+		rectangle.interactive = rectangle.buttonMode = true;
+		rectangle.click = function() {
+			//this.nodePlacer.component.clickedNode(this.name);
+		}.bind(this);
+		rectangle.mouseover = function() {
+			this.hovered = true;
+		}.bind(this);
+		rectangle.mouseout = function() {
+			this.hovered = false;
+		}.bind(this);
+
+		this.graphic.addChild(rectangle);
+		this.paths.push(rectangle);
+		
+	}
+}
+
 function ResultBar(x,y,color) {
 	this.g = new PIXI.Container();
 	this.barBack = new PIXI.Graphics();

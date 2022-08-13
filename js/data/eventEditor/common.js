@@ -148,6 +148,7 @@ var COMMON = {
         // --- Empty nodes
         START_POINT: {
             type: 0,
+			start: true
         },
 
         EMPTY_NODE: {
