@@ -17,6 +17,7 @@ class ChrMap  {
         this.stage.addChild(this.map);
 
         this.mapNodeLetters = [];
+        this.mapPaths = [];
     }
 
     AddMapNode(letter, type, world, mapnum) {
@@ -24,7 +25,11 @@ class ChrMap  {
         //if (node.aironly && world <= 27 && world > 20) return; //already drawn on Summer 2014 map
         
         var nodeG = null;
-        if (node.aironly) {
+        if (node.start) {
+            nodeG = PIXI.Sprite.fromImage('assets/maps/nodeStart.png');
+            nodeG.pivot.set(35,22);
+        }
+        else if (node.aironly) {
             nodeG = PIXI.Sprite.fromImage('assets/maps/nodeAir.png');
             nodeG.pivot.set(35,22);
         } else if (node.raid) {
@@ -127,12 +132,34 @@ class ChrMap  {
         mapnodes = {};*/
         for (let letter in MAPDATA[world].maps[mapnum].nodes) {
             
-            if (letter.includes('Start')) continue;
-
             if (MAPDATA[world].maps[mapnum].nodes[letter].hidden && part < MAPDATA[world].maps[mapnum].nodes[letter].hidden) continue;
             if (MAPDATA[world].maps[mapnum].nodes[letter].lbPart && lbPart < MAPDATA[world].maps[mapnum].nodes[letter].lbPart) continue;
             
             this.AddMapNode(letter, MAPDATA[world].maps[mapnum].nodes[letter].type, world, mapnum);
+        }
+
+        
+
+        // Paths 
+        const parts = [];
+        
+        if (part) {
+            for (let partNum = 1; partNum <= part; partNum++) {
+                parts.push(partNum);                
+            }
+        }
+
+        for (const pathIndex in this.mapPaths) {
+            const path = this.mapPaths[pathIndex];
+            path.onRecycle();
+            delete this.mapPaths[pathIndex];
+        }
+
+        for (const pathIndex in MAPDATA[world].maps[mapnum].paths) {
+            const pathData = MAPDATA[world].maps[mapnum].paths[pathIndex];
+            const path = new MapPath(this.stage, pathData);
+            path.setup();
+            path.changeRoutes(parts);
         }
 
         /*if (world > 27 || world <= 20) { //fill unvisited air nodes
@@ -148,4 +175,70 @@ class ChrMap  {
             this.renderer.render(this.stage);
         }, 100);
     }
+}
+
+
+
+function MapPath(stage, pathData) {
+	this.name = null;
+	this.graphic = new PIXI.Container();
+	this.gPath = null;
+	this.routesUnlocked = [];
+
+	this.paths = [];
+	
+	this.setup = function() {
+		stage.addChild(this.graphic);
+		this.update();
+	}
+	
+	this.onRecycle = function() {
+		stage.removeChild(this.graphic);
+	}
+
+	this.changeRoutes = function (routes) {
+		this.routesUnlocked = routes;
+		this.update();
+	}
+	
+	this.update = function() {
+		let nodeA = pathData.pointA;
+		let nodeB = pathData.pointB;
+		
+		// remove
+		while (this.paths.length) {
+			const rectangleToDelete = this.paths.pop();
+			this.graphic.removeChild(rectangleToDelete);
+		}
+		
+
+		const gLine = new PIXI.Graphics();
+		const line = new PIXI.DashLine(gLine, {
+			dashes: [20, 0, 20, 10],
+			width: 3,
+			color: this.hovered ? 0x66ffff : 0xcbcde9,
+			alpha: 0.5,
+
+		})
+		
+		this.graphic.addChild(gLine);
+		this.paths.push(gLine);
+
+		var offsetStart = 10;
+		if (pathData.nodeAOffset) offsetStart = pathData.nodeAOffset;
+
+		var offsetEnd = 10;
+		if (pathData.nodeBOffset) offsetEnd = pathData.nodeBOffset;
+
+		line.moveTo(nodeA.x,nodeA.y);
+		line.lineTo(nodeB.x,nodeB.y, true, offsetStart, offsetEnd, pathData.endB || pathData.endA);
+
+		let hiddenA = pathData.hiddenA;
+		let hiddenB = pathData.hiddenB;
+
+		const hidden = (hiddenA && this.routesUnlocked.indexOf(hiddenA) === -1) || (hiddenB && this.routesUnlocked.indexOf(hiddenB) === -1);
+		gLine.alpha = hidden ? 0 : 1;	
+		gLine.position.x += MAPOFFX;		
+		gLine.position.y += MAPOFFY;		
+	}
 }

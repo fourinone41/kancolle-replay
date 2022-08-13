@@ -242,6 +242,11 @@ stage.addChild(map);
 var mapnodes = {};
 const mapNodeLetters = {};
 
+/**
+ * @type {MapPath[]}
+ */
+const mapPaths = {};
+
 var mapAirBase = PIXI.Sprite.fromImage('assets/maps/airbase.png');
 mapAirBase.pivot.set(13);
 stage.addChild(mapAirBase);
@@ -476,9 +481,19 @@ function chResetMapSpritePos() {
 			letterSprite.alpha = 1;
 		}
 	}
+	for (const pathIndex in mapPaths) {
+		const path = mapPaths[pathIndex];
+		path.graphic.alpha = 1;
+		path.update();
+	}
 	bneedle.pivot.set(14,101); bneedle.rotation = Math.PI/4;
 	bneedle.position.set(35,445);
 	mapship.pivot.set(mapship.defpivotx,mapship.defpivoty);
+	// Paths 
+	for (const pathIndex in mapPaths) {
+		const path = mapPaths[pathIndex];
+		path.update();
+	}
 }
 
 
@@ -494,6 +509,10 @@ function addMapNode(letter,type,forceWhite) {
 		nodeG = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
 		nodeG.pivot.set(10,10);
 	}
+	else if (node.start) {
+		nodeG = PIXI.Sprite.fromImage('assets/maps/nodeStart.png');
+		nodeG.pivot.set(30,30);
+	} 
 	else if (node.aironly) {
 		if (CHDATA.event.maps[MAPNUM].visited.indexOf(letter) == -1) {
 			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
@@ -701,6 +720,11 @@ function mapBattleNode(ship,letter) {
 					for (const letterSprite of mapNodeLetters[lettr]) {
 						letterSprite.alpha -= .025;
 					}
+				}
+				for (const pathIndex in mapPaths) {
+					const path = mapPaths[pathIndex];
+					path.graphic.alpha -= .025;
+					path.update();
 				}
 				return (map.alpha <= 0);
 			},[]]);
@@ -1228,10 +1252,16 @@ function chLoadMap(mapnum) {
 
 	for (var i=0; i<CHDATA.event.maps[mapnum].visited.length; i++) {
 		var letter = CHDATA.event.maps[mapnum].visited[i];
-		if (letter == 'Start') continue;
 		if (MAPDATA[WORLD].maps[mapnum].nodes[letter].type==3) addMapNode(letter,1);
 		else addMapNode(letter);
 	}
+
+	// starts 
+	for (const letter in MAPDATA[WORLD].maps[MAPNUM].nodes) {
+		const nodeData = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
+		if (nodeData.start) addMapNode(letter, null);
+	}
+
 	if (WORLD > 27 || WORLD <= 20) { //fill unvisited air nodes
 		for (var letter in MAPDATA[WORLD].maps[MAPNUM].nodes) {
 			var node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
@@ -1254,6 +1284,23 @@ function chLoadMap(mapnum) {
 		mapAirBase.position.set(MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX, MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY);
 	}
 	
+	// Paths 
+	for (const pathIndex in mapPaths) {
+		const path = mapPaths[pathIndex];
+		path.onRecycle();
+		delete mapPaths[pathIndex];
+	}
+
+	if (MAPDATA[WORLD].maps[MAPNUM].paths) {
+
+		for (const pathIndex in MAPDATA[WORLD].maps[MAPNUM].paths) {
+			const pathData = MAPDATA[WORLD].maps[MAPNUM].paths[pathIndex];
+			mapPaths[pathIndex] = new MapPath(pathData);
+			mapPaths[pathIndex].setup();
+			if (CHDATA.event.maps[MAPNUM].routes) mapPaths[pathIndex].changeRoutes(CHDATA.event.maps[MAPNUM].routes);
+		}
+	}
+
 	chResetMapSpritePos();
 }
 
@@ -2530,7 +2577,19 @@ function showRouteUnlock(route,routeId) {
 			sprs.push(spr);
 		}
 		
+		if (node.hidden != routeId) continue;
 		if (node.replacedBy && MAPDATA[WORLD].maps[MAPNUM].nodes[node.replacedBy].hidden != routeId) continue;
+		if (node.start) {
+
+			var spr = PIXI.Sprite.fromImage('assets/maps/nodeStart.png');
+			spr.position.set(node.x,node.y);
+			spr.alpha = 0;
+			spr.pivot.set(30);
+			map.addChild(spr);
+			sprs.push(spr);
+				
+
+		}
 		if (node.letterOffsetX === undefined && node.letterOffsetY === undefined) continue;
 		if (node.letterOffsetX === null && node.letterOffsetY === null) continue;
 		var spr = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
@@ -2541,6 +2600,20 @@ function showRouteUnlock(route,routeId) {
 		sprs.push(spr);
 			
 	}
+	
+	for (const pathIndex in MAPDATA[WORLD].maps[MAPNUM].paths) {
+		const pathData = MAPDATA[WORLD].maps[MAPNUM].paths[pathIndex];
+
+		if (pathData.hiddenA == routeId || pathData.hiddenB == routeId) {
+			// sets the route alpha to 0
+			const path = mapPaths[pathIndex];
+			path.routesUnlocked.push(routeId);
+			path.changeRoutes(path.routesUnlocked);
+			path.graphic.alpha = 0;
+			sprs.push(path.graphic);
+		}
+	}
+
 	updates.push([function() {
 		var done = false;
 		for (var spr of sprs) {
@@ -2695,93 +2768,68 @@ function shuttersPostbattle(noshutters) {
 	addTimeout(function() { ecomplete = true; }, 600);
 }
 
-function MapPath() {
+
+function MapPath(pathData) {
 	this.name = null;
 	this.graphic = new PIXI.Container();
-	this.pathLayer = null;
+	this.gPath = null;
+	this.routesUnlocked = [];
 
 	this.paths = [];
 	
-	this.setup = function(pathLayer, name) {
-		this.name = name;
-		this.pathLayer = pathLayer;
-		this.pathLayer.addChild(this.graphic);
+	this.setup = function() {
+		stage.addChildAt(this.graphic,stage.getChildIndex(mapship));
+		this.update();
 	}
 	
 	this.onRecycle = function() {
-		this.pathLayer.removeChild(this.graphic);
-		this.name = null;
-		this.pathLayer = null;
+		stage.removeChild(this.graphic);
+	}
+
+	this.changeRoutes = function (routes) {
+		this.routesUnlocked = routes;
+		this.update();
 	}
 	
 	this.update = function() {
-
-		let pathData = MAPDATA[WORLD].maps[MAPNUM].paths[this.name];
-		let nodeA = MAPDATA[WORLD].maps[MAPNUM].nodes[pathData.nodeA];
-		let nodeB = MAPDATA[WORLD].maps[MAPNUM].nodes[pathData.nodeB];
-		let hiddenA = pathData.hiddenA;
-		let hiddenB = pathData.hiddenB;
-
+		let nodeA = pathData.pointA;
+		let nodeB = pathData.pointB;
+		
 		// remove
 		while (this.paths.length) {
 			const rectangleToDelete = this.paths.pop();
 			this.graphic.removeChild(rectangleToDelete);
 		}
-
-		if (hiddenA && !this.nodePlacer.component.routeToggles[hiddenA]) return;
-		if (hiddenB && !this.nodePlacer.component.routeToggles[hiddenB]) return;
-
-		// create
-		const rectangle = new PIXI.Graphics();
-
-		rectangle.lineStyle(3, this.hovered ? 0x000000 : 0xcbcde9, 0.75);
-
-		const a = nodeA.x - nodeB.x;
-		const b = nodeA.y - nodeB.y;
-		const h = Math.sqrt(Math.pow(Math.abs(a), 2) + Math.pow(Math.abs(b), 2));
-		var timesRequired = (h / 15);
-		const aStep = (a / timesRequired) * -1;
-		const bStep = (b / timesRequired) * -1;
-		const aSpaceStep = (a / (timesRequired) * .25) * -1;
-		const bSpaceStep = (b / (timesRequired) * .25) * -1;
-		timesRequired *= 0.75;
-
-		var aOffSet = nodeA.x + (aStep);
-		var bOffset = nodeA.y + (bStep);
 		
-		rectangle.moveTo(aOffSet, bOffset);
 
-		var security = 0;
-		while (Math.sqrt(Math.pow(Math.abs(nodeA.x - aOffSet), 2) + Math.pow(Math.abs(nodeA.y - bOffset), 2)) < h) {
+		const gLine = new PIXI.Graphics();
+		const line = new PIXI.DashLine(gLine, {
+			dashes: [20, 0, 20, 10],
+			width: 3,
+			color: this.hovered ? 0x66ffff : 0xcbcde9,
+			alpha: 0.5,
 
-			rectangle.lineTo(aOffSet, bOffset);
-
-			aOffSet += aSpaceStep;
-			bOffset += bSpaceStep;
-
-			rectangle.moveTo(aOffSet, bOffset);
-
-			aOffSet += aStep;
-			bOffset += bStep;
-
-			security++;
-			if (security > 1000) break;
-		}
-
-		rectangle.interactive = rectangle.buttonMode = true;
-		rectangle.click = function() {
-			//this.nodePlacer.component.clickedNode(this.name);
-		}.bind(this);
-		rectangle.mouseover = function() {
-			this.hovered = true;
-		}.bind(this);
-		rectangle.mouseout = function() {
-			this.hovered = false;
-		}.bind(this);
-
-		this.graphic.addChild(rectangle);
-		this.paths.push(rectangle);
+		})
 		
+		this.graphic.addChild(gLine);
+		this.paths.push(gLine);
+
+		var offsetStart = 10;
+		if (pathData.nodeAOffset) offsetStart = pathData.nodeAOffset;
+
+		var offsetEnd = 10;
+		if (pathData.nodeBOffset) offsetEnd = pathData.nodeBOffset;
+
+		line.moveTo(nodeA.x,nodeA.y);
+		line.lineTo(nodeB.x,nodeB.y, true, offsetStart, offsetEnd, pathData.endB || pathData.endA);
+
+		let hiddenA = pathData.hiddenA;
+		let hiddenB = pathData.hiddenB;
+
+		const hidden = (hiddenA && this.routesUnlocked.indexOf(hiddenA) === -1) || (hiddenB && this.routesUnlocked.indexOf(hiddenB) === -1);
+		gLine.alpha = hidden ? 0 : 1;	
+		gLine.position.x += MAPOFFX;		
+		gLine.position.y += MAPOFFY;		
 	}
 }
 
@@ -3695,6 +3743,11 @@ function mapEnemyRaid() {
 				for (const letterSprite of mapNodeLetters[lettr]) {
 					letterSprite.alpha -= .025;
 				}
+			}
+			for (const pathIndex in mapPaths) {
+				const path = mapPaths[pathIndex];
+				path.graphic.alpha -= .025;
+				path.update();
 			}
 			return (map.alpha <= 0);
 		},[]]);
