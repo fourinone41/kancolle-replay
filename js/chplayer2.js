@@ -1297,7 +1297,7 @@ function chLoadMap(mapnum) {
 			const pathData = MAPDATA[WORLD].maps[MAPNUM].paths[pathIndex];
 			mapPaths[pathIndex] = new MapPath(pathData);
 			mapPaths[pathIndex].setup();
-			if (CHDATA.event.maps[MAPNUM].routes) mapPaths[pathIndex].changeRoutes(CHDATA.event.maps[MAPNUM].routes);
+			if (CHDATA.event.maps[MAPNUM].routes) mapPaths[pathIndex].changeRoutes([...CHDATA.event.maps[MAPNUM].routes]);
 		}
 	}
 
@@ -2607,8 +2607,10 @@ function showRouteUnlock(route,routeId) {
 		if (pathData.hiddenA == routeId || pathData.hiddenB == routeId) {
 			// sets the route alpha to 0
 			const path = mapPaths[pathIndex];
-			path.routesUnlocked.push(routeId);
-			path.changeRoutes(path.routesUnlocked);
+			if (!path.routesUnlocked.includes(routeId)) {
+				path.routesUnlocked.push(routeId);
+				path.changeRoutes(path.routesUnlocked);
+			}
 			path.graphic.alpha = 0;
 			sprs.push(path.graphic);
 		}

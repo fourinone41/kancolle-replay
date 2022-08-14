@@ -7946,8 +7946,8 @@ var VOICES = {
 		attackN: "assets/voice/544210520.mp3",
 		attackB: "assets/voice/544210521.mp3",
 		damage: "assets/voice/544210530.mp3",
-		damageN: "assets/voice/544210531.mp3",
-		damageB: "assets/voice/544210530.mp3",
+		damageN: "assets/voice/544210530.mp3",
+		damageB: "assets/voice/544210531.mp3",
 		sunk: "assets/voice/544210540.mp3",
 	},
 	2106: {
@@ -7956,8 +7956,8 @@ var VOICES = {
 		attackN: "assets/voice/544210520.mp3",
 		attackB: "assets/voice/544210521.mp3",
 		damage: "assets/voice/544210530.mp3",
-		damageN: "assets/voice/544210531.mp3",
-		damageB: "assets/voice/544210530.mp3",
+		damageN: "assets/voice/544210530.mp3",
+		damageB: "assets/voice/544210531.mp3",
 		sunk: "assets/voice/544210540.mp3",
 	},
 	2107: {
@@ -7966,8 +7966,8 @@ var VOICES = {
 		attackN: "assets/voice/544210520.mp3",
 		attackB: "assets/voice/544210521.mp3",
 		damage: "assets/voice/544210530.mp3",
-		damageN: "assets/voice/544210531.mp3",
-		damageB: "assets/voice/544210530.mp3",
+		damageN: "assets/voice/544210530.mp3",
+		damageB: "assets/voice/544210531.mp3",
 		sunk: "assets/voice/544210540.mp3",
 	},
 	2108: {
@@ -7976,8 +7976,8 @@ var VOICES = {
 		attackN: "assets/voice/544210520.mp3",
 		attackB: "assets/voice/544210521.mp3",
 		damage: "assets/voice/544210530.mp3",
-		damageN: "assets/voice/544210531.mp3",
-		damageB: "assets/voice/544210530.mp3",
+		damageN: "assets/voice/544210530.mp3",
+		damageB: "assets/voice/544210531.mp3",
 		sunk: "assets/voice/544210540.mp3",
 	}
 }
