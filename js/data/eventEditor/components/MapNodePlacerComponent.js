@@ -310,9 +310,9 @@ function MapPath() {
 		const gLine = new PIXI.Graphics();
 		const line = new PIXI.DashLine(gLine, {
 			dashes: [20, 0, 20, 10],
-			width: 3,
+			width: 4,
 			color: this.hovered ? 0x66ffff : 0xcbcde9,
-			alpha: 0.5,
+			alpha: 1,
 
 		})
 		
@@ -590,6 +590,9 @@ window.MapNodePlacerComponent = {
 			End X : <input v-model="this.mapData.paths[this.currentPath].pointB.x" type="number" /><br>
 			End Y : <input v-model="this.mapData.paths[this.currentPath].pointB.y" type="number" /><br>
 
+			Part (node A) : <input v-model="this.mapData.paths[this.currentPath].hiddenA" type="number" /><br>
+			Part (node B) : <input v-model="this.mapData.paths[this.currentPath].hiddenB" type="number" /><br>
+
 		</div>
 	</div>
 	`
@@ -730,8 +733,8 @@ function PathGeneration(map) {
 				pointB: pointB,
 				hiddenA: nodeStartData.hidden,
 				hiddenB: nodeEndData.hidden,
-				endA: !nodeStartData.rules || !nodeStartData.rules.length,
-				endB: !nodeEndData.rules || !nodeEndData.rules.length,
+				endA: nodeStartData.end || (nodeStartData.endRules && nodeStartData.endRules.length),
+				endB: false, //nodeEndData.end || (nodeEndData.endRules && nodeEndData.endRules.length),
 				startA: nodeStart.includes("Start"),
 				startB: nodeEnd.includes("Start"),
 				nodeAOffset: getOffset(nodeStartData),

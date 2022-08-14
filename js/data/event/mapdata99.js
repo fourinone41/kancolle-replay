@@ -500,6 +500,12 @@ function chrApplyDebuffedForm(abyssal) {
         VOICES[mid].attack = VOICES[mid].attackB;
         VOICES[mid].damage = VOICES[mid].damageB;
     }
+
+    // --- CVH II
+    for (let mid = 2105; mid <= 2108; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackB;
+        VOICES[mid].damage = VOICES[mid].damageB;
+    }
 }
 
 function chrApplyBaseForm(abyssal) {
@@ -566,6 +572,12 @@ function chrApplyBaseForm(abyssal) {
     for (let mid = 2044; mid <= 2046; mid++) {
         VOICES[mid].attack = VOICES[mid].attackN;
         VOICES[mid].damage = VOICES[mid].damageN;
+    }
+    
+    // --- CVH II
+    for (let mid = 2105; mid <= 2108; mid++) {
+        VOICES[mid].attack = VOICES[mid].attackN;
+        VOICES[mid].damage = VOICES[mid].attackN;
     }
 }
 

@@ -254,6 +254,7 @@ Vue.createApp({
 // --- Gimmicks
 .component('vgimmicklist', GimmickListComponent)
 .component('vgimmickeditor', GimmickEditorComponent)
+.component('vdebuffeditor', DebuffEditorComponent)
 
 // --- Enemy comps
 .component('vnodeenemycompeditor', NodeEnemyCompEditorComponent)

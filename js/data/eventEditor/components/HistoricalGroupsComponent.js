@@ -16,12 +16,16 @@ const HistoricalGroupsComponent = {
         addGroup() {
 
             if (!this.currentGroupName) return;
-            let name = this.currentGroupName.replace(/[^a-zA-Z\-]/g, "_")
+            let name = this.currentGroupName.replace(/[^a-zA-Z\-0-9]/g, "_")
 
             if (!this.groups[name])
                 this.groups[name] = [];
 
             this.currentGroupName = "";
+        },
+
+        deleteGroup(name) {
+            delete this.groups[name];
         }
     },
     

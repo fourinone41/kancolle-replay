@@ -159,15 +159,15 @@ var DashLine = /** @class */ (function () {
                     dashDone++;
                 } 
 
-                if (endWithArrow && dashDone == 1 && !arrowDrawn) {
+                if (endWithArrow && dashDone == 0 && !arrowDrawn) {
                     arrowDrawn = true;
                     // --- Draw end arrow
                     const arrow = PIXI.Sprite.fromImage("assets/maps/arrow.png");
                     this.graphics.addChild(arrow)
-                    arrow.position.x = x0;
-                    arrow.position.y = y0;
+                    arrow.position.x = x0 + ((cos * dist) );
+                    arrow.position.y = y0 + ((sin * dist) );
                     arrow.pivot.set(9);
-                    arrow.alpha = 0.75;
+                    arrow.alpha = 1;
                     arrow.rotation = (angle - (Math.PI/2));
                 }
 

@@ -2805,9 +2805,9 @@ function MapPath(pathData) {
 		const gLine = new PIXI.Graphics();
 		const line = new PIXI.DashLine(gLine, {
 			dashes: [20, 0, 20, 10],
-			width: 3,
+			width: 4,
 			color: this.hovered ? 0x66ffff : 0xcbcde9,
-			alpha: 0.5,
+			alpha: 1,
 
 		})
 		

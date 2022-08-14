@@ -351,6 +351,10 @@
 
                     </uigroup>
 
+                    <uigroup title="Debuff">
+                        <vdebuffeditor :map-data="mapData" :map-number="mapNumber" />
+                    </uigroup>
+
                     <uigroup title="Hidden routes">
                         <vhiddenrouteeditor :map-data="mapData" :map-number="mapNumber" gimmick-type="mapPart" />
                     </uigroup>
@@ -625,6 +629,7 @@
 <script src="js/data/eventEditor/components/HiddenRoutesEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Gimmick/GimmickEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/Gimmick/GimmickListComponent.js"></script>
+<script src="js/data/eventEditor/components/DebuffEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EnemyComps/EnemyCompListEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EnemyComps/EnemyCompListPerDiffEditorComponent.js"></script>
 <script src="js/data/eventEditor/components/EnemyComps/NodeEnemyCompEditorComponent.js"></script>
