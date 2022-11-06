@@ -45,7 +45,8 @@
 		<br><br>
 		<div id="btnRepairAll" class="mainbutton" onclick="chRepairAll()" onmouseover="chPreviewRepair();chShowHoverBox('hbRepair',this)" onmouseout="chHideHoverBox('hbRepair')"><div><img src="assets/stats/bucket.png"/> <span>Repair All</span></div></div>
 		<div id="btnResupplyAll" class="mainbutton" onclick="chResupplyAll()"  onmouseover="chPreviewResupply();chShowHoverBox('hbResupply',this)" onmouseout="chHideHoverBox('hbResupply')"><div><img src="assets/stats/ammo.png"/> <span>Resupply All</span></div></div>
-		<div id="resourcespace" class="resourcetable" style="float:left;margin-left:300px" title="Resources Used">
+		<div id="btnSparkleAll" class="mainbutton" onclick="chSparkleAll()" title="(All ships in current fleet)"><div><img src="assets/stats/morale.png"/> <span>Sparkle All</span></div></div>
+		<div id="resourcespace" class="resourcetable" style="float:left;margin-left:160px" title="Resources Used">
 			<table>
 				<tr><td><img src="assets/stats/fuel.png" /><span id="resfuel">0</span></td><td><img src="assets/stats/steel.png" /><span id="ressteel">0</span></td><td><img src="assets/stats/bucket.png" /><span id="resbucket">0</span></td></tr>
 				<tr><td><img src="assets/stats/ammo.png" /><span id="resammo">0</span></td><td><img src="assets/stats/baux.png" /><span id="resbaux">0</span></td><td><img src="assets/stats/ibuild.png" /><span id="resibuild">0</span></td></tr>
@@ -210,7 +211,13 @@
 		<div id="divWorldMap"></div>
 		<div>
 			<span style="font-size:12px;margin-left:750px">FPS: <span id="FPS"></span></span><br>
-			
+			<div>
+				<input type="button" value="PAUSE" style="width:100px;vertical-align:middle" onclick="PAUSE = !PAUSE; $(this).css('background-color',PAUSE ? '#808080' : '')"/>
+				<input type="button" value="x0.8" style="width:100px;vertical-align:middle" onclick="RATE = 0.8"/>
+				<input type="button" value="x1" style="width:100px;vertical-align:middle" onclick="RATE = 1"/>
+				<input type="button" value="x2" style="width:100px;vertical-align:middle" onclick="RATE = 2"/>
+				<input type="button" value="x5" style="width:100px;vertical-align:middle" onclick="RATE = 5"/>
+			</div>
 		</div>
 		<br style="clear:both"><br>
 		

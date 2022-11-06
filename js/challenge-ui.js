@@ -1091,7 +1091,7 @@ function chProcessKC3File2() {
 			}
 		}
 		
-		if (CHDATA.gears[eqid].ace >= 1 && eqd.type != LANDSCOUT) CHDATA.gears[eqid].ace = 7;
+		if (EQTDATA[eqd.type].isPlane && eqd.type != LANDSCOUT) CHDATA.gears[eqid].ace = 7;
 	}
 	
 	if (MAPDATA[CHDATA.event.world].allowLBAS) {
@@ -2577,6 +2577,7 @@ function chGetSupplyCost(ship) {
 
 function chClickMorale(fleetnum,shipnum) {
 	var ship = CHDATA.ships[CHDATA.fleets[fleetnum][shipnum-1]];
+	if (ship.morale >= 85) return;
 	ship.morale = Math.min(85,ship.morale+12);
 	chFleetSetMorale(fleetnum,shipnum,ship.morale);
 	var fuel = Math.floor(SHIPDATA[ship.masterId].fuel * .4);
@@ -2584,6 +2585,23 @@ function chClickMorale(fleetnum,shipnum) {
 	CHDATA.event.resources.fuel += fuel;
 	CHDATA.event.resources.ammo += ammo;
 	chUIUpdateResources();
+}
+
+function chSparkleAll() {
+	let fleetnum;
+	if (!+$('#tabmain').attr('value')) fleetnum = 1;
+	else if (!+$('#tabsupportN').attr('value')) fleetnum = 3;
+	else if (!+$('#tabsupportB').attr('value')) fleetnum = 4;
+	else return;
+	let n = fleetnum == 1 && CHDATA.fleets.sf ? 7 : 6;
+	for (let i=0; i<n; i++) {
+		if (CHDATA.fleets[fleetnum][i]) chClickMorale(fleetnum,i+1);
+	}
+	if (fleetnum == 1 && CHDATA.fleets.combined) {
+		for (let i=0; i<6; i++) {
+			if (CHDATA.fleets[2][i]) chClickMorale(2,i+1);
+		}
+	}
 }
 
 function chUnequipAllShip(fleet, shipslot){
@@ -2632,7 +2650,7 @@ var CHHPREGENTIMER = {
 			if (CHDATA.event.maps[mapnum].hp >= maxhp) {
 				self.counter = 0;
 			} else if (++self.counter >= regenTick) {
-				var nowhp = CHDATA.event.maps[mapnum].hp += 1 * RATE;
+				var nowhp = CHDATA.event.maps[mapnum].hp += 1 * (CHDATA.sortie ? RATE : 1);
 				self.counter = 0;
 				if (mapnum == MAPNUM) {
 					$('#srtHPText').text(nowhp + '/' + maxhp);
