@@ -2650,7 +2650,7 @@ var CHHPREGENTIMER = {
 			if (CHDATA.event.maps[mapnum].hp >= maxhp) {
 				self.counter = 0;
 			} else if (++self.counter >= regenTick) {
-				var nowhp = CHDATA.event.maps[mapnum].hp += 1 * (CHDATA.sortie ? RATE : 1);
+				var nowhp = CHDATA.event.maps[mapnum].hp += Math.ceil(1 * (CHDATA.sortie ? RATE : 1));
 				self.counter = 0;
 				if (mapnum == MAPNUM) {
 					$('#srtHPText').text(nowhp + '/' + maxhp);
