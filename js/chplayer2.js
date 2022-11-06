@@ -1093,6 +1093,7 @@ function chLoadMap(mapnum) {
 	mapnodes = {};
 	for (var i=0; i<CHDATA.event.maps[mapnum].visited.length; i++) {
 		var letter = CHDATA.event.maps[mapnum].visited[i];
+		if (!MAPDATA[WORLD].maps[mapnum].nodes[letter]) continue;
 		if (letter == 'Start') continue;
 		if (MAPDATA[WORLD].maps[mapnum].nodes[letter].type==3) addMapNode(letter,1);
 		else addMapNode(letter);
@@ -1210,7 +1211,7 @@ function mapPhase2(nextletter) {
 		} else if (CHDATA.sortie.raidNum < enemyRaid.maxNum[diff]) {
 			CHDATA.sortie.raidCounter += enemyRaid.chance[diff];
 			if (Math.random() < CHDATA.sortie.raidCounter) {
-				eventqueue.push([mapEnemyRaid,[]]);
+				eventqueue.push([mapEnemyRaid,[enemyRaid.superHeavy && enemyRaid.superHeavy[diff]]]);
 				eventqueue.push([prepEnemyRaid,[]]);
 				CHDATA.sortie.raidCounter -= 1;
 				CHDATA.sortie.raidNum++;
@@ -1746,6 +1747,16 @@ function prepBattle(letter) {
 				SIMCONSTS.vanguardEvTorpDD[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvDD2;
 				SIMCONSTS.vanguardEvTorpOther[i] = MAPDATA[WORLD].vanguardConsts.vanguardEvOther2;
 			}
+		}
+		SIMCONSTS.vanguardUseType = 1;
+	} else {
+		SIMCONSTS.vanguardUseType = 2;
+		if (WORLD >= 20) {
+			SIMCONSTS.vanguardEvShellDDMod = SIMCONSTS.vanguardEvShellDDModEvent.slice();
+			SIMCONSTS.vanguardEvTorpDDMod = SIMCONSTS.vanguardEvTorpDDModEvent.slice();
+		} else {
+			SIMCONSTS.vanguardEvShellDDMod = SIMCONSTS.vanguardEvShellDDModNormal.slice();
+			SIMCONSTS.vanguardEvTorpDDMod = SIMCONSTS.vanguardEvTorpDDModNormal.slice();
 		}
 	}
 	
@@ -3026,8 +3037,11 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 }
 
 //-----------------
-function mapEnemyRaid() {
+function mapEnemyRaid(isSuperHeavy) {
 	SM.play('siren');
+	if (isSuperHeavy) {
+		addTimeout(function() { SM.play('siren'); }, 1500);
+	}
 	addTimeout(function() {
 		updates.push([function() {
 			mapShutterTop.alpha += .025;
@@ -3052,7 +3066,7 @@ function mapEnemyRaid() {
 	addTimeout(function() { ecomplete = true; }, 3500);
 }
 
-function doSimEnemyRaid(numLB,compd,forceHA) {
+function doSimEnemyRaid(numLB,compd,forceHA,isSuperHeavy) {
 	var CHAPI = {battles:[],fleetnum:1,support1:3,support2:4,source:2,world:WORLD,mapnum:MAPNUM};
 	var BAPI = {data:{},yasen:{},mvp:[],rating:'',node:'AB'};
 	
@@ -3077,6 +3091,7 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 	fleetE.loadShips(shipsE);
 	fleetE.formation = ALLFORMATIONS[compd.f];
 	if (forceHA) fleetE.highAltitude = true;
+	if (isSuperHeavy) fleetE.isSuperHeavy = true;
 	
 	simLBRaid(fleetLB,fleetE,BAPI);
 	
@@ -3087,10 +3102,13 @@ function doSimEnemyRaid(numLB,compd,forceHA) {
 		if (LBAS[i].AS != 0) airState = LBAS[i].AS;
 		if (hpLost >= 50 && CHDATA.fleets['lbas'+(i+1)]) {
 			if (!LBAS[i].planecount.length) continue;
-			let slot = 0; while (slot < LBAS[i].planecount.length && LBAS[i].planecount[slot] <= 0) slot++;
-			let planesLost = 1+Math.floor(Math.random()*.2*LBAS[i].PLANESLOTS[slot]);
-			LBAS[i].planecount[slot] -= planesLost;
-			if (LBAS[i].planecount[slot] <= 0) LBAS[i].planecount[slot] = 0;
+			let planesLost = 1 + Math.floor(Math.random()*4);
+			for (let slot=0; slot<=LBAS[i].planecount.length; slot++) {
+				let lost = Math.min(planesLost, Math.max(LBAS[i].planecount[slot]-1, 0));
+				LBAS[i].planecount[slot] -= lost;
+				planesLost -= lost;
+				if (planesLost <= 0) break;
+			}
 			chPushResupply(5,i+1,0,0,LBAS[i].planecount);
 		}
 		LBAS[i].HP = fleetLB.ships[i].HP;
@@ -3127,7 +3145,20 @@ function prepEnemyRaid() {
 	let lastdance = (WORLD == 20)? CHDATA.event.maps[31].hp == 1 : chGetLastDance();
 	var enemies = getEnemyComp(enemyRaid.compName,enemyRaid,CHDATA.event.maps[MAPNUM].diff,lastdance);
 	let highAltitude = enemyRaid.highAltitude ? enemyRaid.highAltitude[CHDATA.event.maps[MAPNUM].diff] : false;
-	var CHAPI = doSimEnemyRaid(numLB,enemies,highAltitude);
+	let numSuperHeavy = enemyRaid.superHeavy && enemyRaid.superHeavy[CHDATA.event.maps[MAPNUM].diff];
+	var CHAPI;
+	if (numSuperHeavy) {
+		let results = [];
+		for (let i=0; i<numSuperHeavy; i++) {
+			results.push(doSimEnemyRaid(numLB,enemies,highAltitude,true));
+		}
+		CHAPI = results[0];
+		for (let i=1; i<results.length; i++) {
+			CHAPI.battles[0].data.api_air_base_attack.push(results[i].battles[0].data.api_air_base_attack[0]);
+		}
+	} else {
+		CHAPI = doSimEnemyRaid(numLB,enemies,highAltitude);
+	}
 	
 	stage = STAGEBATTLE;
 	stage.addChild(bg);

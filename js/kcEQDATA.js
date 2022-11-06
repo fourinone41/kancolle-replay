@@ -301,7 +301,7 @@ EQTDATA[SEAPLANEBOMBER] = {
 	btype: B_RECON,
 	improve: {LOS:1.15},
 	canequip: ['CAV','BBV','SSV','AV','AO','LandBase'],
-	canequipS: [305, 306, 307, 314, 358, 361, 392, 446, 447, 488, 496, 547, 574, 579, 591, 626, 630, 639, 640, 652, 662, 663, 668, 879, 911],
+	canequipS: [305, 306, 307, 314, 358, 361, 392, 446, 447, 488, 496, 547, 574, 579, 591, 626, 630, 639, 640, 652, 662, 663, 668, 724, 879, 911],
 	cannotequipS: [645, 650, 699, 717, 900],
 	isPlane: true,
 	isfighter: true,
@@ -334,7 +334,7 @@ EQTDATA[AUTOGYRO] = {
 	name: 'Anti-Sub Plane',
 	image: 21,
 	canequip: ['CAV','BBV','CVL','AS','AO','AR','LHA'],
-	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 663, 668, 690, 713, 885, 911],
+	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 663, 668, 690, 713, 885, 911, 920],
 	cannotequipS: [380, 381, 382, 521, 522, 526, 534, 621, 645, 699, 884, 889, 900],
 	isASWPlane: true,
 	canASWDamage: true,
@@ -2618,7 +2618,6 @@ var EQDATA = {
 		added: '2017-01-27',
 		b_image: 11,
 		type: SEAPLANEBOMBER,
-		aaResistShip: .6,
 		DIVEBOMB: 7,
 		AA: 1,
 		ASW: 2,
@@ -2829,6 +2828,7 @@ var EQDATA = {
 		added: '2017-05-02',
 		type: DEPTHCHARGE,
 		isDCOnly: true,
+		canASWPenetrate: true,
 		ASW: 4,
 	},
 	227: {
@@ -2837,6 +2837,7 @@ var EQDATA = {
 		added: '2017-05-02',
 		type: DEPTHCHARGE,
 		isDCOnly: true,
+		canASWPenetrate: true,
 		ASW: 7,
 	},
 	228: {
@@ -2881,7 +2882,7 @@ var EQDATA = {
 		nameJP: '30.5cm三連装砲改',
 		added: '2017-05-02',
 		type: MAINGUNL,
-		fitclass: 10,
+		fitclass: 8,
 		FP: 17,
 		AA: 3,
 		AR: 1,
@@ -3874,7 +3875,7 @@ var EQDATA = {
 		added: '2019-03-27',
 		type: SEAPLANEBOMBER,
 		aaResistShip: .5,
-		aaResistFleet: .7,
+		aaResistFleet: .5,
 		FP: 2,
 		DIVEBOMB: 11,
 		AA: 5,
@@ -4460,6 +4461,7 @@ var EQDATA = {
 		added: '2020-05-20',
 		type: DEPTHCHARGE,
 		isDCProjector: true,
+		canASWPenetrate: true,
 		AR: 1,
 		ACC: 1,
 		EV: 1,
@@ -4471,6 +4473,7 @@ var EQDATA = {
 		added: '2020-05-20',
 		type: DEPTHCHARGE,
 		isDCOnly: true,
+		canASWPenetrate: true,
 		TP: 2,
 		ASW: 20,
 	},
@@ -5135,6 +5138,7 @@ var EQDATA = {
 		added: '2021-10-29',
 		type: DEPTHCHARGE,
 		isDCOnly: true,
+		canASWPenetrate: true,
 		AR: -1,
 		ACC: 3,
 		ASW: 18,
@@ -5358,6 +5362,18 @@ var EQDATA = {
 		EV: 2,
 		LOS: 8,
 	},
+	461: {
+		name: 'Skilled Sonar Personnel + Late Model Bow Torpedo Mount (4 tubes)',
+		nameJP: '熟練聴音員+後期型艦首魚雷(4門)',
+		added: '2022-07-28',
+		type: TORPEDOSS,
+		specialCutIn: true,
+		TP: 13,
+		AR: 1,
+		ACC: 5,
+		EV: 5,
+		RNG: 1,
+	},
 	463: {
 		name: '15.5cm Triple Secondary Gun Mount Kai Ni',
 		nameJP: '15.5cm三連装副砲改二',
@@ -5453,6 +5469,175 @@ var EQDATA = {
 		EV: 1,
 		ASW: 3,
 		RNG: 1,
+	},
+	471: {
+		name: 'Loire 130M',
+		nameJP: 'Loire 130M',
+		added: '2022-07-28',
+		type: SEAPLANE, image: 50,
+		isnightscout: true,
+		ACC: 2,
+		ASW: 3,
+		LOS: 3,
+	},
+	472: {
+		name: 'Mk.32 ASW Torpedo (Mk.2 Thrower)',
+		nameJP: 'Mk.32 対潜魚雷(Mk.2落射機)',
+		added: '2022-08-04',
+		type: DEPTHCHARGE,
+		isDCProjector: true,
+		canASWPenetrate: true,
+		TP: 1,
+		ACC: 1,
+		ASW: 19,
+	},
+	473: {
+		name: 'F4U-2 Night Corsair',
+		nameJP: 'F4U-2 Night Corsair',
+		added: '2022-08-26',
+		type: FIGHTER, image: 45,
+		btype: B_NIGHTFIGHTER,
+		FP: 1,
+		AA: 9,
+		ACC: 1,
+		EV: 2,
+		ASW: 5,
+		LOS: 2,
+	},
+	474: {
+		name: 'F4U-4',
+		nameJP: 'F4U-4',
+		added: '2022-08-26',
+		type: DIVEBOMBER,
+		aaResistShip: .6,
+		canShellInstall: true,
+		FP: 2,
+		DIVEBOMB: 6,
+		AA: 10,
+		EV: 1,
+		ASW: 3,
+		LOS: 2,
+	},
+	475: {
+		name: 'AU-1',
+		nameJP: 'AU-1',
+		added: '2022-09-11',
+		type: DIVEBOMBER,
+		aaResistShip: .6,
+		FP: 3,
+		DIVEBOMB: 12,
+		TP: 6,
+		AA: 9,
+		EV: 1,
+		ASW: 5,
+		LOS: 2,
+	},
+	476: {
+		name: 'F4U-7',
+		nameJP: 'F4U-7',
+		added: '2022-09-11',
+		type: DIVEBOMBER,
+		aaResistShip: .6,
+		FP: 3,
+		DIVEBOMB: 11,
+		TP: 8,
+		AA: 10,
+		EV: 2,
+		ASW: 4,
+		LOS: 2,
+	},
+	477: {
+		name: 'Skilled Deck Personnel',
+		nameJP: '熟練甲板要員',
+		added: '2022-08-26',
+		type: SCAMP,
+		FP: 2,
+		AA: 1,
+		AR: 1,
+		ACC: 1,
+		EV: 1,
+		LOS: 1,
+	},
+	478: {
+		name: 'Skilled Deck Personnel + Aviation Maintenance Hands',
+		nameJP: '熟練甲板要員+航空整備員',
+		added: '2022-08-26',
+		type: SCAMP,
+		FP: 7,
+		DIVEBOMB: 1,
+		TP: 1,
+		AA: 1,
+		AR: 1,
+		ACC: 1,
+		EV: 1,
+		ASW: 1,
+		LOS: 1,
+		RNG: 4,
+	},
+	479: {
+		name: 'Mosquito FB Mk.IV',
+		nameJP: 'Mosquito FB Mk.IV',
+		added: '2022-08-31',
+		type: LANDBOMBER,
+		aaResistShip: .6,
+		aaResistFleet: .7,
+		DIVEBOMB: 18,
+		TP: 5,
+		AA: 5,
+		ACC: 1,
+		ASW: 4,
+		LOS: 5,
+	},
+	480: {
+		name: 'Mosquito PR Mk.IV',
+		nameJP: 'Mosquito PR Mk.IV',
+		added: '2022-09-11',
+		type: LANDSCOUT,
+		AR: 2,
+		ACC: 2,
+		LOS: 9,
+	},
+	481: {
+		name: 'Mosquito TR Mk.33',
+		nameJP: 'Mosquito TR Mk.33',
+		added: '2022-09-11',
+		type: TORPBOMBER,
+		TP: 8,
+		AA: 5,
+		ACC: 1,
+		ASW: 6,
+		LOS: 6,
+	},
+	482: {
+		name: 'Toku Daihatsu Landing Craft + Panzer III (North African Specification)',
+		nameJP: '特大発動艇+Ⅲ号戦車(北アフリカ仕様)',
+		added: '2022-09-11',
+		type: LANDINGCRAFT,
+		FP: 1,
+		AA: 1,
+	},
+	483: {
+		name: 'Type 3 Shell Kai Ni',
+		nameJP: '三式弾改二',
+		added: '2022-09-30',
+		type: TYPE3SHELL,
+		FP: 5,
+		AA: 7,
+		ACC: 1,
+		EV: 1,
+	},
+	484: {
+		name: 'Type 4 Heavy Bomber Hiryuu (Skilled) + No.1 Model 1A Guided Missile',
+		nameJP: '四式重爆 飛龍(熟練)+イ号一型甲 誘導弾',
+		added: '2022-10-31',
+		type: LANDBOMBER,
+		aaResistShip: .6,
+		DIVEBOMB: 21,
+		TP: 17,
+		AA: 5,
+		ACC: 3,
+		ASW: 4,
+		LOS: 5,
 	},
 	501: {
 		name: '5inch Single Cannon',
@@ -6034,7 +6219,7 @@ var EQDATA = {
 	571: {
 		name: 'Abyssal Seaplane Tender Imp Aircraft',
 		nameJP: '深海水母小鬼機',
-		b_image: 7,
+		b_image: 'e009',
 		type: SEAPLANEBOMBER,
 		FP: 4,
 		DIVEBOMB: 15,
@@ -6048,7 +6233,7 @@ var EQDATA = {
 	572: {
 		name: 'Abyssal Bearcat Fighter',
 		nameJP: '深海熊猫艦戦',
-		b_image: 7,
+		b_image: 'e010',
 		type: FIGHTER,
 		FP: 8,
 		AA: 18,
@@ -6059,7 +6244,7 @@ var EQDATA = {
 	573: {
 		name: 'Abyssal Submarine Floatplane',
 		nameJP: '深海潜水下駄履き',
-		b_image: 7,
+		b_image: 'e011',
 		type: SEAPLANEBOMBER,
 		FP: 6,
 		DIVEBOMB: 18,
@@ -6623,8 +6808,6 @@ var EQDATA = {
 		b_image: 3,
 		type: DIVEBOMBER,
 		btype: B_NIGHTBOMBER2,
-		aaResistShip: .6,
-		aaResistFleet: .7,
 		FP: 4,
 		DIVEBOMB: 17,
 		AA: 6,
@@ -6640,8 +6823,6 @@ var EQDATA = {
 		b_image: 3,
 		type: TORPBOMBER, image: 46,
 		btype: B_NIGHTBOMBER,
-		aaResistShip: .6,
-		aaResistFleet: .7,
 		FP: 5,
 		TP: 17,
 		AA: 7,
@@ -6654,7 +6835,10 @@ var EQDATA = {
 		name: 'Abyssal Two-seat Fighter-bomber Hawk',
 		nameJP: '深海戦爆複座鷹',
 		added: '2021-12-28',
+		b_image: 'e020',
 		type: DIVEBOMBER,
+		aaResistShip: .6,
+		aaResistFleet: .7,
 		FP: 5,
 		DIVEBOMB: 12,
 		AA: 10,
@@ -6669,7 +6853,10 @@ var EQDATA = {
 		name: 'Abyssal Two-seat Fighter-bomber Hawk Kai',
 		nameJP: '深海戦爆複座鷹改',
 		added: '2021-12-28',
+		b_image: 'e020',
 		type: DIVEBOMBER,
+		aaResistShip: .6,
+		aaResistFleet: .7,
 		FP: 6,
 		DIVEBOMB: 16,
 		AA: 11,
@@ -6719,6 +6906,7 @@ var EQDATA = {
 		name: 'Abyssal Twin-engine Land-based Dive Bomber',
 		nameJP: '深海双発陸爆',
 		added: '2022-05-28',
+		b_image: 9,
 		type: DIVEBOMBER,
 		DIVEBOMB: 12,
 		TP: 6,
@@ -6731,6 +6919,7 @@ var EQDATA = {
 		name: 'Abyssal Twin-engine Land-based Dive Bomber Ace',
 		nameJP: '深海双発陸爆Ace',
 		added: '2022-05-28',
+		b_image: 10,
 		type: DIVEBOMBER,
 		DIVEBOMB: 17,
 		TP: 7,
@@ -6756,6 +6945,7 @@ var EQDATA = {
 		name: 'Abyssal Sky Super Fortress',
 		nameJP: '深海空超要塞',
 		added: '2022-03-05',
+		b_image: 'e021',
 		type: LANDBOMBER,
 		FP: 18,
 		DIVEBOMB: 33,
@@ -6768,6 +6958,7 @@ var EQDATA = {
 		name: 'Abyssal Sky Super Fortress Kai',
 		nameJP: '深海空超要塞改',
 		added: '2022-03-05',
+		b_image: 'e021',
 		type: LANDBOMBER,
 		FP: 18,
 		DIVEBOMB: 44,
@@ -6980,6 +7171,14 @@ var LBASDATA = {
 	264: { distance: 4, cost: 6 },
 	466: { distance: 6, cost: 9 },
 	469: { distance: 7, cost: 5 },
+	471: { distance: 3, cost: 9 },
+	473: { distance: 6, cost: 9 },
+	474: { distance: 6, cost: 9 },
+	475: { distance: 6, cost: 10 },
+	476: { distance: 6, cost: 11 },
+	480: { distance: 9, cost: 13 },
+	481: { distance: 7, cost: 14 },
+	484: { distance: 5, cost: 15 },
 };
 
 var EXPANSIONSLOTDATA = {
@@ -7020,19 +7219,19 @@ var EXPANSIONSLOTDATA = {
 			413: [21, 22, 23, 24, 25, 53, 54, 55, 56, 57, 58, 99, 100, 101, 113, 114, 118, 119, 137, 138, 139, 140, 141, 146, 158, 159, 160, 183, 200, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 289, 290, 305, 306, 307, 314, 321, 330, 346, 357, 421, 422, 423, 487, 488, 532, 537, 542, 543, 547, 649, 652, 657, 662, 663, 668],
 		}
 	},
-	'2022-05-31': {
+	'2022-05-27': { //2022-05-31
 		specialS: {
-			12: [546],
-			142: [546],
-			234: [546],
-			460: [546],
+			12: [546,911,916],
+			142: [546,911,916],
+			234: [546,911,916],
+			460: [546,911,916],
 		}
 	},
 };
 
 
 
-var EQUIPBONUSDATA = [];
+var EQUIPBONUSDATA = { bonuses: [], ctypeToCountry: {} };
 function initEQDATA(callback) {
 	$.getJSON('js/data/mst_slotitem_bonus.json', data => {
 		$.getJSON('js/data/mst_slotitem_bonus_history.json', dataHistory => {
@@ -7053,16 +7252,23 @@ function initEQDATA(callback) {
 					}
 				}
 			}
-			EQUIPBONUSDATA = data;
-			callback();
+			EQUIPBONUSDATA.bonuses = data;
+			$.getJSON('js/data/country_ctype.json', dataCountry => {
+				for (let country in dataCountry) {
+					for (let ctype of dataCountry[country]) {
+						EQUIPBONUSDATA.ctypeToCountry[+ctype] = country;
+					}
+				}
+				callback();	
+			});
 		});
 	});
 }
 
 let mapShipTypeId = { 'DE': 1, 'DD': 2, 'CL': 3, 'CLT': 4, 'CA': 5, 'CAV': 6, 'CVL': 7, 'FBB': 8, 'BB': 9, 'BBV': 10, 'CV': 11, 'SS': 13, 'SSV': 14, 'AV': 16, 'LHA': 17, 'CVB': 18, 'AR': 19, 'AS': 20, 'CT': 21, 'AO': 22 };
-let mapStatName = { houg: 'FP', raig: 'TP', tyku: 'AA', souk: 'AR', kaih: 'EV', tais: 'ASW', saku: 'LOS', houm: 'ACC', leng: 'RNG' };
+let mapStatName = { houg: 'FP', raig: 'TP', tyku: 'AA', souk: 'AR', kaih: 'EV', tais: 'ASW', saku: 'LOS', houm: 'ACC', leng: 'RNG', baku: 'DIVEBOMB' };
 function getBonusStats(mid,eqids,improves) {
-	let bonusTotal = { houg: 0, raig: 0, tyku: 0, souk: 0, kaih: 0, tais: 0, saku: 0, houm: 0, leng: 0 };
+	let bonusTotal = { houg: 0, raig: 0, tyku: 0, souk: 0, kaih: 0, tais: 0, saku: 0, houm: 0, leng: 0, baku: 0 };
 	let sdata = SHIPDATA[mid];
 	let eqCounts = {}, eqCountsType = {}, eqImproves = {};
 	let hasSR = false, hasAR = false;
@@ -7080,7 +7286,7 @@ function getBonusStats(mid,eqids,improves) {
 			if (eqdata.AA >= 2) hasAR = true;
 		}
 	}
-	for (let bonusItem of EQUIPBONUSDATA) {
+	for (let bonusItem of EQUIPBONUSDATA.bonuses) {
 		let eqNum = 0, improves = [];
 		if (bonusItem.ids) {
 			for (let id in eqCounts) {
@@ -7102,17 +7308,20 @@ function getBonusStats(mid,eqids,improves) {
 		if (eqNum <= 0) continue;
 		
 		for (let bonusData of bonusItem.bonuses) {
+			if (bonusData.requiresSR && !hasSR) continue
+			if (bonusData.requiresAR && !hasAR) continue;
 			if (bonusData.shipClass && bonusData.shipClass.indexOf(sdata.sclass) == -1) continue;
-			if (bonusData.shipX && bonusData.shipX.indexOf(mid) == -1) continue;
-			if (bonusData.shipS && bonusData.shipS.indexOf(getBaseId(mid)) == -1) continue;
+			if (bonusData.shipCountry && bonusData.shipCountry.indexOf(EQUIPBONUSDATA.ctypeToCountry[sdata.sclass]) == -1) continue;
+			if (bonusData.shipId && bonusData.shipId.indexOf(mid) == -1) continue;
+			if (bonusData.shipBase && bonusData.shipBase.indexOf(getBaseId(mid)) == -1) continue;
 			if (bonusData.shipType && bonusData.shipType.indexOf(mapShipTypeId[sdata.type]) == -1) continue;
-			if (bonusData.requires) {
-				let count = 0, reqNum = bonusData.requiresNum || 1;
-				for (let id of bonusData.requires) count += eqCounts[id] || 0;
+			if (bonusData.requiresId) {
+				let count = 0, reqNum = bonusData.requiresIdNum || 1;
+				for (let id of bonusData.requiresId) count += eqCounts[id] || 0;
 				if (count < reqNum) continue;
 			}
 			if (bonusData.requiresType) {
-				let count = 0, reqNum = bonusData.requiresNumType || 1;
+				let count = 0, reqNum = bonusData.requiresTypeNum || 1;
 				for (let type of bonusData.requiresType) count += eqCountsType[type] || 0;
 				if (count < reqNum) continue;
 			}
@@ -7123,19 +7332,9 @@ function getBonusStats(mid,eqids,improves) {
 			}
 			if (bonusData.num && bonusData.num > num) continue;
 			
-			if (bonusData.num || bonusData.requires || bonusData.requiresType) num = 1;
+			if (bonusData.num) num = 1;
 			for (let stat in bonusData.bonus) {
 				bonusTotal[stat] += bonusData.bonus[stat] * num;
-			}
-			if (hasSR && bonusData.bonusSR) {
-				for (let stat in bonusData.bonusSR) {
-					bonusTotal[stat] += bonusData.bonusSR[stat];
-				}
-			}
-			if (hasAR && bonusData.bonusAR) {
-				for (let stat in bonusData.bonusAR) {
-					bonusTotal[stat] += bonusData.bonusAR[stat];
-				}
 			}
 		}
 	}
@@ -7144,7 +7343,6 @@ function getBonusStats(mid,eqids,improves) {
 	for (let stat in bonusTotal) {
 		if (bonusTotal[stat] != 0) result[mapStatName[stat]] = bonusTotal[stat];
 	}
-	delete result.ACC;
 	return result;
 }
 
@@ -7215,13 +7413,14 @@ var EQDATAHISTORY = {
 		359: { fitclass: null },
 		360: { fitclass: null },
 		361: { fitclass: null },
-		377: { isDCProjector: 0 },
-		378: { isDCOnly: 0 },
+		377: { isDCProjector: 0, canASWPenetrate: 0 },
+		378: { isDCOnly: 0, canASWPenetrate: 0 },
 		391: { canShellInstall: 0 },
 		392: { canShellInstall: 0 },
 		407: { fitclass: null },
 		420: { canShellInstall: 0 },
 		421: { canShellInstall: 0 },
+		439: { canASWPenetrate: 0 },
 		582: { aaResistShip: 0, aaResistFleet: 0 },
 		583: { aaResistShip: 0, aaResistFleet: 0 },
 	},
@@ -7361,6 +7560,11 @@ var EQDATAHISTORY = {
 		377: { isDCProjector: true },
 		378: { isDCOnly: true },
 	},
+	'2022-08-04': {
+		377: { canASWPenetrate: true },
+		378: { canASWPenetrate: true },
+		439: { canASWPenetrate: true },
+	},
 };
 
 var EQTDATAHISTORY = {
@@ -7454,7 +7658,7 @@ function setEquipDataDate(dateSet) {
 		}
 	}
 	
-	for (let item of EQUIPBONUSDATA) {
+	for (let item of EQUIPBONUSDATA.bonuses) {
 		if (item.bonusesByDate) {
 			for (let date of Object.keys(item.bonusesByDate).sort()) {
 				if (date > dateSet) break;

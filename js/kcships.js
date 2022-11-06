@@ -59,6 +59,7 @@ Fleet.prototype.fleetAntiAir = function(alreadyCombined,isRaid) {
 		for (var i=0; i<this.ships.length; i++) {
 			if (this.ships[i].HP <= 0) { continue; }
 			if (this.ships[i].retreated) continue;
+			let aaF = 0;
 			for (var j=0; j<this.ships[i].equips.length; j++) {
 				var equip = this.ships[i].equips[j];
 				var mod = 0;
@@ -76,9 +77,10 @@ Fleet.prototype.fleetAntiAir = function(alreadyCombined,isRaid) {
 					default:
 						mod = .2; break;
 				}
-				if (equip.AA) this._baseFAA += equip.AA * mod;
+				if (equip.AA) aaF += equip.AA * mod;
 			}
-			if (this.ships[i].improves.AAfleet) this._baseFAA += this.ships[i].improves.AAfleet;
+			if (this.ships[i].improves.AAfleet) aaF += this.ships[i].improves.AAfleet;
+			this._baseFAA += Math.floor(aaF);
 		}
 		this._baseFAA = Math.floor(this._baseFAA);
 	}
@@ -88,7 +90,7 @@ Fleet.prototype.fleetAntiAir = function(alreadyCombined,isRaid) {
 		FAA += this.combinedWith.fleetAntiAir(true,isRaid);
 	}
 	FAA = Math.floor(FAA*this.formation.AAmod);
-	if (this.side == 0) FAA = FAA/1.3;
+	if (this.side == 0 && MECHANICS.AACI) FAA = FAA/1.3;
 	if (this.combinedWith) {
 		if (this.isescort) FAA *= .48;
 		else FAA *= (isRaid ? .72 : .8);
@@ -223,6 +225,33 @@ Fleet.prototype.isTorpedoSquadron = function() {
 		if (numDD + numCLT >= numShips && numCLT <= 3 && numDD + +(this.ships[0].type == 'DD')) return this._isTS = true;
 	}
 	return this._isTS = false;
+}
+Fleet.prototype.getTransport = function() {
+	let tp = 0;
+	let shipTP = {
+		DD: 5,
+		CL: 2,
+		CT: 6,
+		CAV: 4,
+		BBV: 7,
+		AV: 9,
+		LHA: 12,
+		AO: 15,
+		AS: 7,
+		SSV: 1,
+	};
+	for (let ship of this.ships) {
+		if (ship.HP <= 0 || ship.retreated) continue;
+		tp += shipTP[ship.type] || 0;
+		if (ship.mid == 487) tp += 8;
+		for (let eq of ship.equips) {
+			if (eq.type == DRUM) tp += 5;
+			if (eq.type == LANDINGCRAFT) tp += 8;
+			if (eq.type == RATION) tp += 1;
+			if (eq.type == LANDINGTANK) tp += 2;
+		}
+	}
+	return tp;
 }
 //----------
 
@@ -361,7 +390,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (eq.LOS) this.LOSeq += eq.LOS;
 		if (eq.TP) tpEquip += eq.TP;
 		
-		if ([226,227].includes(eq.mid)) {
+		if (eq.canASWPenetrate) {
 			aswPenetrate += Math.max(0, Math.sqrt(eq.ASW - 2) + +(this.type == 'DE'));
 		}
 		
@@ -404,8 +433,10 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		if (fitcounts[101]) { this.ACCfit += 4*Math.sqrt(fitcounts[101]); this.FPfit += Math.sqrt(fitcounts[101]); }
 		if (fitcounts[102]) { this.ACCfit += 3*Math.sqrt(fitcounts[102]); this.FPfit += 2*Math.sqrt(fitcounts[102]); }
 	}
-	let accFit = this.getFit();
-	if (accFit) this.ACCfit = accFit;
+	if (MECHANICS.fitGunUpdate1) {
+		let accFit = this.getFit();
+		if (accFit || (this.ACCfit && this.fitclass == 100)) this.ACCfit = accFit;
+	}
 	
 	var installbonus1 = 1 + (installeqs.DH1stars / (installeqs.DH1+installeqs.DH2))/50;
 	var installbonus3 = 1 + (installeqs.DH3stars / installeqs.DH3)/30;
@@ -646,12 +677,28 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 	if (installeqs.DB) this.anchoragePostMult *= 1.4;
 	if (installeqs.DB >= 2) this.anchoragePostMult *= 1.5;
 	
+	this.dockPostMult = 1;
+	if (installeqs.DB) this.dockPostMult *= 1.1;
+	if (installeqs.DB >= 2) this.dockPostMult *= 1.1;
+	if (installeqs.SB) this.dockPostMult *= 1.1;
+	if (this.numWG) this.dockPostMult *= 1.1;
+	if (this.numWG >= 2) this.dockPostMult *= 1.2;
+	if (installeqs.T3) this.dockPostMult *= 1.3;
+	if (installeqs.DH3) this.dockPostMult *= 1.2 * installbonus3;
+	if (hasLC) this.dockPostMult *= 1.1;
+	if (installeqs.TDH11 || installeqs.tokuT1 || this.equips.find(eq => eq.mid == 482)) this.dockPostMult *= 1.4;
+	if (installeqs.DH2) this.dockPostMult *= 1.15 * installbonus1;
+	if (installeqs.DH2 >= 2) this.dockPostMult *= 1.15;
+	if (installeqs.m4a1) this.dockPostMult *= 1.1;
+	if (installeqs.panzer) this.dockPostMult *= 1.15;
+	if (installeqs.panzer >= 2) this.dockPostMult *= 1.15;
+	if (numAB) this.dockPostMult *= 1.1;
 	
 	this.ptDmgMod = 1;
 	let numGuns = (this.equiptypes[MAINGUNS] || 0) + (this.equiptypes[MAINGUNSAA] || 0);
 	if (numGuns) this.ptDmgMod *= 1.5;
 	if (numGuns >= 2) this.ptDmgMod *= 1.4;
-	if (this.equiptypes[SECGUN]) this.ptDmgMod *= 1.3;
+	if (this.equiptypesB[B_SECGUN]) this.ptDmgMod *= 1.3;
 	let numDB = Math.max(this.equiptypes[DIVEBOMBER] || 0, this.equiptypes[JETBOMBER] || 0);
 	if (numDB) this.ptDmgMod *= 1.4;
 	if (numDB >= 2) this.ptDmgMod *= 1.3;
@@ -668,7 +715,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 	if (this.type == 'CL' || this.type == 'CLT' || this.type == 'CT') this.ptAccMod = .82;
 	if (this.equiptypes[MAINGUNS]) this.ptAccMod *= 1.3;
 	if (this.equiptypes[MAINGUNS] >= 2) this.ptAccMod *= 1.15;
-	if (this.equiptypes[SECGUN]) this.ptAccMod *= 1.55;
+	if (this.equiptypesB[B_SECGUN]) this.ptAccMod *= 1.55;
 	if (this.equiptypes[AAGUN]) this.ptAccMod *= 1.45;
 	if (this.equiptypes[AAGUN] >= 2) this.ptAccMod *= 1.35;
 	if (this.equiptypes[PICKET]) this.ptAccMod *= 1.75;
@@ -705,6 +752,7 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 		this.statsEqBonus = bonusesPrev;
 		if (addstats) {
 			for (let stat in this.statsEqBonus) {
+				if (stat == 'ACC' || stat == 'DIVEBOMB') continue;
 				this[stat] += this.statsEqBonus[stat];
 			}
 		}
@@ -720,6 +768,64 @@ Ship.prototype.loadEquips = function(equips,levels,profs,addstats) {
 	}
 }
 Ship.prototype.getFit = function() {
+	// MECHANICS.fitGunUpdate1 2017-06-23
+	let IDS_14_152 = [4,119,310,65,139,407,303,359,360,361];
+	let IDS_152 = [65,139,407,303,359,360,361];
+	
+	if (['CL','CLT','CT'].includes(this.type)) {
+		let numM = this.equips.filter(eq => eq.type == MAINGUNM).length;
+		let num14_152 = this.equips.filter(eq => IDS_14_152.includes(eq.mid)).length;
+		let num8inch = this.equips.filter(eq => [356,357].includes(eq.mid)).length;
+		
+		let fit = 0;
+		fit += 4*Math.sqrt(num14_152);
+		fit -= 6*num8inch;
+		if (this.sclass == 41) { //agano
+			let num152 = this.equips.filter(eq => IDS_152.includes(eq.mid)).length;
+			fit -= 1*numM;
+			fit += 3*Math.sqrt(num152);
+			if (MECHANICS.fitGunUpdate2) { //2017-12-11, guess
+				if (num152) fit += 3;
+			}
+		}
+		if (this.sclass == 52) { //ooyodo
+			let num155 = this.equips.filter(eq => [5,235].includes(eq.mid)).length;
+			fit -= 2*numM;
+			fit += 4*num155;
+		}
+		if (this.sclass == 99) { //atlanta
+			let numAtlanta = this.equips.filter(eq => [362,363].includes(eq.mid)).length;
+			fit += 3*numAtlanta;
+		}
+		
+		if (this.mid == 488) { //yura kai ni
+			let num = this.equips.filter(eq => [229].includes(eq.mid)).length;
+			fit += 10*Math.sqrt(num); //from KC3
+		}
+		
+		let penalty = 3*numM;
+		penalty += 2*num8inch;
+		if (this.LVL >= 100) penalty *= .6;
+		fit -= penalty;
+		
+		return fit;
+	}
+	
+	if (this.type == 'AV') {
+		let numM = this.equips.filter(eq => eq.type == MAINGUNM).length;
+		if (!numM) return 0;
+		let num14_152 = this.equips.filter(eq => IDS_14_152.includes(eq.mid)).length;
+		let numOther = numM - num14_152;
+		let fit = num14_152 ? -6 * num14_152 : -8;
+		fit += -10 * numOther;
+		return fit;
+	}
+	
+	if (this.sclass == 9) { //mogami
+		let num = this.equips.filter(eq => [5,235].includes(eq.mid)).length;
+		return 4*Math.sqrt(num);
+	}
+	
 	if (this.sclass == 81 || this.mid == 147) { //tashkent/verniy
 		let num = this.equips.filter(eq => eq.mid == 282).length;
 		return 5*Math.sqrt(num);
@@ -729,14 +835,21 @@ Ship.prototype.getFit = function() {
 		let numASDIC = this.equips.filter(eq => [260,261,262].includes(eq.mid)).length;
 		return 3*Math.sqrt(numGun) + 3*Math.sqrt(numASDIC);
 	}
-	if (this.sclass == 87 || this.sclass == 91) { //johncbutler/fletcher
-		let num = this.equips.filter(eq => [284,308,313].includes(eq.mid)).length;
+	if (this.sclass == 87) { //johncbutler
+		let num = this.equips.filter(eq => [308,313].includes(eq.mid)).length;
 		return 4*Math.sqrt(num);
 	}
+	if (this.sclass == 91) { //fletcher
+		let num = this.equips.filter(eq => [284,308,313].includes(eq.mid)).length;
+		let fit = 4*Math.sqrt(num);
+		if (this.equips.filter(eq => [284].includes(eq.mid)).length >= 2) fit += 4;
+		return fit;
+	}
 	if (this.sclass == 28) { //mutsuki
-		let num = this.equips.filter(eq => [293].includes(eq.mid)).length;
+		let num = this.equips.filter(eq => [229,293].includes(eq.mid)).length;
 		return 5*Math.sqrt(num);
 	}
+	
 	return 0;
 }
 Ship.prototype.updateProficiencyBonus = function() {
@@ -1090,27 +1203,31 @@ Ship.prototype.damageMod = function(isTorp) {
 }
 Ship.prototype.weightedAntiAir = function(isRaid) {
 	if (this._wAA === undefined) {
-		this._wAA = this.statsBase.AA/2;
-		if (this.side==1) this._wAA = Math.sqrt(this.AA);
-		if (this.equips.length) this._wAA = Math.floor(this._wAA);
-		for (var i=0; i<this.equips.length; i++) {
-			var mod = 0;
-			switch (this.equips[i].atype) {
-				case A_HAGUN:
-				case A_HAFD:
-				case A_AAFD:
-					mod = 2; break;
-				case A_AAGUN:
-					mod = 3; break;
-				case A_AIRRADAR:
-					mod = 1.5; break;
-				default:
-					continue;
+		if (!MECHANICS.AACI) {
+			this._wAA = this.side == 1 ? Math.sqrt(this.AA) : this.AA;
+		} else {
+			this._wAA = this.statsBase.AA/2;
+			if (this.side==1) this._wAA = Math.sqrt(this.AA);
+			if (this.equips.length) this._wAA = Math.floor(this._wAA);
+			for (var i=0; i<this.equips.length; i++) {
+				var mod = 0;
+				switch (this.equips[i].atype) {
+					case A_HAGUN:
+					case A_HAFD:
+					case A_AAFD:
+						mod = 2; break;
+					case A_AAGUN:
+						mod = 3; break;
+					case A_AIRRADAR:
+						mod = 1.5; break;
+					default:
+						continue;
+				}
+				this._wAA += this.equips[i].AA * mod;
 			}
-			this._wAA += this.equips[i].AA * mod;
+			this._wAA += (this.improves.AAself)? this.improves.AAself : 0;
+			this._wAA = Math.max(0,this._wAA);
 		}
-		this._wAA += (this.improves.AAself)? this.improves.AAself : 0;
-		this._wAA = Math.max(0,this._wAA);
 	}
 	let wAA = this._wAA;
 	if (this.fleet.combinedWith) {
@@ -1168,6 +1285,16 @@ Ship.prototype.getAACItype = function(atypes) {
 		if ((hasID[363] || 0) + (hasID[362] || 0) >= 2) types.push(41);
 	}
 	
+	if ([546,911,916].includes(this.mid)) { //Yamato-class Kai Ni
+		let numDuplex = (hasID[142] || 0) + (hasID[460] || 0);
+		let numAAGunHigh = this.equips.filter(eq => eq.type == AAGUN && eq.AA >= 6).length;
+		let numSecHA = hasID[464] || 0;
+		if (numSecHA >= 2 && numDuplex && numAAGunHigh) types.push(42);
+		if (numSecHA >= 2 && numDuplex) types.push(43);
+		if (numSecHA && numDuplex && numAAGunHigh) types.push(44);
+		if (numSecHA && numDuplex) types.push(45);
+	}
+	
 	var add6 = false;
 	if (this.type=='BB'||this.type=='BBV'||this.type=='FBB') {  //is BB
 		if (atypes[A_GUN] && atypes[A_TYPE3SHELL] && atypes[A_AAFD]) {
@@ -1181,7 +1308,8 @@ Ship.prototype.getAACItype = function(atypes) {
 	if (atypes[A_HAGUN] && atypes[A_AAFD] && atypes[A_AIRRADAR]) types.push(7);
 	if (!MECHANICS.aaci8Up && atypes[A_HAFD] && atypes[A_AIRRADAR]) types.push(8);
 	
-	if (this.mid == 546 && hasID[275] && atypes[A_AIRRADAR]) types.push(26); //Musashi Kai Ni
+	if ([546,911,916].includes(this.mid) && hasID[275] && atypes[A_AIRRADAR]) types.push(26); //Musashi/Yamato Kai Ni
+	if ([321].includes(this.mid) && hasID[275] && hasID[274] && atypes[A_AIRRADAR]) types.push(27); //Ooyodo
 	if ([82,88,553,554,148,546].indexOf(this.mid) != -1 && hasID[274] && atypes[A_AIRRADAR]) types.push(28); //Ise-class Kai + Musashi Kai
 	if ((this.mid == 557 || this.mid == 558) && atypes[A_HAGUN] && atypes[A_AIRRADAR]) types.push(29); //Isokaze+Hamakaze B Kai
 	
@@ -1308,6 +1436,7 @@ CAV.prototype = Object.create(Ship.prototype);
 CAV.prototype.planeasw = 1;
 CAV.prototype.APweak = true;
 CAV.prototype.canASW = function() {
+	if (!isPlayable(this.mid) && SHIPDATA[this.mid].ASW) return true;
 	for (var i=0; i<this.equips.length; i++) {
 		if (this.planecount[i] <= 0) continue;
 		if (EQTDATA[this.equips[i].type].isASWPlane && this.equips[i].ASW > 0) return true;
@@ -1451,7 +1580,7 @@ CV.prototype.NBPower = function(target) {
 	return Ship.prototype.NBPower.call(this,target);
 }
 CV.prototype.canNBAirAttack = function() {
-	return (this.hasNBAirGear() || (this.sclass == 78 && this.equips.find(eq => eq.isSwordfish))) && (this.canStillShellDamage() || (!isPlayable(this.mid) && this.HP/this.maxHP > .25));
+	return (this.hasNBAirGear() || (this.sclass == 78 && this.equips.find(eq => eq.isSwordfish))) && this.canStillShellDamage();
 }
 CV.prototype.hasNBAirGear = function() {
 	return (this.equiptypesB[B_NIGHTCREW] || this.hasBuiltInNightCrew) && (this.equiptypesB[B_NIGHTFIGHTER] || this.equiptypesB[B_NIGHTBOMBER]);
@@ -1591,8 +1720,8 @@ LandBase.prototype.airPower = function(eqtFilter) {
 	var ap = 0, landscoutmod = 1;
 	for (var i=0; i<this.equips.length; i++) {
 		if (this.equips[i].type == LANDSCOUT) {
-			if (this.equips[i].ACC >= 3) landscoutmod = 1.18;
-			else if (this.equips[i].ACC <= 2 && landscoutmod < 1.15) landscoutmod = 1.15;
+			if (this.equips[i].LOS >= 9) landscoutmod = 1.18;
+			else if (this.equips[i].LOS <= 8 && landscoutmod < 1.15) landscoutmod = 1.15;
 		}
 		if (this.equips[i][eqtFilter]) {
 			var base = (this.equips[i].AA||0) + (this.equips[i].AAImprove||0);
@@ -1630,7 +1759,8 @@ LandBase.prototype.airPowerDefend = function() {
 LandBase.prototype.reset = function() {
 	this.planecount = this.PLANESLOTS.slice();
 	for (let eq of this.equips) {
-		if (eq.rank != eq.rankInit) eq.setProficiency(eq.rankInit || 0);
+		if (eq.rank != eq.rankInit) eq.setProficiency(eq.rankInit || 0, true);
+		delete eq.emptied;
 	}
 }
 LandBase.prototype.getCost = function() {
@@ -1776,11 +1906,13 @@ Equip.prototype.setImprovement = function(level) {
 		this.improves.AAself = mod*Math.sqrt(level);
 	}
 	
-	if ([12,234].includes(this.mid)) {
+	if ([12,234,247,467].includes(this.mid)) {
 		this.improves.Pshell = .3*level;
+		this.improves.Pnb = .3*level;
 	}
 	if ([10,66,220,275,358].includes(this.mid)) {
 		this.improves.Pshell = .2*level;
+		this.improves.Pnb = .2*level;
 	}
 	
 	if (this.type == RADARS || this.type == RADARL) {

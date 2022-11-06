@@ -91,6 +91,13 @@ loader.add('BG1','assets/82_res.images.ImgBackgroundDay.jpg')
 	.add('plane592','assets/plane592.png')
 	.add('plane594','assets/plane594.png')
 	.add('plane597','assets/plane597.png')
+	.add('plane_e009','assets/plane_e009.png')
+	.add('plane_e010','assets/plane_e010.png')
+	.add('plane_e011','assets/plane_e011.png')
+	.add('plane_e018','assets/plane_e018.png')
+	.add('plane_e019','assets/plane_e019.png')
+	.add('plane_e020','assets/plane_e020.png')
+	.add('plane_e021','assets/plane_e021.png')
 	.add('WG1','assets/684.png')
 	.add('WG2','assets/687.png')
 	.add('WG3','assets/690.png')
@@ -2557,7 +2564,8 @@ function createKleinFieldRing(field) {
 	},[]]);
 }
 
-var PLANESPRITES = ['938','914','916','918','920','922','924','926','plane9','plane10','plane11','plane12','plane13','plane544','plane511','plane588','plane590','plane592','plane594','plane597'];
+var PLANESPRITES = {1:'938',2:'914',3:'916',4:'918',5:'920',6:'922',7:'924',8:'926',9:'plane9',10:'plane10',11:'plane11',12:'plane12',13:'plane13',14:'plane544',15:'plane511',16:'plane588',17:'plane590',18:'plane592',19:'plane594',20:'plane597',
+	'e009':'plane_e009','e010':'plane_e010','e011':'plane_e011','e018':'plane_e018','e019':'plane_e019','e020':'plane_e020','e021':'plane_e021'};
 function createPlane(x,y,planetypes,shots,shots2,side) {
 	var num = Math.min(3,planetypes.length);
 	if (shots) shots = shuffle(shots);
@@ -2566,7 +2574,7 @@ function createPlane(x,y,planetypes,shots,shots2,side) {
 	var planes = new PIXI.Container();
 	if (num == 3) {
 		for (var i=0; i<3; i++) {
-			var plane = PIXI.Sprite.fromImage('assets/'+PLANESPRITES[planetypes[2-i]-1]+'.png');
+			var plane = PIXI.Sprite.fromImage('assets/'+PLANESPRITES[planetypes[2-i]]+'.png');
 			plane.x = i*25-25;
 			plane.y = (i==1) ? -15 : 15;
 			plane.scale.set(.8);
@@ -2578,7 +2586,7 @@ function createPlane(x,y,planetypes,shots,shots2,side) {
 		}
 	} else if (num == 2) {
 		for (var i=0; i<2; i++) {
-			var plane = PIXI.Sprite.fromImage('assets/'+PLANESPRITES[planetypes[1-i]-1]+'.png');
+			var plane = PIXI.Sprite.fromImage('assets/'+PLANESPRITES[planetypes[1-i]]+'.png');
 			plane.x = i*30-15;
 			plane.y = (i==1) ? -15 : 15;
 			plane.scale.set(.8);
@@ -2589,7 +2597,7 @@ function createPlane(x,y,planetypes,shots,shots2,side) {
 			// plane.shot = 2;
 		}
 	} else if (num == 1) {
-		var plane = PIXI.Sprite.fromImage('assets/'+PLANESPRITES[planetypes[0]-1]+'.png');
+		var plane = PIXI.Sprite.fromImage('assets/'+PLANESPRITES[planetypes[0]]+'.png');
 		plane.scale.set(.8);
 		if (side && [11,12,14].indexOf(planetypes[0])!=-1) { plane.scale.x = -plane.scale.x; plane.pivot.x = 50; }
 		planes.addChild(plane);

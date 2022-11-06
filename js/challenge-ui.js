@@ -23,10 +23,12 @@ var MECHANICDATES = {
 	OASW: '2016-06-30',
 	engineSynergy: '2017-01-10',
 	shellingSoftCap: '2017-03-17',
+	fitGunUpdate1: '2017-06-23',
 	CVCI: '2017-09-12',
 	destroyerNBCI: '2017-10-25',
 	aswSoftCap: '2017-11-10',
 	LBASBuff: '2017-11-17',
+	fitGunUpdate2: '2017-12-11',
 	equipBonus: '2017-12-22',
 	installRevamp: '2018-08-17',
 	specialAttacks: '2018-09-08',
@@ -39,6 +41,10 @@ var MECHANICDATES = {
 	kongouSpecialBuff: '2021-08-04',
 	eqBonusTorp: '2021-08-04',
 	eqBonusASW: '2021-09-28',
+	coloradoSpecialFix: '2021-10-15',
+	kongouSpecialBuff2: '2022-06-08',
+	coloradoSpecialBuff2: '2022-06-18',
+	eqBonusAA: '2022-08-04',
 };
 
 var MECHANICDATESOTHER = {
@@ -158,6 +164,12 @@ function chCreateFleetTableLBAS(root,num) {
 	$(root).append(divWrap);
 	for (var i=1; i<=6; i++) {
 		var table = $('<table class="t2" id="fleet'+num+i+'"></table>');
+		if (i == 4) {
+			table.append($('<tr><td colspan="2"><div class="t2stat"><img src="assets/stats/divebomb.png"/> Total Active Intercept Air Power</div></td></tr>'));
+			table.append($('<tr><td>Normal:</td><td><div class="t2stat"><span id="fleetlbabN'+num+'"></span></div></td></tr>'));
+			table.append($('<tr><td>HA:</td><td><div class="t2stat"><span id="fleetlbabHA'+num+'"></span></div></td></tr>'));
+			table.append($('<tr><td>Heavy:</td><td><div class="t2stat"><span id="fleetlbabSH'+num+'"></span></div></td></tr>'));
+		}
 		if (i >= 4) { divWrap.append(table); continue; }
 		table.append($('<tr class="t2show"><td colspan="4"><div style="text-align:center"><div class="t2name" id="fleetname'+num+i+'">Base '+i+'</div></div></td></tr>'));
 		table.append($('<tr class="t2show"><td colspan="4"><img src="assets/icons/LBAS'+i+'.png" class="t2portrait" id="fleetimg'+num+i+'"/></td></tr>'));
@@ -1394,11 +1406,13 @@ function chStart() {
 	}
 	chSetupVita(MECHANICS.vita);
 	MECHANICS.morale = true;
-	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA;
+	MECHANICS.fixFleetAA = MAPDATA[WORLD].date >= MECHANICDATES.fixFleetAA || MAPDATA[WORLD].date < MECHANICDATES.AACI;
 	MECHANICS.hayabusa65Buff = CHDATA.config.mechanics.softCapIncrease;
 	MECHANICS.eqBonus = CHDATA.config.mechanics.equipBonus;
 	MECHANICS.anchorageTorpNerf = MAPDATA[WORLD].date >= MAPDATA[51].date;
 	MECHANICS.aaci8Up = MECHANICS.installRevamp;
+	MECHANICS.ffReroll = MAPDATA[WORLD].date >= MAPDATA[50].date;
+	MECHANICS.yamatoSpecial = false;//MAPDATA[WORLD].date >= MAPDATA[54].date;
 	SIMCONSTS.shellDmgCap = 150;
 	SIMCONSTS.aswDmgCap = 100;
 	SIMCONSTS.torpedoDmgCap = 150;
@@ -1422,6 +1436,7 @@ function chStart() {
 	SIMCONSTS.enableModSummerBB = WORLD >= 51;
 	SIMCONSTS.enableModSummerCA = WORLD >= 51;
 	SIMCONSTS.enableModFrenchBB = WORLD >= 51;
+	SIMCONSTS.enableModDock = WORLD >= 55;
 	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
 	toggleDDCIBuff(MECHANICS.subFleetAttack);
 
@@ -1692,6 +1707,20 @@ function chFillTable(sids,fleet) {
 	}
 }
 
+function chUpdateLBASTotal() {
+	let apTotal = 0, basesDefend = [];
+	for (let i=1; i<=3; i++) {
+		if (CHDATA.fleets['lbas'+i]) continue;
+		let base = LBAS[i-1];
+		if (!base) continue;
+		apTotal += base.airPowerDefend();
+		basesDefend.push(base);
+	}
+	$('#fleetlbabN5').text(Math.floor(apTotal));
+	$('#fleetlbabHA5').text(Math.floor(apTotal*getLBRaidHAMod(basesDefend)));
+	$('#fleetlbabSH5').text(Math.floor(apTotal*getLBRaidHeavyMod(basesDefend)));
+}
+
 function chTableSetShip(sid,fleet,slot,noswap) {
 	if (!sid) { chTableRemoveShip(fleet,slot); return; }
 	var ship = CHDATA.ships[sid];
@@ -1723,6 +1752,7 @@ function chTableSetShip(sid,fleet,slot,noswap) {
 		$('#fleetlbac'+fleet+slot).text(LBAS[slot-1].fleetAirPower(false,true));
 		$('#fleetlbab'+fleet+slot).text(LBAS[slot-1].airPowerDefend());
 		$('#fleetlbrn'+fleet+slot).text(getLBASRange(ship));
+		chUpdateLBASTotal();
 	}
 	
 	if (ship.lock) $('#fleetlock'+fleet+slot).attr('src','assets/maps/lock'+ship.lock+'.png');
@@ -2282,6 +2312,7 @@ function chAddLBAS(num) {
 		CHDATA.fleets['lbas'+num] = false;
 		$('#btnLBAS'+num).css('opacity',.5);
 	}
+	chUpdateLBASTotal();
 }
 
 function chAddFriendFleet() {
