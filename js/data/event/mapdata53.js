@@ -1895,7 +1895,7 @@ MAPDATA[53] =
 							if (ships.c.aBB >= 4) return 'H';
 							if (ships.c.aCV >= 4) return 'H';
 							if (ships.c.CL + ships.c.DD >= 5) return 'J';
-							if (ship.c.CV + ships.c.CVB >= 3) return 'H';
+							if (ships.c.CV + ships.c.CVB >= 3) return 'H';
 							if (ships.speed >= 10) return 'J';
 							return 'H';
 						}
