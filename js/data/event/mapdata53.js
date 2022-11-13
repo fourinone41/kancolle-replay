@@ -1926,7 +1926,7 @@ MAPDATA[53] =
 								1: { 40: 'L', 34: 'K' },
 								4: { 30: 'L', 24: 'K' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
@@ -2023,7 +2023,7 @@ MAPDATA[53] =
 								1: { 18: 'S', 13: 'Q' },
 								4: { 8: 'S', 3: 'Q' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
@@ -2198,7 +2198,7 @@ MAPDATA[53] =
 								1: { 63: 'Z', 55: 'Y' },
 								4: { 47: 'Z', 39: 'Y' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
@@ -2242,7 +2242,7 @@ MAPDATA[53] =
 								1: { 63: 'Z', 55: 'Y' },
 								4: { 47: 'Z', 39: 'Y' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
@@ -2273,7 +2273,7 @@ MAPDATA[53] =
 								1: { 63: 'Z', 55: 'W' },
 								4: { 47: 'Z', 39: 'W' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
@@ -3988,7 +3988,7 @@ MAPDATA[53] =
 								1: { 65: 'N', 60: 'M2' },
 								4: { 60: 'N', 55: 'M2' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
@@ -4344,7 +4344,7 @@ MAPDATA[53] =
 								1: { 64: 'Y', 59: 'X' },
 								4: { 54: 'Y', 49: 'X' },
 							}[getDiff()];
-							let los = getELoS33(1,2) + getELoS33(1,2);
+							let los = getELoS33(1,2) + getELoS33(2,2);
 							return checkELoS33(los,vals);
 						}
 					},
