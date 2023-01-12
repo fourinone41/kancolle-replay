@@ -2598,7 +2598,7 @@ function chSparkleAll() {
 	let n = fleetnum == 1 && CHDATA.fleets.sf ? 7 : 6;
 	let ids = CHDATA.fleets[fleetnum];
 	if (fleetnum == 1 && CHDATA.fleets.combined) ids = ids.concat(CHDATA.fleets[2]);
-	let hasUnsparkled = !!ids.find(id => CHDATA.ships[id].morale <= 52);
+	let hasUnsparkled = !!ids.find(id => id && CHDATA.ships[id].morale <= 52);
 	for (let i=0; i<n; i++) {
 		if (!CHDATA.fleets[fleetnum][i]) continue;
 		if (hasUnsparkled && CHDATA.ships[CHDATA.fleets[fleetnum][i]].morale > 52) continue;
