@@ -167,8 +167,8 @@ function chCreateFleetTableLBAS(root,num) {
 		if (i == 4) {
 			table.append($('<tr><td colspan="2"><div class="t2stat"><img src="assets/stats/divebomb.png"/> Total Active Intercept Air Power</div></td></tr>'));
 			table.append($('<tr><td>Normal:</td><td><div class="t2stat"><span id="fleetlbabN'+num+'"></span></div></td></tr>'));
-			table.append($('<tr><td>HA:</td><td><div class="t2stat"><span id="fleetlbabHA'+num+'"></span></div></td></tr>'));
-			table.append($('<tr><td>Heavy:</td><td><div class="t2stat"><span id="fleetlbabSH'+num+'"></span></div></td></tr>'));
+			table.append($('<tr><td>High Altitude:</td><td><div class="t2stat"><span id="fleetlbabHA'+num+'"></span></div></td></tr>'));
+			table.append($('<tr><td>Super Heavy:</td><td><div class="t2stat"><span id="fleetlbabSH'+num+'"></span></div></td></tr>'));
 		}
 		if (i >= 4) { divWrap.append(table); continue; }
 		table.append($('<tr class="t2show"><td colspan="4"><div style="text-align:center"><div class="t2name" id="fleetname'+num+i+'">Base '+i+'</div></div></td></tr>'));
@@ -1412,7 +1412,8 @@ function chStart() {
 	MECHANICS.anchorageTorpNerf = MAPDATA[WORLD].date >= MAPDATA[51].date;
 	MECHANICS.aaci8Up = MECHANICS.installRevamp;
 	MECHANICS.ffReroll = MAPDATA[WORLD].date >= MAPDATA[50].date;
-	MECHANICS.yamatoSpecial = false;//MAPDATA[WORLD].date >= MAPDATA[54].date;
+	MECHANICS.yamatoSpecial = MECHANICS.kongouSpecialBuff2;
+	MECHANICS.antiSubRaid = MAPDATA[WORLD].date >= MAPDATA[54].date;
 	SIMCONSTS.shellDmgCap = 150;
 	SIMCONSTS.aswDmgCap = 100;
 	SIMCONSTS.torpedoDmgCap = 150;
@@ -2241,6 +2242,7 @@ function chSortieChangeDiff(diff) {
 		delete CHDATA.event.maps[CHDATA.event.mapnum].debuff;
 		delete CHDATA.event.maps[CHDATA.event.mapnum].debuffed;
 		delete CHDATA.event.maps[CHDATA.event.mapnum].routes;
+		delete CHDATA.event.maps[CHDATA.event.mapnum].lbPart;
 	}
 }
 
@@ -2594,12 +2596,19 @@ function chSparkleAll() {
 	else if (!+$('#tabsupportB').attr('value')) fleetnum = 4;
 	else return;
 	let n = fleetnum == 1 && CHDATA.fleets.sf ? 7 : 6;
+	let ids = CHDATA.fleets[fleetnum];
+	if (fleetnum == 1 && CHDATA.fleets.combined) ids = ids.concat(CHDATA.fleets[2]);
+	let hasUnsparkled = !!ids.find(id => CHDATA.ships[id].morale <= 52);
 	for (let i=0; i<n; i++) {
-		if (CHDATA.fleets[fleetnum][i]) chClickMorale(fleetnum,i+1);
+		if (!CHDATA.fleets[fleetnum][i]) continue;
+		if (hasUnsparkled && CHDATA.ships[CHDATA.fleets[fleetnum][i]].morale > 52) continue;
+		chClickMorale(fleetnum,i+1);
 	}
 	if (fleetnum == 1 && CHDATA.fleets.combined) {
 		for (let i=0; i<6; i++) {
-			if (CHDATA.fleets[2][i]) chClickMorale(2,i+1);
+			if (!CHDATA.fleets[2][i]) continue;
+			if (hasUnsparkled && CHDATA.ships[CHDATA.fleets[2][i]].morale > 52) continue;
+			chClickMorale(2,i+1);
 		}
 	}
 }

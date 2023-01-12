@@ -276,7 +276,21 @@
 		"ids": [104],
 		"bonusesByDate": {
 			"": [],
-			"2018-05-29": "cur"
+			"2018-05-29": [
+				{
+					"bonus": { "houg": 2 },
+					"shipId": [149]
+				},
+				{
+					"bonus": { "houg": 1 },
+					"shipId": [150,152]
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 1, "kaih": 2 },
+					"shipId": [151]
+				}
+			],
+			"2022-12-27": "cur"
 		}
 	},
 	{
@@ -738,6 +752,32 @@
 		"bonusesByDate": {
 			"": [],
 			"2020-01-14": "cur"
+		}
+	},
+	{
+		"ids": [289],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 2, "tyku": 1 },
+					"shipId": [149]
+				},
+				{
+					"bonus": { "houg": 1 },
+					"shipId": [150,152]
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 2 },
+					"shipId": [151]
+				},
+				{
+					"bonus": { "houg": 2, "kaih": 2 },
+					"shipId": [149,151],
+					"requiresSR": 1,
+					"num": 1
+				}
+			],
+			"2022-12-27": "cur"
 		}
 	},
 	{

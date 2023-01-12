@@ -59,6 +59,13 @@ ChGimmickList.updateAll = function(args) {
 	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
 		progressed = progressed || MAPDATA[WORLD].maps[MAPNUM].debuffRules.update(args);
 	}
+	if (MAPDATA[WORLD].maps[MAPNUM].lbParts) {
+		for (let part in MAPDATA[WORLD].maps[MAPNUM].lbParts) {
+			if (MAPDATA[WORLD].maps[MAPNUM].lbParts[part].unlockRules) {
+				progressed = progressed || MAPDATA[WORLD].maps[MAPNUM].lbParts[part].unlockRules.update(args);
+			}
+		}
+	}
 	
 	if (!ChGimmickList._gimmickExtra[WORLD] || !ChGimmickList._gimmickExtra[WORLD][MAPNUM]) ChGimmickList._getGimmickExtra(MAPNUM);
 	for (let gimmickList of ChGimmickList._gimmickExtra[WORLD][MAPNUM]) {

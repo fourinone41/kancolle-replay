@@ -210,6 +210,10 @@ var mapnodes = {};
 var mapAirBase = PIXI.Sprite.fromImage('assets/maps/airbase.png');
 mapAirBase.pivot.set(13);
 stage.addChild(mapAirBase);
+var mapAirBaseReplace = PIXI.Sprite.fromImage('assets/maps/airbase.png');
+mapAirBaseReplace.pivot.set(13);
+mapAirBaseReplace.alpha = 0;
+stage.addChild(mapAirBaseReplace);
 
 var mapshipS = PIXI.Sprite.fromImage('assets/maps/ship.png');
 mapshipS.defpivotx = 27; mapshipS.defpivoty = 27;
@@ -435,6 +439,7 @@ function chResetMapSpritePos() {
 	bcompass.pivot.set(150,150); bcompass.rotation = Math.PI/4;
 	bcompass.position.set(35,445);
 	map.alpha = mapship.alpha = bcompass.alpha = bneedle.alpha = bottombar.alpha = mapAirBase.alpha = 1;
+	mapAirBaseReplace.alpha = 0;
 	for (var letter in mapnodes) mapnodes[letter].alpha = 1;
 	bneedle.pivot.set(14,101); bneedle.rotation = Math.PI/4;
 	bneedle.position.set(35,445);
@@ -1106,6 +1111,8 @@ function chLoadMap(mapnum) {
 		}
 	}
 	
+	checkLBUnlocks();
+	
 	mapAirBase.visible = false;
 	if (MAPDATA[WORLD].maps[MAPNUM].lbX) {
 		mapAirBase.visible = true;
@@ -1119,9 +1126,11 @@ function chLoadMap(mapnum) {
 function mapPhase(first) {
 	if (first) {
 		SM.playBGM(MAPDATA[WORLD].maps[MAPNUM].bgmMap);
+		let lbUnlock = checkLBUnlocks();
 		var hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
 		if (hiddenRoutes) {
 			let routeKey = checkRouteUnlocks(hiddenRoutes);
+			if (!routeKey && lbUnlock) routeKey = -1;
 			if (routeKey) {
 				eventqueue.push([function() {
 					addTimeout(function() { showRouteUnlock(hiddenRoutes[routeKey],routeKey); }, 1000);
@@ -1533,6 +1542,7 @@ function getEnemyComp(letter,mapdata,diff,lastdance) {
 		}
 		// console.log(comps);
 	} else {
+		if (mapdata.compDiffSpecial) mapdata = mapdata.compDiffSpecial();
 		if (mapdata.compDiffPart) mapdata = mapdata.compDiffPart[CHDATA.event.maps[MAPNUM].part];
 		comps = (mapdata.compDiffF && lastdance)? mapdata.compDiffF[diff] : mapdata.compDiff[diff];
 		if (mapdata.compDiffC && CHDATA.event.maps[MAPNUM].hp <= 0) comps = mapdata.compDiffC[diff];
@@ -1806,16 +1816,19 @@ function prepBattle(letter) {
 		let modDmg = 1, modAcc = 1, modEv = 1;
 		if (ship.bonusSpecial) {
 			for (let bonus of ship.bonusSpecial) {
+				if (bonus.requireSlot != null && ship.planecount[bonus.requireSlot] <= 0) continue;
 				if (!bonus.on) modDmg *= bonus.mod;
 			}
 		}
 		if (ship.bonusSpecialAcc) {
 			for (let bonus of ship.bonusSpecialAcc) {
+				if (bonus.requireSlot != null && ship.planecount[bonus.requireSlot] <= 0) continue;
 				if (!bonus.on) modAcc *= bonus.mod;
 			}
 		}
 		if (ship.bonusSpecialEv) {
 			for (let bonus of ship.bonusSpecialEv) {
+				if (bonus.requireSlot != null && ship.planecount[bonus.requireSlot] <= 0) continue;
 				if (!bonus.on) modEv *= bonus.mod;
 			}
 		}
@@ -1930,9 +1943,11 @@ function endMap() {
 	}
 	
 	var endTime = 1500;
+	let lbUnlock = checkLBUnlocks();
 	var hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
 	if (hiddenRoutes) {
 		var key = checkRouteUnlocks(hiddenRoutes);
+		if (!key && lbUnlock) key = -1;
 		if (key) {
 			addTimeout(function() {
 				stage = STAGEMAP;
@@ -1993,7 +2008,16 @@ function endMap() {
 }
 
 function showRouteUnlock(route,routeId) {
+	if (!route) route = { images: [] };
 	var sprs = [], sprsRemove = [];
+	if (mapAirBase.x != MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX || mapAirBase.y != MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY) {
+		mapAirBaseReplace.position.set(mapAirBase.x,mapAirBase.y);
+		mapAirBaseReplace.alpha = 1;
+		sprsRemove.push(mapAirBaseReplace);
+		mapAirBase.position.set(MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX, MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY);
+		mapAirBase.alpha = 0;
+		sprs.push(mapAirBase);
+	}
 	for (var image of route.images) {
 		var spr = PIXI.Sprite.fromImage('assets/maps/'+WORLD+'/'+image.name);
 		spr.position.set(image.x,image.y);
@@ -2740,6 +2764,8 @@ function chUpdateSupply() {
 		let attackSpecial = FLEETS1[0].ships[0].attackSpecial;
 		if (attackSpecial == 101 || attackSpecial == 102) costSpecial = 1.5;
 		else if (attackSpecial == 104) costSpecial = MECHANICS.kongouSpecialBuff ? 1.2 : 1.3;
+		else if (attackSpecial == 400) costSpecial = 1.8;
+		else if (attackSpecial == 401) costSpecial = 1.6;
 		if (costSpecial) shipsSpecial = getSpecialAttackShips(FLEETS1[0].ships,attackSpecial);
 		FLEETS1[0].didSpecial = 2;
 	}
@@ -3036,6 +3062,24 @@ function checkRouteUnlocks(hiddenRoutes,peekOnly) {
 	return null;
 }
 
+function checkLBUnlocks() {
+	if (!MAPDATA[WORLD].maps[MAPNUM].lbParts) return null;
+	let lbParts = MAPDATA[WORLD].maps[MAPNUM].lbParts;
+	if (!CHDATA.event.maps[MAPNUM].lbPart) CHDATA.event.maps[MAPNUM].lbPart = 1;
+	let lbPartNew = null;
+	for (let partNum of Object.keys(lbParts).sort()) {
+		if (+partNum <= CHDATA.event.maps[MAPNUM].lbPart) continue;
+		if (lbParts[partNum].unlockRules && lbParts[partNum].unlockRules.check()) {
+			lbPartNew = CHDATA.event.maps[MAPNUM].lbPart = +partNum;
+		}
+	}
+	for (let key in lbParts[CHDATA.event.maps[MAPNUM].lbPart]) {
+		MAPDATA[WORLD].maps[MAPNUM][key] = lbParts[CHDATA.event.maps[MAPNUM].lbPart][key];
+	}
+	console.log('CHECK LB',lbPartNew,CHDATA.event.maps[MAPNUM].lbPart);
+	return lbPartNew;
+}
+
 //-----------------
 function mapEnemyRaid(isSuperHeavy) {
 	SM.play('siren');
@@ -3326,7 +3370,7 @@ function getSpeedUp(shipId,equipIds) {
 	let group = 3;
 	if ([9,22,31,33,43,81,112].includes(sdata.sclass)) {
 		group = 1;
-	} else if ([6,17,25,37,41,65].includes(sdata.sclass) || [181,331,404].includes(getBaseId(shipId)) || [541,573].includes(shipId)) {
+	} else if ([6,17,25,37,41,65].includes(sdata.sclass) || [181,331,404].includes(getBaseId(shipId)) || [541,573,894,899].includes(shipId)) {
 		group = 2;
 	} else if (['SS','SSV'].includes(sdata.type) || (sdata.type == 'AV' && sdata.SPD >= 10) || [3,45,49,60].includes(sdata.sclass) || [115,293].includes(shipId)) {
 		group = 0;
@@ -3363,6 +3407,10 @@ function getSpeedUp(shipId,equipIds) {
 		if (numTurbine && numBoilerNM) {
 			speedUp = 10;
 		}
+	}
+	if ([894,899].includes(shipId)) {
+		// if (numBoilerNM && numBoilerNM == numBoiler && speedUp < 5) speedUp = 5; before 2022-12-27
+		if (numBoilerNM) speedUp += 5;
 	}
 	
 	return Math.min(speedUp, 20 - sdata.SPD);
