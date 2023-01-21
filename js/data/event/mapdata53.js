@@ -3403,7 +3403,7 @@ MAPDATA[53] =
 				bgmNB: 200,
 				bossnode: ['G','N','Y'],
 				giveLock: ['53_7','53_4','53_8'],
-				checkLock: ['53_1','53_2','53_3','53_5','53_6'],
+				checkLockHard: ['53_1','53_2','53_3','53_5','53_6'],
 				lockSpecial: true,
 				lbas: 3,
 				lbX: 698,

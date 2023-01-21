@@ -4113,7 +4113,7 @@ MAPDATA[50] =
 					22: { bgmDB: 159, bgmNB: 159 },
 				},
 				giveLock: ['50_4','50_6','50_9'],
-				checkLock: ['50_1','50_2','50_3','50_5','50_7','50_8'],
+				checkLockHard: ['50_1','50_2','50_3','50_5','50_7','50_8'],
 				lockSpecial: true,
 				lbas: 3,
 				lbasSortie: 1,

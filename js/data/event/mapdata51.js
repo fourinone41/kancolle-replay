@@ -2447,7 +2447,7 @@ MAPDATA[51] =
 					'Z2': { bgmDB: 185, bgmNB: 185 },
 				},
 				giveLock: ['51_4','51_5','51_6','51_7'],
-				checkLock: ['51_1','51_2','51_3'],
+				checkLockHard: ['51_1','51_2','51_3'],
 				lockSpecial: true,
 				lbas: 3,
 				parts: {

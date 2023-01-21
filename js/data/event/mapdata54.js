@@ -1436,7 +1436,7 @@ MAPDATA[54] =
 				bgmNB: 204,
 				bossnode: ['Q','U','Y'],
 				overrideBGM: {
-					'Q': { bgmDB: 114, bgmNB: 114 },
+					17: { bgmDB: 114, bgmNB: 114 },
 				},
 				giveLock: ['54_4','54_5','54_1'],
 				checkLock: ['54_2','54_3','54_6','54_7','54_8','54_9','54_10'],
@@ -3362,7 +3362,7 @@ MAPDATA[54] =
 					16: { bgmDB: 204, bgmNB: 204 },
 				},
 				giveLock: ['54_9','54_10','54_7'],
-				checkLock: ['54_1','54_2','54_3','54_4','54_5','54_6','54_8'],
+				checkLockHard: ['54_1','54_2','54_3','54_4','54_5','54_6','54_8'],
 				lockSpecial: true,
 				lbas: 3,
 				parts: {
