@@ -2755,6 +2755,10 @@ function chUpdateSupply() {
 			baseF = .04;
 			results.noammo = true;
 		}
+		if (WORLD >= 43 && !results.overrideCost && FLEETS2[0].ships.every(ship => ship.isPT)) {
+			baseF = .04;
+			baseA = .08;
+		}
 	}
 	console.log(baseF + ' ' + baseA);
 	var didNB = (results.rankDay && NBSELECT) || results.nightToDay2;

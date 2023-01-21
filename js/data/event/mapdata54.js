@@ -677,6 +677,9 @@ MAPDATA[54] =
 				bgmDB: 203,
 				bgmNB: 203,
 				bossnode: ['O','T2','W2'],
+				overrideBGM: {
+					'W2': { bgmDB: 159, bgmNB: 159 },
+				},
 				giveLock: ['54_2','54_3'],
 				checkLock: ['54_1','54_4','54_5','54_6','54_7','54_8','54_9','54_10'],
 				lockSpecial: true,
@@ -3531,7 +3534,7 @@ MAPDATA[54] =
 						'54_7': 'Only GREEN locks allowed.',
 						'54_9': 'Only ORANGE locks allowed.',
 						'54_10': 'Only YELLOW locks allowed.',
-					});
+					},true);
 				},
 				bonuses: {
 					base: [

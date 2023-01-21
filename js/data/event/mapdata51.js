@@ -2642,7 +2642,7 @@ MAPDATA[51] =
 							return;
 						}
 					}
-					if (getDiff() == 1 || getDiff() == 4 || CHDATA.config.disablelock) return;
+					if (getDiff() != 3 || CHDATA.config.disablelock) return;
 					let lock = this.getLock(ships).lock;
 					
 					let allSame = true;
