@@ -2861,11 +2861,15 @@ MAPDATA[54] =
 						routeC: function(ships) {
 							this.showNoCompass = true;
 							if (checkRoute(4)) {
-								if (ships.speed <= 5) return 'J';
+								this.showNoCompass = false;
+								if (ships.c.aBB >= 3) return 'J';
 								if (ships.c.CV + ships.c.CVB) return 'J';
+								if (ships.c.CVL >= 2) return 'J';
+								if (ships.c.DD + ships.c.DE <= 4) return 'J';
+								if (ships.c.DD >= 7) return 'X';
+								if (ships.speed <= 5) return 'J';
 								if (ships.c.aBB + ships.c.CVL >= 3) return 'J';
 								if (ships.c.CA + ships.c.CAV >= 3) return 'J';
-								if (ships.c.DD + ships.c.DE <= 4) return 'J';
 								return 'X';
 							}
 							return 'J';
