@@ -363,6 +363,10 @@ function shell(ship,target,APIhou,attackSpecial) {
 		postMod *= ship.ptDmgMod || 1;
 	}
 	
+	if (SIMCONSTS.enableModFrenchBB && target.isFrenchBB && [1834,1835,1836,1837,1838,1839].includes(target.mid)) {
+		if (ship.equiptypes[SEAPLANEBOMBER] || ship.equiptypes[SEAPLANEFIGHTER]) accMod *= 1.1;
+	}
+	
 	var evFlat = 0;
 	if (target.fleet.formation.id == 6) {
 		if (SIMCONSTS.vanguardUseType == 1) {
@@ -383,6 +387,7 @@ function shell(ship,target,APIhou,attackSpecial) {
 	acc *= accMod2;
 	
 	if (ship.bonusSpecialAcc && (evFlat < 20 || SIMCONSTS.vanguardUseType != 1)) acc *= getBonusAcc(ship,target);
+	if (SIMCONSTS.enablePlaneBonus && ship.CVshelltype) acc *= getBonusSpecialPlane(ship,'bonusSpecialAccP');
 	
 	if (target.isPT) {
 		if (NERFPTIMPS) {
@@ -659,6 +664,7 @@ function NBattack(ship,target,NBonly,NBequips,APIyasen,attackSpecial) {
 	acc *= accMod2;
 	
 	if (ship.bonusSpecialAcc && (evFlat < 20 || SIMCONSTS.vanguardUseType != 1)) acc *= getBonusAcc(ship,target);
+	if (SIMCONSTS.enablePlaneBonus && ship.canNBAirAttack()) acc *= getBonusSpecialPlane(ship,'bonusSpecialAccP');
 	
 	if (target.isPT) {
 		if (NERFPTIMPS) {
@@ -839,6 +845,7 @@ function ASW(ship,target,isnight,APIhou,isOASW) {
 	var acc = hitRate(ship,80,sonarAcc,accMod);
 	if (ship.bonusSpecialAcc) acc *= getBonusAcc(ship,target);
 	let usePlaneProf = ship.planeasw && !isOASW && ship.type != 'CV' && ship.type != 'AO';
+	if (SIMCONSTS.enablePlaneBonus && usePlaneProf) acc *= getBonusSpecialPlane(ship,'bonusSpecialAccP');
 	var res = rollHit(accuracyAndCrit(ship,target,acc,target.getFormation().ASWev,evFlat,1.3,usePlaneProf),usePlaneProf ? ship.critdmgbonus : null);
 	var dmg = 0, realdmg = 0;
 	var premod = (isnight && !MECHANICS.vita)? 0 : ship.getFormation().ASWmod*ENGAGEMENT*ship.damageMod();
@@ -1733,20 +1740,21 @@ function getBonusAcc(ship,target,isAir) {
 	return mod;
 }
 
-function getBonusSpecialPlane(ship) {
+function getBonusSpecialPlane(ship,key='bonusSpecialP') {
 	let mod = 1, groups = {};
 	for (let i=0; i<ship.equips.length; i++) {
 		if (ship.planecount[i] <= 0) continue;
 		let eq = ship.equips[i];
-		if (eq.bonusSpecialP) {
-			for (let group in eq.bonusSpecialP) {
-				groups[group] = eq.bonusSpecialP[group];
+		if (eq[key]) {
+			for (let group in eq[key]) {
+				groups[group] = eq[key][group];
 			}
 		}
 	}
 	for (let group in groups) {
 		mod *= groups[group];
 	}
+	if (C) console.log('GET BONUS PLANE: ' + key + ' ' + mod);
 	return mod;
 }
 
@@ -2620,7 +2628,11 @@ function airstrikeLBAS(lbas,target,slot,contactMod) {
 		else acc += .14;
 	}
 	if (SIMCONSTS.enablePlaneBonus && equip.bonusSpecialAccP) {
-		for (let group in equip.bonusSpecialAccP) acc *= equip.bonusSpecialAccP[group];
+		if (equip.bonusSpecialPUseAll) {
+			acc *= getBonusSpecialPlane(lbas,'bonusSpecialAccP');
+		} else {
+			for (let group in equip.bonusSpecialAccP) acc *= equip.bonusSpecialAccP[group];
+		}
 	}
 	lbas.critratebonus = critratebonus; lbas.ACCplane = ACCplane;
 	var res = rollHit(accuracyAndCrit(lbas,target,acc,1,0,0,true),critdmgbonus);
@@ -2672,7 +2684,11 @@ function airstrikeLBAS(lbas,target,slot,contactMod) {
 		// postMod *= (target.divebombWeak || 1);
 		if (target.fleet.combinedWith) postMod *= 1.1;
 		if (SIMCONSTS.enablePlaneBonus && equip.bonusSpecialP) {
-			for (let group in equip.bonusSpecialP) postMod *= equip.bonusSpecialP[group];
+			if (equip.bonusSpecialPUseAll) {
+				postMod *= getBonusSpecialPlane(lbas);
+			} else {
+				for (let group in equip.bonusSpecialP) postMod *= equip.bonusSpecialP[group];
+			}
 		}
 		dmg = damage(lbas,target,dmgbase,preMod,res*contactMod*postMod,SIMCONSTS.airDmgCap,true);
 		realdmg = takeDamage(target,dmg);

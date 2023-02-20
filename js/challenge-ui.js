@@ -1070,6 +1070,7 @@ function chProcessKC3File2() {
 		}
 	}
 	
+	let replaceSpecial = { 469: { masterId: 102, stars: 10 } };
 	for (var eqid in CHDATA.gears) {
 		// if (!CHDATA.config.mechanics.improvement) CHDATA.gears[eqid].stars = 0;
 		// if (!CHDATA.config.mechanics.proficiency) CHDATA.gears[eqid].ace = -1;
@@ -1088,6 +1089,13 @@ function chProcessKC3File2() {
 			if (item.heldBy) {
 				var slot = CHDATA.ships[item.heldBy].items.indexOf(parseInt(eqid.substr(1)));
 				chShipEquipItem(item.heldBy,-1,slot);
+			}
+			let itemNew;
+			if ((itemNew = replaceSpecial[item.masterId]) && EQDATA[itemNew.masterId].added <= MAPDATA[CHDATA.event.world].date) {
+				delete item.disabled;
+				item.masterId = itemNew.masterId;
+				if (itemNew.stars) item.stars = itemNew.stars;
+				if (itemNew.ace) item.ace = itemNew.ace;
 			}
 		}
 		
@@ -2160,6 +2168,10 @@ function chLoadSortieInfo(mapnum) {
 		}
 	}
 	
+	if (CHDATA.event.maps[mapnum].lbPart && mapdata.lbParts[CHDATA.event.maps[mapnum].lbPart].lbas) {
+		mapdata.lbas = mapdata.lbParts[CHDATA.event.maps[mapnum].lbPart].lbas;
+		mapdata.lbasSortie = mapdata.lbParts[CHDATA.event.maps[mapnum].lbPart].lbasSortie;
+	}
 	var numLB = mapdata.lbas || 0;
 	for (var i=1; i<=3; i++) {
 		if (i <= numLB) {

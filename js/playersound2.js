@@ -8281,6 +8281,7 @@ var VOICES = {
 		damage1: "assets/voice/913_damage1.mp3",
 		damage2: "assets/voice/913_damage2.mp3",
 		damage3: "assets/voice/913_damage3.mp3",
+		special: "assets/voice/913_900.mp3",
 	},
 	921: {
 		start: "assets/voice/921_start.mp3",

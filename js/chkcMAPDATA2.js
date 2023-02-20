@@ -34792,12 +34792,13 @@ function chResetBonus() {
 
 function chCheckLockSpStandard(errors,lock,messageByLock,hardOnly) {
 	if (getDiff() == 1 || getDiff() == 4 || (hardOnly && getDiff() == 2) || CHDATA.config.disablelock) return;
-	let allSame = true;
+	let allSame = true, lockCheck = lock;
 	let num = CHDATA.fleets.combined ? 2 : 1;
 	for (let n=1; n<=num; n++) {
 		for (let sid of CHDATA.fleets[n]) {
 			if (sid && CHDATA.ships[sid].lock) {
-				if (lock != CHDATA.ships[sid].lock) { allSame = false; break; }
+				if (!lockCheck) lockCheck = CHDATA.ships[sid].lock;
+				if (lockCheck != CHDATA.ships[sid].lock) { allSame = false; break; }
 			}
 		}
 	}

@@ -317,7 +317,7 @@ function chAddReward(data,forceNew) {
 			var mid = data.ships[i];
 			if (!SHIPDATA[mid]) continue;
 			for (var j=0; j<100; j++) {
-				var sid = 'x'+(90000+j);
+				var sid = 'x'+(900000+j);
 				if (CHDATA.ships[sid]) continue;
 				var sdata = SHIPDATA[mid];
 				var lvl = (mid > 9000)? 20 : 1;
@@ -350,6 +350,7 @@ function chAddReward(data,forceNew) {
 	if (data.items) {
 		for (var i=0; i<data.items.length; i++) {
 			var mid = typeof data.items[i] === 'object' ? data.items[i].id : data.items[i];
+			var stars = typeof data.items[i] === 'object' ? (data.items[i].stars || 0) : 0;
 			if (!forceNew) {
 				let gearExisting = null;
 				for (let eqid in CHDATA.gears) {
@@ -371,7 +372,7 @@ function chAddReward(data,forceNew) {
 					itemId: eqid,
 					masterId: mid,
 					lock: 1,
-					stars: 0,
+					stars: stars,
 					ace: ((EQTDATA[EQDATA[mid].type].isPlane)? 7 : -1)
 				};
 				CHDATA.gears[eqid] = newequip;
@@ -389,7 +390,9 @@ function chShowReward(data,tracker) {
 	if (numShips + numItems) {
 		$('#dialogreward').dialog('open');
 		$('#rewardshine').css('animation','spin 5s linear infinite');
+		$('#rewardship').css('margin-left','90px');
 		$('#rewardship').css('margin-top','105px');
+		$('#rewardtext').text('');
 		if (tracker < numShips) {
 			$('#rewardship').attr('src','assets/icons/'+SHIPDATA[data.ships[tracker]].image);
 		} else {
@@ -425,7 +428,10 @@ function chShowReward(data,tracker) {
 				$('#rewardship').css('margin-top','40px');
 				$('#rewardship').attr('src','assets/maps/Apology_scroll.png');
 			} else {
-				$('#rewardship').attr('src','assets/items/'+EQTDATA[EQDATA[id].type].image+'.png');
+				$('#rewardship').css('margin-left','155px');
+				$('#rewardship').css('margin-top','110px');
+				$('#rewardship').attr('src','assets/items/'+(EQDATA[id].image || EQTDATA[EQDATA[id].type].image)+'.png');
+				$('#rewardtext').text(EQDATA[id].name);
 			}
 		}
 		$('#rewardship').css('animation','appear 1s linear 1');

@@ -22,6 +22,7 @@ function ChGimmickList(type, mapPartNumber, mapNum, gimmickData, additionalParam
 	
 	this.check = function() {
 		if (this.mapPartNumber && CHDATA.event.maps[this.mapNum].part < this.mapPartNumber) return false;
+		if (this.type == 'lbRelocate' && this.additionalParameters.routeUnlockRequired && !(CHDATA.event.maps[this.mapNum].routes || []).includes(this.additionalParameters.routeUnlockRequired)) return false;
 		return this.gimmicks.filter(gimmick => gimmick.check()).length >= (this.additionalParameters.numberOfStepRequired || this.gimmicks.length);
 	}
 	this.update = function(args) {
@@ -99,7 +100,9 @@ function ChGimmick(data) {
 	this.check = function() {
 		if (this.node == 'AB' && CHDATA.config.disableRaidReq) return true;
 		let debuff = CHDATA.event.maps[this.mapNum].debuff, diff = CHDATA.event.maps[this.mapNum].diff;
-		if (!debuff || !diff) return false;
+		if (!diff) return false;
+		if (!this.timesRequiredPerDiff[diff]) return true;
+		if (!debuff) return false;
 		return (debuff[this.key] || 0) >= (this.timesRequiredPerDiff[diff] || 0);
 	}
 	this.update = function(args) {

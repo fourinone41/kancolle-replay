@@ -1114,6 +1114,7 @@ function chLoadMap(mapnum) {
 	checkLBUnlocks();
 	
 	mapAirBase.visible = false;
+	mapAirBase.position.set(-100,-100);
 	if (MAPDATA[WORLD].maps[MAPNUM].lbX) {
 		mapAirBase.visible = true;
 		mapAirBase.position.set(MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX, MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY);
@@ -1126,10 +1127,10 @@ function chLoadMap(mapnum) {
 function mapPhase(first) {
 	if (first) {
 		SM.playBGM(MAPDATA[WORLD].maps[MAPNUM].bgmMap);
-		let lbUnlock = checkLBUnlocks();
 		var hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
 		if (hiddenRoutes) {
 			let routeKey = checkRouteUnlocks(hiddenRoutes);
+			let lbUnlock = checkLBUnlocks();
 			if (!routeKey && lbUnlock) routeKey = -1;
 			if (routeKey) {
 				eventqueue.push([function() {
@@ -1153,7 +1154,7 @@ function mapPhase(first) {
 	}
 
 	if (curnode.end) {
-		if (curnode.dropoff || curnode.type == 3) {
+		if (curnode.dropoff || curnode.type == 3 || curnode.type == 2) {
 			if (curnode.debuffGive) {
 				if (!CHDATA.event.maps[MAPNUM].debuff) CHDATA.event.maps[MAPNUM].debuff = {};
 				curnode.debuffGive();
@@ -1212,7 +1213,7 @@ function mapPhase2(nextletter) {
 	eventqueue.push([mapMoveShip,[mapship,nextnode.x+MAPOFFX,nextnode.y+MAPOFFY]]);
 	
 	var enemyRaid = MAPDATA[WORLD].maps[MAPNUM].enemyRaid;
-	if (enemyRaid) {
+	if (enemyRaid && MAPDATA[WORLD].maps[MAPNUM].lbas) {
 		var diff = CHDATA.event.maps[MAPNUM].diff;
 		if (CHDATA.sortie.raidCounter === undefined) { //first node won't have
 			CHDATA.sortie.raidCounter = enemyRaid.chance[diff];
@@ -1832,7 +1833,10 @@ function prepBattle(letter) {
 				if (!bonus.on) modEv *= bonus.mod;
 			}
 		}
+		C = false;
 		modDmg *= getBonusSpecialPlane(ship);
+		modAcc *= getBonusSpecialPlane(ship,'bonusSpecialAccP');
+		C = true;
 		console.log(ship.name + ': ' + modDmg + ' ' + modAcc + ' ' + modEv);
 	}
 	
@@ -1943,10 +1947,10 @@ function endMap() {
 	}
 	
 	var endTime = 1500;
-	let lbUnlock = checkLBUnlocks();
 	var hiddenRoutes = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes;
 	if (hiddenRoutes) {
 		var key = checkRouteUnlocks(hiddenRoutes);
+		let lbUnlock = checkLBUnlocks();
 		if (!key && lbUnlock) key = -1;
 		if (key) {
 			addTimeout(function() {
@@ -2010,12 +2014,13 @@ function endMap() {
 function showRouteUnlock(route,routeId) {
 	if (!route) route = { images: [] };
 	var sprs = [], sprsRemove = [];
-	if (mapAirBase.x != MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX || mapAirBase.y != MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY) {
+	if (MAPDATA[WORLD].maps[MAPNUM].lbX && (mapAirBase.x != MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX || mapAirBase.y != MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY)) {
 		mapAirBaseReplace.position.set(mapAirBase.x,mapAirBase.y);
 		mapAirBaseReplace.alpha = 1;
 		sprsRemove.push(mapAirBaseReplace);
 		mapAirBase.position.set(MAPDATA[WORLD].maps[MAPNUM].lbX + MAPOFFX, MAPDATA[WORLD].maps[MAPNUM].lbY + MAPOFFY);
 		mapAirBase.alpha = 0;
+		mapAirBase.visible = true;
 		sprs.push(mapAirBase);
 	}
 	for (var image of route.images) {
