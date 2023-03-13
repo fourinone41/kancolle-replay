@@ -463,6 +463,7 @@ function chDialogShowItems(shipmid,types) {
 				if (EXPANSIONSLOTDATA[date].types && EXPANSIONSLOTDATA[date].types.indexOf(equip.type) != -1) { found = true; break; }
 				if (EXPANSIONSLOTDATA[date].special && EXPANSIONSLOTDATA[date].special.indexOf(eqid) != -1) { found = true; break; }
 				if (EXPANSIONSLOTDATA[date].specialS && EXPANSIONSLOTDATA[date].specialS[eqid] && EXPANSIONSLOTDATA[date].specialS[eqid].indexOf(shipmid) != -1) { found = true; break; }
+				if (EXPANSIONSLOTDATA[date].specialSType && EXPANSIONSLOTDATA[date].specialSType[eqid] && EXPANSIONSLOTDATA[date].specialSType[eqid].indexOf(SHIPDATA[shipmid].type) != -1) { found = true; break; }
 			}
 			if (!found) include = false;
 		}
@@ -472,6 +473,12 @@ function chDialogShowItems(shipmid,types) {
 		}
 		if (include && SHIPDATA[shipmid].onlyEquip && SHIPDATA[shipmid].onlyEquip[DIALOGITEMSEL]) {
 			if (SHIPDATA[shipmid].onlyEquip[DIALOGITEMSEL].indexOf(type) == -1) include = false;
+		}
+		if (include && [392,724].includes(shipmid) && equip.type == SEAPLANEBOMBER) {
+			if (eqid != 194) include = false;
+		}
+		if (include && [166].includes(shipmid) && equip.type == SCAMP) {
+			if (eqid != 402) include = false;
 		}
 		
 		if (include) {
