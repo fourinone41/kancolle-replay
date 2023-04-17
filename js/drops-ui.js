@@ -528,7 +528,7 @@ function poiLoadData(map,cellId,diff) {
 	$('#spanHL').hide();
 	$('#spanGroup').hide();
 	$('#linkExport').hide();
-	if (window.location.hostname == 'fourinone41.github.io') url = 'https://salty-brushlands-75370.herokuapp.com/' + url;
+	if (window.location.hostname == 'fourinone41.github.io') url = 'https://cors.piro.moe/' + url;
 	$.getJSON(url,function(data) {
 		if (!POIDATA[map][cellId]) {
 			POIDATA[map][cellId] = { 'orig': data, 'counts': {} };
