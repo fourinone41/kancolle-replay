@@ -3873,7 +3873,8 @@ MAPDATA[53] =
 							4: {'Casual 1':30,'Casual 3':70},
 						},
 						routeC: function(ships) {
-							if (ships.c.aBB + ships.c.aCV >= 6 && ships.c.aCV >= 4) return 'J2';
+							if (ships.c.aBB + ships.c.aCV >= 7) return 'J2';
+							if (ships.speed <= 5 && ships.c.aBB + ships.c.aCV >= 6 && ships.c.aCV >= 4) return 'J2';
 							if (ships.c.aBB + ships.c.CV + ships.c.CVB >= 6) return 'J2';
 							if (ships.c.CL + ships.c.DD >= 4) return 'K';
 							return 'J2';
@@ -3964,7 +3965,7 @@ MAPDATA[53] =
 							4: {'Casual 3':100},
 						},
 						routeC: function(ships) {
-							if (ships.c.aBB + ships.c.aCV >= 6) return 'M1';
+							if (ships.c.aBB + ships.c.CV + ships.c.CVB >= 5) return 'M1';
 							if (ships.speed >= 10) return 'M';
 							if (ships.c.aBB + ships.c.aCV <= 3 && ships.c.CL >= 2) return 'M';
 							return 'M1';
