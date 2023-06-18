@@ -53,24 +53,24 @@ ChGimmickList.updateAll = function(args) {
 	if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
 		for (let route in MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes) {
 			if (MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes[route].unlockRules) {
-				progressed = progressed || MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes[route].unlockRules.update(args);
+				progressed = MAPDATA[WORLD].maps[MAPNUM].hiddenRoutes[route].unlockRules.update(args) || progressed;
 			}
 		}
 	}
 	if (MAPDATA[WORLD].maps[MAPNUM].debuffRules) {
-		progressed = progressed || MAPDATA[WORLD].maps[MAPNUM].debuffRules.update(args);
+		progressed = MAPDATA[WORLD].maps[MAPNUM].debuffRules.update(args) || progressed;
 	}
 	if (MAPDATA[WORLD].maps[MAPNUM].lbParts) {
 		for (let part in MAPDATA[WORLD].maps[MAPNUM].lbParts) {
 			if (MAPDATA[WORLD].maps[MAPNUM].lbParts[part].unlockRules) {
-				progressed = progressed || MAPDATA[WORLD].maps[MAPNUM].lbParts[part].unlockRules.update(args);
+				progressed = MAPDATA[WORLD].maps[MAPNUM].lbParts[part].unlockRules.update(args) || progressed;
 			}
 		}
 	}
 	
 	if (!ChGimmickList._gimmickExtra[WORLD] || !ChGimmickList._gimmickExtra[WORLD][MAPNUM]) ChGimmickList._getGimmickExtra(MAPNUM);
 	for (let gimmickList of ChGimmickList._gimmickExtra[WORLD][MAPNUM]) {
-		progressed = progressed || gimmickList.update(args);
+		progressed = gimmickList.update(args) || progressed;
 	}
 	
 	if (progressed && CHDATA.sortie) CHDATA.sortie.gimmickProgressed = true;
