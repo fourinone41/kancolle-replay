@@ -34806,3 +34806,24 @@ function chCheckLockSpStandard(errors,lock,messageByLock,hardOnly) {
 		errors.push(messageByLock[lock]);
 	}
 }
+
+function chCheckLocks(locks,hardOnly,ignoreException) {
+	if (!ignoreException && (getDiff() == 1 || getDiff() == 4 || (hardOnly && getDiff() == 2) || CHDATA.config.disablelock)) return true;
+	let allSame = true;
+	let num = CHDATA.fleets.combined ? 2 : 1;
+	for (let n=1; n<=num; n++) {
+		for (let sid of CHDATA.fleets[n]) {
+			if (sid && CHDATA.ships[sid].lock) {
+				if (!locks.includes(CHDATA.ships[sid].lock)) { return false; }
+			}
+		}
+	}
+	return true;
+}
+
+function chCheckLoSStandard(valsByDiff,mod) {
+	let vals = valsByDiff[getDiff()];
+	mod = mod || (CHDATA.fleets.combined ? 2 : 4);
+	let los = getELoS33(1,mod) + (CHDATA.fleets.combined ? getELoS33(2,mod) : 0);
+	return checkELoS33(los,vals);
+}

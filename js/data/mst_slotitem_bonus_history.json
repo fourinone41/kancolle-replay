@@ -812,6 +812,26 @@
 		}
 	},
 	{
+		"ids": [298,299,300],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 2, "souk": 1 },
+					"shipClass": [67,78,82,88,108,112]
+				},
+				{
+					"bonus": { "kaih": -2 },
+					"shipClass": [67]
+				},
+				{
+					"bonus": { "houg": 1, "souk": 1, "kaih": -3 },
+					"shipId": [149,150,151,152]
+				}
+			],
+			"2023-04-30": "cur"
+		}
+	},
+	{
 		"ids": [324,325],
 		"bonusesByDate": {
 			"": [

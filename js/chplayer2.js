@@ -496,6 +496,18 @@ function addMapNode(letter,type) {
 			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeAmbush.png');
 			nodeG.pivot.set(10,27);
 		}
+	} else if (node.airSub) {
+		if (CHDATA.event.maps[MAPNUM].visited.indexOf(letter) == -1) {
+			if (!node.hidden) {
+				nodeG = PIXI.Sprite.fromImage('assets/maps/nodeW.png');
+				nodeG.pivot.set(10,10);
+			} else {
+				return;
+			}
+		} else {
+			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeAirSub.png');
+			nodeG.pivot.set(22,22);
+		}
 	} else if (!node.boss) {
 		if (node.dropoff) {
 			nodeG = PIXI.Sprite.fromImage('assets/maps/nodeAnchor.png');
@@ -560,7 +572,7 @@ var FORMSELECTED;
 function mapBattleNode(ship,letter) {
 	if (!mapnodes[letter]) addMapNode(letter);
 	let node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
-	if ((node.aironly || node.raid || node.night2 || node.nightToDay2 || node.ambush) && (WORLD > 27 || WORLD <= 20)) addMapNode(letter);
+	if ((node.aironly || node.raid || node.night2 || node.nightToDay2 || node.ambush || node.airSub) && (WORLD > 27 || WORLD <= 20)) addMapNode(letter);
 
 	var radarstop = false, radartimer = 270;
 	updates.push([function() {
@@ -1107,7 +1119,7 @@ function chLoadMap(mapnum) {
 		for (var letter in MAPDATA[WORLD].maps[MAPNUM].nodes) {
 			var node = MAPDATA[WORLD].maps[MAPNUM].nodes[letter];
 			if (node.replacedBy && CHDATA.event.maps[MAPNUM].routes.indexOf(MAPDATA[WORLD].maps[MAPNUM].nodes[node.replacedBy].hidden) != -1) continue;
-			if ((node.aironly||node.raid||node.night2||node.nightToDay2||node.ambush) && CHDATA.event.maps[mapnum].visited.indexOf(letter) == -1) addMapNode(letter);
+			if ((node.aironly||node.raid||node.night2||node.nightToDay2||node.ambush||node.airSub) && CHDATA.event.maps[mapnum].visited.indexOf(letter) == -1) addMapNode(letter);
 		}
 	}
 	
@@ -1613,6 +1625,11 @@ function prepBattle(letter) {
 		FLEETS2[1].loadShips(enemiesC);
 		FLEETS2[1].formation = ALLFORMATIONS[compd.f+'E'];
 	}
+	if (mapdata.airSub) {
+		for (let ship of FLEETS2[0].ships) {
+			if (['CVL','CV','CVB'].includes(ship.type)) ship.isFaraway = true;
+		}
+	}
 	
 	let friendFleets = {};
 	if (mapdata.friendFleetWaves) {
@@ -1843,8 +1860,9 @@ function prepBattle(letter) {
 	
 	res.NBonly = NBonly;
 	res.landbomb = landbomb;
-	res.noammo = compd.noammo;
+	res.noammo = compd.noammo && !mapdata.airSub;
 	res.ambush = ambush;
+	res.airSub = mapdata.airSub;
 	if (mapdata.overrideCost) res.overrideCost = mapdata.overrideCost;
 	if (mapdata.nightToDay2) res.nightToDay2 = true;
 	if (landbomb || ambush) {
@@ -2759,6 +2777,9 @@ function chUpdateSupply() {
 		} else if (results.ambush) {
 			baseF = .04;
 			results.noammo = true;
+		} else if (results.airSub) {
+			baseF = .12;
+			baseA = .06;
 		}
 		if (WORLD >= 43 && !results.overrideCost && FLEETS2[0].ships.every(ship => ship.isPT)) {
 			baseF = .04;
@@ -3297,7 +3318,7 @@ function chLoadFriendFleet(friendData) {
 		let asw = sdata.ASWbase + Math.floor((sdata.ASW - sdata.ASWbase)*ship.LVL/99);
 		let los = sdata.LOSbase + Math.floor((sdata.LOS - sdata.LOSbase)*ship.LVL/99);
 		let simShip = new ShipType(ship.mid,'',0,ship.LVL,sdata.HP,ship.FP,ship.TP,ship.AA,ship.AR,ev,asw,los,sdata.LUK,sdata.RNG,sdata.SLOTS);
-		simShip.loadEquips(ship.equips,[],[],true);
+		simShip.loadEquips(ship.equips,(ship.stars || []),[],true);
 		if (CHDATA.config.mechanics.equipBonus) {
 			let bonus = getBonusStats(ship.mid,ship.equips,ship.equips.map(eq => 0));
 			for (let stat in bonus) {

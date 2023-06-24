@@ -338,8 +338,9 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 		if (!NBonly) BAPI.data.api_midnight_flag = +!!(!bombing && alive2.length + subsalive2.length);
 	}
 	
+	let hasAlive2 = NBonly || (alive2.filter(s => !s.isFaraway).length + subsalive2.filter(s => !s.isFaraway).length > 0);
 	//friend fleet
-	if (friendFleet && alive2.length+subsalive2.length > 0) {
+	if (friendFleet && hasAlive2) {
 		let ff = friendFleet.id != null ? friendFleet : friendFleet.night;
 		if (ff) {
 			friendFleetPhase(ff,F2,alive2,subsalive2,BAPI);
@@ -349,7 +350,7 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	
 	//night battle
 	var didNB = false;
-	if ((doNB||NBonly) && alive1C.length+subsalive1C.length > 0 && alive2.length+subsalive2.length > 0) {
+	if ((doNB||NBonly) && alive1C.length+subsalive1C.length > 0 && hasAlive2) {
 		didNB = !NBonly;
 		var order1 = [], order2 = [];
 		for (var i=0; i<ships1C.length; i++) {
@@ -397,7 +398,7 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 	results.undamaged = true;
 	results.buckets = 0;
 	for (var i=0; i<ships1.length; i++) {
-		if (ships1[i].HP/ships1[i].maxHP <= .25) {
+		if (ships1[i].HP/ships1[i].maxHP <= .25 && !ships1[i].retreated) {
 			results.redded = true;
 			results.reddedIndiv[i] = true;
 			if (!ships1[i].isflagship) ships1[i].protection = false;
@@ -406,7 +407,7 @@ function simCombined(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombi
 		if (ships1[i].HP/ships1[i].maxHP <= BUCKETPERCENT || getRepairTime(ships1[i]) > BUCKETTIME) results.buckets++;
 	}
 	for (var i=0; i<ships1C.length; i++) {
-		if (ships1C[i].HP/ships1C[i].maxHP <= .25) {
+		if (ships1C[i].HP/ships1C[i].maxHP <= .25 && !ships1C[i].retreated) {
 			if (!ships1C[i].isflagship) results.redded = true; //don't count escort flag taiha as retreat
 			results.reddedIndivC[i] = true;
 			if (!ships1C[i].isflagship) ships1C[i].protection = false;
@@ -731,8 +732,9 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 		if (!NBonly) BAPI.data.api_midnight_flag = +!!(!bombing && alive2.length + subsalive2.length + alive2C.length + subsalive2C.length);
 	}
 	
+	let hasAlive2 = NBonly || (alive2.filter(s => !s.isFaraway).length + subsalive2.filter(s => !s.isFaraway).length + alive2C.filter(s => !s.isFaraway).length + subsalive2C.filter(s => !s.isFaraway).length > 0);
 	//friend fleet
-	if (friendFleet && alive2.length+subsalive2.length+alive2C.length+subsalive2C.length > 0) {
+	if (friendFleet && hasAlive2) {
 		let ff = friendFleet.id != null ? friendFleet : friendFleet.night;
 		if (ff) {
 			friendFleetPhase(ff,F2,alive2.concat(alive2C),subsalive2.concat(subsalive2C),BAPI);
@@ -743,7 +745,7 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	
 	//night battle
 	var didNB = false;
-	if ((doNB||NBonly) && alive1.length+subsalive1.length > 0 && alive2.length+subsalive2.length+alive2C.length+subsalive2C.length > 0) {
+	if ((doNB||NBonly) && alive1.length+subsalive1.length > 0 && hasAlive2) {
 		didNB = !NBonly;
 		var count = 0, allsunk = true;
 		for (var i=0; i<ships2.length; i++) if (ships2[i].HP > 0) { allsunk = false; break; }
@@ -803,7 +805,7 @@ function sim6vs12(F1,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing,noammo,BA
 	results.undamaged = true;
 	results.buckets = 0;
 	for (var i=0; i<ships1.length; i++) {
-		if (ships1[i].HP/ships1[i].maxHP <= .25) {
+		if (ships1[i].HP/ships1[i].maxHP <= .25 && !ships1[i].retreated) {
 			results.redded = true;
 			results.reddedIndiv[i] = true;
 			if (!ships1[i].isflagship) ships1[i].protection = false;
@@ -1196,8 +1198,9 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 		if (!NBonly) BAPI.data.api_midnight_flag = +!!(!bombing && alive2.length + subsalive2.length + alive2C.length + subsalive2C.length);
 	}
 	
+	let hasAlive2 = NBonly || (alive2.filter(s => !s.isFaraway).length + subsalive2.filter(s => !s.isFaraway).length + alive2C.filter(s => !s.isFaraway).length + subsalive2C.filter(s => !s.isFaraway).length > 0);
 	//friend fleet
-	if (friendFleet && alive2.length+subsalive2.length+alive2C.length+subsalive2C.length > 0) {
+	if (friendFleet && hasAlive2) {
 		let ff = friendFleet.id != null ? friendFleet : friendFleet.night;
 		if (ff) {
 			friendFleetPhase(ff,F2,alive2.concat(alive2C),subsalive2.concat(subsalive2C),BAPI);
@@ -1208,7 +1211,7 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	
 	//night battle
 	var didNB = false;
-	if ((doNB||NBonly) && alive1C.length+subsalive1C.length > 0 && alive2.length+subsalive2.length+alive2C.length+subsalive2C.length > 0) {
+	if ((doNB||NBonly) && alive1C.length+subsalive1C.length > 0 && hasAlive2) {
 		didNB = !NBonly;
 		var count = 0, allsunk = true;
 		for (var i=0; i<ships2.length; i++) if (ships2[i].HP > 0) { allsunk = false; break; }
@@ -1272,7 +1275,7 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 	results.undamaged = true;
 	results.buckets = 0;
 	for (var i=0; i<ships1.length; i++) {
-		if (ships1[i].HP/ships1[i].maxHP <= .25) {
+		if (ships1[i].HP/ships1[i].maxHP <= .25 && !ships1[i].retreated) {
 			results.redded = true;
 			results.reddedIndiv[i] = true;
 			if (!ships1[i].isflagship) ships1[i].protection = false;
@@ -1281,7 +1284,7 @@ function sim12vs12(type,F1,F1C,F2,Fsupport,LBASwaves,doNB,NBonly,aironly,bombing
 		if (ships1[i].HP/ships1[i].maxHP <= BUCKETPERCENT || getRepairTime(ships1[i]) > BUCKETTIME) results.buckets++;
 	}
 	for (var i=0; i<ships1C.length; i++) {
-		if (ships1C[i].HP/ships1C[i].maxHP <= .25) {
+		if (ships1C[i].HP/ships1C[i].maxHP <= .25 && !ships1C[i].retreated) {
 			if (!ships1C[i].isflagship) results.redded = true; //don't count escort flag taiha as retreat
 			results.reddedIndivC[i] = true;
 			if (!ships1C[i].isflagship) ships1C[i].protection = false;

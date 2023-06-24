@@ -126,7 +126,10 @@ loader.add('BG1','assets/82_res.images.ImgBackgroundDay.jpg')
 	.add('bossbar','assets/bossbar.png')
 	.add('mask','assets/mask.png')
 	.add('skipbomb','assets/skipbomb.png')
-	.add('skipbombsplash','assets/skipbombsplash.png');
+	.add('skipbombsplash','assets/skipbombsplash.png')
+	.add('smokebig','assets/smokeBig.png')
+	.add('smokemiddle','assets/smokeMiddle.png')
+	.add('smokesmall','assets/smokeSmall.png')
 for (var i=389; i <= 417; i+=2) loader.add(i.toString(),'assets/'+i+'.png');
 for (var i=0; i<=9; i++) loader.add('C'+i,'assets/C'+i+'.png');
 for (var i=0; i<=9; i++) loader.add('N'+i,'assets/N'+i+'.png');
@@ -386,6 +389,10 @@ function createShip(data,side,i,damaged) {
 	hpbar.drawRect((side==1)?3:161,3,5,38);
 	hptxt = new PIXI.Text(data[1]+'/'+data[1],{font:'13px "Arno Pro Semibold"',fill:'#ffffff'});
 	hptxt.position.set((side==1)?-7-hptxt.width:177,12);
+	if (data[1] == 'N/A') {
+		hptxt.visible = false;
+		ship.xorigin += 25;
+	}
 	var hpbarback = PIXI.Sprite.fromImage('assets/433.png');
 	hpbarback.position.set((side==1)?2:160,2);
 	graphic.addChild(hpbarback);
@@ -1193,6 +1200,11 @@ function processAPI(root) {
 						var protects = []; for (let k=0; k<hou.api_damage[j].length; k++) protects.push(d[k+2] != hou.api_damage[j][k]);
 						var args = [attackers,targets,d.slice(2,4),d.slice(4,6),protects];
 						eventqueue.push([shootNelsonTouch,args,getState()]); break;
+					case 200:
+						var attackers = [d[0],d[0]];
+						var protects = []; for (let k=0; k<hou.api_damage[j].length; k++) protects.push(d[k+2] != hou.api_damage[j][k]);
+						var args = [attackers,targets,d.slice(2,4),d.slice(4,6),protects];
+						eventqueue.push([shootNightZuiun,args,getState()]); break;
 					case 300:
 					case 301:
 					case 302:
@@ -1254,6 +1266,10 @@ function processAPI(root) {
 				eventqueue.push([shutters,[true]]);
 				eventqueue.push([enemyEscortExit,[]]);
 			}
+		}
+		
+		if (data.api_smoke_type) {
+			eventqueue.push([phaseSmokescreenStart,[data.api_smoke_type]]);
 		}
 		
 		//jet LBAS phase
@@ -1329,6 +1345,10 @@ function processAPI(root) {
 		//opening torp
 		f = (COMBINED)? fleet1C : fleet1;
 		if (data.api_opening_atack) processRaigeki(data.api_opening_atack,f,(data.api_ship_ke_combined));
+		
+		if (data.api_smoke_type) {
+			eventqueue.push([phaseSmokescreenEnd,[]]);
+		}
 		
 		//engagement
 		var ldShooting = data.api_name == 'ld_shooting' || data.api_name == 'fc_ld_shooting';
@@ -1835,6 +1855,7 @@ function battleStart(battledata,newships,newshipsC,escape,bgm,showbosshp) {
 	}
 	
 	if (battledata[6]) SM.playVoice(fleet1[0].mid,'damage1',0);
+	else if (fleet1[0].mid == 5001) {}
 	else if (VOICES[fleet2[0].mid] && VOICES[fleet2[0].mid].start && !isPlayable(fleet2[0].mid)) SM.playVoice(fleet2[0].mid,'start',10);
 	else SM.playVoice(fleet1[0].mid,'start',0);
 	var j = 0;
@@ -2266,6 +2287,76 @@ function shootNelsonTouch(ships,targets,damages,crits,protects) {
 	
 	addTimeout(function(){ ecomplete = true; }, 5500);
 }
+
+
+function shootNightZuiun(ships,targets,damages,crits,protects) {
+	SM.playVoice(ships[0].mid,'nbattack',ships[0].id);
+	
+	addTimeout(function() {
+		let ship = ships[0];
+		let planes = createPlane(ship.graphic.x+85,ship.graphic.y+22,[11],null,null,ship.side);
+		let xTarget = (ship.side==0)? 715:85;
+		let yTarget = targets[0].graphic.y+20;
+		let angle = Math.atan((yTarget-planes.y)/(xTarget-planes.x));
+		updates.push([movePlane,[planes,angle,(ship.side==0) ? 8 : -8, planes.x, xTarget]]);
+	},200);
+	
+	addTimeout(function() {
+		var flash = new PIXI.Graphics();
+		flash.beginFill(0xffffff);
+		flash.drawRect(0,0,800,480);
+		flash.lifetime = 20; flash.alpha = 0;
+		stage.addChild(flash);
+		updates.push([function(flash) {
+			flash.lifetime--;
+			if (flash.lifetime >= 10) flash.alpha += .06;
+			else if (flash.lifetime > 0) flash.alpha -= .06;
+			else { stage.removeChild(flash); return true; }
+			return false;
+		}, [flash]]);
+	}, 1000);
+	addTimeout(function() {
+		let ship = ships[0];
+		createFlare3((ship.side==0)?600:90,150-40*ship.side,-1,1);
+		createFlare3((ship.side==0)?670:160,140-40*ship.side,1,.85);
+	}, 1100);
+	
+	let delay = 1500;
+	let shipsDone = [];
+	for (var i=0; i<ships.length; i++) {
+		let ship = ships[i], target = targets[i], damage = damages[i], forcecrit = crits[i], protect = protects[i];
+		if (!shipsDone.includes(ship.id)) {
+			updates.push([shipMoveTo,[ship,ship.xorigin+25-50*ship.side,2]]);
+			addTimeout(function() {
+				updates.push([shipMoveTo,[ship,ship.xorigin,2]]);
+			},3000 + delay);
+			shipsDone.push(ship.id);
+		}
+		
+		if (!target) continue;
+		
+		if (protect) {
+			addTimeout(function() { updates.push([shipMoveTo,[target,target.xorigin+25-50*target.side,3]]); }, 1500*i+675 + delay);
+		}
+		addTimeout(function() {
+			shipShake(target,5,.125,40);
+			createExplosion(target.xorigin+40+80*Math.random(),target.graphic.y+42*Math.random(),1);
+			if (damage>14) addTimeout(function(){createExplosion(target.xorigin+40+80*Math.random(),target.graphic.y+42*Math.random(),1);},75);
+			addTimeout(function(){createExplosion(target.xorigin+40+80*Math.random(),target.graphic.y+42*Math.random(),1);},150);
+			if (damage>14) addTimeout(function(){createExplosion(target.xorigin+40+80*Math.random(),target.graphic.y+42*Math.random(),1);},225);
+			addTimeout(function(){createExplosion(target.xorigin+40+80*Math.random(),target.graphic.y+42*Math.random(),1);},300);
+			if (damage<=14) SM.play('fire');
+			else if (damage<40) SM.play('hit');
+			else { SM.play('crit'); SM.play('fire'); }
+		}, 1500*i+800 + delay);
+		addTimeout(function(){
+			standardHit(target,damage,true,protect,forcecrit);
+		}, 1500*i+1500 + delay);
+	}
+	
+	addTimeout(function(){ ecomplete = true; }, 4000 + delay);
+}
+
 
 function shootSSAttack(ships,targets,damages,crits,protects) {
 	SM.playVoice(ships[0].mid,'special',ships[0].id);
@@ -3262,6 +3353,94 @@ function moveSearchlight(light) {
 	return false;
 }
 
+
+function phaseSmokescreenStart(smokeType) {
+	createSmokescreen(smokeType);
+	addTimeout(function(){ ecomplete = true; }, 1000);
+}
+
+function phaseSmokescreenEnd() {
+	for (let smoke of SMOKESCREEN_ACTIVE) {
+		smoke.ended = true;
+	}
+	addTimeout(function(){ ecomplete = true; }, 1);
+}
+
+var SMOKESCREEN_TYPES = {
+	1: [[1,4,1,1],[3,19,16,1],[1,1,43,1],[2,25,34,1],[1,42,48,1],[3,22,50,1],[2,17,68,1],[1,6,73,1],[1,45,74,1],[1,8,78,1],[2,27,82,1],[3,48,90,0.9],[3,27,101,0.9],[2,43,117,0.8],[1,56,118,0.9],[2,11,119,0.9],[2,9,122,0.9],[1,65,127,0.9],[1,56,140,0.9],[2,6,144,0.9],[2,39,143,0.9],[1,61,154,0.8],[2,19,148,0.8],[2,28,169,0.6],[2,7,170,0.7],[1,1,173,0.7],[1,44,189,0.7],[2,47,176,0.6],[1,61,185,0.6],[1,18,191,0.6],[3,47,208,0.6],[3,8,210,0.6],[3,48,222,0.5],[3,27,231,0.5],[2,6,242,0.5],[3,32,259,0.6],[3,9,268,0.6],[3,57,279,0.4],[3,28,284,0.3],[3,48,297,0.3],[2,2,302,0.3],[3,18,302,0.3],[2,53,306,0.3],[2,8,328,0.3],[2,38,333,0.2],[3,56,337,0.2],[3,15,343,0.2]],
+	2: [[1,4,1,1],[3,19,16,1],[2,25,34,1],[1,1,43,1],[1,42,48,1],[3,22,50,1],[2,17,68,1],[1,6,73,1],[1,45,74,1],[1,8,78,1],[2,27,82,1],[3,48,90,0.9],[3,27,101,0.9],[2,43,117,0.6],[1,56,118,0.9],[2,11,119,0.8],[2,9,122,0.8],[1,65,127,0.7],[1,56,140,0.8],[2,6,144,0.7],[2,39,143,0.7],[2,19,148,0.6],[1,61,154,0.6],[2,28,169,0.4],[2,7,170,0.5],[1,1,173,0.5],[2,47,176,0.4],[1,61,185,0.4],[1,44,189,0.5],[1,18,191,0.3],[3,47,208,0.3],[3,8,210,0.3],[3,48,222,0.2],[3,27,231,0.2],[2,6,242,0.2]],
+	3: [[1,4,1,1],[3,19,16,1],[2,25,34,1],[1,1,43,1],[1,42,48,1],[3,22,50,1],[2,17,68,1],[1,6,73,1],[1,45,74,1],[1,8,78,1],[2,27,82,1],[3,48,90,0.9],[3,27,101,0.9],[2,43,117,0.6],[1,56,118,0.9],[2,11,119,0.8],[2,9,122,0.8],[1,65,127,0.7],[1,56,140,0.8],[2,6,144,0.7],[2,39,143,0.7],[2,19,148,0.6],[1,61,154,0.6],[2,28,169,0.4],[2,7,170,0.5],[1,1,173,0.5],[2,47,176,0.4],[1,61,185,0.4],[1,44,189,0.5],[1,18,191,0.3],[3,47,208,0.3],[3,8,210,0.3],[3,48,222,0.2],[3,27,231,0.2],[2,6,242,0.2]],
+	11: [[1,32,359,0.2],[2,9,368,0.2],[3,57,379,0.2]],
+	12: [[1,32,259,0.2],[2,9,268,0.2],[3,57,279,0.2]],
+}
+var SMOKESCREEN_ACTIVE = [];
+function createSmokescreen(smokeType) {
+	deleteSmokescreen();
+	SMOKESCREEN_ACTIVE = [];
+	let time = 0;
+	let ratio = smokeType == 3 ? 1.5 : smokeType == 2 ? 1.3 : 1;
+	for (let type=1; type<=smokeType; type++) {
+		let arrs = SMOKESCREEN_TYPES[type].slice();
+		if (fleet1.length >= 7 && SMOKESCREEN_TYPES[type+10]) arrs = arrs.concat(SMOKESCREEN_TYPES[type+10]);
+		for (let i=0; i<arrs.length; i++) {
+			let arr = arrs[i];
+			let size = arr[0], x = arr[1], y = arr[2], alpha = arr[3];
+			let smoke = size == 3 ? getFromPool('smokebig','assets/smokeBig.png') : size == 2 ? getFromPool('smokemiddle','assets/smokeMiddle.png') : getFromPool('smokesmall','assets/smokeSmall.png');
+			SMOKESCREEN_ACTIVE.push(smoke);
+			smoke.notpersistent = true;
+			smoke.anchor.set(.5);
+			smoke.scale.set(.667);
+			x += COMBINED ? 473 : 269;
+			if (type == 1) y += 136;
+			else if (type == 2 && smokeType == 2) y += 333;
+			else if (type == 2 && smokeType == 3) y += 283;
+			else if (type == 3) y += 406;
+			smoke.position.set(x*.667,y*.667);
+			smoke.alpha = alpha;
+			smoke.rotation = Math.random()*2*Math.PI;
+			smoke.xR = smoke.xOrig = x; smoke.yR = smoke.yOrig = y;
+			smoke.time = 0;
+			smoke.lifetime = (COMBINED ? 600 : 360) + 12*ratio*(i + (type == 3 ? 21 : type == 2 ? 12 : 0)) - Math.round(time*.06);
+			smoke.ended = false;
+			
+			let xTarget = 6*Math.random() - 3;
+			let yTarget = 6*Math.random() - 3;
+			let fadeSpeed = alpha/(120*ratio);
+			
+			addTimeout(function() {
+				stage.addChildAt(smoke,stage.getChildIndex(shutterTop2));
+				updates.push([moveSmokescreen,[smoke,xTarget,yTarget,fadeSpeed]]);
+			}, time);
+			time += 10;
+		}
+	}
+}
+
+function deleteSmokescreen() {
+	for (let smoke of SMOKESCREEN_ACTIVE) {
+		smoke.ended = true;
+		smoke.lifetime = smoke.alpha = 0;
+	}
+}
+
+function moveSmokescreen(smoke,xTarget,yTarget,fadeSpeed) {
+	let x = smoke.xOrig + xTarget*Math.sin(2*Math.PI*smoke.time/120);
+	let y = smoke.yOrig + yTarget*Math.sin(2*Math.PI*smoke.time/120);
+	smoke.position.set(x*.667, y*.667);
+	if (++smoke.time >= 120) smoke.time = 0;
+	if (smoke.lifetime <= 0) {
+		smoke.alpha -= fadeSpeed;
+		if (smoke.alpha <= 0) {
+			smoke.alpha = 0;
+			recycle(smoke);
+			return true;
+		}
+	} else {
+		if (smoke.ended) smoke.lifetime--;
+	}
+	return false;
+}
+
 function NBstart(flares,contact,bgm,combinedEType,isFriend) {
 	flares = flares || [-1,-1];
 	contact = contact || [-1,-1];
@@ -3592,6 +3771,7 @@ function resetBattle() {
 	$('#plAS1').text('');
 	$('#plAS2').text('');
 	bossBarReset();
+	deleteSmokescreen();
 }
 
 function shuttersNextBattle(battledata, newships) {

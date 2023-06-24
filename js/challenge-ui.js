@@ -44,7 +44,10 @@ var MECHANICDATES = {
 	coloradoSpecialFix: '2021-10-15',
 	kongouSpecialBuff2: '2022-06-08',
 	coloradoSpecialBuff2: '2022-06-18',
-	eqBonusAA: '2022-08-04',
+	// eqBonusAA: '2022-08-04',
+	aswPlaneAir: '2023-02-14',
+	kongouSpecialBuff3: '2023-05-01',
+	aaciMultiRoll: '2023-05-26',
 };
 
 var MECHANICDATESOTHER = {
@@ -58,6 +61,7 @@ var MECHANICDATESOTHER = {
 	cfNoSSFlag: '2015-04-28',
 	cfAnchorageRepair: '2019-08-30',
 	cfWarspiteSpeedReq: '2021-08-20', //2021-08-31
+	marriage180: '2023-05-26',
 };
 
 SHIPDATA[5001] = {
@@ -587,29 +591,30 @@ function chDialogItem(fleet,eqnum,slot) {
 	chDialogItemFilter(defcat);
 }
 
+var DIALOG_ITEM_TYPES = {
+	1: [MAINGUNS,MAINGUNSAA],
+	13: [MAINGUNM],
+	14: [MAINGUNL,MAINGUNXL],
+	2: [SECGUN,SECGUNAA],
+	3: [TORPEDO,TORPEDOSS,MIDGETSUB],
+	4: [SEAPLANE,SEAPLANEBOMBER,SEAPLANEFIGHTER,FLYINGBOAT],
+	5: [FIGHTER,INTERCEPTOR],
+	6: [DIVEBOMBER,LANDBOMBER,LANDBOMBERL],
+	7: [TORPBOMBER],
+	8: [CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT],
+	9: [RADARS,RADARL,RADARXL],
+	10: [DEPTHCHARGE,SONARS,SONARL],
+	11: [APSHELL,TYPE3SHELL],
+	15: [AAGUN],
+	16: [ENGINE],
+	17: [SEARCHLIGHTS,SEARCHLIGHTL,STARSHELL,PICKET],
+	12: [BULGEM,BULGEL,AAFD,LANDINGCRAFT,LANDINGTANK,WG42,SRF,FCF,DRUM,SCAMP,REPAIR,SUBRADAR,TRANSPORTITEM,RATION,OILDRUM],
+};
+
 function chDialogItemFilter(category) {
 	var mid = CHDATA.ships[CHDATA.fleets[DIALOGFLEETSEL][DIALOGSLOTSEL-1]].masterId;
 	DIALOGITEMCATEGORY = category;
-	var types;
-	switch (category) {
-		default: case 1: types=[MAINGUNS,MAINGUNSAA]; break;
-		case 13: types=[MAINGUNM]; break;
-		case 14: types=[MAINGUNL,MAINGUNXL]; break;
-		case 2: types=[SECGUN,SECGUNAA]; break;
-		case 3: types=[TORPEDO,TORPEDOSS,MIDGETSUB]; break;
-		case 4: types=[SEAPLANE,SEAPLANEBOMBER,SEAPLANEFIGHTER,FLYINGBOAT]; break;
-		case 5: types=[FIGHTER,INTERCEPTOR]; break;
-		case 6: types=[DIVEBOMBER,LANDBOMBER,LANDBOMBERL]; break;
-		case 7: types=[TORPBOMBER]; break;
-		case 8: types=[CARRIERSCOUT,AUTOGYRO,ASWPLANE,JETBOMBER,JETSCOUT,CARRIERSCOUT2,LANDSCOUT]; break;
-		case 9: types=[RADARS,RADARL,RADARXL]; break;
-		case 10: types=[DEPTHCHARGE,SONARS,SONARL]; break;
-		case 11: types=[APSHELL,TYPE3SHELL]; break;
-		case 15: types=[AAGUN]; break;
-		case 16: types=[ENGINE]; break;
-		case 17: types=[SEARCHLIGHTS,SEARCHLIGHTL,STARSHELL,PICKET]; break;
-		case 12: types=[BULGEM,BULGEL,AAFD,LANDINGCRAFT,LANDINGTANK,WG42,SRF,FCF,DRUM,SCAMP,REPAIR,SUBRADAR,TRANSPORTITEM,RATION,OILDRUM]; break;
-	}
+	var types = DIALOG_ITEM_TYPES[category] || DIALOG_ITEM_TYPES[1];
 	chDialogShowItems(mid,types);
 	
 	$('.itemfilter').each(function() { $(this).css('background-color',''); });
@@ -619,6 +624,7 @@ function chDialogItemFilter(category) {
 function chFilterDialogItemSearch() {
 	let search = $("#inputEquipSearch").val().toUpperCase();
 
+	let idUnfiltered = null, numVisible = 0;
 	$('#equipselecttable > tbody > tr').each(function() {
 		var gearId = $(this).attr('id');
 
@@ -626,7 +632,20 @@ function chFilterDialogItemSearch() {
 
 		if (name.includes(search)) $(this).removeClass("filteredBySearch");
 		else $(this).addClass("filteredBySearch");
+		
+		if ($(this).css('display') != 'none') numVisible++;
+		if (!idUnfiltered && !$(this).hasClass('filteredBySearch')) idUnfiltered = gearId;
 	});
+	
+	if (numVisible <= 0 && idUnfiltered) {
+		let type = EQDATA[CHDATA.gears[idUnfiltered].masterId].type;
+		for (let category in DIALOG_ITEM_TYPES) {
+			if (DIALOG_ITEM_TYPES[category].includes(type)) {
+				chDialogItemFilter(category);
+				break;
+			}
+		}
+	}
 }
 
 function chSetEquip(itemid) {
@@ -995,6 +1014,8 @@ function chProcessKC3File2() {
 			if (shipN.LVL > 155) shipN.LVL = 155;
 		} else if (dataDate < MECHANICDATESOTHER.marriage175) {
 			if (shipN.LVL > 165) shipN.LVL = 165;
+		} else if (dataDate < MECHANICDATESOTHER.marriage180) {
+			if (shipN.LVL > 175) shipN.LVL = 175;
 		}
 		if (dataDate >= MECHANICDATESOTHER.hpMod && shipO.mod[5]) {
 			hp += shipO.mod[5];
@@ -1435,6 +1456,7 @@ function chStart() {
 	SIMCONSTS.nightDmgCap = 300;
 	SIMCONSTS.airDmgCap = 150;
 	SIMCONSTS.supportDmgCap = 150;
+	SIMCONSTS.lbasDmgCap = 150;
 	if (CHDATA.config.mechanics.shellingSoftCap) {
 		SIMCONSTS.shellDmgCap = 180;
 	}
@@ -1448,13 +1470,18 @@ function chStart() {
 		SIMCONSTS.nightDmgCap = 360;
 		SIMCONSTS.airDmgCap = 170;
 		SIMCONSTS.supportDmgCap = 170;
+		SIMCONSTS.lbasDmgCap = 220;
 	}
 	SIMCONSTS.enableModSummerBB = WORLD >= 51;
 	SIMCONSTS.enableModSummerCA = WORLD >= 51;
 	SIMCONSTS.enableModFrenchBB = WORLD >= 51;
 	SIMCONSTS.enableModDock = WORLD >= 55;
+	SIMCONSTS.enableAirstrikeSpecialBonus = WORLD >= 42;
+	SIMCONSTS.nbOnlyCFAccBase = WORLD >= 48 ? 69 : 90;
 	toggleEchelon(CHDATA.config.mechanics.echelonBuff);
 	toggleDDCIBuff(MECHANICS.subFleetAttack);
+	toggleASWPlaneAir(CHDATA.config.mechanics.aswPlaneAir);
+	toggleAACIRework(CHDATA.config.mechanics.aaciMultiRoll);
 
 	chLoadMainFleet();
 	if (CHDATA.fleets.combined) chLoadEscortFleet();
