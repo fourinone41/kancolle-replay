@@ -335,7 +335,7 @@ EQTDATA[CARRIERSCOUT2] = {
 EQTDATA[AUTOGYRO] = {
 	name: 'Anti-Sub Plane',
 	image: 21,
-	canequip: ['CAV','BBV','CVL','AS','AO','AR','LHA'],
+	canequip: ['CAV','BBV','CVL','AS','AO','AR','LHA','LandBase'],
 	canequipS: [372, 477, 478, 491, 546, 547, 573, 574, 586, 630, 646, 652, 662, 663, 668, 690, 713, 885, 911, 920],
 	cannotequipS: [380, 381, 382, 521, 522, 526, 534, 621, 645, 699, 727, 884, 889, 900, 943, 945],
 	isPlane: true,
@@ -348,7 +348,7 @@ EQTDATA[AUTOGYRO] = {
 EQTDATA[ASWPLANE] = {
 	name: 'Anti-Sub Plane',
 	image: 22,
-	canequip: ['CVL','LHA'],
+	canequip: ['CVL','LHA','LandBase'],
 	canequipS: [553, 554, 646, 717, 900],
 	cannotequipS: [521, 522, 526, 534, 621, 626, 727, 884, 894, 945],
 	isPlane: true,
@@ -5887,6 +5887,25 @@ var EQDATA = {
 		EV: 2,
 		ASW: 2,
 		LOS: 5,
+	},
+	507: {
+		name: '14inch/45 Twin Gun Mount',
+		nameJP: '14inch/45 連装砲',
+		added: '2023-06-30',
+		type: MAINGUNL,
+		FP: 16,
+		AR: 1,
+		EV: 1,
+		RNG: 3,
+	},
+	508: {
+		name: '14inch/45 Triple Gun Mount',
+		nameJP: '14inch/45 三連装砲',
+		added: '2023-06-30',
+		type: MAINGUNL,
+		FP: 19,
+		AR: 1,
+		RNG: 3,
 	},
 	1501: {
 		name: '5inch Single Cannon',

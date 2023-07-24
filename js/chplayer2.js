@@ -2964,7 +2964,7 @@ function getLBASRange(ship) {
 		}
 		return rangeMax;
 	}
-	var rangeMin = 9999, rangeScout = 0;
+	var rangeMin = 9999, rangeScout = 0, hasASWPlane = false;
 	for (var i=0; i<ship.items.length; i++) {
 		if (ship.items[i] <= -1) continue;
 		var eq = CHDATA.gears['x'+ship.items[i]];
@@ -2972,8 +2972,9 @@ function getLBASRange(ship) {
 		if (EQDATA[eq.masterId].type == SEAPLANE || EQDATA[eq.masterId].type == CARRIERSCOUT || EQDATA[eq.masterId].type == FLYINGBOAT || EQDATA[eq.masterId].type == LANDSCOUT) {
 			rangeScout = Math.max(rangeScout,LBASDATA[eq.masterId].distance);
 		}
+		if ([AUTOGYRO,ASWPLANE].includes(EQDATA[eq.masterId].type) && ![489,491].includes(eq.masterId)) hasASWPlane = true;
 	}
-	if (rangeScout > rangeMin) rangeMin += Math.min(3,Math.round(Math.sqrt(rangeScout-rangeMin)));
+	if (rangeScout > rangeMin && !hasASWPlane) rangeMin += Math.min(3,Math.round(Math.sqrt(rangeScout-rangeMin)));
 	if (rangeMin == 9999) return 0;
 	return rangeMin;
 }

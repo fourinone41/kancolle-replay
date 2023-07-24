@@ -484,6 +484,9 @@ function chDialogShowItems(shipmid,types) {
 		if (include && [166].includes(shipmid) && equip.type == SCAMP) {
 			if (eqid != 402) include = false;
 		}
+		if (include && DIALOGFLEETSEL == 5 && !CHDATA.config.mechanics.aswPlaneAir) {
+			if (equip.type == AUTOGYRO || equip.type == ASWPLANE) include = false;
+		}
 		
 		if (include) {
 			$(this).css('display','');

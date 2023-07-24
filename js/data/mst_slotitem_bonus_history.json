@@ -208,7 +208,32 @@
 		"ids": [87],
 		"bonusesByDate": {
 			"": [],
-			"2020-04-23": "cur"
+			"2020-04-23": [
+				{
+					"bonus": { "raig": 1, "kaih": 2 },
+					"shipId": [591,592,593,954],
+					"num": 1
+				},
+				{
+					"bonus": { "kaih": 1 },
+					"shipId": [591,592,593,954],
+					"num": 1,
+					"level": 6
+				},
+				{
+					"bonus": { "raig": 1 },
+					"shipId": [591,592,593,954],
+					"num": 1,
+					"level": 8
+				},
+				{
+					"bonus": { "houg": 1 },
+					"shipId": [591,592,593,954],
+					"num": 1,
+					"level": 10
+				}
+			],
+			"2023-07-07": "cur"
 		}
 	},
 	{
@@ -832,6 +857,59 @@
 		}
 	},
 	{
+		"ids": [317],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 1, "tyku": 1 },
+					"shipClass": [6],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2 },
+					"shipId": [149,591,592],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 1 },
+					"shipId": [150],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 1, "kaih": 1 },
+					"shipId": [151],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 3, "kaih": 2 },
+					"shipId": [593],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 1 },
+					"shipId": [954],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 1 },
+					"shipId": [152],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 2 },
+					"shipId": [541],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 1 },
+					"shipId": [573],
+					"num": 1
+				}
+			],
+			"2023-07-07": "cur"
+		}
+	},
+	{
 		"ids": [324,325],
 		"bonusesByDate": {
 			"": [
@@ -960,6 +1038,97 @@
 		"bonusesByDate": {
 			"": [],
 			"2023-03-31": "cur"
+		}
+	},
+	{
+		"ids": [483],
+		"bonusesByDate": {
+			"": [
+				{
+					"bonus": { "houg": 1, "tyku": 1 },
+					"shipClass": [6],
+					"num": 1
+				},
+				{
+					"bonus": { "houm": 1 },
+					"shipClass": [6],
+					"level": 6,
+					"num": 1
+				},
+				{
+					"bonus": { "houm": 1 },
+					"shipClass": [6],
+					"level": 10,
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2 },
+					"shipId": [149],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 3, "tyku": 3, "kaih": 1 },
+					"shipId": [591],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 1 },
+					"shipId": [150],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 2 },
+					"shipId": [592],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 2, "kaih": 2 },
+					"shipId": [151],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 5, "kaih": 3 },
+					"shipId": [593],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 4, "kaih": 2 },
+					"shipId": [954],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2 },
+					"shipId": [152],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 2 },
+					"shipId": [546,911,916],
+					"num": 1
+				},
+				{
+					"bonus": { "houm": 1 },
+					"shipId": [546,911,916],
+					"level": 8,
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 2, "kaih": 1 },
+					"shipId": [553,554],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 1, "tyku": 2 },
+					"shipId": [541,411,412],
+					"num": 1
+				},
+				{
+					"bonus": { "houg": 2, "tyku": 2, "kaih": 1 },
+					"shipId": [573],
+					"num": 1
+				}
+			],
+			"2023-07-07": "cur"
 		}
 	}
 ]
