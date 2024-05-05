@@ -478,11 +478,8 @@ function chDialogShowItems(shipmid,types) {
 		if (include && SHIPDATA[shipmid].onlyEquip && SHIPDATA[shipmid].onlyEquip[DIALOGITEMSEL]) {
 			if (SHIPDATA[shipmid].onlyEquip[DIALOGITEMSEL].indexOf(type) == -1) include = false;
 		}
-		if (include && [392,724].includes(shipmid) && equip.type == SEAPLANEBOMBER) {
-			if (eqid != 194) include = false;
-		}
-		if (include && [166].includes(shipmid) && equip.type == SCAMP) {
-			if (eqid != 402) include = false;
+		if (include && EQUIPTYPE_EXCEPTION[shipmid] && EQUIPTYPE_EXCEPTION[shipmid][equip.type] && !EQUIPTYPE_EXCEPTION[shipmid][equip.type].includes(eqid)) {
+			include = false;
 		}
 		if (include && DIALOGFLEETSEL == 5 && !CHDATA.config.mechanics.aswPlaneAir) {
 			if (equip.type == AUTOGYRO || equip.type == ASWPLANE) include = false;
@@ -1453,6 +1450,8 @@ function chStart() {
 	MECHANICS.ffReroll = MAPDATA[WORLD].date >= MAPDATA[50].date;
 	MECHANICS.yamatoSpecial = MECHANICS.kongouSpecialBuff2;
 	MECHANICS.antiSubRaid = MAPDATA[WORLD].date >= MAPDATA[54].date;
+	MECHANICS.eqBonusAA = false;
+	MECHANICS.panzerIIIBuff = false;
 	SIMCONSTS.shellDmgCap = 150;
 	SIMCONSTS.aswDmgCap = 100;
 	SIMCONSTS.torpedoDmgCap = 150;
@@ -1478,6 +1477,7 @@ function chStart() {
 	SIMCONSTS.enableModSummerBB = WORLD >= 51;
 	SIMCONSTS.enableModSummerCA = WORLD >= 51;
 	SIMCONSTS.enableModFrenchBB = WORLD >= 51;
+	SIMCONSTS.enableModSummerCV = WORLD >= 51;
 	SIMCONSTS.enableModDock = WORLD >= 55;
 	SIMCONSTS.enableAirstrikeSpecialBonus = WORLD >= 42;
 	SIMCONSTS.nbOnlyCFAccBase = WORLD >= 48 ? 69 : 90;
@@ -1614,22 +1614,24 @@ function chLoadEscortFleet() {
 function chLoadSupportFleetN() {
 	chTablePushUp(3);
 	var data = chLoadFleet(CHDATA.fleets[3],3);
-	var type = chGetSupportType(data[1]);
-	if (!type) return;
 	FLEETS1S[0] = new Fleet(0);
 	FLEETS1S[0].loadShips(data[0]);
-	FLEETS1S[0].supportType = type;
+	MECHANICS.LBASBuff = CHDATA.config.mechanics.LBASBuff;
+	if (!FLEETS1S[0].getSupportType()) {
+		FLEETS1S[0] = null;
+	}
 }
 
 function chLoadSupportFleetB() {
 	chTablePushUp(4);
 	var data = chLoadFleet(CHDATA.fleets[4],4);
-	var type = chGetSupportType(data[1]);
-	if (!type) return;
 	FLEETS1S[1] = new Fleet(0);
 	FLEETS1S[1].loadShips(data[0]);
-	FLEETS1S[1].supportType = type;
 	FLEETS1S[1].supportBoss = true;
+	MECHANICS.LBASBuff = CHDATA.config.mechanics.LBASBuff;
+	if (!FLEETS1S[1].getSupportType()) {
+		FLEETS1S[1] = null;
+	}
 }
 
 function chGetSupportType(counts) {
