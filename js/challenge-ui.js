@@ -1395,6 +1395,57 @@ function chDoStartChecks() {
 function chDoStartChecksFleet(fleetnum,errors) {
 	var mdata = MAPDATA[WORLD].maps[MAPNUM];
 	var first = true;
+	
+	let locksToCheck = null;
+
+	if (mdata.lockInfos) {
+		// Complex locks
+		const lockInfos = mdata.lockInfos;
+
+		const difficulties = lockInfos.difficulties ? lockInfos.difficulties : [2,3];
+
+		if (difficulties) {
+			// get tag
+			if (lockInfos.isTagAllowed.startNode && Object.values(lockInfos.isTagAllowed.startNode).length) {
+				// get start node
+				let startNode = "Start";
+
+				if (mdata.startCheck) startNode = mdata.startCheck();
+
+				if (mdata.startCheckRule && mdata.startCheckRule.length) {
+					startNode = '';
+					let index = 0;
+					let rules = mdata.startCheckRule;
+
+					while (!startNode) {
+
+						let rule = rules[index];
+
+						if (!rule) {
+							startNode = 'Start'
+						}
+
+						if (rule.ruleCanBeChecked()) startNode = rule.getRouting(CHSHIPCOUNT);
+
+						index++;
+					}
+				}
+
+				if (startNode && lockInfos.isTagAllowed.startNode[startNode]) locksToCheck = lockInfos.isTagAllowed.startNode[startNode];
+
+			} else if (lockInfos.isTagAllowed.fleetType && Object.values(lockInfos.isTagAllowed.fleetType).length) {
+				if (CHDATA.fleets.combined) {
+					locksToCheck = lockInfos.isTagAllowed.fleetType[CHDATA.fleets.combined];
+				} else if (CHDATA.fleets.sf) {
+					locksToCheck = lockInfos.isTagAllowed.fleetType[7];
+				} else {
+					locksToCheck = lockInfos.isTagAllowed.fleetType[0];
+				}
+			}
+		}
+
+	}
+
 	for (var i=0; i<CHDATA.fleets[fleetnum].length; i++) {
 		ship = CHDATA.ships[CHDATA.fleets[fleetnum][i]];
 		if (!ship) continue;
@@ -1408,10 +1459,15 @@ function chDoStartChecksFleet(fleetnum,errors) {
 		}
 		//ship lock
 		if (!CHDATA.config.disablelock) {
-			if (CHDATA.event.maps[MAPNUM].diff > 1 && CHDATA.event.maps[MAPNUM].diff < 4 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
-				errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
-			if (CHDATA.event.maps[MAPNUM].diff == 3 && mdata.checkLockHard && ship.lock && mdata.checkLockHard.indexOf(ship.lock) != -1)
-				errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
+			if (mdata.lockInfos) { 
+				if (locksToCheck && ship.lock && !locksToCheck.includes(ship.lock)) 
+					errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map/part.');
+			} else {
+				if (CHDATA.event.maps[MAPNUM].diff > 1 && CHDATA.event.maps[MAPNUM].diff < 4 && mdata.checkLock && ship.lock && mdata.checkLock.indexOf(ship.lock) != -1)
+					errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
+				if (CHDATA.event.maps[MAPNUM].diff == 3 && mdata.checkLockHard && ship.lock && mdata.checkLockHard.indexOf(ship.lock) != -1)
+					errors.push(SHIPDATA[ship.masterId].name + ' is locked to another map.');
+			}
 		}
 		//empty item slots
 		var noitem1 = 0, noitem2 = 0;
@@ -1486,6 +1542,10 @@ function chStart() {
 	toggleASWPlaneAir(CHDATA.config.mechanics.aswPlaneAir);
 	toggleAACIRework(CHDATA.config.mechanics.aaciMultiRoll);
 
+	if (MAPDATA[WORLD].maps[MAPNUM].lockInfos) {
+		chApplyLocksBeforeSortie();
+	}
+
 	chLoadMainFleet();
 	if (CHDATA.fleets.combined) chLoadEscortFleet();
 	else FLEETS1[1] = null;
@@ -1557,6 +1617,59 @@ function chStart() {
 	chClickedTab('#tabmain');
 	chBlockFleetUI();
 	chPlayerStart();
+}
+
+function chApplyLocksBeforeSortie() {
+	const mdata = MAPDATA[WORLD].maps[MAPNUM];
+	const lockInfos = mdata.lockInfos;
+
+	let lockToApply = null;
+	
+	const difficulties = lockInfos.difficulties ? lockInfos.difficulties : [2,3];
+
+	if (difficulties) {
+		// get tag
+		if (lockInfos.tagGiven.startNode && Object.values(lockInfos.isTagAllowed.startNode).length) {
+			// get start node
+			let startNode = "Start";
+
+			if (mdata.startCheck) startNode = mdata.startCheck();
+
+			if (mdata.startCheckRule && mdata.startCheckRule.length) {
+				startNode = '';
+				let index = 0;
+				let rules = mdata.startCheckRule;
+
+				while (!startNode) {
+
+					let rule = rules[index];
+
+					if (!rule) {
+						startNode = 'Start'
+					}
+
+					if (rule.ruleCanBeChecked()) startNode = rule.getRouting(CHSHIPCOUNT);
+
+					index++;
+				}
+			}
+
+			if (startNode && lockInfos.tagGiven.startNode[startNode]) lockToApply = lockInfos.tagGiven.startNode[startNode];
+
+		} else if (lockInfos.tagGiven.fleetType && Object.values(lockInfos.isTagAllowed.fleetType).length) {
+			if (CHDATA.fleets.combined) {
+				lockToApply = lockInfos.tagGiven.fleetType[CHDATA.fleets.combined];
+			} else if (CHDATA.fleets.sf) {
+				lockToApply = lockInfos.tagGiven.fleetType[7];
+			} else {
+				lockToApply = lockInfos.tagGiven.fleetType[0];
+			}
+		}
+	}
+
+	if (lockToApply) {
+		chGiveLockAllCurrent(lockToApply);
+	}
 }
 
 function chGiveLock(fleetnum,slotnum,lock) {
